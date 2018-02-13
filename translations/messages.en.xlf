@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="en">
+  <file id="messages.en">
+    <unit id="3_vUzLP">
+      <segment>
+        <source>index.title</source>
+        <target>A Slack bot for conferences CFP</target>
+      </segment>
+    </unit>
+    <unit id="iuZEAJP">
+      <segment>
+        <source>index.baseline</source>
+        <target>Starfleet is a Slack bot that aggregates conferences which cover your favorite topics</target>
+      </segment>
+    </unit>
+    <unit id="WJR6JH7">
+      <segment>
+        <source>index.demo_button.label</source>
+        <target>Demo 🚀</target>
+      </segment>
+    </unit>
+    <unit id="OtHZ41v">
+      <segment>
+        <source>index.features.title</source>
+        <target>What Starfleet can do?</target>
+      </segment>
+    </unit>
+    <unit id="kCklUCT">
+      <segment>
+        <source>conferences.list.title</source>
+        <target>Conferences we are attending</target>
+      </segment>
+    </unit>
+    <unit id="aiHjFk.">
+      <segment>
+        <source>conferences.list.baseline</source>
+        <target>Here is the list of conferences in which we participate, or have participated at JoliCode. You will find the list of your conferences in your own instance of Starfleet.</target>
+      </segment>
+    </unit>
+    <unit id="bL.Rv4d">
+      <segment>
+        <source>conferences.card.cfp_button_label</source>
+        <target>Go to the CFP</target>
+      </segment>
+    </unit>
+    <unit id="Bl0WvZ6">
+      <segment>
+        <source>conference.card.site_button_label</source>
+        <target>Website</target>
+      </segment>
+    </unit>
+    <unit id="zsu3ASm">
+      <segment>
+        <source>conferences.show.sidebar.dates_title</source>
+        <target>Dates</target>
+      </segment>
+    </unit>
+    <unit id="fgrmwED">
+      <segment>
+        <source>date.from</source>
+        <target>From</target>
+      </segment>
+    </unit>
+    <unit id="jYPp9QQ">
+      <segment>
+        <source>date.to</source>
+        <target>To</target>
+      </segment>
+    </unit>
+    <unit id="06t9e3q">
+      <segment>
+        <source>conferences.show.sidebar.location_title</source>
+        <target>Location</target>
+      </segment>
+    </unit>
+    <unit id="TCw41XN">
+      <segment>
+        <source>conferences.show.sidebar.cfp_title</source>
+        <target>CFP</target>
+      </segment>
+    </unit>
+    <unit id="214AA4Z">
+      <segment>
+        <source>conferences.show.sidebar.cfp_end_at</source>
+        <target>Ends on</target>
+      </segment>
+    </unit>
+    <unit id="cAWksFT">
+      <segment>
+        <source>conferences.show.sidebar.tags_title</source>
+        <target>Tags</target>
+      </segment>
+    </unit>
+    <unit id="mYCG0m.">
+      <segment>
+        <source>conferences.show.talks.title</source>
+        <target>Talks we submitted</target>
+      </segment>
+    </unit>
+    <unit id="S5df14f.">
+      <segment>
+        <source>conferences.show.article_url.title</source>
+        <target>We wrote a blog post</target>
+      </segment>
+    </unit>
+    <unit id="H3d1h3l">
+      <segment>
+        <source>conferences.show.article_url.content</source>
+        <target>Read our article about this conference.</target>
+      </segment>
+    </unit>
+    <unit id="NhidkBa">
+      <segment>
+        <source>conferences.show.talk_submitted_ago</source>
+        <target>Submitted</target>
+      </segment>
+    </unit>
+    <unit id="ZTUtQYa">
+      <segment>
+        <source>conferences.show.talk_submitted_by</source>
+        <target>by</target>
+      </segment>
+    </unit>
+    <unit id="BwwWCmK">
+      <segment>
+        <source>accepted</source>
+        <target>Accepted</target>
+      </segment>
+    </unit>
+    <unit id="IM2Tii6">
+      <segment>
+        <source>rejected</source>
+        <target>Rejected</target>
+      </segment>
+    </unit>
+    <unit id="YqL_09b">
+      <segment>
+        <source>pending</source>
+        <target>Pending</target>
+      </segment>
+    </unit>
+    <unit id="pMPtBKl">
+      <segment>
+        <source>done</source>
+        <target>Done</target>
+      </segment>
+    </unit>
+    <unit id="KM3G_ft">
+      <segment>
+        <source>conference.show.back_to_list_button_label</source>
+        <target><![CDATA[< Back to the list]]></target>
+      </segment>
+    </unit>
+    <unit id="NZ6OCyn">
+      <segment>
+        <source>conferences.show.no_talks</source>
+        <target>We did not submit any talk yet, but soon</target>
+      </segment>
+    </unit>
+    <unit id="Lg2s65ds">
+      <segment>
+        <source>conferences.list.live.title</source>
+        <target>🔴 Live conferences! Find us there!</target>
+      </segment>
+    </unit>
+    <unit id="Lg2s65ds">
+      <segment>
+        <source>conferences.list.future.title</source>
+        <target>Incoming conferences</target>
+      </segment>
+    </unit>
+    <unit id="J5ve2d5g">
+      <segment>
+        <source>conferences.list.past.title</source>
+        <target>Past conferences</target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

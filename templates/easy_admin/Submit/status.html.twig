@@ -1,0 +1,9 @@
+{% if value is same as(constant('App\\Entity\\Submit::STATUS_PENDING')) %}
+    🤞  <span class="label label-warning">{{ value|trans }}</span>
+{% elseif value is same as(constant('App\\Entity\\Submit::STATUS_ACCEPTED')) %}
+    🎉  <span class="label label-success">{{ value|trans }}</span>
+{% elseif value is same as(constant('App\\Entity\\Submit::STATUS_REJECTED')) %}
+    😢  <span class="label label-danger">{{ value|trans }}</span>
+{% elseif value is same as(constant('App\\Entity\\Submit::STATUS_DONE')) %}
+    ✅  <span class="label label-success">{{ value|trans }}</span>
+{% endif %}

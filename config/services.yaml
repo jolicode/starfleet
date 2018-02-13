@@ -1,0 +1,44 @@
+parameters:
+    locale: 'en'
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    App\:
+        resource: '../src/*'
+        exclude: '../src/{Entity,Migrations,Tests}'
+
+    App\Controller\:
+        resource: '../src/Controller'
+        tags: ['controller.service_arguments']
+
+    App\EventListener\DoctrineEventSubscriber:
+        arguments:
+            $router: '@router'
+        tags: ['doctrine.event_subscriber']
+
+    App\SlackNotifier:
+        arguments:
+            $webHookUrl: '%env(SLACK_WEB_HOOK_URL)%'
+
+    Http\Client\HttpClient:
+        alias: Http\Client\Curl\Client
+
+    Http\Client\Curl\Client: ~
+
+    Http\Message\MessageFactory:
+        alias: Nyholm\Psr7\Factory\MessageFactory
+
+    Nyholm\Psr7\Factory\MessageFactory: ~
+
+    App\DataFixtures\ORM\:
+        resource: '../src/DataFixtures/ORM'
+        tags: [doctrine.fixture.orm]
+
+    twig.date_extension:
+        class: Twig_Extensions_Extension_Date
+        tags:
+            - { name: twig.extension }

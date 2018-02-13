@@ -1,0 +1,12 @@
+easy_admin:
+    entities:
+        Tag:
+            class: App\Entity\Tag
+            list:
+                fields:
+                    - { property: 'id', type: 'text' }
+                    - { property: 'name', type: 'text' }
+                    - { property: 'conferences' }
+            form:
+                fields:
+                    - { property: 'name', type: 'text' }

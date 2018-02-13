@@ -1,0 +1,25 @@
+easy_admin:
+    entities:
+        Conference:
+            class: App\Entity\Conference
+            list:
+                fields:
+                    - { property: 'id', type: 'text' }
+                    - { property: 'name', type: 'text' }
+                    - { property: 'startAt', type: 'date' }
+                    - { property: 'cfpUrl', type: 'url' }
+                    - { property: 'cfpEndAt', type: 'date' }
+                    - { property: 'tags', type: 'array' }
+                    - { property: 'attended' }
+            form:
+                fields:
+                    - { property: 'name', type: 'text' }
+                    - { property: 'location', type: 'text' }
+                    - { property: 'startAt', type: 'date', 'type_options': { 'widget': 'single_text' } }
+                    - { property: 'endAt', type: 'date', 'type_options': { 'widget': 'single_text' } }
+                    - { property: 'cfpUrl', type: 'url' }
+                    - { property: 'cfpEndAt', type: 'date', 'type_options': { 'widget': 'single_text' } }
+                    - { property: 'siteUrl', type: 'url' }
+                    - { property: 'tags' }
+                    - { property: 'articleUrl', type: 'url' }
+                    - { property: 'attended' }

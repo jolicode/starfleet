@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% macro display_conferences(conferences, title) %}
+    {% if conferences|length > 0 %}
+        <h3 class="text-center">{{ title|trans }}</h3>
+
+        <div class="row text-center mt-5 mb-5">
+            {% for conference in conferences %}
+                <div class="col-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title font-weight-normal">
+                                <a href="{{ path('conferences_show', {slug: conference.slug}) }}">{{ conference.name }}</a>
+                            </h5>
+                            <h6 class="card-subtitle mb-2 text-muted font-weight-normal">{{ conference.location }}</h6>
+                            <p class="card-text">
+                                <small>{{ conference.startAt|date('d F Y') }} - {{ conference.endAt|date('d F Y') }}</small>
+                            </p>
+                            <a href="{{ conference.siteUrl }}" target="_blank" class="btn btn-outline-secondary btn-sm">{{ 'conference.card.site_button_label'|trans }} <i class="fa fa-external-link"></i></a>
+                            {% if conference.cfpUrl is not null %}
+                                <a href="{{ conference.cfpUrl }}" target="_blank" class="btn btn-outline-success btn-sm">{{ 'conferences.card.cfp_button_label'|trans }} <i class="fa fa-external-link"></i></a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endmacro %}
+
+{% import _self as template %}
+
+{% block body %}
+    <section class="text-dark">
+        <div class="container-fluid bg-light text-dark pt-3 pb-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        {{ include('demo-message.html.twig') }}
+                        <div class="jumbotron">
+                            <h2 class="display-4">
+                                {{ 'conferences.list.title'|trans }}
+                            </h2>
+                            <p class="lead">
+                                {{ 'conferences.list.baseline'|trans }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        {% for label, messages in app.flashes %}
+                            {% for message in messages %}
+                                {{ include('flashes/'~label~'.html.twig', { message: message }) }}
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                {{ template.display_conferences(liveConferences, 'conferences.list.live.title') }}
+                {{ template.display_conferences(futureConferences, 'conferences.list.future.title') }}
+                {{ template.display_conferences(pastConferences, 'conferences.list.past.title') }}
+            </div>
+        </div>
+    </section>
+{% endblock %}

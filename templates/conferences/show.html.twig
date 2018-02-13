@@ -1,0 +1,94 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <section class="text-dark bg-light" id="conference_show">
+        <div class="container-fluid">
+            <div class="container">
+                <div class="row pt-3 mb-3">
+                    <div class="col-12 text-center">
+                        {{ include('demo-message.html.twig') }}
+                        <h2 class="display-4 mb-5">{{ conference.name }}</h2>
+                        <p class="lead text-muted font-weight-normal">{{ conference.description }}</p>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <p class="text-center">
+                            <a href="{{ conference.siteUrl }}" target="_blank" class="btn btn-outline-secondary btn-lg">{{ 'conference.card.site_button_label'|trans }} <i class="fa fa-external-link"></i></a>
+                            {% if conference.cfpUrl is not null %}
+                                <a href="{{ conference.cfpUrl }}" target="_blank" class="btn btn-outline-success btn-lg">{{ 'conferences.card.cfp_button_label'|trans }} <i class="fa fa-external-link"></i></a>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+                <div class="row pb-5">
+                    <aside class="col-3">
+                        <p class="h5 font-weight-normal"><i class="fa fa-calendar-o"></i> {{ 'conferences.show.sidebar.dates_title'|trans }}</p>
+                        <p>
+                            {{ 'date.from'|trans }} <strong>{{ conference.startAt|date('d F Y') }}</strong>
+                            <br>
+                            {{ 'date.to'|trans }} <strong>{{ conference.endAt|date('d F Y') }}</strong>
+                        </p>
+                        <hr>
+
+                        <p class="h5 font-weight-normal"><i class="fa fa-map"></i> {{ 'conferences.show.sidebar.location_title'|trans }}</p>
+                        <p>{{ conference.location }}</p>
+                        <hr>
+
+                        <p class="h5 font-weight-normal"><i class="fa fa-bullhorn"></i> {{ 'conferences.show.sidebar.cfp_title'|trans }}</p>
+                        <p>{{ 'conferences.show.sidebar.cfp_end_at'|trans }} <strong>{{ conference.cfpEndAt|date('d F Y') }}</strong></p>
+                        <hr>
+
+                        <p class="h5 font-weight-normal"><i class="fa fa-tags"></i> {{ 'conferences.show.sidebar.tags_title'|trans }}</p>
+                        {% for tag in conference.tags %}
+                            <a href="{{ path('conferences_list_by_tag', {tag: tag.name}) }}" class="badge badge-info">{{ tag.name }}</a>
+                        {% endfor %}
+                    </aside>
+                    <article class="col-9">
+                        <h4 class="font-weight-normal">{{ 'conferences.show.talks.title'|trans }}</h4>
+                        <div class="list-group" id="submits_accordion" data-children=".list-group-item">
+                            {% for submit in conference.submits %}
+                                <div class="list-group-item list-group-item-action flex-column align-items-start">
+                                    <a data-toggle="collapse" data-parent="#submits_accordion" href="#submit_{{ submit.id }}"
+                                       role="button" aria-expanded="true" aria-controls="submit_{{ submit.id }}">
+                                        <h5 class="mb-1 d-flex w-100 justify-content-between">
+                                            {{ submit.talk.title }}
+                                            {% if submit.status is same as(constant('App\\Entity\\Submit::STATUS_PENDING')) %}
+                                                <span class="badge badge-warning">{{ submit.status|trans }}</span>
+                                            {% elseif submit.status is same as(constant('App\\Entity\\Submit::STATUS_ACCEPTED')) %}
+                                                <span class="badge badge-success">{{ submit.status|trans }}</span>
+                                            {% elseif submit.status is same as(constant('App\\Entity\\Submit::STATUS_REJECTED')) %}
+                                                <span class="badge badge-danger">{{ submit.status|trans }}</span>
+                                            {% endif %}
+                                        </h5>
+                                    </a>
+
+                                    <div id="submit_{{ submit.id }}" class="collapse {{ loop.first ? 'show' : '' }}" role="tabpanel">
+                                        <p class="mb-1">{{ submit.talk.intro }}</p>
+                                        <small>
+                                            {{ 'conferences.show.talk_submitted_ago'|trans }} {{ submit.submittedAt|time_diff }}
+                                            {{ 'conferences.show.talk_submitted_by'|trans }} {{ submit.reduceSpeakersNames() }}
+                                        </small>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <p class="text-center alert alert-light">
+                                    {{ 'conferences.show.no_talks'|trans }}
+                                </p>
+                            {% endfor %}
+                        </div>
+                        {% if conference.articleUrl %}
+                            <h4 class="font-weight-normal mt-3">{{ 'conferences.show.article_url.title'|trans }}</h4>
+                            <div>
+                                <a href="{{ conference.articleUrl }}" target="_blank" class="btn btn-link">
+                                    {{ 'conferences.show.article_url.content'|trans }}
+                                    <i class="fa fa-external-link"></i>
+                                </a>
+                            </div>
+                        {% endif %}
+                    </article>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

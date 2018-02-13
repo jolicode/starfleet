@@ -1,0 +1,72 @@
+App\Entity\User:
+    user_{1..10}:
+        name: <name()>
+        email: <email()>
+        bio: <sentence()>
+        createdAt: <dateTimeBetween('2016-01-01', '2017-01-01')>
+        updatedAt: '@self->createdAt'
+
+App\Entity\Tag:
+    tag_php:
+        name: 'php'
+    tag_symfony:
+        name: 'symfony'
+    tag_javascript:
+        name: 'javascript'
+    tag_react:
+        name: 'react'
+    tag_docker:
+        name: 'docker'
+    tag_go:
+        name: 'go'
+    tag_elasticsearch:
+        name: 'elasticsearch'
+    tag_web:
+        name: 'web'
+    tag_css:
+        name: 'css'
+
+App\Entity\Conference:
+    conference_{1..5}: &conferenceDefault
+        name: 'conference_<current()>'
+        description: <paragraph()>
+        slug: <slug()>
+        location: <city()>
+        startAt: <dateTimeBetween('2016-01-01', '2017-01-01')>
+        endAt: <dateTimeInInterval($startAt, '+ 2 days')>
+        cfpUrl: <url()>
+        cfpEndAt: <dateTimeInInterval('now', '+ 20 days')>
+        siteUrl: <url()>
+        createdAt: <dateTimeBetween('2016-01-01', '2017-01-01')>
+        updatedAt: '@self->createdAt'
+        tags: ['@tag*']
+        source: 'fixtures'
+    conference_{6..10}:
+        <<: *conferenceDefault
+        cfpEndAt: <dateTimeInInterval('now', '+ 10 days')>
+    conference_{11..15}:
+        <<: *conferenceDefault
+        cfpEndAt: <dateTimeInInterval('now', '+ 5 days')>
+    conference_{16..20}:
+        <<: *conferenceDefault
+        cfpEndAt: <dateTimeInInterval('now', '+ 1 days')>
+    conference_{21..25}:
+        <<: *conferenceDefault
+        cfpEndAt: <dateTimeInInterval('now', '+ 0 days')>
+
+App\Entity\Talk:
+    talk_{1..30}:
+        title: 'talk_<current()> 👍'
+        intro: <sentence()>
+        createdAt: <dateTimeBetween('2016-01-01', '2018-01-01')>
+        updatedAt: '@self->createdAt'
+
+App\Entity\Submit:
+    submit_{1..20}:
+        submittedAt: <dateTimeBetween('2016-01-01', '2018-01-01')>
+        status: <randomElement(<(App\Entity\Submit::STATUSES)>)>
+        createdAt: <dateTimeBetween('2016-01-01', '2018-01-01')>
+        updatedAt: '@self->createdAt'
+        users: ['@user*']
+        conference: '@conference*'
+        talk: '@talk*'

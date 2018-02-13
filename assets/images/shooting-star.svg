@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="138px" height="21px" viewBox="0 0 138 21" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 46.1 (44463) - http://www.bohemiancoding.com/sketch -->
+    <title>shooting star</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="1.85118402%" y1="50%" x2="98.3951371%" y2="50%" id="linearGradient-1">
+            <stop stop-color="#FFFFFF" stop-opacity="0.4" offset="0%"/>
+            <stop stop-color="#FFFFFF" offset="100%"/>
+        </linearGradient>
+        <path d="M198.499983,159.995833 L316.500052,159.0125 L316.500052,159.0125 C317.321576,159.005654 317.993102,159.66608 317.999948,160.487604 C317.999983,160.491736 318,160.495868 318,160.5 L318,160.5 L318,160.5 C318,161.321552 317.334,161.987552 316.512448,161.987552 C316.508316,161.987552 316.504184,161.987535 316.500052,161.9875 L198.499983,161.004167 L198.499983,161.004167 C198.223178,161.00186 198,160.776814 198,160.5 L198,160.5 L198,160.5 C198,160.223186 198.223178,159.99814 198.499983,159.995833 Z" id="path-2"/>
+        <filter x="-15.0%" y="-504.2%" width="125.0%" height="1108.4%" filterUnits="objectBoundingBox" id="filter-3">
+            <feMorphology radius="1" operator="dilate" in="SourceAlpha" result="shadowSpreadOuter1"/>
+            <feOffset dx="-3" dy="0" in="shadowSpreadOuter1" result="shadowOffsetOuter1"/>
+            <feGaussianBlur stdDeviation="3.5" in="shadowOffsetOuter1" result="shadowBlurOuter1"/>
+            <feColorMatrix values="0 0 0 0 1   0 0 0 0 1   0 0 0 0 1  0 0 0 0.20533288 0" type="matrix" in="shadowBlurOuter1"/>
+        </filter>
+    </defs>
+    <g id="Design" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.799999952">
+        <g id="100_Home" transform="translate(-196.000000, -250.000000)">
+            <g id="1-Hero" transform="translate(10.000000, 100.000000)">
+                <g id="Stars">
+                    <g id="shooting-star" opacity="0.5">
+                        <use fill="black" fill-opacity="1" filter="url(#filter-3)" xlink:href="#path-2"/>
+                        <use fill="url(#linearGradient-1)" fill-rule="evenodd" xlink:href="#path-2"/>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

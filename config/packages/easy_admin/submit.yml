@@ -1,0 +1,19 @@
+easy_admin:
+    entities:
+        Submit:
+            class: App\Entity\Submit
+            list:
+                fields:
+                    - { property: 'id', type: 'text' }
+                    - { property: 'talk' }
+                    - { property: 'conference' }
+                    - { property: 'submittedAt', type: 'date' }
+                    - { property: 'status', template: 'easy_admin/Submit/status.html.twig' }
+                    - { property: 'users', type: 'array', label: 'Speakers' }
+            form:
+                fields:
+                    - { property: 'talk', type: 'entity', type_options: { class: 'App\Entity\Talk' } }
+                    - { property: 'conference', type: 'entity', type_options: { class: 'App\Entity\Conference' } }
+                    - { property: 'submittedAt', 'type_options': { 'widget': 'single_text' } }
+                    - { property: 'status', type: 'choice', type_options: { choices: !php/const App\Entity\Submit::STATUSES, 'expanded': true } }
+                    - { property: 'users', type: 'entity', type_options: { multiple: true, class: 'App\Entity\User' } }

@@ -1,0 +1,13 @@
+easy_admin:
+    entities:
+        Talk:
+            class: App\Entity\Talk
+            list:
+                fields:
+                    - { property: 'id', type: 'text' }
+                    - { property: 'title', type: 'text' }
+                    - { property: 'submits' }
+            form:
+                fields:
+                    - { property: 'title', type: 'text' }
+                    - { property: 'intro', type: 'textarea' }

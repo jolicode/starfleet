@@ -1,0 +1,216 @@
+$fa-font-path: "~font-awesome/fonts";
+
+@import '~bootstrap/scss/bootstrap';
+@import '~font-awesome/scss/font-awesome';
+@import 'stars';
+
+$purplelight: #8078EA;
+$purplesuperlight: #B0A6F4;
+$purpleultralight: #D0CCFF;
+
+a {
+    color: #8078EA;
+    text-decoration: none;
+    background-color: transparent;
+    -webkit-text-decoration-skip: objects;
+    &:hover {
+        color: #B0A6F4;
+        text-decoration: underline;
+    }
+}
+
+.display-5 {
+    font-size: 2.5rem;
+    font-weight: 300;
+    line-height: 1.1;
+}
+
+html, body {
+    height: 100%;
+    overflow-x: hidden;
+    background-color: #190629;
+}
+
+.navbar-content {
+    z-index: 100;
+    position: relative;
+}
+
+header nav {
+    height: 170px;
+    .navbar-brand {
+        text-transform: uppercase;
+        font-family: 'Expletus Sans', cursive;
+    }
+    .navbar-collapse .navbar-nav .nav-item.active {
+        border-bottom: 1px #FFF solid;
+    }
+}
+
+.showcase {
+    padding-top: 30px;
+}
+
+.showcase .jumbotron {
+    position: relative;
+    background: linear-gradient(rgba(25,6,41,0),#190629);
+    z-index: 10;
+}
+
+.bg-purple {
+    background: #190629;
+}
+
+.bg-transparent {
+    background: transparent;
+}
+
+#conference_show {
+    min-height: calc(100% - 170px - 144px);
+}
+
+.error-container {
+    min-height: calc(100% - 170px);
+    .stars, .stars-lg {
+        z-index: 1;
+    }
+    .container {
+        position: relative;
+        z-index: 100;
+    }
+}
+
+.text-purplelight {
+    color: $purplelight;
+}
+.text-purplesuperlight {
+    color: $purplesuperlight;
+}
+.text-purpleultralight {
+    color: $purpleultralight;
+}
+
+#uss-enterprise-front {
+    top: 320px;
+    left: 55%;
+    width: 500px;
+    animation-name: floating;
+    animation-duration: 18s;
+}
+#uss-enterprise-back {
+    top: 320px;
+    left: 5%;
+    width: 500px;
+    animation-name: floating-bis;
+    animation-duration: 25s;
+}
+#fragment-1 {
+    top: 250px;
+    left: 30%;
+    width: 200px;
+    animation-name: floating-ter;
+    animation-duration: 28s;
+}
+#blue-human {
+    top: 230px;
+    left: 55%;
+    width: 150px;
+    animation-name: floating;
+    animation-duration: 34s;
+}
+#fragment-2 {
+    top: 300px;
+    left: 65%;
+    width: 100px;
+    animation-name: floating;
+    animation-duration: 42s;
+}
+#fragment-3 {
+    top: 650px;
+    left: 35%;
+    width: 150px;
+    animation-name: floating-bis;
+    animation-duration: 34s;
+}
+#fragment-4 {
+    top: 700px;
+    left: 45%;
+    width: 250px;
+    animation-name: floating;
+    animation-duration: 36s;
+}
+#fragment-5 {
+    top: 650px;
+    left: 57%;
+    width: 170px;
+    animation-name: floating-ter;
+    animation-duration: 37s;
+}
+#yellow-human {
+    top: 600px;
+    left: 68%;
+    width: 170px;
+    animation-name: floating-bis;
+    animation-duration: 38s;
+}
+
+.uss-enterprise img {
+    position:absolute;
+    display:block;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+@keyframes floating {
+    0% {
+        transform: translate(0%,0%) rotate(random(30) + deg);
+    }
+    25% {
+        transform: translate(5%,15%) rotate(random(30) + deg);
+    }
+    50% {
+        transform: translate(10%,5%) rotate(random(30) + deg);
+    }
+    75% {
+        transform: translate(0%,15%) rotate(random(30) + deg);
+    }
+    100% {
+        transform: translate(0%,0%) rotate(random(30) + deg);
+    }
+}
+
+@keyframes floating-bis {
+    0% {
+        transform: translate(0%,0%) rotate(random(30) + deg);
+    }
+    25% {
+        transform: translate(8%,12%) rotate(random(30) + deg);
+    }
+    50% {
+        transform: translate(14%,2%) rotate(random(30) + deg);
+    }
+    75% {
+        transform: translate(5%,18%) rotate(random(30) + deg);
+    }
+    100% {
+        transform: translate(0%,0%) rotate(random(30) + deg);
+    }
+}
+
+@keyframes floating-ter {
+    0% {
+        transform: translate(0%,0%) rotate(random(30) + deg);
+    }
+    25% {
+        transform: translate(3%,7%) rotate(random(30) + deg);
+    }
+    50% {
+        transform: translate(8%,9%) rotate(random(30) + deg);
+    }
+    75% {
+        transform: translate(10%,14%) rotate(random(30) + deg);
+    }
+    100% {
+        transform: translate(0%,0%) rotate(random(30) + deg);
+    }
+}

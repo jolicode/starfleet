@@ -1,0 +1,152 @@
+{% extends 'base.html.twig' %}
+
+{% block header %}
+    {{ include('_header_showcase.html.twig') }}
+{% endblock %}
+
+{% block body %}
+    <section class="showcase">
+        <div class="jumbotron jumbotron-fluid text-light">
+            <div class="stars"></div>
+            <div class="stars-lg"></div>
+            <figure class="shooting-star" style="top: 21%; transform: rotate(187deg);">
+                <img src="{{ asset('build/images/shooting-star.svg') }}" alt="shooting star">
+            </figure>
+            <figure class="shooting-star-right" style="top: 60%; transform: rotate(261deg);">
+                <img src="{{ asset('build/images/shooting-star.svg') }}" alt="shooting star">
+            </figure>
+            <div class="container">
+                <div class="row">
+                    <h1 class="display-3 mb-3 w-100 text-center">{{ 'index.title'|trans }}</h1>
+                    <p class="lead w-100 text-center">{{ 'index.baseline'|trans }}</p>
+                </div>
+                <div class="row mt-4 pt-5 pb-2 text-center">
+                    <div class="col-12">
+                        <a href="{{ path('conferences_list') }}" class="btn btn-outline-light btn-lg">{{ 'index.demo_button.label'|trans }}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid bg-light text-dark py-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 text-center mb-5">
+                        <h3 class="display-5 font-weight-bold" id="features">{{ 'index.features.title'|trans }}</h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card-deck">
+                            <div class="card border-light">
+                                <div class="card-body">
+                                    <p class="card-text text-center">
+                                        <img src="{{ asset('build/images/admin.svg') }}" width="200" alt="">
+                                    </p>
+                                    <h4 class="font-weight-bold text-center mt-5">The deck of the ship</h4>
+                                    <p class="mt-4">
+                                        <strong>Starfleet provides a backend</strong> in which you can manager users, tags, talks and conferences.
+                                        Every member can submit a talk, add a new conference, or improve tags list.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="card border-light">
+                                <div class="card-body">
+                                    <p class="card-text text-center">
+                                        <img src="{{ asset('build/images/notif.svg') }}" width="200" alt="">
+                                    </p>
+                                    <h4 class="font-weight-bold text-center mt-5">Follow up of talk submission</h4>
+                                    <p class="mt-4">
+                                        Each time a talk is added in Starfleet, a <strong>Slack notification</strong> is sent in the channel of your choice.
+                                    </p>
+                                    <p>
+                                        Later, if the speaker mark his talk as <strong>accepted</strong>, another notification will be sent to celebrate the acceptance of the talk! 🎉
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="card border-light">
+                                <div class="card-body">
+                                    <p class="card-text text-center">
+                                        <img src="{{ asset('build/images/alert.svg') }}" width="200" alt="">
+                                    </p>
+                                    <h4 class="font-weight-bold text-center mt-5">Automatic pilot</h4>
+                                    <p class="mt-4">
+                                        Every day, Starfleet checks the end dates of the <abbr title="Call for papers">CFP</abbr>.
+                                        A notification will be sent for all <strong>CFPs closing in 30, 20, 10, 5, and 1 days</strong>, as well as those closing the current day.<br>
+                                        Starfleet also checks for new conference about your topics, and notify you in Slack.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid bg-purple text-light py-5">
+            <div class="container">
+                <div class="row mt-5">
+                    <div class="col-12 text-center mb-5">
+                        <h3 class="display-4">Slack notifications</h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div id="slack-notifications-carousel" class="carousel slide" data-ride="carousel">
+                            <ol class="carousel-indicators">
+                                <li data-target="#slack-notifications-carousel" data-slide-to="0" class="active"></li>
+                                <li data-target="#slack-notifications-carousel" data-slide-to="1"></li>
+                                <li data-target="#slack-notifications-carousel" data-slide-to="2"></li>
+                                <li data-target="#slack-notifications-carousel" data-slide-to="3"></li>
+                            </ol>
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <img class="img-fluid mb-5" src="{{ asset('build/images/slack-new-conference-added.png') }}" alt="Slack notification for a new conference added">
+                                    <div class="carousel-caption d-none d-md-block">
+                                        <p class="text-muted text-center">Slack notification for a new conference.</p>
+                                    </div>
+                                </div>
+                                <div class="carousel-item">
+                                    <img class="img-fluid mb-5" src="{{ asset('build/images/slack-new-submitted-talk.png') }}" alt="Slack notification for a new submitted talk">
+                                    <div class="carousel-caption d-none d-md-block">
+                                        <p class="text-muted text-center">Slack notification for a submitted talk.</p>
+                                    </div>
+                                </div>
+                                <div class="carousel-item">
+                                    <img class="img-fluid mb-5" src="{{ asset('build/images/slack-accepted-talk.png') }}" alt="Slack notification for an accepted talk">
+                                    <div class="carousel-caption d-none d-md-block">
+                                        <p class="text-muted text-center">Slack notification for a accepted talk.</p>
+                                    </div>
+                                </div>
+                                <div class="carousel-item">
+                                    <img class="img-fluid mb-5" src="{{ asset('build/images/slack-cfp-ending.png') }}" alt="Slack notification for a cfp ending">
+                                    <div class="carousel-caption d-none d-md-block">
+                                        <p class="text-muted text-center">Slack notification for a cfp ending.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid bg-light text-dark py-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <p class="text-center lead">
+                            Starfleet is already under development. We plan to open the source code soon 😉
+                            <br>
+                            If you want to try Starfleet, feel free to contact us!
+                        </p>
+                        <p class="text-center">
+                            <a href="mailto:msantostefano+starfleet@jolicode.com" class="btn btn-outline-dark btn-lg"><i class="fa fa-envelope"></i>️ Mail</a>
+                            <a href="https://twitter.com/starfleetapp" target="_blank" class="btn btn-outline-info btn-lg"><i class="fa fa-twitter"></i>️ Twitter</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

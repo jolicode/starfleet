@@ -1,0 +1,2 @@
+Fabric==1.11.1
+docker-compose>=1.8

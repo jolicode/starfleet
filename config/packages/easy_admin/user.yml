@@ -1,0 +1,14 @@
+easy_admin:
+    entities:
+        User:
+            class: App\Entity\User
+            list:
+                fields:
+                    - { property: 'id', type: 'text' }
+                    - { property: 'name', type: 'text' }
+                    - { property: 'email', type: 'email' }
+                    - { property: 'submits' }
+            form:
+                fields:
+                    - { property: 'name', type: 'text' }
+                    - { property: 'email', type: 'email' }

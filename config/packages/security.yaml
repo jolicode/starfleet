@@ -1,0 +1,21 @@
+security:
+    # https://symfony.com/doc/current/book/security.html#where-do-users-come-from-user-providers
+    providers:
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: email
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            anonymous: ~
+            logout_on_user_change: true
+            guard:
+                authenticators:
+                    - App\Security\GoogleAuthenticator
+
+    access_control:
+        - { path: ^/admin, roles: ROLE_USER }

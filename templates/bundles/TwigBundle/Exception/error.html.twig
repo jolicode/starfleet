@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block header %}
+    <header class="container">
+        <nav class="navbar bg-purple navbar-expand-lg navbar-dark">
+            <div class="navbar-content d-flex w-100">
+                <a class="navbar-brand" href="{{ path('homepage') }}">
+                    <img src="{{ asset('build/images/logo.svg') }}" width="100" height="100" class="d-inline-block" alt="">
+                    <h2 class="d-inline-block ml-3">Starfleet</h2><sup class="badge badge-light ml-3">alpha</sup>
+                </a>
+            </div>
+        </nav>
+    </header>
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid d-block error-container">
+        <div class="stars"></div>
+        <div class="stars-lg"></div>
+        <figure class="shooting-star" style="top: 21%; transform: rotate(187deg);">
+            <img src="{{ asset('build/images/shooting-star.svg') }}" alt="shooting star">
+        </figure>
+        <figure class="shooting-star-right" style="top: 60%; transform: rotate(261deg);">
+            <img src="{{ asset('build/images/shooting-star.svg') }}" alt="shooting star">
+        </figure>
+        <div class="container text-light text-center text-uppercase">
+            <blockquote class="display-4 d-block mb-5">Space… the final frontier.</blockquote>
+            <a class="btn btn-outline-light btn-lg d-inline-block" href="{{ path('homepage') }}">Back to homepage</a>
+            <div class="uss-enterprise">
+                <img class="d-inline-block" id="uss-enterprise-front" src="{{ asset('build/images/uss-enterprise/uss-enterprise-front.svg') }}" alt="">
+                <img class="d-inline-block" id="uss-enterprise-back" src="{{ asset('build/images/uss-enterprise/uss-enterprise-back.svg') }}" alt="">
+                <img class="d-inline-block" id="fragment-1" src="{{ asset('build/images/uss-enterprise/fragment-1.svg') }}" alt="">
+                <img class="d-inline-block" id="blue-human" src="{{ asset('build/images/uss-enterprise/blue-human.svg') }}" alt="">
+                <img class="d-inline-block" id="fragment-2" src="{{ asset('build/images/uss-enterprise/fragment-2.svg') }}" alt="">
+                <img class="d-inline-block" id="fragment-3" src="{{ asset('build/images/uss-enterprise/fragment-3.svg') }}" alt="">
+                <img class="d-inline-block" id="fragment-4" src="{{ asset('build/images/uss-enterprise/fragment-4.svg') }}" alt="">
+                <img class="d-inline-block" id="fragment-5" src="{{ asset('build/images/uss-enterprise/fragment-5.svg') }}" alt="">
+                <img class="d-inline-block" id="yellow-human" src="{{ asset('build/images/uss-enterprise/yellow-human.svg') }}" alt="">
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer %}
+    <footer class="bg-purple text-light fixed-bottom">
+        <div class="container">
+            <div class="row justify-content-around">
+                <div class="col-12 text-center pt-4">
+                    <small class="text-muted">Made with ❤️  by <a href="https://jolicode.com" target="_blank">JoliCode</a> - {{ 'now'|date('Y') }}</small>
+                    <br>
+                    <blockquote class="text-dark">
+                        <small>The mission of Starfleet: to explore internet; to seek out new conferences; to bring them into Slack and allow your colleagues submit talk proposals</small>
+                    </blockquote>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+{% endblock %}
