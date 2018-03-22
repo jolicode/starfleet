@@ -103,7 +103,7 @@ class Conference
     private $tags;
 
     /**
-     * @ORM\Column(name="article_url", type="text")
+     * @ORM\Column(name="article_url", type="text", nullable=true)
      */
     private $articleUrl;
 

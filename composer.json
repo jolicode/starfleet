@@ -11,7 +11,7 @@
     ],
     "require": {
         "php": "^7.1",
-        "javiereguiluz/easyadmin-bundle": "^1.17",
+        "easycorp/easyadmin-bundle": "^1.17",
         "knpuniversity/oauth2-client-bundle": "^1.15",
         "league/oauth2-google": "^2.0",
         "nyholm/psr7": "^0.2.3",
@@ -42,7 +42,8 @@
         "nelmio/alice": "^3.1",
         "symfony/browser-kit": "^3.4",
         "symfony/phpunit-bridge": "^3.4",
-        "symfony/thanks": "^1.0"
+        "symfony/thanks": "^1.0",
+        "symfony/web-server-bundle": "^3.4"
     },
     "config": {
         "preferred-install": {

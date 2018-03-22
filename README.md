@@ -3,6 +3,34 @@
 </p>
 <h1 align="center">Starfleet</h1>
 
-[![CircleCI](https://circleci.com/gh/jolicode/starfleet/tree/develop.svg?style=svg&circle-token=6a61999b69b20d66e1de1f5e0a5b3f21c947cabd)](https://circleci.com/gh/jolicode/starfleet/tree/develop)
+[![CircleCI](https://circleci.com/gh/jolicode/starfleet.svg?style=svg)](https://circleci.com/gh/jolicode/starfleet)
 
-Share your conferences activity to your buddies
+> Share your conferences activity to your buddies
+
+# Installation
+
+## Local
+
+### Without Docker
+
+### With Docker
+
+## Server
+
+### Heroku one-click deploy
+
+### With ansible on a fresh new server
+
+## Sponsor
+
+[![JoliCode](https://jolicode.com/images/logo.svg)](https://jolicode.com)
+
+Open Source time sponsored by JoliCode
+
+## Credits
+
+* [All contributors](https://github.com/jolicode/starfleet/graphs/contributors)
+
+## License
+
+View the [LICENSE](LICENSE) file attached to this project.

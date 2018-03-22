@@ -1,24 +1,6 @@
-imports:
-    - { resource: easy_admin/*.yml }
-
-easy_admin:
-    site_name: '🚀 Starfleet'
-    design:
-        color_scheme: 'dark'
-        brand_color: '#0C1A31'
-        form_theme: 'vertical'
-        menu:
-            - { entity: 'User', label: 'Users', icon: 'users' }
-            - { entity: 'Conference', label: 'Conferences', icon: 'calendar' }
-            - { entity: 'Submit', label: 'Submits', icon: 'bullhorn' }
-            - { entity: 'Talk', label: 'Talks', icon: 'file' }
-            - { entity: 'Tag', label: 'Tags', icon: 'tag' }
-    formats:
-        date: 'd/m/Y'
-        time: 'H:i'
-        datetime: 'd/m/Y H:i'
-    list:
-        actions:
-            - { name: 'show', icon: 'eye' }
-            - { name: 'edit', icon: 'pencil' }
-            - { name: 'delete', icon: 'remove' }
+#easy_admin:
+#    entities:
+#        # List the entity class name you want to manage
+#        - App\Entity\Product
+#        - App\Entity\Category
+#        - App\Entity\User

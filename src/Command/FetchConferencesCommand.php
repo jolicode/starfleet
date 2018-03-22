@@ -88,7 +88,7 @@ class FetchConferencesCommand extends Command
             $conference->setRemoteId($remoteId);
             $conference->setSlug($slug);
             $conference->setName($fetchedConference->name);
-            $conference->setLocation($fetchedConference->location->locality.', '.$fetchedConference->location->country);
+            $conference->setLocation($fetchedConference->location->locality ?? '' .', '.$fetchedConference->location->country);
             $conference->setStartAt(\DateTime::createFromFormat('Y-m-d', $fetchedConference->start));
             $conference->setEndAt(\DateTime::createFromFormat('Y-m-d', $fetchedConference->end));
             $conference->setSiteUrl($fetchedConference->siteUrl);

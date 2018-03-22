@@ -14,6 +14,7 @@ namespace App\Event;
 use App\Entity\Conference;
 use App\SlackNotifier;
 use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 
 class NewConferencesEvent extends Event
@@ -39,7 +40,7 @@ class NewConferencesEvent extends Event
         $conferenceField['title'] = 'From '.$conference->getStartAt()->format('d F Y').' to '.$conference->getEndAt()->format('d F Y').' at '.$conference->getLocation();
 
         $starfleetLink = $this->router->generate('conferences_show', [
-            'slug' => $this->conference->getSlug(),
+            'slug' => $conference->getSlug(),
         ], UrlGeneratorInterface::ABSOLUTE_URL);
         $conferenceField['value'] = '<'.$starfleetLink.'|'.$conference->getName().'>';
 
