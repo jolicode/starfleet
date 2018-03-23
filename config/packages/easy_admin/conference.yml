@@ -13,13 +13,16 @@ easy_admin:
                     - { property: 'attended' }
             form:
                 fields:
+                    - { type: 'group', css_class: 'col-sm-6', icon: 'pencil', label: 'Conference' }
                     - { property: 'name', type: 'text' }
                     - { property: 'location', type: 'text' }
                     - { property: 'startAt', type: 'date', 'type_options': { 'widget': 'single_text' } }
                     - { property: 'endAt', type: 'date', 'type_options': { 'widget': 'single_text' } }
+                    - { property: 'siteUrl', type: 'url' }
+                    - { type: 'group', css_class: 'col-sm-6', icon: 'bullhorn', label: 'CFP' }
                     - { property: 'cfpUrl', type: 'url' }
                     - { property: 'cfpEndAt', type: 'date', 'type_options': { 'widget': 'single_text' } }
-                    - { property: 'siteUrl', type: 'url' }
+                    - { type: 'group', css_class: 'col-sm-6', icon: 'cubes', label: 'Metadata' }
                     - { property: 'tags' }
                     - { property: 'articleUrl', type: 'url' }
                     - { property: 'attended' }

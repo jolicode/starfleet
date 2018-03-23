@@ -10,5 +10,6 @@ easy_admin:
                     - { property: 'submits' }
             form:
                 fields:
+                    - { type: 'group', css_class: 'col-sm-6', icon: 'pencil', label: 'User' }
                     - { property: 'name', type: 'text' }
                     - { property: 'email', type: 'email' }

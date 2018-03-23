@@ -9,4 +9,5 @@ easy_admin:
                     - { property: 'conferences' }
             form:
                 fields:
+                    - { type: 'group', css_class: 'col-sm-6', icon: 'pencil', label: 'Tag' }
                     - { property: 'name', type: 'text' }
