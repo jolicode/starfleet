@@ -9,5 +9,6 @@ easy_admin:
                     - { property: 'submits' }
             form:
                 fields:
+                    - { type: 'group', css_class: 'col-sm-6', icon: 'pencil', label: 'Talk' }
                     - { property: 'title', type: 'text' }
                     - { property: 'intro', type: 'textarea' }

@@ -7,19 +7,23 @@
 
 > Share your conferences activity to your buddies
 
-# Installation
+## Installation
 
-## Local
+### Local
 
-### Without Docker
+#### Without Docker
 
-### With Docker
+#### With Docker
 
-## Server
+### Server
 
-### Heroku one-click deploy
+#### Heroku one-click deploy
 
-### With ansible on a fresh new server
+#### With ansible on a fresh new server
+
+## Changes
+
+View the [CHANGELOG](CHANGELOG.md) file attached to this project.
 
 ## Sponsor
 
