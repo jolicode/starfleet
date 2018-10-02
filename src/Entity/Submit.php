@@ -61,7 +61,7 @@ class Submit
     private $status;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\User", inversedBy="talks")
+     * @ORM\ManyToMany(targetEntity="App\Entity\User", inversedBy="submits")
      * @ORM\JoinTable(name="submits_users")
      */
     private $users;

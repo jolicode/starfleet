@@ -17,9 +17,7 @@
 
 ### Server
 
-#### Heroku one-click deploy
-
-#### With ansible on a fresh new server
+#### Clever-cloud
 
 ## Changes
 
