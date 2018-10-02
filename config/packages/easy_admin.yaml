@@ -12,13 +12,12 @@ easy_admin:
             - { entity: 'Conference', label: 'Conferences', icon: 'calendar' }
             - { entity: 'Submit', label: 'Submits', icon: 'bullhorn' }
             - { entity: 'Talk', label: 'Talks', icon: 'file' }
-            - { entity: 'Tag', label: 'Tags', icon: 'tag' }
+            - { entity: 'Tag', label: 'Tags', icon: 'tags' }
     formats:
         date: 'd/m/Y'
         time: 'H:i'
         datetime: 'd/m/Y H:i'
     list:
         actions:
-            - { name: 'show', icon: 'eye' }
             - { name: 'edit', icon: 'pencil' }
             - { name: 'delete', icon: 'remove' }

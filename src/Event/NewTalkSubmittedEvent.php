@@ -12,7 +12,7 @@
 namespace App\Event;
 
 use App\Entity\Submit;
-use App\SlackNotifier;
+use App\Service\SlackNotifier;
 use Symfony\Component\EventDispatcher\Event;
 
 class NewTalkSubmittedEvent extends Event

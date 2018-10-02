@@ -12,7 +12,7 @@
 namespace App\Event;
 
 use App\Entity\Conference;
-use App\SlackNotifier;
+use App\Service\SlackNotifier;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;

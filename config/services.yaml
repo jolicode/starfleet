@@ -20,7 +20,7 @@ services:
             $router: '@router'
         tags: ['doctrine.event_subscriber']
 
-    App\SlackNotifier:
+    App\Service\SlackNotifier:
         arguments:
             $webHookUrl: '%env(SLACK_WEB_HOOK_URL)%'
 

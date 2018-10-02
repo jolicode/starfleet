@@ -9,7 +9,7 @@
  * please view the LICENSE file that was distributed with this source code.
  */
 
-namespace App;
+namespace App\Service;
 
 use Http\Client\HttpClient;
 use Http\Message\MessageFactory;

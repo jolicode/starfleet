@@ -18,7 +18,7 @@ use App\Event\NewConferencesEvent;
 use App\Event\NewTalkSubmittedEvent;
 use App\Event\SubmitStatusChangedEvent;
 use App\Events;
-use App\SlackNotifier;
+use App\Service\SlackNotifier;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class SlackNotifierEventListener implements EventSubscriberInterface

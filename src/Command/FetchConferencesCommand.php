@@ -23,8 +23,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class FetchConferencesCommand extends Command
 {
-    const SALOON_URL = 'http://saloonapp.herokuapp.com/api/v1/conferences?tags=';
-
     private $em;
     private $repository;
     private $messageFactory;
@@ -44,7 +42,7 @@ class FetchConferencesCommand extends Command
     protected function configure()
     {
         $this->setName('starfleet-conferences-fetch');
-        $this->setDescription('Fetch conferences from http://saloonapp.herokuapp.com/conferences');
+        $this->setDescription('Fetch conferences from sources');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

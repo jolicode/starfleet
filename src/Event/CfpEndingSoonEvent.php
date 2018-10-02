@@ -12,7 +12,7 @@
 namespace App\Event;
 
 use App\Entity\Conference;
-use App\SlackNotifier;
+use App\Service\SlackNotifier;
 use Symfony\Component\EventDispatcher\Event;
 
 class CfpEndingSoonEvent extends Event
