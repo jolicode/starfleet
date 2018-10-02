@@ -75,7 +75,7 @@ class GoogleAuthenticator extends SocialAuthenticator
         $domain = array_pop($explodedEmail);
         $allowedDomains = explode(',', getenv('APP_ALLOWED_EMAIL_DOMAINS') ?: '');
 
-        if (!in_array($domain, $allowedDomains)) {
+        if (!\in_array($domain, $allowedDomains)) {
             throw new AuthenticationException('You are not allowed to create an account.');
         }
 

@@ -11,14 +11,13 @@
 
 namespace App\Controller;
 
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 class DefaultController extends Controller
 {
     /**
-     * Not accessible for now
+     * Not accessible for now.
      */
     public function indexAction(Request $request)
     {

@@ -71,9 +71,9 @@ class DoctrineEventSubscriber implements EventSubscriber
 
     public function postFlush()
     {
-        if (1 === count($this->conferencesAdded)) {
+        if (1 === \count($this->conferencesAdded)) {
             $this->eventDispatcher->dispatch(Events::NEW_CONFERENCE_ADDED, new NewConferenceEvent($this->conferencesAdded[0], $this->router));
-        } elseif (count($this->conferencesAdded) > 1) {
+        } elseif (\count($this->conferencesAdded) > 1) {
             $this->eventDispatcher->dispatch(Events::NEW_CONFERENCES_ADDED, new NewConferencesEvent($this->conferencesAdded, $this->router));
         }
     }
