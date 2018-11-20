@@ -72,7 +72,7 @@ class FetchConferencesCommand extends Command
             $startAtFormat = $startAt->format('Y-m-d');
             $endAt = \DateTime::createFromFormat('Y-m-d', $fetchedConference->endDate);
             $endAtFormat = $endAt->format('Y-m-d');
-            $hash = hash('sha1', $slug . $startAtFormat . $endAtFormat );
+            $hash = hash('sha1', $slug.$startAtFormat.$endAtFormat);
 
             $conference = $this->repository->findOneBy([
                 'hash' => $hash,
@@ -92,7 +92,7 @@ class FetchConferencesCommand extends Command
                 $this->em->persist($conference);
                 ++$newConferencesCount;
             }
-            
+
             $conference->setSource($source);
             $conference->setRemoteId($i);
             $conference->setHash($hash);
@@ -123,7 +123,7 @@ class FetchConferencesCommand extends Command
                 $conference->setCfpUrl($fetchedConference->cfpUrl);
                 $conference->setCfpEndAt(\DateTime::createFromFormat('Y-m-d', $fetchedConference->cfpEndDate));
             }
-            $i++;
+            ++$i;
         }
 
         $this->em->flush();

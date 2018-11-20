@@ -13,7 +13,6 @@ namespace App\Controller;
 
 use App\Entity\Conference;
 use App\Entity\Tag;
-use App\Fetcher\ConfTechFetcher;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
