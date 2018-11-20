@@ -60,7 +60,7 @@ class SlackNotifierEventListener implements EventSubscriberInterface
         $payload = SlackNotifier::EMPTY_PAYLOAD;
         $newConferences = $event->getNewConferences();
         $conferenceAttachment = SlackNotifier::ATTACHMENT;
-        $conferenceAttachment['pretext'] = '✨  '.count($newConferences).' nouvelles conférences ajoutées';
+        $conferenceAttachment['pretext'] = '✨  '.\count($newConferences).' nouvelles conférences ajoutées';
 
         foreach ($newConferences as $newConference) {
             $conferenceField = $event->buildAttachmentField($newConference);

@@ -1,0 +1,51 @@
+    version: 2
+    jobs:
+        build:
+            docker:
+            - image: circleci/php:7.2.8-fpm-node
+            - image: circleci/mariadb:10.3
+              environment:
+                - MYSQL_ROOT_HOST=%
+            working_directory: ~/symfony
+            steps:
+                - checkout:
+                      path: ~/symfony
+                - run: cp .env.ci.dist .env
+                - run: sudo apt install -y libsqlite3-dev zlib1g-dev
+                - run: sudo docker-php-ext-configure intl
+                - run: sudo docker-php-ext-install intl pdo pdo_mysql zip
+                - run:
+                      name: Disable xdebug
+                      command: |
+                          sudo sed -i 's/^zend_extension/;zend_extension/g' /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+                - run: sudo composer self-update
+                - restore_cache:
+                    keys:
+                        - composer-v1-{{ checksum "composer.lock" }}
+                        - composer-v1-
+                - run: composer install -n --prefer-dist
+                - save_cache:
+                    key: composer-v1-{{ checksum "composer.lock" }}
+                    paths:
+                        - vendor
+                - restore_cache:
+                    keys:
+                        - node-v1-{{ checksum "package.json" }}
+                        - node-v1-
+                - run: yarn install
+                - save_cache:
+                    key: node-v1-{{ checksum "package.json" }}
+                    paths:
+                        - node_modules
+                - run: php ./bin/console doctrine:migrations:migrate -n
+                - run: php ./bin/console doctrine:fixtures:load -n
+                - run:
+                    name: Check coding standards
+                    command: |
+                        php ./vendor/bin/php-cs-fixer fix --config=.php_cs --dry-run --diff
+                - run:
+                    name: Lints twig and yaml files
+                    command: |
+                        php ./bin/console lint:yaml config
+                        php ./bin/console lint:twig templates
+                - run: ./bin/phpunit
