@@ -55,7 +55,7 @@ class FetchConferencesCommand extends Command
         $tags = $this->em->getRepository(Tag::class)->findAll();
         $tagsList = implode(',', array_map(function ($tag) { return $tag->getName(); }, $tags));
 
-        $source = Conference::SOURCE_CONFS_TECH;
+        $source = ConfTechFetcher::SOURCE_CONFS_TECH;
         $newConferencesCount = 0;
 
         $response = $this->fetcher->fetch();

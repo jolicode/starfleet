@@ -25,8 +25,6 @@ class Conference
 {
     use TimestampableEntity;
 
-    const SOURCE_SALOON = 'saloon';
-    const SOURCE_CONFS_TECH = 'conf-tech';
     const SOURCE_MANUAL = 'manual';
 
     /**

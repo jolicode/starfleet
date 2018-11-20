@@ -14,9 +14,19 @@ namespace App\Fetcher;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Log\LoggerInterface;
 
 class ConfTechFetcher implements FetcherInterface
 {
+    const SOURCE_CONFS_TECH = 'conf-tech';
+
+    private $logger;
+
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
     public function getUrl(): string
     {
         return 'https://raw.githubusercontent.com/tech-conferences/conference-data/master/conferences/2019/php.json';
@@ -29,7 +39,7 @@ class ConfTechFetcher implements FetcherInterface
         try {
             $response = $client->request('GET', $this->getUrl());
         } catch (GuzzleException $e) {
-            $e->getMessage();
+            $this->logger->error($e->getMessage());
         }
 
         return $response;
