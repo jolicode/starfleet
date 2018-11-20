@@ -13,6 +13,7 @@ namespace App\Command;
 
 use App\Entity\Conference;
 use App\Entity\Tag;
+use App\Fetcher\ConfTechFetcher;
 use Gedmo\Sluggable\Util\Urlizer;
 use Http\Client\HttpClient;
 use Http\Message\MessageFactory;
@@ -29,14 +30,16 @@ class FetchConferencesCommand extends Command
     private $repository;
     private $messageFactory;
     private $client;
+    private $fetcher;
 
-    public function __construct(RegistryInterface $doctrine, MessageFactory $messageFactory, HttpClient $client)
+    public function __construct(RegistryInterface $doctrine, MessageFactory $messageFactory, HttpClient $client, ConfTechFetcher $fetcher)
     {
         $this->em = $doctrine->getManager();
         $this->repository = $this->em->getRepository(Conference::class);
 
         $this->messageFactory = $messageFactory;
         $this->client = $client;
+        $this->fetcher = $fetcher;
 
         parent::__construct();
     }
@@ -44,7 +47,7 @@ class FetchConferencesCommand extends Command
     protected function configure()
     {
         $this->setName('starfleet-conferences-fetch');
-        $this->setDescription('Fetch conferences from http://saloonapp.herokuapp.com/conferences');
+        $this->setDescription('Fetch conferences from Fetcher Classes');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -52,21 +55,27 @@ class FetchConferencesCommand extends Command
         $tags = $this->em->getRepository(Tag::class)->findAll();
         $tagsList = implode(',', array_map(function ($tag) { return $tag->getName(); }, $tags));
 
-        $source = Conference::SOURCE_SALOON;
+        $source = Conference::SOURCE_CONFS_TECH;
         $newConferencesCount = 0;
 
-        $response = $this->client->sendRequest($this->messageFactory->createRequest('GET', self::SALOON_URL.$tagsList));
+        $response = $this->fetcher->fetch();
+//        $response = $this->client->sendRequest($this->messageFactory->createRequest('GET', self::SALOON_URL.$tagsList));
 
-        $fetchedConferences = (array) json_decode($response->getBody()->getContents())->result;
+//        $fetchedConferences = (array) json_decode($response->getBody()->getContents())->result;
+        $fetchedConferences = (array) json_decode($response->getBody());
+
+        $i = 100;
 
         foreach ($fetchedConferences as $fetchedConference) {
             $slug = Urlizer::transliterate($fetchedConference->name);
-
-            $remoteId = $fetchedConference->id;
+            $startAt = \DateTime::createFromFormat('Y-m-d', $fetchedConference->startDate);
+            $startAtFormat = $startAt->format('Y-m-d');
+            $endAt = \DateTime::createFromFormat('Y-m-d', $fetchedConference->endDate);
+            $endAtFormat = $endAt->format('Y-m-d');
+            $hash = hash('sha1', $slug . $startAtFormat . $endAtFormat );
 
             $conference = $this->repository->findOneBy([
-                'remoteId' => $remoteId,
-                'source' => $source,
+                'hash' => $hash,
             ]);
 
             if (!$conference) {
@@ -83,15 +92,16 @@ class FetchConferencesCommand extends Command
                 $this->em->persist($conference);
                 ++$newConferencesCount;
             }
-
+            
             $conference->setSource($source);
-            $conference->setRemoteId($remoteId);
+            $conference->setRemoteId($i);
+            $conference->setHash($hash);
             $conference->setSlug($slug);
             $conference->setName($fetchedConference->name);
-            $conference->setLocation($fetchedConference->location->locality ?? ''.', '.$fetchedConference->location->country);
-            $conference->setStartAt(\DateTime::createFromFormat('Y-m-d', $fetchedConference->start));
-            $conference->setEndAt(\DateTime::createFromFormat('Y-m-d', $fetchedConference->end));
-            $conference->setSiteUrl($fetchedConference->siteUrl);
+            $conference->setLocation($this->fetcher->getLocation($fetchedConference));
+            $conference->setStartAt(\DateTime::createFromFormat('Y-m-d', $fetchedConference->startDate));
+            $conference->setEndAt(\DateTime::createFromFormat('Y-m-d', $fetchedConference->endDate));
+            $conference->setSiteUrl($fetchedConference->url);
 
             if (isset($fetchedConference->description)) {
                 $conference->setDescription($fetchedConference->description);
@@ -109,10 +119,11 @@ class FetchConferencesCommand extends Command
                 }
             }
 
-            if (isset($fetchedConference->cfp)) {
-                $conference->setCfpUrl($fetchedConference->cfp->siteUrl);
-                $conference->setCfpEndAt(\DateTime::createFromFormat('Y-m-d', $fetchedConference->cfp->end));
+            if (isset($fetchedConference->cfpUrl, $fetchedConference->cfpEndDate)) {
+                $conference->setCfpUrl($fetchedConference->cfpUrl);
+                $conference->setCfpEndAt(\DateTime::createFromFormat('Y-m-d', $fetchedConference->cfpEndDate));
             }
+            $i++;
         }
 
         $this->em->flush();

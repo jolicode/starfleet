@@ -11,6 +11,7 @@
     ],
     "require": {
         "php": "^7.2",
+        "ext-json": "*",
         "easycorp/easyadmin-bundle": "^1.17",
         "knpuniversity/oauth2-client-bundle": "^1.15",
         "league/oauth2-google": "^3.0",

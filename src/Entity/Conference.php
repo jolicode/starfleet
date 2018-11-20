@@ -26,6 +26,7 @@ class Conference
     use TimestampableEntity;
 
     const SOURCE_SALOON = 'saloon';
+    const SOURCE_CONFS_TECH = 'conf-tech';
     const SOURCE_MANUAL = 'manual';
 
     /**
@@ -39,6 +40,11 @@ class Conference
      * @ORM\Column(name="remote_id", type="string", length=255, nullable=true)
      */
     private $remoteId;
+
+    /**
+     * @ORM\Column(name="hash", type="string", length=255, nullable=true)
+     */
+    private $hash;
 
     /**
      * @ORM\Column(name="source", type="string", length=20)
@@ -135,6 +141,16 @@ class Conference
     public function getRemoteId(): ?string
     {
         return $this->remoteId;
+    }
+
+    public function getHash()
+    {
+        return $this->hash;
+    }
+
+    public function setHash($hash): void
+    {
+        $this->hash = $hash;
     }
 
     public function setSource(?string $source): self
