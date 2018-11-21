@@ -18,7 +18,7 @@ use Psr\Log\LoggerInterface;
 
 class ConfTechFetcher implements FetcherInterface
 {
-    const SOURCE_CONFS_TECH = 'conf-tech';
+    const SOURCE = 'conf-tech';
 
     private $logger;
 

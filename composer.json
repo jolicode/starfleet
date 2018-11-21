@@ -16,7 +16,7 @@
         "knpuniversity/oauth2-client-bundle": "^1.15",
         "league/oauth2-google": "^3.0",
         "nyholm/psr7": "^0.2.3",
-        "php-http/guzzle6-adapter": "1.1.1",
+        "php-http/guzzle6-adapter": "1.1",
         "php-translation/symfony-bundle": "^0.5.0",
         "sensio/framework-extra-bundle": "^5.2",
         "stof/doctrine-extensions-bundle": "^1.2",
