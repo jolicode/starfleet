@@ -141,7 +141,7 @@ class Conference
         return $this->remoteId;
     }
 
-    public function getHash():?string 
+    public function getHash(): ?string
     {
         return $this->hash;
     }
