@@ -11,7 +11,6 @@
 
 namespace App\Command;
 
-use App\Entity\Conference;
 use App\Entity\Tag;
 use App\Fetcher\ConfTechFetcher;
 use Http\Client\HttpClient;
@@ -24,9 +23,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class FetchConferencesCommand extends Command
 {
     const SALOON_URL = 'http://saloonapp.herokuapp.com/api/v1/conferences?tags=';
-
     private $em;
-    private $repository;
     private $messageFactory;
     private $client;
     private $fetcher;
@@ -34,8 +31,6 @@ class FetchConferencesCommand extends Command
     public function __construct(RegistryInterface $doctrine, MessageFactory $messageFactory, HttpClient $client, ConfTechFetcher $fetcher)
     {
         $this->em = $doctrine->getManager();
-        $this->repository = $this->em->getRepository(Conference::class);
-
         $this->messageFactory = $messageFactory;
         $this->client = $client;
         $this->fetcher = $fetcher;
@@ -53,9 +48,6 @@ class FetchConferencesCommand extends Command
     {
         $tags = $this->em->getRepository(Tag::class)->findAll();
         $tagsList = implode(',', array_map(function ($tag) { return $tag->getName(); }, $tags));
-
-        $source = ConfTechFetcher::SOURCE;
-        $newConferencesCount = 0;
 
         $response = $this->fetcher->fetch();
 

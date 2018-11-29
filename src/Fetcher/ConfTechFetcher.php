@@ -11,25 +11,30 @@
 
 namespace App\Fetcher;
 
+use App\Entity\Conference;
 use Gedmo\Sluggable\Util\Urlizer;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Log\LoggerInterface;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
 class ConfTechFetcher implements FetcherInterface
 {
     const SOURCE = 'conf-tech';
-
+    private $em;
+    private $repository;
     private $logger;
 
-    public function __construct(LoggerInterface $logger)
+    public function __construct(RegistryInterface $doctrine, LoggerInterface $logger)
     {
+        $this->em = $doctrine->getManager();
         $this->logger = $logger;
+        $this->repository = $this->em->getRepository(Conference::class);
     }
 
-    public function getUrl(): string
+    public function getUrl(array $params): string
     {
-        return 'https://raw.githubusercontent.com/tech-conferences/conference-data/master/conferences/__date__/__tag__.json';
+        return "https://raw.githubusercontent.com/tech-conferences/conference-data/master/conferences/$params[date]/$params[tag].json";
     }
 
     public function fetch(): array
@@ -37,12 +42,15 @@ class ConfTechFetcher implements FetcherInterface
         $client = new Client();
 
         try {
-            $response = $client->request('GET', $this->getUrl());
+            $response = $client->request('GET', $this->getUrl(['date' => 2018, 'tag' => 'php']));
         } catch (GuzzleException $e) {
             $this->logger->error($e->getMessage());
         }
 
         $fetchedConferences = json_decode($response->getBody());
+
+        $newConferencesCount = 0;
+        $source = self::SOURCE;
 
         foreach ($fetchedConferences as $fetchedConference) {
             $slug = Urlizer::transliterate($fetchedConference->name);
@@ -75,7 +83,7 @@ class ConfTechFetcher implements FetcherInterface
             $conference->setHash($hash);
             $conference->setSlug($slug);
             $conference->setName($fetchedConference->name);
-            $conference->setLocation($this->fetcher->getLocation($fetchedConference));
+            $conference->setLocation($this->getLocation($fetchedConference));
             $conference->setStartAt(\DateTime::createFromFormat('Y-m-d', $fetchedConference->startDate));
             $conference->setEndAt(\DateTime::createFromFormat('Y-m-d', $fetchedConference->endDate));
             $conference->setSiteUrl($fetchedConference->url);
@@ -100,7 +108,7 @@ class ConfTechFetcher implements FetcherInterface
                 $conference->setCfpUrl($fetchedConference->cfpUrl);
                 $conference->setCfpEndAt(\DateTime::createFromFormat('Y-m-d', $fetchedConference->cfpEndDate));
             }
-            ++$i;
+            ++$newConferencesCount;
         }
 
         return $response;
