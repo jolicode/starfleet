@@ -51,8 +51,6 @@ class FetchConferencesCommand extends Command
 
         $response = $this->fetcher->fetch();
 
-        $fetchedConferences = (array) json_decode($response->getBody());
-
         $this->em->flush();
     }
 }
