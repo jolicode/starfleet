@@ -13,7 +13,7 @@ namespace App\Fetcher;
 
 interface FetcherInterface
 {
-    public function getUrl(array $params): string;
+    public function getUrl(): string;
 
     public function fetch(): array;
 }

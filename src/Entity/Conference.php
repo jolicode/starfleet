@@ -76,7 +76,7 @@ class Conference
     private $startAt;
 
     /**
-     * @ORM\Column(name="end_at", type="datetime")
+     * @ORM\Column(name="end_at", type="datetime", nullable=true)
      */
     private $endAt;
 

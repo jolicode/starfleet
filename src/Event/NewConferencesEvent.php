@@ -37,7 +37,10 @@ class NewConferencesEvent extends Event
     {
         $conferenceField = SlackNotifier::SHORT_FIELD;
         $conferenceField['short'] = false;
-        $conferenceField['title'] = 'From '.$conference->getStartAt()->format('d F Y').' to '.$conference->getEndAt()->format('d F Y').' at '.$conference->getLocation();
+
+        if (null !== $conference->getStartAt() and null !== $conference->getEndAt()) {
+            $conferenceField['title'] = 'From '.$conference->getStartAt()->format('d F Y').' to '.$conference->getEndAt()->format('d F Y').' at '.$conference->getLocation();
+        }
 
         $starfleetLink = $this->router->generate('conferences_show', [
             'slug' => $conference->getSlug(),

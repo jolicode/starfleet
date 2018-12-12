@@ -41,6 +41,11 @@ class Tag
      */
     private $conferences;
 
+    /**
+     * @ORM\Column(name="selected", type="boolean")
+     */
+    private $selected = false;
+
     public function __construct()
     {
         $this->conferences = new ArrayCollection();
@@ -85,5 +90,15 @@ class Tag
     public function __toString(): string
     {
         return $this->getName() ?? (string) $this->id;
+    }
+
+    public function setSelected(bool $selected)
+    {
+        $this->selected = $selected;
+    }
+
+    public function isSelected()
+    {
+        return $this->selected;
     }
 }

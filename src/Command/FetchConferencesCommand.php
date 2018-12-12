@@ -11,7 +11,6 @@
 
 namespace App\Command;
 
-use App\Entity\Tag;
 use App\Fetcher\ConfTechFetcher;
 use Http\Client\HttpClient;
 use Http\Message\MessageFactory;
@@ -46,11 +45,9 @@ class FetchConferencesCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $tags = $this->em->getRepository(Tag::class)->findAll();
-        $tagsList = implode(',', array_map(function ($tag) { return $tag->getName(); }, $tags));
-
-        $response = $this->fetcher->fetch();
-
+        $confTechFetcher = $this->fetcher->fetch();
         $this->em->flush();
+
+        $output->writeln('You add '.end($confTechFetcher).' conference(s)');
     }
 }
