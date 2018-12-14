@@ -13,6 +13,7 @@ namespace App\Fetcher;
 
 use App\Entity\Conference;
 use App\Entity\Tag;
+use App\Enum\TagEnum;
 use Gedmo\Sluggable\Util\Urlizer;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
@@ -26,12 +27,14 @@ class ConfTechFetcher implements FetcherInterface
     private $em;
     private $repository;
     private $logger;
+    private $tagRepository;
 
     public function __construct(RegistryInterface $doctrine, LoggerInterface $logger)
     {
         $this->em = $doctrine->getManager();
         $this->logger = $logger;
         $this->repository = $this->em->getRepository(Conference::class);
+        $this->tagRepository = $this->em->getRepository(Tag::class);
     }
 
     public function getUrl(array $params = []): string
@@ -45,10 +48,10 @@ class ConfTechFetcher implements FetcherInterface
 
         $conferencesFinal = [];
         $newConferencesCount = 0;
+        $client = new Client();
 
         foreach ($params as $date => $technologies) {
             foreach ($technologies as $technologie) {
-                $client = new Client();
                 try {
                     $response = $client->request('GET', $this->getUrl(['date' => $date, 'tag' => $technologie[0]]));
                     $fetchedConferences = json_decode($response->getBody());
@@ -63,7 +66,6 @@ class ConfTechFetcher implements FetcherInterface
                 }
 
                 $source = self::SOURCE;
-
                 $conferenceTotal = [];
 
                 $conferenceTotal = $this->pushConf($fetchedConferences, $newConferencesCount, $source, $technologie, $conferenceTotal);
@@ -86,7 +88,7 @@ class ConfTechFetcher implements FetcherInterface
 
     private function pushConf(array $fetchedConferences, $newConferencesCount, $source, $technologie, $conferenceTotal = [])
     {
-        $tag = $this->getTagByName($technologie[1]);
+        $tag = $this->tagRepository->getTagByName($technologie[1]);
 
         foreach ($fetchedConferences as $fC) {
             $fC = $this->hash($fC);
@@ -108,7 +110,7 @@ class ConfTechFetcher implements FetcherInterface
             }
 
             if (!$conference) {
-                $conference = $this->setParams($fC);
+                $conference = $this->hydrateConference($fC);
 
                 $this->em->persist($conference);
 
@@ -128,40 +130,42 @@ class ConfTechFetcher implements FetcherInterface
         $dateCurrentYear = date('Y');
         $dateNextYear = date('Y', strtotime('+1 year'));
 
-        $tagsSelected = $this->em->getRepository(Tag::class)->findBy(['selected' => true]);
+        $tagsSelected = $this->tagRepository->getTagsBySelected();
 
-        $tagMatch = [
-            'Android' => 'android',
-            'Apple' => null,
-            'CSS' => 'css',
-            'C++' => null,
-            'Dart' => null,
-            'Data' => 'data',
-            'DevOps' => 'devops',
-            'Dotnet' => 'dotnet',
-            'Elixir' => 'elixir',
-            'Facebook' => null,
-            'Flutter' => null,
-            'General' => 'general',
-            'Go' => 'golang',
-            'Google' => null,
-            'GraphQL' => 'graphql',
-            'HTML' => null,
-            'iOS' => 'ios',
-            'Java' => null,
-            'Javascript' => 'javascript',
-            'Microsoft' => null,
-            'NodeJS' => null,
-            'PHP' => 'php',
-            'Python' => 'python',
-            'React Native' => null,
-            'Ruby' => 'ruby',
-            'Rust' => 'rust',
-            'Scala' => null,
-            'Security' => 'security',
-            'TechComm' => 'tech-comm',
-            'UX' => 'ux',
+        $confTechFetcherSynonyms = [
+            0 => 'android',
+            1 => null,
+            2 => null,
+            3 => 'css',
+            4 => null,
+            5 => 'data',
+            6 => 'devops',
+            7 => 'dotnet',
+            8 => 'elixir',
+            9 => null,
+            10 => null,
+            11 => 'general',
+            12 => 'golang',
+            13 => null,
+            14 => 'graphql',
+            15 => null,
+            16 => 'ios',
+            17 => null,
+            18 => 'javascript',
+            19 => null,
+            20 => null,
+            21 => 'php',
+            22 => 'python',
+            23 => null,
+            24 => 'ruby',
+            25 => 'rust',
+            26 => null,
+            27 => 'security',
+            28 => 'tech-comm',
+            29 => 'ux',
         ];
+
+        $tagMatch = array_combine(TagEnum::toArray(), $confTechFetcherSynonyms);
 
         $params = [
             $dateCurrentYear => [],
@@ -178,16 +182,7 @@ class ConfTechFetcher implements FetcherInterface
         return $params;
     }
 
-    private function getTagByName(string $tagName): Tag
-    {
-        $tag = $this->em->getRepository(Tag::class)->findOneBy([
-            'name' => $tagName,
-        ]);
-
-        return $tag;
-    }
-
-    private function setParams($fC)
+    private function hydrateConference($fC)
     {
         $conference = new Conference();
         $conference->setSource($fC->source);

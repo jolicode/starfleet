@@ -18,7 +18,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
  * @ORM\Table(name="tag")
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="App\Repository\TagRepository")
  */
 class Tag
 {

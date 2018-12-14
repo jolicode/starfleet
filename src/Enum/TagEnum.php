@@ -15,35 +15,36 @@ use MyCLabs\Enum\Enum;
 
 class TagEnum extends Enum
 {
-    private const CSS = 'CSS';
-    private const HTML = 'HTML';
-    private const JAVASCRIPT = 'Javascript';
-    private const RUBY = 'Ruby';
-    private const PHP = 'PHP';
-    private const GO = 'Go';
-    private const ELIXIR = 'Elixir';
-    private const NODEJS = 'NodeJS';
-    private const C_PLUSPLUS = 'C++';
-    private const RUST = 'Rust';
-    private const SCALA = 'Scala';
-    private const PYTHON = 'Python';
-    private const DOTNET = 'Dotnet';
-    private const JAVA = 'Java';
-    private const DART = 'Dart';
-    private const DEVOPS = 'DevOps';
-    private const ANDROID = 'Android';
-    private const IOS = 'iOS';
-    private const REACT_NATIVE = 'React Native';
-    private const FLUTTER = 'Flutter';
-    private const GRAPHQL = 'GraphQL';
-    private const DATA = 'Data';
-    private const SECURITY = 'Security';
-    private const GENERAL = 'General';
-    private const TECH_COMM = 'TechComm';
-    private const GOOGLE = 'Google';
-    private const APPLE = 'Apple';
-    private const FACEBOOK = 'Facebook';
-    private const MICROSOFT = 'Microsoft';
+    private const ANDROID = 'Android'; //0
+    private const APPLE = 'Apple'; //1
+    private const C_PLUSPLUS = 'C++'; //2
+    private const CSS = 'CSS'; //3
+    private const DART = 'Dart'; //4
+    private const DATA = 'Data'; //5
+    private const DEVOPS = 'DevOps'; //6
+    private const DOTNET = 'Dotnet'; //7
+    private const ELIXIR = 'Elixir'; //8
+    private const FACEBOOK = 'Facebook'; //9
+    private const FLUTTER = 'Flutter'; //10
+    private const GENERAL = 'General'; //11
+    private const GO = 'Go'; //12
+    private const GOOGLE = 'Google'; //13
+    private const GRAPHQL = 'GraphQL'; //14
+    private const HTML = 'HTML'; //15
+    private const IOS = 'iOS'; //16
+    private const JAVA = 'Java'; //17
+    private const JAVASCRIPT = 'Javascript'; //18
+    private const MICROSOFT = 'Microsoft'; //19
+    private const NODEJS = 'NodeJS'; //20
+    private const PHP = 'PHP'; //21
+    private const PYTHON = 'Python'; //22
+    private const REACT_NATIVE = 'React Native'; //23
+    private const RUBY = 'Ruby'; //24
+    private const RUST = 'Rust'; //25
+    private const SCALA = 'Scala'; //26
+    private const SECURITY = 'Security'; //27
+    private const TECH_COMM = 'TechComm'; //28
+    private const UX = 'UX'; //29
 
     public function __construct($value)
     {
