@@ -133,36 +133,36 @@ class ConfTechFetcher implements FetcherInterface
         $tagsSelected = $this->tagRepository->getTagsBySelected();
 
         $confTechFetcherSynonyms = [
-            0 => 'android',
-            1 => null,
-            2 => null,
-            3 => 'css',
-            4 => null,
-            5 => 'data',
-            6 => 'devops',
-            7 => 'dotnet',
-            8 => 'elixir',
-            9 => null,
-            10 => null,
-            11 => 'general',
-            12 => 'golang',
-            13 => null,
-            14 => 'graphql',
-            15 => null,
-            16 => 'ios',
-            17 => null,
-            18 => 'javascript',
-            19 => null,
-            20 => null,
-            21 => 'php',
-            22 => 'python',
-            23 => null,
-            24 => 'ruby',
-            25 => 'rust',
-            26 => null,
-            27 => 'security',
-            28 => 'tech-comm',
-            29 => 'ux',
+            'android', //0
+            null, //1
+            null, //2
+            'css', //3
+            null, //4
+            'data', //5
+            'devops', //6
+            'dotnet', //7
+            'elixir', //8
+            null, //9
+            null, //10
+            'general', //11
+            'golang', //12
+            null, //13
+            'graphql', //14
+            null, //15
+            'ios', //16
+            null, //17
+            'javascript', //18
+            null, //19
+            null, //20
+            'php', //21
+            'python', //22
+            null, //23
+            'ruby', //24
+            'rust', //25
+            null, //26
+            'security', //27
+            'tech-comm', //28
+            'ux', //29
         ];
 
         $tagMatch = array_combine(TagEnum::toArray(), $confTechFetcherSynonyms);

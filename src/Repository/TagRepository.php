@@ -27,9 +27,9 @@ class TagRepository extends EntityRepository
             ->where('t.name = :name')
             ->setParameter('name', $tagName)
             ->getQuery()
-            ->execute();
+            ->getResult();
 
-        return $qb[0];
+        return $qb;
     }
 
     public function getTagsBySelected(): array
