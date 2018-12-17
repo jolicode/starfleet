@@ -12,6 +12,7 @@
 namespace App\Command;
 
 use App\Fetcher\ConfTechFetcher;
+use App\Fetcher\FetcherInterface;
 use Http\Client\HttpClient;
 use Http\Message\MessageFactory;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -26,14 +27,15 @@ class FetchConferencesCommand extends Command
     private $messageFactory;
     private $client;
     private $fetcher;
+    private $appFetchers;
 
-    public function __construct(RegistryInterface $doctrine, MessageFactory $messageFactory, HttpClient $client, ConfTechFetcher $fetcher)
+    public function __construct(iterable $appFetchers, RegistryInterface $doctrine, MessageFactory $messageFactory, HttpClient $client, ConfTechFetcher $fetcher)
     {
         $this->em = $doctrine->getManager();
         $this->messageFactory = $messageFactory;
         $this->client = $client;
         $this->fetcher = $fetcher;
-
+        $this->appFetchers = $appFetchers;
         parent::__construct();
     }
 
@@ -45,9 +47,18 @@ class FetchConferencesCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $confTechFetcher = $this->fetcher->fetch();
+        $fetchers = $this->appFetchers;
+
+        $newConferencesCount = 0;
+
+        foreach ($fetchers as $fetcher) {
+            /** @var FetcherInterface $fetcher */
+            $f = $fetcher->fetch();
+            $newConferencesCount += $f['newConferencesCount'];
+        }
+
         $this->em->flush();
 
-        $output->writeln('You add '.end($confTechFetcher).' conference(s)');
+        $output->writeln('You add '.($newConferencesCount).' conference(s)');
     }
 }

@@ -13,9 +13,19 @@ namespace App\Repository;
 
 use App\Entity\Tag;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Mapping;
+use Psr\Log\LoggerInterface;
 
 class TagRepository extends EntityRepository
 {
+    private $logger;
+
+    public function __construct($em, Mapping\ClassMetadata $class, LoggerInterface $logger = null)
+    {
+        parent::__construct($em, $class);
+        $this->logger = $logger;
+    }
+
     /**
      * @param string $tagName
      *
@@ -26,8 +36,12 @@ class TagRepository extends EntityRepository
         $qb = $this->createQueryBuilder('t')
             ->where('t.name = :name')
             ->setParameter('name', $tagName)
-            ->getQuery()
-            ->getResult();
+            ->getQuery();
+        try {
+            $qb = $qb->getSingleResult();
+        } catch (\Exception $e) {
+            $this->logger->error($e);
+        }
 
         return $qb;
     }

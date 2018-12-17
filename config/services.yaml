@@ -2,6 +2,11 @@ parameters:
     locale: 'en'
 
 services:
+
+    _instanceof:
+        App\Fetcher\FetcherInterface:
+            tags: ['app.fetcher']
+
     _defaults:
         autowire: true
         autoconfigure: true
@@ -42,3 +47,7 @@ services:
         class: Twig_Extensions_Extension_Date
         tags:
             - { name: twig.extension }
+
+    App\Command\FetchConferencesCommand:
+        arguments: [!tagged app.fetcher]
+
