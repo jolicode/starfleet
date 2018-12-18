@@ -50,15 +50,18 @@ class FetchConferencesCommand extends Command
         $fetchers = $this->appFetchers;
 
         $newConferencesCount = 0;
+        $updateConferencesCount = 0;
 
         foreach ($fetchers as $fetcher) {
             /** @var FetcherInterface $fetcher */
             $f = $fetcher->fetch();
             $newConferencesCount += $f['newConferencesCount'];
+            $updateConferencesCount += $f['updateConferencesCount'];
         }
 
         $this->em->flush();
 
         $output->writeln('You add '.($newConferencesCount).' conference(s)');
+        $output->writeln('You update '.($updateConferencesCount).' conference(s)');
     }
 }

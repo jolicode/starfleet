@@ -50,6 +50,7 @@ class JoindApiFetcher implements FetcherInterface
 
         $allNewConferences = [];
         $newConferencesCount = 0;
+        $updateConferencesCount = 0;
 
         foreach ($params as $key => $technologie) {
             $allNewConferences[$technologie[1]] = [];
@@ -70,7 +71,7 @@ class JoindApiFetcher implements FetcherInterface
 
             $fetchedConferences = $fetchedConferences->events;
 
-            $conferencesByTag = $this->pushConf($fetchedConferences, $newConferencesCount, $source, $technologie, $conferencesByTag);
+            $conferencesByTag = $this->pushConf($fetchedConferences, $newConferencesCount, $updateConferencesCount, $source, $technologie, $conferencesByTag);
 
             $newConferencesCount = $conferencesByTag['newConferenceCount'];
             $allNewConferences[$technologie[1]] = $conferencesByTag['conferencesByTag'];
@@ -79,10 +80,11 @@ class JoindApiFetcher implements FetcherInterface
         return [
             'conferences' => $allNewConferences,
             'newConferencesCount' => $newConferencesCount,
+            'updateConferencesCount' => $updateConferencesCount,
         ];
     }
 
-    private function pushConf(array $fetchedConferences, $newConferencesCount, $source, $technologie, $conferenceTotal = [])
+    private function pushConf(array $fetchedConferences, $newConferencesCount, $updateConferencesCount, $source, $technologie, $conferenceTotal = [])
     {
         $tag = $this->tagRepository->getTagByName($technologie[1]);
 
@@ -94,6 +96,13 @@ class JoindApiFetcher implements FetcherInterface
             $conference = $this->conferenceRepository->findOneBy([
                 'hash' => $fC->hash,
             ]);
+
+            if ($conference) {
+                $isConferenceUpdated = $this->hydrateConferenceUpdate($conference, $fC);
+                if ($isConferenceUpdated) {
+                    ++$updateConferencesCount;
+                }
+            }
 
             if (!$conference) {
                 $conference = $this->conferenceRepository->findOneBy([
@@ -207,6 +216,41 @@ class JoindApiFetcher implements FetcherInterface
         }
 
         return $conference;
+    }
+
+    private function hydrateConferenceUpdate(Conference $conference, $fC)
+    {
+        $c = $conference;
+        $modified = false;
+
+        if (isset($fC->uri)) {
+            if ($c->getCfpUrl() !== $fC->uri) {
+                $c->setCfpUrl($fC->uri);
+                $modified = true;
+            }
+        }
+
+        if (isset($fC->cfpEndDate)) {
+            if ($c->getCfpEndAt() !== \DateTime::createFromFormat('Y-m-d h:i:s', $fC->cfpEndDate.' 00:00:00')) {
+                $cfpEndAt = \DateTime::createFromFormat('Y-m-d h:i:s', $fC->cfpEndDate.' 00:00:00');
+                $conference->setCfpEndAt($cfpEndAt);
+                $modified = true;
+            }
+        }
+
+        if (isset($fC->description)) {
+            if ($c->getDescription() !== $fC->description) {
+                $conference->setDescription($fC->description);
+                $modified = true;
+            }
+        }
+
+        if ($c->getSiteUrl() !== $fC->href) {
+            $conference->setSiteUrl($fC->href);
+            $modified = true;
+        }
+
+        return $modified;
     }
 
     private function hash(object $fC)

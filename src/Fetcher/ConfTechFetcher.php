@@ -48,6 +48,7 @@ class ConfTechFetcher implements FetcherInterface
 
         $allNewConferences = [];
         $newConferencesCount = 0;
+        $updateConferencesCount = 0;
         $client = new Client();
 
         foreach ($params as $date => $technologies) {
@@ -68,9 +69,10 @@ class ConfTechFetcher implements FetcherInterface
                 $source = self::SOURCE;
                 $conferencesByTag = [];
 
-                $conferencesByTag = $this->pushConf($fetchedConferences, $newConferencesCount, $source, $technologie, $conferencesByTag);
+                $conferencesByTag = $this->pushConf($fetchedConferences, $newConferencesCount, $updateConferencesCount, $source, $technologie, $conferencesByTag);
 
                 $newConferencesCount = $conferencesByTag['newConferencesCount'];
+                $updateConferencesCount = $conferencesByTag['updateConferencesCount'];
                 if (array_key_exists($technologie[1], $allNewConferences)) {
                     $allNewConferences[$technologie[1]] = array_merge($allNewConferences[$technologie[1]], $conferencesByTag['conferencesByTag']);
                 } else {
@@ -82,6 +84,7 @@ class ConfTechFetcher implements FetcherInterface
         return [
             'conferences' => $allNewConferences,
             'newConferencesCount' => $newConferencesCount,
+            'updateConferencesCount' => $updateConferencesCount,
         ];
     }
 
@@ -92,7 +95,7 @@ class ConfTechFetcher implements FetcherInterface
         return $location;
     }
 
-    private function pushConf(array $fetchedConferences, $newConferencesCount, $source, $technologie, $conferencesByTag = [])
+    private function pushConf(array $fetchedConferences, $newConferencesCount, $updateConferencesCount, $source, $technologie, $conferencesByTag = [])
     {
         $tag = $this->tagRepository->getTagByName($technologie[1]);
 
@@ -104,6 +107,13 @@ class ConfTechFetcher implements FetcherInterface
             $conference = $this->repository->findOneBy([
             'hash' => $fC->hash,
             ]);
+
+            if ($conference) {
+                $isConferenceUpdated = $this->hydrateConferenceUpdate($conference, $fC);
+                if ($isConferenceUpdated) {
+                    ++$updateConferencesCount;
+                }
+            }
 
             if (!$conference) {
                 $conference = $this->repository->findOneBy([
@@ -128,6 +138,7 @@ class ConfTechFetcher implements FetcherInterface
         return [
             'conferencesByTag' => $conferencesByTag,
             'newConferencesCount' => $newConferencesCount,
+            'updateConferencesCount' => $updateConferencesCount,
         ];
     }
 
@@ -211,11 +222,46 @@ class ConfTechFetcher implements FetcherInterface
         }
 
         if (isset($fC->cfpEndDate)) {
-            $cfpEndAt = \DateTime::createFromFormat('Y-m-d', $fC->cfpEndDate);
+            $cfpEndAt = \DateTime::createFromFormat('Y-m-d h:i:s', $fC->cfpEndDate.' 00:00:00');
             $conference->setCfpEndAt($cfpEndAt);
         }
 
         return $conference;
+    }
+
+    private function hydrateConferenceUpdate(Conference $conference, $fC)
+    {
+        $c = $conference;
+        $modified = false;
+
+        if (isset($fC->cfpUrl)) {
+            if ($c->getCfpUrl() !== $fC->cfpUrl) {
+                $c->setCfpUrl($fC->cfpUrl);
+                $modified = true;
+            }
+        }
+
+        if (isset($fC->cfpEndDate)) {
+            if ($c->getCfpEndAt() !== \DateTime::createFromFormat('Y-m-d h:i:s', $fC->cfpEndDate.' 00:00:00')) {
+                $cfpEndAt = \DateTime::createFromFormat('Y-m-d h:i:s', $fC->cfpEndDate.' 00:00:00');
+                $conference->setCfpEndAt($cfpEndAt);
+                $modified = true;
+            }
+        }
+
+        if (isset($fC->description)) {
+            if ($c->getDescription() !== $fC->description) {
+                $conference->setDescription($fC->description);
+                $modified = true;
+            }
+        }
+
+        if ($c->getSiteUrl() !== $fC->url) {
+            $conference->setSiteUrl($fC->url);
+            $modified = true;
+        }
+
+        return $modified;
     }
 
     private function hash(object $fC)
