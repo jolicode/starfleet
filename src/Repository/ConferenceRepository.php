@@ -63,6 +63,17 @@ class ConferenceRepository extends EntityRepository
         ;
     }
 
+    public function findOneByHash(string $hash): ?Conference
+    {
+        $qb = $this->createQueryBuilder('c')
+            ->where('c.hash = :hash')
+            ->setParameter('hash', $hash)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        return $qb;
+    }
+
     private function createAttendedQueryBuilder()
     {
         return $this->createQueryBuilder('c')

@@ -40,7 +40,7 @@ class Conference
     private $remoteId;
 
     /**
-     * @ORM\Column(name="hash", type="string", length=255, nullable=true)
+     * @ORM\Column(name="hash", type="string", length=255, nullable=true, unique=true)
      */
     private $hash;
 

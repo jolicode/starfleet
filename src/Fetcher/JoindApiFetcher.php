@@ -33,8 +33,8 @@ class JoindApiFetcher implements FetcherInterface
     {
         $this->em = $doctrine->getManager();
         $this->logger = $logger;
-        $this->tagRepository = $this->em->getRepository(Tag::class);
         $this->conferenceRepository = $this->em->getRepository(Conference::class);
+        $this->tagRepository = $this->em->getRepository(Tag::class);
     }
 
     public function getUrl($params = []): string
@@ -46,11 +46,9 @@ class JoindApiFetcher implements FetcherInterface
     {
         $params = $this->matchTags();
 
-        $client = new Client();
-
         $allNewConferences = [];
-        $newConferencesCount = 0;
-        $updateConferencesCount = 0;
+        $conferences = [];
+        $client = new Client();
 
         foreach ($params as $key => $technologie) {
             $allNewConferences[$technologie[1]] = [];
@@ -67,24 +65,14 @@ class JoindApiFetcher implements FetcherInterface
             }
 
             $source = self::SOURCE;
-            $conferencesByTag = [];
-
             $fetchedConferences = $fetchedConferences->events;
-
-            $conferencesByTag = $this->pushConf($fetchedConferences, $newConferencesCount, $updateConferencesCount, $source, $technologie, $conferencesByTag);
-
-            $newConferencesCount = $conferencesByTag['newConferenceCount'];
-            $allNewConferences[$technologie[1]] = $conferencesByTag['conferencesByTag'];
+            $conferences = $this->confToArray($fetchedConferences, $source, $technologie, $conferences);
         }
 
-        return [
-            'conferences' => $allNewConferences,
-            'newConferencesCount' => $newConferencesCount,
-            'updateConferencesCount' => $updateConferencesCount,
-        ];
+        return $conferences;
     }
 
-    private function pushConf(array $fetchedConferences, $newConferencesCount, $updateConferencesCount, $source, $technologie, $conferenceTotal = [])
+    private function confToArray(array $fetchedConferences, $source, $technologie, $conferences = [])
     {
         $tag = $this->tagRepository->getTagByName($technologie[1]);
 
@@ -93,41 +81,12 @@ class JoindApiFetcher implements FetcherInterface
             $fC->tag = $tag;
             $fC->source = $source;
 
-            $conference = $this->conferenceRepository->findOneBy([
-                'hash' => $fC->hash,
-            ]);
+            $conference = $this->hydrateConference($fC);
 
-            if ($conference) {
-                $isConferenceUpdated = $this->hydrateConferenceUpdate($conference, $fC);
-                if ($isConferenceUpdated) {
-                    ++$updateConferencesCount;
-                }
-            }
-
-            if (!$conference) {
-                $conference = $this->conferenceRepository->findOneBy([
-                    'slug' => $fC->slug, ]);
-
-                // Do not override a conference created by another source
-                if ($conference && $conference->getSource() !== $source) {
-                    continue;
-                }
-            }
-
-            if (!$conference) {
-                $conference = $this->hydrateConference($fC);
-
-                $this->em->persist($conference);
-
-                array_push($conferenceTotal, $conference);
-                ++$newConferencesCount;
-            }
+            $conferences[$conference->getHash()] = $conference;
         }
 
-        return [
-            'conferencesByTag' => $conferenceTotal,
-            'newConferenceCount' => $newConferencesCount,
-        ];
+        return $conferences;
     }
 
     private function matchTags()
@@ -218,47 +177,15 @@ class JoindApiFetcher implements FetcherInterface
         return $conference;
     }
 
-    private function hydrateConferenceUpdate(Conference $conference, $fC)
-    {
-        $c = $conference;
-        $modified = false;
-
-        if (isset($fC->uri)) {
-            if ($c->getCfpUrl() !== $fC->uri) {
-                $c->setCfpUrl($fC->uri);
-                $modified = true;
-            }
-        }
-
-        if (isset($fC->cfpEndDate)) {
-            if ($c->getCfpEndAt() !== \DateTime::createFromFormat('Y-m-d h:i:s', $fC->cfpEndDate.' 00:00:00')) {
-                $cfpEndAt = \DateTime::createFromFormat('Y-m-d h:i:s', $fC->cfpEndDate.' 00:00:00');
-                $conference->setCfpEndAt($cfpEndAt);
-                $modified = true;
-            }
-        }
-
-        if (isset($fC->description)) {
-            if ($c->getDescription() !== $fC->description) {
-                $conference->setDescription($fC->description);
-                $modified = true;
-            }
-        }
-
-        if ($c->getSiteUrl() !== $fC->href) {
-            $conference->setSiteUrl($fC->href);
-            $modified = true;
-        }
-
-        return $modified;
-    }
-
     private function hash(object $fC)
     {
+        // Remove year so every conference is year empty
         $fC->name = preg_replace('/ 2\d{3}/', '', $fC->name);
-
-        $fC->slug = Urlizer::transliterate($fC->name);
         $startAt = \DateTime::createFromFormat('Y-m-d\TH:i:sT', $fC->start_date);
+        $conferenceYearDate = $startAt->format('Y');
+
+        $fC->slug = Urlizer::transliterate($fC->name." $fC->tz_place"." $conferenceYearDate");
+        $fC->name = $fC->name." $conferenceYearDate";
         $fC->startAtFormat = $startAt->format('Y-m-d');
 
         if (isset($fC->end_date)) {

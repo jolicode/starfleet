@@ -25,7 +25,7 @@ class ConfTechFetcher implements FetcherInterface
 {
     const SOURCE = 'conf-tech';
     private $em;
-    private $repository;
+    private $conferenceRepository;
     private $logger;
     private $tagRepository;
 
@@ -33,7 +33,7 @@ class ConfTechFetcher implements FetcherInterface
     {
         $this->em = $doctrine->getManager();
         $this->logger = $logger;
-        $this->repository = $this->em->getRepository(Conference::class);
+        $this->conferenceRepository = $this->em->getRepository(Conference::class);
         $this->tagRepository = $this->em->getRepository(Tag::class);
     }
 
@@ -46,9 +46,7 @@ class ConfTechFetcher implements FetcherInterface
     {
         $params = $this->matchTags();
 
-        $allNewConferences = [];
-        $newConferencesCount = 0;
-        $updateConferencesCount = 0;
+        $conferences = [];
         $client = new Client();
 
         foreach ($params as $date => $technologies) {
@@ -67,25 +65,11 @@ class ConfTechFetcher implements FetcherInterface
                 }
 
                 $source = self::SOURCE;
-                $conferencesByTag = [];
-
-                $conferencesByTag = $this->pushConf($fetchedConferences, $newConferencesCount, $updateConferencesCount, $source, $technologie, $conferencesByTag);
-
-                $newConferencesCount = $conferencesByTag['newConferencesCount'];
-                $updateConferencesCount = $conferencesByTag['updateConferencesCount'];
-                if (array_key_exists($technologie[1], $allNewConferences)) {
-                    $allNewConferences[$technologie[1]] = array_merge($allNewConferences[$technologie[1]], $conferencesByTag['conferencesByTag']);
-                } else {
-                    $allNewConferences[$technologie[1]] = $conferencesByTag['conferencesByTag'];
-                }
+                $conferences = $this->confToArray($fetchedConferences, $source, $technologie, $conferences);
             }
         }
 
-        return [
-            'conferences' => $allNewConferences,
-            'newConferencesCount' => $newConferencesCount,
-            'updateConferencesCount' => $updateConferencesCount,
-        ];
+        return $conferences;
     }
 
     public function getLocation($conference)
@@ -95,7 +79,7 @@ class ConfTechFetcher implements FetcherInterface
         return $location;
     }
 
-    private function pushConf(array $fetchedConferences, $newConferencesCount, $updateConferencesCount, $source, $technologie, $conferencesByTag = [])
+    private function confToArray(array $fetchedConferences, $source, $technologie, $conferences = [])
     {
         $tag = $this->tagRepository->getTagByName($technologie[1]);
 
@@ -104,42 +88,12 @@ class ConfTechFetcher implements FetcherInterface
             $fC->tag = $tag;
             $fC->source = $source;
 
-            $conference = $this->repository->findOneBy([
-            'hash' => $fC->hash,
-            ]);
+            $conference = $this->hydrateConference($fC);
 
-            if ($conference) {
-                $isConferenceUpdated = $this->hydrateConferenceUpdate($conference, $fC);
-                if ($isConferenceUpdated) {
-                    ++$updateConferencesCount;
-                }
-            }
-
-            if (!$conference) {
-                $conference = $this->repository->findOneBy([
-                    'slug' => $fC->slug, ]);
-
-                // Do not override a conference created by another source
-                if ($conference && $conference->getSource() !== $source) {
-                    continue;
-                }
-            }
-
-            if (!$conference) {
-                $conference = $this->hydrateConference($fC);
-
-                $this->em->persist($conference);
-
-                array_push($conferencesByTag, $conference);
-                ++$newConferencesCount;
-            }
+            $conferences[$conference->getHash()] = $conference;
         }
 
-        return [
-            'conferencesByTag' => $conferencesByTag,
-            'newConferencesCount' => $newConferencesCount,
-            'updateConferencesCount' => $updateConferencesCount,
-        ];
+        return $conferences;
     }
 
     private function matchTags()
@@ -208,7 +162,7 @@ class ConfTechFetcher implements FetcherInterface
         $conference->setSlug($fC->slug);
         $conference->setName($fC->name);
         $conference->setLocation($this->getLocation($fC));
-        $conference->setStartAt(\DateTime::createFromFormat('Y-m-d', $fC->startDate));
+        $conference->setStartAt(\DateTime::createFromFormat('Y-m-d h:i:s', $fC->startDate.' 00:00:00'));
         $conference->setEndAt($fC->endAt);
         $conference->setSiteUrl($fC->url);
         $conference->addTag($fC->tag);
@@ -229,58 +183,26 @@ class ConfTechFetcher implements FetcherInterface
         return $conference;
     }
 
-    private function hydrateConferenceUpdate(Conference $conference, $fC)
-    {
-        $c = $conference;
-        $modified = false;
-
-        if (isset($fC->cfpUrl)) {
-            if ($c->getCfpUrl() !== $fC->cfpUrl) {
-                $c->setCfpUrl($fC->cfpUrl);
-                $modified = true;
-            }
-        }
-
-        if (isset($fC->cfpEndDate)) {
-            if ($c->getCfpEndAt() !== \DateTime::createFromFormat('Y-m-d h:i:s', $fC->cfpEndDate.' 00:00:00')) {
-                $cfpEndAt = \DateTime::createFromFormat('Y-m-d h:i:s', $fC->cfpEndDate.' 00:00:00');
-                $conference->setCfpEndAt($cfpEndAt);
-                $modified = true;
-            }
-        }
-
-        if (isset($fC->description)) {
-            if ($c->getDescription() !== $fC->description) {
-                $conference->setDescription($fC->description);
-                $modified = true;
-            }
-        }
-
-        if ($c->getSiteUrl() !== $fC->url) {
-            $conference->setSiteUrl($fC->url);
-            $modified = true;
-        }
-
-        return $modified;
-    }
-
     private function hash(object $fC)
     {
+        // Remove year so every conference is year empty
         $fC->name = preg_replace('/ 2\d{3}/', '', $fC->name);
+        $startAt = \DateTime::createFromFormat('Y-m-d h:i:s', $fC->startDate.' 00:00:00');
+        $conferenceYearDate = $startAt->format('Y');
 
-        $fC->slug = Urlizer::transliterate($fC->name);
-        $startAt = \DateTime::createFromFormat('Y-m-d', $fC->startDate);
+        $fC->slug = Urlizer::transliterate($fC->name." $fC->city"." $conferenceYearDate");
+        $fC->name = $fC->name." $conferenceYearDate";
         $fC->startAtFormat = $startAt->format('Y-m-d');
 
         if (isset($fC->endDate)) {
-            $fC->endAt = \DateTime::createFromFormat('Y-m-d', $fC->endDate);
+            $fC->endAt = \DateTime::createFromFormat('Y-m-d h:i:s', $fC->endDate.' 00:00:00');
             $fC->endAtFormat = $fC->endAt->format('Y-m-d');
         } else {
             $fC->endAt = null;
             $fC->endAtFormat = null;
         }
 
-        $fC->hash = hash('md5', $fC->slug.$fC->startAtFormat.$fC->endAtFormat);
+        $fC->hash = hash('md5', $fC->slug.$fC->startAtFormat);
 
         return $fC;
     }
