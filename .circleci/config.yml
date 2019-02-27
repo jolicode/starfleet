@@ -1,51 +1,111 @@
+version: 2
+
+jobs:
+    check-php-cs:
+        docker:
+            - image: circleci/php:7.2-node-browsers
+        steps:
+            - checkout
+            - run:
+                  name: Install PHP CS Fixer
+                  command: wget https://cs.sensiolabs.org/download/php-cs-fixer-v2.phar -O php-cs-fixer
+            - run:
+                  name: Check PHP CS
+                  command: php php-cs-fixer fix --dry-run --allow-risky yes --diff --config=.php_cs
+
+    check-python-cs:
+        docker:
+            - image: circleci/python:2.7
+        working_directory: ~/project
+        steps:
+            - checkout
+            - run: sudo pip install pycodestyle
+            - run:
+                  name: Check cs
+                  command: pycodestyle fabfile.py --ignore=E501,W605,E722
+
+    check-lint:
+        docker:
+            - image: circleci/php:7.2-node-browsers
+        working_directory: ~/project
+        steps:
+            - checkout
+            - restore_cache:
+                  keys:
+                      - composer-cache-project-{{ checksum "~/project/composer.lock" }}
+                      - composer-cache-
+            - run: sudo docker-php-ext-install bcmath pcntl pdo_mysql
+            - run:
+                  name: Composer install
+                  command: composer install --no-scripts
+            - run:
+                  name: Create .env
+                  command: cp .env.dist .env
+            - save_cache:
+                  key: composer-cache-project-{{ checksum "~/project/composer.lock" }}
+                  paths:
+                      - ~/.composer
+            - run:
+                  name: Lint YAML
+                  command: php bin/console lint:yaml --parse-tags config/
+                  when: always
+            - run:
+                  name: Lint Twig
+                  command: php bin/console lint:twig templates/
+                  when: always
+
+    tests:
+        machine:
+            docker_layer_caching: true
+        working_directory: ~/project
+        steps:
+            - checkout
+            - restore_cache:
+                keys:
+                    - func-cache-{{ checksum "~/project/composer.lock" }}
+                    - func-cache-
+
+            - run:
+                name: Prepare cache
+                command: |
+                    set -x
+                    mkdir -p ~/.composer
+            - run:
+                name: Create .env
+                command: cp .env.ci.dist .env
+
+            - run:
+                name: Install Requirements
+                command: |
+                    set -x
+                    pip install pipenv==11.1.4
+                    pipenv install
+            - run:
+                name: Install everything
+                command: |
+                    set -x
+                    pipenv run fab start
+            - run:
+                name: Run fixtures
+                command: |
+                    set -x
+                    pipenv run fab fixtures
+            - run:
+                name: Run unit and functional tests
+                command: |
+                    set -x
+                    pipenv run fab tests
+
+            - save_cache:
+                key: func-cache-{{ checksum "~/project/composer.lock" }}
+                paths:
+                    - ~/.composer
+
+workflows:
     version: 2
-    jobs:
-        build:
-            docker:
-            - image: circleci/php:7.2.8-fpm-node
-            - image: circleci/mariadb:10.3
-              environment:
-                - MYSQL_ROOT_HOST=%
-            working_directory: ~/symfony
-            steps:
-                - checkout:
-                      path: ~/symfony
-                - run: cp .env.ci.dist .env
-                - run: sudo apt install -y libsqlite3-dev zlib1g-dev
-                - run: sudo docker-php-ext-configure intl
-                - run: sudo docker-php-ext-install intl pdo pdo_mysql zip
-                - run:
-                      name: Disable xdebug
-                      command: |
-                          sudo sed -i 's/^zend_extension/;zend_extension/g' /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-                - run: sudo composer self-update
-                - restore_cache:
-                    keys:
-                        - composer-v1-{{ checksum "composer.lock" }}
-                        - composer-v1-
-                - run: composer install -n --prefer-dist
-                - save_cache:
-                    key: composer-v1-{{ checksum "composer.lock" }}
-                    paths:
-                        - vendor
-                - restore_cache:
-                    keys:
-                        - node-v1-{{ checksum "package.json" }}
-                        - node-v1-
-                - run: yarn install
-                - save_cache:
-                    key: node-v1-{{ checksum "package.json" }}
-                    paths:
-                        - node_modules
-                - run: php ./bin/console doctrine:migrations:migrate -n
-                - run: php ./bin/console doctrine:fixtures:load -n
-                - run:
-                    name: Check coding standards
-                    command: |
-                        php ./vendor/bin/php-cs-fixer fix --config=.php_cs --dry-run --diff
-                - run:
-                    name: Lints twig and yaml files
-                    command: |
-                        php ./bin/console lint:yaml config
-                        php ./bin/console lint:twig templates
-                - run: ./bin/phpunit
+    check_and_tests:
+        jobs:
+            - check-php-cs
+            - check-python-cs
+            - check-lint
+            - tests

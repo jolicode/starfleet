@@ -1,7 +1,7 @@
 /public/build/
-
 yarn-error.log
 *.pyc
+.php_cs.cache
 
 ###> symfony/framework-bundle ###
 .env

@@ -1,0 +1,42 @@
+version: '3'
+
+volumes:
+    mysql-data: {}
+
+services:
+    router:
+        build: services/router
+        ports:
+            - "80:80"
+            - "443:443"
+            - "8080:8080"
+        volumes:
+            - "/var/run/docker.sock:/var/run/docker.sock"
+        # # Use network alias if you need to access a container via a specific
+        # # host by using the routing from another container
+        # networks:
+        #     default:
+        #         aliases:
+        #             - api.app.test
+        labels:
+            - "traefik.enable=false"
+
+    frontend:
+        build: services/frontend
+        depends_on:
+            - mysql
+        volumes:
+            - "../../${PROJECT_DIRECTORY}:/var/www:cached"
+        labels:
+            - "traefik.port=80"
+            - "traefik.frontend.entryPoints=https"
+            - "traefik.frontend.rule=Host:${PROJECT_HOSTNAMES}"
+
+    mysql:
+        build: services/mysql
+        volumes:
+            - "mysql-data:/var/lib/mysql"
+        labels:
+            - "traefik.enable=false"
+        ports:
+          - "3306:3306"
