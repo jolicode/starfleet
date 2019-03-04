@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace DoctrineMigrations;
 
-use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
+use Doctrine\Migrations\AbstractMigration;
 
 /**
  * Auto-generated Migration: Please modify to your needs!
@@ -23,7 +23,7 @@ class Version20180209151246 extends AbstractMigration
 {
     private $insertTalkQueries = [];
 
-    public function preUp(Schema $schema)
+    public function preUp(Schema $schema): void
     {
         $query = 'SELECT * FROM `talk`';
         $data = $this->connection->prepare($query);
@@ -41,7 +41,7 @@ class Version20180209151246 extends AbstractMigration
         }
     }
 
-    public function postUp(Schema $schema)
+    public function postUp(Schema $schema): void
     {
         foreach ($this->insertTalkQueries as $query) {
             $this->connection->executeQuery($query);
@@ -50,7 +50,7 @@ class Version20180209151246 extends AbstractMigration
         $this->connection->executeQuery('ALTER TABLE submit ADD CONSTRAINT FK_3F31B3436F0601D5 FOREIGN KEY (talk_id) REFERENCES talk (id)');
     }
 
-    public function up(Schema $schema)
+    public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
@@ -79,7 +79,7 @@ class Version20180209151246 extends AbstractMigration
         $this->addSql('CREATE TABLE talk (id INT AUTO_INCREMENT NOT NULL, title VARCHAR(255) NOT NULL, intro LONGTEXT NOT NULL, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci ENGINE = InnoDB');
     }
 
-    public function down(Schema $schema)
+    public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');

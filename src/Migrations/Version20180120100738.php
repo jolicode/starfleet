@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace DoctrineMigrations;
 
-use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
+use Doctrine\Migrations\AbstractMigration;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -33,7 +33,7 @@ class Version20180120100738 extends AbstractMigration implements ContainerAwareI
         $this->container = $container;
     }
 
-    public function preUp(Schema $schema)
+    public function preUp(Schema $schema): void
     {
         $query = 'SELECT talk_id, conference_id FROM `talks_conferences`';
         $data = $this->connection->prepare($query);
@@ -46,7 +46,7 @@ class Version20180120100738 extends AbstractMigration implements ContainerAwareI
         }
     }
 
-    public function up(Schema $schema)
+    public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
@@ -60,14 +60,14 @@ class Version20180120100738 extends AbstractMigration implements ContainerAwareI
         $this->addSql('ALTER TABLE user CHANGE email email VARCHAR(255) NOT NULL');
     }
 
-    public function postUp(Schema $schema)
+    public function postUp(Schema $schema): void
     {
         foreach ($this->updateQueries as $query) {
             $this->connection->executeQuery($query);
         }
     }
 
-    public function down(Schema $schema)
+    public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');

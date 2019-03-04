@@ -76,7 +76,7 @@ def install():
     """
     Install frontend application (composer, yarn, assets)
     """
-    docker_compose_run('composer install -n --prefer-dist --optimize-autoloader')
+    docker_compose_run('COMPOSER_MEMORY_LIMIT=-1 composer install -n --prefer-dist --optimize-autoloader')
     docker_compose_run('yarn')
 
 

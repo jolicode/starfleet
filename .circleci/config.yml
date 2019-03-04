@@ -86,11 +86,6 @@ jobs:
                     set -x
                     pipenv run fab start
             - run:
-                name: Run fixtures
-                command: |
-                    set -x
-                    pipenv run fab fixtures
-            - run:
                 name: Run unit and functional tests
                 command: |
                     set -x
