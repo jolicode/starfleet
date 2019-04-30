@@ -107,6 +107,8 @@ class GoogleAuthenticator extends SocialAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
-        return new RedirectResponse($this->urlGenerator->generate('admin'));
+        $url = $this->getPreviousUrl($request, $providerKey);
+
+        return new RedirectResponse($url ?: $this->urlGenerator->generate('admin'));
     }
 }
