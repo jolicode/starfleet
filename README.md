@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="https://cldup.com/xn2OwBYiYh-2000x2000.png" width=100 height=100 alt="Starfleet logo" />
+    <img src="https://starfleet.jolicode.com/build/images/logo.svg" width=100 height=100 alt="Starfleet logo" />
 </p>
 <h1 align="center">Starfleet</h1>
 
@@ -11,13 +11,25 @@
 
 ### Local
 
-#### Without Docker
+> Add `local.starfleet.app` to your hosts file
 
-#### With Docker
+Install Python virtualenv to be able to use fabric commands to control easily the Docker stack
 
-### Server
+`$ pipenv install`
 
-#### Clever-cloud
+Enter in pipenv shell to get access to `fab` command
+
+`$ pipenv shell`
+
+If it's your first install of Starfleet, run
+
+`$ fab start`
+
+If not, just up the containers with
+
+`$ fab up`
+
+Open [https://local.starfleet.app](https://local.starfleet.app) in your browser 🚀
 
 ## Changes
 
