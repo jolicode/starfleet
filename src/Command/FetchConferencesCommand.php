@@ -23,28 +23,27 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class FetchConferencesCommand extends Command
 {
-    const SALOON_URL = 'http://saloonapp.herokuapp.com/api/v1/conferences?tags=';
     private $em;
     private $messageFactory;
     private $client;
-    private $fetcher;
     private $appFetchers;
     private $conferenceRepository;
 
-    public function __construct(iterable $appFetchers, RegistryInterface $doctrine, MessageFactory $messageFactory, HttpClient $client, ConfTechFetcher $fetcher)
+    public function __construct(iterable $appFetchers, RegistryInterface $doctrine, MessageFactory $messageFactory,
+        HttpClient $client)
     {
         $this->em = $doctrine->getManager();
         $this->messageFactory = $messageFactory;
         $this->client = $client;
-        $this->fetcher = $fetcher;
         $this->appFetchers = $appFetchers;
         $this->conferenceRepository = $this->em->getRepository(Conference::class);
+
         parent::__construct();
     }
 
     protected function configure()
     {
-        $this->setName('starfleet-conferences-fetch');
+        $this->setName('starfleet:conferences:fetch');
         $this->setDescription('Fetch conferences from Fetcher Classes');
     }
 
@@ -53,13 +52,12 @@ class FetchConferencesCommand extends Command
         $conferences = [];
 
         $fetchers = $this->appFetchers;
-//        $fetcher = $this->fetcher;
 
         $newConferencesCount = 0;
         $updateConferencesCount = 0;
 
+        /** @var FetcherInterface $fetcher */
         foreach ($fetchers as $fetcher) {
-            /** @var FetcherInterface $fetcher */
             $conferencesBySource = $fetcher->fetch();
             $conferences = array_merge($conferences, $conferencesBySource);
         }

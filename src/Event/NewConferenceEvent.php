@@ -62,7 +62,7 @@ class NewConferenceEvent extends Event
         if (null !== $this->conference->getEndAt()) {
             $endDateField['value'] = $this->conference->getEndAt()->format('d F Y');
         } else {
-            $endDateField['value'] = 'Unknow';
+            $endDateField['value'] = 'Unknown';
         }
         array_push($conferenceAttachment['fields'], $endDateField);
 

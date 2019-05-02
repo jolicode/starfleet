@@ -11,9 +11,6 @@
 
 namespace App;
 
-use Http\Client\HttpClient;
-use Http\Message\MessageFactory;
-
 class SlackNotifier
 {
     const EMPTY_PAYLOAD = [
@@ -38,23 +35,19 @@ class SlackNotifier
         'fields' => [],
     ];
 
-    private $httpClient;
-    private $messageFactory;
     private $webHookUrl;
 
-    public function __construct(HttpClient $httpClient, MessageFactory $messageFactory, string $webHookUrl)
+    public function __construct(string $webHookUrl)
     {
-        $this->httpClient = $httpClient;
-        $this->messageFactory = $messageFactory;
         $this->webHookUrl = $webHookUrl;
     }
 
     public function notify(array $payload)
     {
-        $this->httpClient->sendRequest(
-            $this->messageFactory->createRequest('POST', $this->webHookUrl, [
-                'Content-type' => 'application/json',
-            ], json_encode($payload))
-        );
+//        $this->httpClient->sendRequest(
+//            $this->messageFactory->createRequest('POST', $this->webHookUrl, [
+//                'Content-type' => 'application/json',
+//            ], json_encode($payload))
+//        );
     }
 }

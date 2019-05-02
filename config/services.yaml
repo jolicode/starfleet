@@ -50,4 +50,3 @@ services:
 
     App\Command\FetchConferencesCommand:
         arguments: [!tagged app.fetcher]
-

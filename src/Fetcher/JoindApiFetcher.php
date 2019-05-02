@@ -23,7 +23,10 @@ use Symfony\Component\Config\Definition\Exception\Exception;
 
 class JoindApiFetcher implements FetcherInterface
 {
+    use \FetcherTrait;
+
     const SOURCE = 'joind';
+
     private $logger;
     private $em;
     private $tagRepository;
@@ -77,7 +80,7 @@ class JoindApiFetcher implements FetcherInterface
         $tag = $this->tagRepository->getTagByName($technologie[1]);
 
         foreach ($fetchedConferences as $fC) {
-            $fC = $this->hash($fC);
+            $this->hash($fC);
             $fC->tag = $tag;
             $fC->source = $source;
 
@@ -175,29 +178,5 @@ class JoindApiFetcher implements FetcherInterface
         }
 
         return $conference;
-    }
-
-    private function hash(object $fC)
-    {
-        // Remove year so every conference is year empty
-        $fC->name = preg_replace('/ 2\d{3}/', '', $fC->name);
-        $startAt = \DateTime::createFromFormat('Y-m-d\TH:i:sT', $fC->start_date);
-        $conferenceYearDate = $startAt->format('Y');
-
-        $fC->slug = Urlizer::transliterate($fC->name." $fC->tz_place"." $conferenceYearDate");
-        $fC->name = $fC->name." $conferenceYearDate";
-        $fC->startAtFormat = $startAt->format('Y-m-d');
-
-        if (isset($fC->end_date)) {
-            $fC->endAt = \DateTime::createFromFormat('Y-m-d\TH:i:sT', $fC->end_date);
-            $fC->endAtFormat = $fC->endAt->format('Y-m-d');
-        } else {
-            $fC->endAt = null;
-            $fC->endAtFormat = null;
-        }
-
-        $fC->hash = hash('md5', $fC->slug.$fC->startAtFormat.$fC->endAtFormat);
-
-        return $fC;
     }
 }

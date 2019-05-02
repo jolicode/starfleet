@@ -30,7 +30,7 @@ class FetchTagsCommand extends Command
 
     protected function configure()
     {
-        $this->setName('starfleet-tags-fetch');
+        $this->setName('starfleet:tags:fetch');
         $this->setDescription('Fetch tags from TagEnum Class');
     }
 
