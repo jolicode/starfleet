@@ -24,7 +24,7 @@ class GoogleController extends Controller
     public function connectAction(ClientRegistry $clientRegistry)
     {
         return $clientRegistry
-            ->getClient('google_main')
+            ->getClient('google')
             ->redirect();
     }
 

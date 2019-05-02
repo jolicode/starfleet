@@ -92,7 +92,7 @@ class GoogleAuthenticator extends SocialAuthenticator
 
     private function getGoogleClient(): OAuth2Client
     {
-        return $this->clientRegistry->getClient('google_main');
+        return $this->clientRegistry->getClient('google');
     }
 
     public function start(Request $request, AuthenticationException $authException = null)
