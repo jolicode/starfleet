@@ -13,7 +13,7 @@ basicConstraints = CA:true
 subjectAltName = @alt_names
 
 [dn]
-CN = starfleet.dev
+CN = local.starfleet.app
 
 [alt_names]
-DNS.1 = starfleet.dev
+DNS.1 = local.starfleet.app

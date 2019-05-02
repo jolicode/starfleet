@@ -13,7 +13,7 @@ env.project_name = 'starfleet'
 # This is the host directory containing your PHP application
 env.project_directory = '.'
 # This will be all your domain name, separated with comma
-env.project_hostnames = 'starfleet.dev,www.starfleet.dev,mail.starfleet.dev'
+env.project_hostnames = 'local.starfleet.app,mail.local.starfleet.app'
 
 
 def with_builder(func):
