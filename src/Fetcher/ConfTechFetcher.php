@@ -77,6 +77,11 @@ class ConfTechFetcher implements FetcherInterface
         $this->tagRepository = $this->em->getRepository(Tag::class);
     }
 
+    public function isActive(): bool
+    {
+        return true;
+    }
+
     public function getUrl(array $params = []): string
     {
         return "https://raw.githubusercontent.com/tech-conferences/conference-data/master/conferences/$params[date]/$params[tag].json";
@@ -100,9 +105,8 @@ class ConfTechFetcher implements FetcherInterface
                     continue;
                 }
 
-                $rawConferences = json_decode($response->getContent(), true);
-                $fetchedConferences = $this->denormalizeConferences($rawConferences, self::SOURCE, $tagName);
-
+                $data = json_decode($response->getContent(), true);
+                $fetchedConferences = $this->denormalizeConferences($data, self::SOURCE, $tagName);
                 $conferences = array_merge($conferences, iterator_to_array($fetchedConferences));
             }
         }

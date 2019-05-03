@@ -13,7 +13,9 @@ namespace App\Fetcher;
 
 interface FetcherInterface
 {
-    public function getUrl(): string;
+    public function isActive(): bool;
+
+    public function getUrl(array $params = []): string;
 
     public function fetch(): array;
 

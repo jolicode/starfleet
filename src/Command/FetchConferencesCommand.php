@@ -13,10 +13,12 @@ namespace App\Command;
 
 use App\Entity\Conference;
 use App\Fetcher\FetcherInterface;
+use App\Fetcher\JoindApiFetcher;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class FetchConferencesCommand extends Command
@@ -44,43 +46,95 @@ class FetchConferencesCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $conferences = [];
+        $symfonyStyle = new SymfonyStyle($input, $output);
 
         $newConferencesCount = 0;
         $updatedConferencesCount = 0;
 
         /** @var FetcherInterface $fetcher */
         foreach ($this->fetchers as $fetcher) {
-            $conferences = array_merge($conferences, $fetcher->fetch());
-            break;
-        }
-
-        foreach ($conferences as $conference) {
-            $existingConference = $this->conferenceRepository->findOneBy(['hash' => $conference->getHash()]);
-
-            if ($existingConference instanceof Conference) {
-                $this->updateExistingConference($existingConference, $conference);
-                ++$updatedConferencesCount;
-            } else {
-                ++$newConferencesCount;
-                $this->em->persist($conference);
+            if (!$fetcher->isActive()) {
+                continue;
             }
+
+            $symfonyStyle->title(get_class($fetcher) . ' is running...');
+
+            $conferences = $fetcher->fetch();
+
+            $progressBar = $symfonyStyle->createProgressBar(\count($conferences));
+
+            foreach ($conferences as $conference) {
+                $existingConference = $this->conferenceRepository->findOneBy(['hash' => $conference->getHash()]);
+
+                if ($existingConference instanceof Conference) {
+                    if ($this->updateExistingConference($existingConference, $conference)) {
+                        ++$updatedConferencesCount;
+                    }
+                } else {
+                    ++$newConferencesCount;
+                    $this->em->persist($conference);
+                }
+
+                $progressBar->advance();
+            }
+
+            $progressBar->finish();
+            $symfonyStyle->write("\n\n");
+            unset($progressBar);
         }
 
         $this->em->flush();
 
-        $output->writeln($newConferencesCount.' newly added conference(s)');
-        $output->writeln($updatedConferencesCount.' updated conference(s)');
+        $symfonyStyle->writeln("\n");
+        $symfonyStyle->success($newConferencesCount.' newly added conference(s)');
+        $symfonyStyle->success($updatedConferencesCount.' updated conference(s)');
     }
 
-    protected function updateExistingConference(Conference $existingConference, Conference $conference)
+    protected function updateExistingConference(Conference $existingConference, Conference $conference): bool
     {
-        $existingConference->setDescription($conference->getDescription() ?? $existingConference->getDescription());
-        $existingConference->setLocation($conference->getLocation() ?? $existingConference->getLocation());
-        $existingConference->setStartAt($conference->getStartAt() ?? $existingConference->getStartAt());
-        $existingConference->setEndAt($conference->getEndAt() ?? $existingConference->getEndAt());
-        $existingConference->setCfpUrl($conference->getCfpUrl() ?? $existingConference->getCfpUrl());
-        $existingConference->setCfpEndAt($conference->getCfpEndAt() ?? $existingConference->getCfpEndAt());
-        $existingConference->setSiteUrl($conference->getSiteUrl() ?? $existingConference->getSiteUrl());
+        $updated = false;
+
+        if ($conference->getDescription() !== $existingConference->getDescription()) {
+            $existingConference->setDescription($conference->getDescription());
+            $updated = true;
+        }
+
+        if ($conference->getLocation() !== $existingConference->getLocation()) {
+            $existingConference->setLocation($conference->getLocation());
+            $updated = true;
+        }
+
+        if ($conference->getStartAt() instanceof \DateTimeInterface && $existingConference->getStartAt() instanceof \DateTimeInterface) {
+            if ($conference->getStartAt()->format(\DateTime::ISO8601) !== $existingConference->getStartAt()->format(\DateTime::ISO8601)) {
+                $existingConference->setStartAt($conference->getStartAt());
+                $updated = true;
+            }
+        }
+
+        if ($conference->getEndAt() instanceof \DateTimeInterface && $existingConference->getEndAt() instanceof \DateTimeInterface) {
+            if ($conference->getEndAt()->format(\DateTime::ISO8601) !== $existingConference->getEndAt()->format(\DateTime::ISO8601)) {
+                $existingConference->setEndAt($conference->getEndAt());
+                $updated = true;
+            }
+        }
+
+        if ($conference->getCfpUrl() !== $existingConference->getCfpUrl()) {
+            $existingConference->setCfpUrl($conference->getCfpUrl());
+            $updated = true;
+        }
+
+        if ($conference->getCfpEndAt() instanceof \DateTimeInterface && $existingConference->getCfpEndAt() instanceof \DateTimeInterface) {
+            if ($conference->getCfpEndAt()->format(\DateTime::ISO8601) !== $existingConference->getCfpEndAt()->format(\DateTime::ISO8601)) {
+                $existingConference->setCfpEndAt($conference->getCfpEndAt());
+                $updated = true;
+            }
+        }
+
+        if ($conference->getSiteUrl() !== $existingConference->getSiteUrl()) {
+            $existingConference->setSiteUrl($conference->getSiteUrl());
+            $updated = true;
+        }
+
+        return $updated;
     }
 }
