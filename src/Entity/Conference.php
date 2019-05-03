@@ -211,26 +211,26 @@ class Conference
         return $this->location;
     }
 
-    public function setStartAt(?\DateTime $startAt): self
+    public function setStartAt(?\DateTimeInterface $startAt): self
     {
         $this->startAt = $startAt;
 
         return $this;
     }
 
-    public function getStartAt(): ?\DateTime
+    public function getStartAt(): ?\DateTimeInterface
     {
         return $this->startAt;
     }
 
-    public function setEndAt(?\DateTime $endAt): self
+    public function setEndAt(?\DateTimeInterface $endAt): self
     {
         $this->endAt = $endAt;
 
         return $this;
     }
 
-    public function getEndAt(): ?\DateTime
+    public function getEndAt(): ?\DateTimeInterface
     {
         return $this->endAt;
     }
@@ -247,14 +247,14 @@ class Conference
         return $this->cfpUrl;
     }
 
-    public function setCfpEndAt(?\DateTime $cfpEndAt): self
+    public function setCfpEndAt(?\DateTimeInterface $cfpEndAt): self
     {
         $this->cfpEndAt = $cfpEndAt;
 
         return $this;
     }
 
-    public function getCfpEndAt(): ?\DateTime
+    public function getCfpEndAt(): ?\DateTimeInterface
     {
         return $this->cfpEndAt;
     }

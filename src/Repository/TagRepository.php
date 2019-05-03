@@ -25,33 +25,4 @@ class TagRepository extends EntityRepository
         parent::__construct($em, $class);
         $this->logger = $logger;
     }
-
-    /**
-     * @param string $tagName
-     *
-     * @return Tag
-     */
-    public function getTagByName(string $tagName): Tag
-    {
-        $qb = $this->createQueryBuilder('t')
-            ->where('t.name = :name')
-            ->setParameter('name', $tagName)
-            ->getQuery();
-        try {
-            $qb = $qb->getSingleResult();
-        } catch (\Exception $e) {
-            $this->logger->error($e);
-        }
-
-        return $qb;
-    }
-
-    public function getTagsBySelected(): array
-    {
-        return $qb = $this->createQueryBuilder('t')
-            ->where('t.selected = :selected')
-            ->setParameter('selected', true)
-            ->getQuery()
-            ->execute();
-    }
 }

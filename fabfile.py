@@ -84,9 +84,9 @@ def install():
 @with_builder
 def upgrade():
     """
-    Upgrade frontend application (composer only)
+    Upgrade application dependencies (composer only)
     """
-    docker_compose_run('composer upgrade -n')
+    docker_compose_run('COMPOSER_MEMORY_LIMIT=-1 composer update -n')
 
 
 @task
@@ -100,12 +100,41 @@ def cache_clear():
 
 @task
 @with_builder
+def reset():
+    """
+    Reset database
+    """
+    docker_compose_run('bin/console doctrine:database:drop --if-exists --force', no_deps=True)
+    docker_compose_run('bin/console doctrine:database:create --if-not-exists', no_deps=True)
+    docker_compose_run('bin/console doctrine:migration:migrate --no-interaction', no_deps=True)
+
+
+@task
+@with_builder
 def migrate():
     """
     Migrate database schema
     """
     docker_compose_run('bin/console doctrine:database:create --if-not-exists', no_deps=True)
     docker_compose_run('bin/console doctrine:migration:migrate --no-interaction', no_deps=True)
+
+
+@task
+@with_builder
+def fixtures():
+    """
+    Load fixtures into database
+    """
+    docker_compose_run('bin/console doctrine:fixtures:load --no-interaction', no_deps=True)
+
+
+@task
+@with_builder
+def fetch():
+    """
+    Fetch conferences
+    """
+    docker_compose_run('bin/console starfleet:conferences:fetch', no_deps=True)
 
 
 @task

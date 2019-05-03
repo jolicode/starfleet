@@ -11,6 +11,7 @@
 
 namespace App;
 
+use App\Fetcher\FetcherInterface;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;

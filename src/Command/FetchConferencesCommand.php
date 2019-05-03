@@ -12,7 +12,6 @@
 namespace App\Command;
 
 use App\Entity\Conference;
-use App\Fetcher\ConfTechFetcher;
 use App\Fetcher\FetcherInterface;
 use Http\Client\HttpClient;
 use Http\Message\MessageFactory;
@@ -20,22 +19,21 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class FetchConferencesCommand extends Command
 {
+    private $fetchers;
     private $em;
-    private $messageFactory;
-    private $client;
-    private $appFetchers;
+    private $serializer;
     private $conferenceRepository;
 
-    public function __construct(iterable $appFetchers, RegistryInterface $doctrine, MessageFactory $messageFactory,
-        HttpClient $client)
+    public function __construct(iterable $fetchers, RegistryInterface $doctrine, SerializerInterface $serializer)
     {
+        $this->fetchers = $fetchers;
         $this->em = $doctrine->getManager();
-        $this->messageFactory = $messageFactory;
-        $this->client = $client;
-        $this->appFetchers = $appFetchers;
+        $this->serializer = $serializer;
         $this->conferenceRepository = $this->em->getRepository(Conference::class);
 
         parent::__construct();
@@ -51,96 +49,41 @@ class FetchConferencesCommand extends Command
     {
         $conferences = [];
 
-        $fetchers = $this->appFetchers;
-
         $newConferencesCount = 0;
-        $updateConferencesCount = 0;
+        $updatedConferencesCount = 0;
 
         /** @var FetcherInterface $fetcher */
-        foreach ($fetchers as $fetcher) {
-            $conferencesBySource = $fetcher->fetch();
-            $conferences = array_merge($conferences, $conferencesBySource);
+        foreach ($this->fetchers as $fetcher) {
+            $conferences = array_merge($conferences, $fetcher->fetch());
+            break;
         }
 
         foreach ($conferences as $conference) {
-            $statut = $this->conferencesDo($conference);
-            if ('new' === $statut['statut']) {
+            $existingConference = $this->conferenceRepository->findOneBy(['hash' => $conference->getHash()]);
+
+            if ($existingConference instanceof Conference) {
+                $this->updateExistingConference($existingConference, $conference);
+                ++$updatedConferencesCount;
+            } else {
                 ++$newConferencesCount;
                 $this->em->persist($conference);
-            } elseif ('updated' === $statut['statut']) {
-                ++$updateConferencesCount;
-                $this->em->persist($statut['conference']);
-            } else {
-                continue;
             }
         }
 
         $this->em->flush();
 
-        $output->writeln('You add '.($newConferencesCount).' conference(s)');
-        $output->writeln('You update '.($updateConferencesCount).' conference(s)');
+        $output->writeln($newConferencesCount . ' newly added conference(s)');
+        $output->writeln($updatedConferencesCount . ' updated conference(s)');
     }
 
-    protected function conferencesDo(Conference $conference)
+    protected function updateExistingConference(Conference $existingConference, Conference $conference)
     {
-        /** @var Conference $existedConference */
-        $existedConference = $this->conferenceRepository->findOneByHash($conference->getHash());
-
-        if ($existedConference) {
-            $isConferenceUpdated = $this->hydrateConferenceUpdate($existedConference, $conference);
-            if ($isConferenceUpdated) {
-                return [
-                    'statut' => 'updated',
-                    'conference' => $existedConference,
-                ];
-            }
-
-            return [
-                'statut' => 'old',
-            ];
-        }
-
-        if (!$existedConference) {
-            $existedConference = $this->conferenceRepository->findOneBy([
-                'slug' => $conference->getSlug(), ]);
-
-            // Do not override a conference created by another source
-            if ($existedConference && $existedConference->getSource() !== $conference->getSource()) {
-                return [
-                    'statut' => 'old',
-                ];
-            }
-        }
-
-        return [
-            'statut' => 'new',
-        ];
-    }
-
-    private function hydrateConferenceUpdate(Conference $eC, Conference $c)
-    {
-        $modified = false;
-
-        if ($eC->getCfpUrl() !== $c->getCfpUrl()) {
-            $eC->setCfpUrl($c->getCfpUrl());
-            $modified = true;
-        }
-
-        if ($eC->getCfpEndAt() !== $c->getCfpEndAt()) {
-            $eC->setCfpEndAt($c->getCfpEndAt());
-            $modified = true;
-        }
-
-        if ($eC->getDescription() !== $c->getDescription()) {
-            $eC->setDescription($c->getDescription());
-            $modified = true;
-        }
-
-        if ($eC->getSiteUrl() !== $c->getSiteUrl()) {
-            $eC->setSiteUrl($c->getSiteUrl());
-            $modified = true;
-        }
-
-        return $modified;
+        $existingConference->setDescription($conference->getDescription() ?? $existingConference->getDescription());
+        $existingConference->setLocation($conference->getLocation() ?? $existingConference->getLocation());
+        $existingConference->setStartAt($conference->getStartAt() ?? $existingConference->getStartAt());
+        $existingConference->setEndAt($conference->getEndAt() ?? $existingConference->getEndAt());
+        $existingConference->setCfpUrl($conference->getCfpUrl() ?? $existingConference->getCfpUrl());
+        $existingConference->setCfpEndAt($conference->getCfpEndAt() ?? $existingConference->getCfpEndAt());
+        $existingConference->setSiteUrl($conference->getSiteUrl() ?? $existingConference->getSiteUrl());
     }
 }

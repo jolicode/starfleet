@@ -13,6 +13,6 @@ services:
             - mysql
         volumes:
             - "../../${PROJECT_DIRECTORY}:/home/app/app:cached"
-            - "~/.composer/cache:/home/app/.composer/cache"
+            - "~/.composer:/home/app/.composer"
         labels:
             - "traefik.enable=false"

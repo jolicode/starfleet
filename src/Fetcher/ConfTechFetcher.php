@@ -14,27 +14,64 @@ namespace App\Fetcher;
 use App\Entity\Conference;
 use App\Entity\Tag;
 use App\Enum\TagEnum;
-use Gedmo\Sluggable\Util\Urlizer;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
+use Behat\Transliterator\Transliterator;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Doctrine\RegistryInterface;
-use Symfony\Component\Config\Definition\Exception\Exception;
+use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class ConfTechFetcher implements FetcherInterface
 {
-    use \FetcherTrait;
+    use HashConferenceTrait;
 
     const SOURCE = 'conf-tech';
+    // Use to match source topics with Starfleet Tags
+    const TAGS_SYNONYMS = [
+        'android', //0
+        null, //1
+        null, //2
+        'css', //3
+        null, //4
+        'data', //5
+        'devops', //6
+        'dotnet', //7
+        'elixir', //8
+        null, //9
+        null, //10
+        'general', //11
+        'golang', //12
+        null, //13
+        'graphql', //14
+        null, //15
+        'ios', //16
+        null, //17
+        'javascript', //18
+        null, //19
+        null, //20
+        'php', //21
+        'python', //22
+        null, //23
+        'ruby', //24
+        'rust', //25
+        null, //26
+        'security', //27
+        'tech-comm', //28
+        'ux', //29
+    ];
 
     private $em;
     private $conferenceRepository;
+    private $httpClient;
+    private $serializer;
     private $logger;
     private $tagRepository;
 
-    public function __construct(RegistryInterface $doctrine, LoggerInterface $logger)
+    public function __construct(RegistryInterface $doctrine, SerializerInterface $serializer ,LoggerInterface $logger)
     {
         $this->em = $doctrine->getManager();
+        // @todo replace with proper DI when http-client will be released as stable
+        $this->httpClient = HttpClient::create();
+        $this->serializer = $serializer;
         $this->logger = $logger;
         $this->conferenceRepository = $this->em->getRepository(Conference::class);
         $this->tagRepository = $this->em->getRepository(Tag::class);
@@ -47,142 +84,75 @@ class ConfTechFetcher implements FetcherInterface
 
     public function fetch(): array
     {
-        $params = $this->matchTags();
-
         $conferences = [];
-        $client = new Client();
 
-        foreach ($params as $date => $technologies) {
-            foreach ($technologies as $technologie) {
-                try {
-                    $response = $client->request('GET', $this->getUrl(['date' => $date, 'tag' => $technologie[0]]));
-                    $fetchedConferences = json_decode($response->getBody());
-                } catch (GuzzleException $e) {
-                    if (404 === $e->getCode()) {
-                        $this->logger->error($e->getMessage());
-                        $fetchedConferences = [];
-                    } else {
-                        $this->logger->error($e->getMessage());
-                        throw new Exception($e);
-                    }
+        foreach ([date('Y'), date('Y', strtotime('+1 year'))] as $date) {
+            // @todo: use enabled tags instead of all tags from enum
+            foreach (array_combine(TagEnum::toArray(), self::TAGS_SYNONYMS) as $tagName => $tagSynonym) {
+                if ($tagSynonym === null) {
+                    continue;
                 }
 
-                $source = self::SOURCE;
-                $conferences = $this->confToArray($fetchedConferences, $source, $technologie, $conferences);
+                $response = $this->httpClient->request('GET', $this->getUrl(['date' => $date, 'tag' => $tagSynonym]));
+
+                if ($response->getStatusCode() === 404) {
+                    $this->logger->error('Source URL returns 404', ['url' => $this->getUrl(), 'source' => self::SOURCE]);
+                    continue;
+                }
+
+                $rawConferences = json_decode($response->getContent(), true);
+                $fetchedConferences = $this->denormalizeConferences($rawConferences, self::SOURCE, $tagName);
+
+                $conferences = array_merge($conferences, iterator_to_array($fetchedConferences));
             }
         }
 
         return $conferences;
     }
 
-    public function getLocation($conference)
+    public function denormalizeConferences(array $rawConferences, string $source, string $tagName): \Generator
     {
-        $location = $conference->city;
+        foreach ($rawConferences as $rawConference) {
+            $tag = $this->tagRepository->findOneBy(['name' => $tagName]);
+            $startDate = \DateTimeImmutable::createFromFormat('Y-m-d h:i:s', $rawConference['startDate'] . ' 00:00:00');
 
-        return $location;
-    }
-
-    private function confToArray(array $fetchedConferences, $source, $technologie, $conferences = [])
-    {
-        $tag = $this->tagRepository->getTagByName($technologie[1]);
-
-        foreach ($fetchedConferences as $fC) {
-            $this->hash($fC);
-            $fC->tag = $tag;
-            $fC->source = $source;
-
-            $conference = $this->hydrateConference($fC);
-
-            $conferences[$conference->getHash()] = $conference;
-        }
-
-        return $conferences;
-    }
-
-    private function matchTags()
-    {
-        $dateCurrentYear = date('Y');
-        $dateNextYear = date('Y', strtotime('+1 year'));
-
-        $tagsSelected = $this->tagRepository->getTagsBySelected();
-
-        $confTechFetcherSynonyms = [
-            'android', //0
-            null, //1
-            null, //2
-            'css', //3
-            null, //4
-            'data', //5
-            'devops', //6
-            'dotnet', //7
-            'elixir', //8
-            null, //9
-            null, //10
-            'general', //11
-            'golang', //12
-            null, //13
-            'graphql', //14
-            null, //15
-            'ios', //16
-            null, //17
-            'javascript', //18
-            null, //19
-            null, //20
-            'php', //21
-            'python', //22
-            null, //23
-            'ruby', //24
-            'rust', //25
-            null, //26
-            'security', //27
-            'tech-comm', //28
-            'ux', //29
-        ];
-
-        $tagMatch = array_combine(TagEnum::toArray(), $confTechFetcherSynonyms);
-
-        $params = [
-        $dateCurrentYear => [],
-        $dateNextYear => [],
-    ];
-
-        foreach ($tagsSelected as $tag) {
-            /* @var Tag $tag*/
-            if (null !== $tagMatch[$tag->getName()]) {
-                array_push($params[$dateCurrentYear], [$tagMatch[$tag->getName()], $tag->getName()]);
-                array_push($params[$dateNextYear], [$tagMatch[$tag->getName()], $tag->getName()]);
+            // In case of invalid startDate, we skip the conference. It will be handled again later.
+            if (!$startDate) {
+                continue;
             }
+
+            $hash = $this->hash($rawConference['name'], $rawConference['url'], $startDate);
+            $slug = Transliterator::transliterate(sprintf('%s %s %s', $rawConference['name'], $rawConference['city'], $startDate->format('Y')));
+
+            $conference = new Conference();
+            $conference->setSource($source);
+            $conference->setHash($hash);
+            $conference->setSlug($slug);
+            $conference->setName($rawConference['name']);
+            $conference->setLocation($rawConference['city']);
+            $conference->setStartAt($startDate);
+            $conference->setSiteUrl($rawConference['url']);
+            $conference->addTag($tag);
+
+            if (array_key_exists('endDate', $rawConference)) {
+                $endDate = \DateTimeImmutable::createFromFormat('Y-m-d h:i:s', $rawConference['endDate'] . ' 00:00:00');
+                $conference->setEndAt($endDate);
+            }
+
+            if (array_key_exists('description', $rawConference)) {
+                $conference->setDescription($rawConference['description']);
+            }
+
+            if (array_key_exists('cfpUrl', $rawConference)) {
+                $conference->setCfpUrl($rawConference['cfpUrl']);
+            }
+
+            if (array_key_exists('cfpEndDate', $rawConference)) {
+                $cfpEndAt = \DateTimeImmutable::createFromFormat('Y-m-d h:i:s', $rawConference['cfpEndDate'] . ' 00:00:00');
+                $conference->setCfpEndAt($cfpEndAt);
+            }
+
+            yield $hash => $conference;
         }
-
-        return $params;
-    }
-
-    private function hydrateConference($fC)
-    {
-        $conference = new Conference();
-        $conference->setSource($fC->source);
-        $conference->setHash($fC->hash);
-        $conference->setSlug($fC->slug);
-        $conference->setName($fC->name);
-        $conference->setLocation($this->getLocation($fC));
-        $conference->setStartAt(\DateTime::createFromFormat('Y-m-d h:i:s', $fC->startDate.' 00:00:00'));
-        $conference->setEndAt($fC->endAt);
-        $conference->setSiteUrl($fC->url);
-        $conference->addTag($fC->tag);
-
-        if (isset($fC->description)) {
-            $conference->setDescription($fC->description);
-        }
-
-        if (isset($fC->cfpUrl)) {
-            $conference->setCfpUrl($fC->cfpUrl);
-        }
-
-        if (isset($fC->cfpEndDate)) {
-            $cfpEndAt = \DateTime::createFromFormat('Y-m-d h:i:s', $fC->cfpEndDate.' 00:00:00');
-            $conference->setCfpEndAt($cfpEndAt);
-        }
-
-        return $conference;
     }
 }

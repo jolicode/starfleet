@@ -23,7 +23,7 @@ use Symfony\Component\Config\Definition\Exception\Exception;
 
 class JoindApiFetcher implements FetcherInterface
 {
-    use \FetcherTrait;
+    use HashConferenceTrait;
 
     const SOURCE = 'joind';
 
@@ -178,5 +178,10 @@ class JoindApiFetcher implements FetcherInterface
         }
 
         return $conference;
+    }
+
+    public function denormalizeConferences(array $rawConferences, string $source, string $tagName): \Generator
+    {
+        // TODO: Implement denormalizeConferences() method.
     }
 }

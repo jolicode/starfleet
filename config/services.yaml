@@ -2,11 +2,6 @@ parameters:
     locale: 'en'
 
 services:
-
-    _instanceof:
-        App\Fetcher\FetcherInterface:
-            tags: ['app.fetcher']
-
     _defaults:
         autowire: true
         autoconfigure: true
@@ -20,6 +15,11 @@ services:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
 
+    # @todo: check to use _instanceof for auto-tag FetcherInterface implementations
+    App\Fetcher\:
+        resource: '../src/Fetcher'
+        tags: ['app.fetcher']
+
     App\EventListener\DoctrineEventSubscriber:
         arguments:
             $router: '@router'
@@ -28,16 +28,6 @@ services:
     App\SlackNotifier:
         arguments:
             $webHookUrl: '%env(SLACK_WEB_HOOK_URL)%'
-
-    Http\Client\HttpClient:
-        alias: Http\Client\Curl\Client
-
-    Http\Client\Curl\Client: ~
-
-    Http\Message\MessageFactory:
-        alias: Nyholm\Psr7\Factory\MessageFactory
-
-    Nyholm\Psr7\Factory\MessageFactory: ~
 
     App\DataFixtures\ORM\:
         resource: '../src/DataFixtures/ORM'
@@ -49,4 +39,6 @@ services:
             - { name: twig.extension }
 
     App\Command\FetchConferencesCommand:
-        arguments: [!tagged app.fetcher]
+        arguments:
+            - !tagged app.fetcher
+            - '@doctrine'

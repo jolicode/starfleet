@@ -16,19 +16,21 @@
         "knpuniversity/oauth2-client-bundle": "^1.15",
         "league/oauth2-google": "^3.0",
         "myclabs/php-enum": "^1.6",
-        "nyholm/psr7": "^0.2.3",
-        "php-http/guzzle6-adapter": "^1.1",
         "php-translation/symfony-bundle": "^0.5.0",
         "sensio/framework-extra-bundle": "^5.2",
         "stof/doctrine-extensions-bundle": "^1.2",
         "symfony/asset": "^4.2",
         "symfony/console": "^4.2",
+        "symfony/contracts": "^1.1@dev",
         "symfony/debug-pack": "^1.0",
+        "symfony/dependency-injection": "^4.2",
         "symfony/dotenv": "^4.2",
         "symfony/flex": "^1.0",
         "symfony/framework-bundle": "^4.2",
+        "symfony/http-client": "^4.3@dev",
         "symfony/orm-pack": "^1.0",
         "symfony/profiler-pack": "^1.0",
+        "symfony/serializer": "^4.2",
         "symfony/swiftmailer-bundle": "^3.1",
         "symfony/translation": "^4.2",
         "symfony/twig-bundle": "^4.2",
@@ -82,8 +84,7 @@
     "extra": {
         "symfony": {
             "id": "01C0VZ6G7PR4N92Q4W9XRGN034",
-            "allow-contrib": true,
-            "require": "~4.2.0"
+            "allow-contrib": true
         }
     }
 }

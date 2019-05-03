@@ -16,4 +16,6 @@ interface FetcherInterface
     public function getUrl(): string;
 
     public function fetch(): array;
+
+    public function denormalizeConferences(array $rawConferences, string $source, string $tagName): \Generator;
 }
