@@ -14,12 +14,9 @@ namespace App\Fetcher;
 use App\Entity\Conference;
 use App\Entity\Tag;
 use App\Enum\TagEnum;
-use Behat\Transliterator\Transliterator;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Doctrine\RegistryInterface;
-use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -87,7 +84,7 @@ class JoindApiFetcher implements FetcherInterface
 
     public function getUrl(array $params = []): string
     {
-        return 'https://api.joind.in/v2.1/events?verbose=yes&resultsperpage=20&startdate=' . $params['startdate'] . '&tags[]=' . $params['tag'];
+        return 'https://api.joind.in/v2.1/events?verbose=yes&resultsperpage=20&startdate='.$params['startdate'].'&tags[]='.$params['tag'];
     }
 
     public function fetch(): array
@@ -109,7 +106,7 @@ class JoindApiFetcher implements FetcherInterface
 
             $data = json_decode($response->getContent(), true);
 
-            if ($data['meta']['total'] === 0) {
+            if (0 === $data['meta']['total']) {
                 continue;
             }
 

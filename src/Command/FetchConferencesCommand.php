@@ -13,7 +13,6 @@ namespace App\Command;
 
 use App\Entity\Conference;
 use App\Fetcher\FetcherInterface;
-use App\Fetcher\JoindApiFetcher;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -57,7 +56,7 @@ class FetchConferencesCommand extends Command
                 continue;
             }
 
-            $symfonyStyle->title(get_class($fetcher) . ' is running...');
+            $symfonyStyle->title(\get_class($fetcher).' is running...');
 
             $conferences = $fetcher->fetch();
 
