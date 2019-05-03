@@ -13,13 +13,10 @@ namespace App\Command;
 
 use App\Entity\Conference;
 use App\Fetcher\FetcherInterface;
-use Http\Client\HttpClient;
-use Http\Message\MessageFactory;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class FetchConferencesCommand extends Command
@@ -72,8 +69,8 @@ class FetchConferencesCommand extends Command
 
         $this->em->flush();
 
-        $output->writeln($newConferencesCount . ' newly added conference(s)');
-        $output->writeln($updatedConferencesCount . ' updated conference(s)');
+        $output->writeln($newConferencesCount.' newly added conference(s)');
+        $output->writeln($updatedConferencesCount.' updated conference(s)');
     }
 
     protected function updateExistingConference(Conference $existingConference, Conference $conference)

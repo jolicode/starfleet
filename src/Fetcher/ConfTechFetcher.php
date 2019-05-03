@@ -66,7 +66,7 @@ class ConfTechFetcher implements FetcherInterface
     private $logger;
     private $tagRepository;
 
-    public function __construct(RegistryInterface $doctrine, SerializerInterface $serializer ,LoggerInterface $logger)
+    public function __construct(RegistryInterface $doctrine, SerializerInterface $serializer, LoggerInterface $logger)
     {
         $this->em = $doctrine->getManager();
         // @todo replace with proper DI when http-client will be released as stable
@@ -89,13 +89,13 @@ class ConfTechFetcher implements FetcherInterface
         foreach ([date('Y'), date('Y', strtotime('+1 year'))] as $date) {
             // @todo: use enabled tags instead of all tags from enum
             foreach (array_combine(TagEnum::toArray(), self::TAGS_SYNONYMS) as $tagName => $tagSynonym) {
-                if ($tagSynonym === null) {
+                if (null === $tagSynonym) {
                     continue;
                 }
 
                 $response = $this->httpClient->request('GET', $this->getUrl(['date' => $date, 'tag' => $tagSynonym]));
 
-                if ($response->getStatusCode() === 404) {
+                if (404 === $response->getStatusCode()) {
                     $this->logger->error('Source URL returns 404', ['url' => $this->getUrl(), 'source' => self::SOURCE]);
                     continue;
                 }
@@ -114,7 +114,7 @@ class ConfTechFetcher implements FetcherInterface
     {
         foreach ($rawConferences as $rawConference) {
             $tag = $this->tagRepository->findOneBy(['name' => $tagName]);
-            $startDate = \DateTimeImmutable::createFromFormat('Y-m-d h:i:s', $rawConference['startDate'] . ' 00:00:00');
+            $startDate = \DateTimeImmutable::createFromFormat('Y-m-d h:i:s', $rawConference['startDate'].' 00:00:00');
 
             // In case of invalid startDate, we skip the conference. It will be handled again later.
             if (!$startDate) {
@@ -134,21 +134,21 @@ class ConfTechFetcher implements FetcherInterface
             $conference->setSiteUrl($rawConference['url']);
             $conference->addTag($tag);
 
-            if (array_key_exists('endDate', $rawConference)) {
-                $endDate = \DateTimeImmutable::createFromFormat('Y-m-d h:i:s', $rawConference['endDate'] . ' 00:00:00');
+            if (\array_key_exists('endDate', $rawConference)) {
+                $endDate = \DateTimeImmutable::createFromFormat('Y-m-d h:i:s', $rawConference['endDate'].' 00:00:00');
                 $conference->setEndAt($endDate);
             }
 
-            if (array_key_exists('description', $rawConference)) {
+            if (\array_key_exists('description', $rawConference)) {
                 $conference->setDescription($rawConference['description']);
             }
 
-            if (array_key_exists('cfpUrl', $rawConference)) {
+            if (\array_key_exists('cfpUrl', $rawConference)) {
                 $conference->setCfpUrl($rawConference['cfpUrl']);
             }
 
-            if (array_key_exists('cfpEndDate', $rawConference)) {
-                $cfpEndAt = \DateTimeImmutable::createFromFormat('Y-m-d h:i:s', $rawConference['cfpEndDate'] . ' 00:00:00');
+            if (\array_key_exists('cfpEndDate', $rawConference)) {
+                $cfpEndAt = \DateTimeImmutable::createFromFormat('Y-m-d h:i:s', $rawConference['cfpEndDate'].' 00:00:00');
                 $conference->setCfpEndAt($cfpEndAt);
             }
 

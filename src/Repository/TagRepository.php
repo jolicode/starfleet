@@ -11,7 +11,6 @@
 
 namespace App\Repository;
 
-use App\Entity\Tag;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping;
 use Psr\Log\LoggerInterface;

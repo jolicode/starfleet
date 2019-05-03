@@ -14,7 +14,6 @@ namespace App\Fetcher;
 use App\Entity\Conference;
 use App\Entity\Tag;
 use App\Enum\TagEnum;
-use Gedmo\Sluggable\Util\Urlizer;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Log\LoggerInterface;
