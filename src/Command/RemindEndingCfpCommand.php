@@ -37,7 +37,7 @@ class RemindEndingCfpCommand extends Command
 
     protected function configure()
     {
-        $this->setName('starfleet-cfp-remind-ending');
+        $this->setName('starfleet:conferences:remind-cfp-ending-soon');
         $this->setDescription('Trigger event for cfp ending soon');
     }
 

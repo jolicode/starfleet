@@ -18,7 +18,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
  * @ORM\Table(name="tag")
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="App\Repository\TagRepository")
  */
 class Tag
 {
@@ -40,6 +40,11 @@ class Tag
      * @ORM\ManyToMany(targetEntity="App\Entity\Conference", mappedBy="tags")
      */
     private $conferences;
+
+    /**
+     * @ORM\Column(name="selected", type="boolean")
+     */
+    private $selected = false;
 
     public function __construct()
     {
@@ -85,5 +90,15 @@ class Tag
     public function __toString(): string
     {
         return $this->getName() ?? (string) $this->id;
+    }
+
+    public function setSelected(bool $selected)
+    {
+        $this->selected = $selected;
+    }
+
+    public function isSelected()
+    {
+        return $this->selected;
     }
 }

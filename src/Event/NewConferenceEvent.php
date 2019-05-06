@@ -59,7 +59,11 @@ class NewConferenceEvent extends Event
 
         $endDateField = SlackNotifier::SHORT_FIELD;
         $endDateField['title'] = 'To  🕣';
-        $endDateField['value'] = $this->conference->getEndAt()->format('d F Y');
+        if (null !== $this->conference->getEndAt()) {
+            $endDateField['value'] = $this->conference->getEndAt()->format('d F Y');
+        } else {
+            $endDateField['value'] = 'Unknown';
+        }
         array_push($conferenceAttachment['fields'], $endDateField);
 
         $locationField = SlackNotifier::SHORT_FIELD;

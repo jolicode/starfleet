@@ -12,109 +12,128 @@
 namespace App\Command;
 
 use App\Entity\Conference;
-use App\Entity\Tag;
-use Gedmo\Sluggable\Util\Urlizer;
-use Http\Client\HttpClient;
-use Http\Message\MessageFactory;
+use App\Fetcher\FetcherInterface;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class FetchConferencesCommand extends Command
 {
-    const SALOON_URL = 'http://saloonapp.herokuapp.com/api/v1/conferences?tags=';
-
+    private $fetchers;
     private $em;
-    private $repository;
-    private $messageFactory;
-    private $client;
+    private $serializer;
+    private $conferenceRepository;
 
-    public function __construct(RegistryInterface $doctrine, MessageFactory $messageFactory, HttpClient $client)
+    public function __construct(iterable $fetchers, RegistryInterface $doctrine, SerializerInterface $serializer)
     {
+        $this->fetchers = $fetchers;
         $this->em = $doctrine->getManager();
-        $this->repository = $this->em->getRepository(Conference::class);
-
-        $this->messageFactory = $messageFactory;
-        $this->client = $client;
+        $this->serializer = $serializer;
+        $this->conferenceRepository = $this->em->getRepository(Conference::class);
 
         parent::__construct();
     }
 
     protected function configure()
     {
-        $this->setName('starfleet-conferences-fetch');
-        $this->setDescription('Fetch conferences from http://saloonapp.herokuapp.com/conferences');
+        $this->setName('starfleet:conferences:fetch');
+        $this->setDescription('Fetch conferences from Fetcher Classes');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $tags = $this->em->getRepository(Tag::class)->findAll();
-        $tagsList = implode(',', array_map(function ($tag) { return $tag->getName(); }, $tags));
+        $symfonyStyle = new SymfonyStyle($input, $output);
 
-        $source = Conference::SOURCE_SALOON;
         $newConferencesCount = 0;
+        $updatedConferencesCount = 0;
 
-        $response = $this->client->sendRequest($this->messageFactory->createRequest('GET', self::SALOON_URL.$tagsList));
-
-        $fetchedConferences = (array) json_decode($response->getBody()->getContents())->result;
-
-        foreach ($fetchedConferences as $fetchedConference) {
-            $slug = Urlizer::transliterate($fetchedConference->name);
-
-            $remoteId = $fetchedConference->id;
-
-            $conference = $this->repository->findOneBy([
-                'remoteId' => $remoteId,
-                'source' => $source,
-            ]);
-
-            if (!$conference) {
-                $conference = $this->repository->findOneBySlug($slug);
-
-                // Do not override a conference created by another source
-                if ($conference && $conference->getSource() !== $source) {
-                    continue;
-                }
+        /** @var FetcherInterface $fetcher */
+        foreach ($this->fetchers as $fetcher) {
+            if (!$fetcher->isActive()) {
+                continue;
             }
 
-            if (!$conference) {
-                $conference = new Conference();
-                $this->em->persist($conference);
-                ++$newConferencesCount;
-            }
+            $symfonyStyle->title(\get_class($fetcher).' is running...');
 
-            $conference->setSource($source);
-            $conference->setRemoteId($remoteId);
-            $conference->setSlug($slug);
-            $conference->setName($fetchedConference->name);
-            $conference->setLocation($fetchedConference->location->locality ?? ''.', '.$fetchedConference->location->country);
-            $conference->setStartAt(\DateTime::createFromFormat('Y-m-d', $fetchedConference->start));
-            $conference->setEndAt(\DateTime::createFromFormat('Y-m-d', $fetchedConference->end));
-            $conference->setSiteUrl($fetchedConference->siteUrl);
+            $conferences = $fetcher->fetch();
 
-            if (isset($fetchedConference->description)) {
-                $conference->setDescription($fetchedConference->description);
-            }
+            $progressBar = $symfonyStyle->createProgressBar(\count($conferences));
 
-            if (isset($fetchedConference->tags)) {
-                foreach ($fetchedConference->tags as $fetchedTag) {
-                    $tag = $this->em->getRepository(Tag::class)->findOneBy([
-                        'name' => $fetchedTag,
-                    ]);
+            foreach ($conferences as $conference) {
+                $existingConference = $this->conferenceRepository->findOneBy(['hash' => $conference->getHash()]);
 
-                    if ($tag instanceof Tag) {
-                        $conference->addTag($tag);
+                if ($existingConference instanceof Conference) {
+                    if ($this->updateExistingConference($existingConference, $conference)) {
+                        ++$updatedConferencesCount;
                     }
+                } else {
+                    ++$newConferencesCount;
+                    $this->em->persist($conference);
                 }
+
+                $progressBar->advance();
             }
 
-            if (isset($fetchedConference->cfp)) {
-                $conference->setCfpUrl($fetchedConference->cfp->siteUrl);
-                $conference->setCfpEndAt(\DateTime::createFromFormat('Y-m-d', $fetchedConference->cfp->end));
-            }
+            $progressBar->finish();
+            $symfonyStyle->write("\n\n");
+            unset($progressBar);
         }
 
         $this->em->flush();
+
+        $symfonyStyle->writeln("\n");
+        $symfonyStyle->success($newConferencesCount.' newly added conference(s)');
+        $symfonyStyle->success($updatedConferencesCount.' updated conference(s)');
+    }
+
+    protected function updateExistingConference(Conference $existingConference, Conference $conference): bool
+    {
+        $updated = false;
+
+        if ($conference->getDescription() !== $existingConference->getDescription()) {
+            $existingConference->setDescription($conference->getDescription());
+            $updated = true;
+        }
+
+        if ($conference->getLocation() !== $existingConference->getLocation()) {
+            $existingConference->setLocation($conference->getLocation());
+            $updated = true;
+        }
+
+        if ($conference->getStartAt() instanceof \DateTimeInterface && $existingConference->getStartAt() instanceof \DateTimeInterface) {
+            if ($conference->getStartAt()->format(\DateTime::ISO8601) !== $existingConference->getStartAt()->format(\DateTime::ISO8601)) {
+                $existingConference->setStartAt($conference->getStartAt());
+                $updated = true;
+            }
+        }
+
+        if ($conference->getEndAt() instanceof \DateTimeInterface && $existingConference->getEndAt() instanceof \DateTimeInterface) {
+            if ($conference->getEndAt()->format(\DateTime::ISO8601) !== $existingConference->getEndAt()->format(\DateTime::ISO8601)) {
+                $existingConference->setEndAt($conference->getEndAt());
+                $updated = true;
+            }
+        }
+
+        if ($conference->getCfpUrl() !== $existingConference->getCfpUrl()) {
+            $existingConference->setCfpUrl($conference->getCfpUrl());
+            $updated = true;
+        }
+
+        if ($conference->getCfpEndAt() instanceof \DateTimeInterface && $existingConference->getCfpEndAt() instanceof \DateTimeInterface) {
+            if ($conference->getCfpEndAt()->format(\DateTime::ISO8601) !== $existingConference->getCfpEndAt()->format(\DateTime::ISO8601)) {
+                $existingConference->setCfpEndAt($conference->getCfpEndAt());
+                $updated = true;
+            }
+        }
+
+        if ($conference->getSiteUrl() !== $existingConference->getSiteUrl()) {
+            $existingConference->setSiteUrl($conference->getSiteUrl());
+            $updated = true;
+        }
+
+        return $updated;
     }
 }

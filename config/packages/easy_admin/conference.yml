@@ -3,6 +3,7 @@ easy_admin:
         Conference:
             class: App\Entity\Conference
             list:
+                sort: ['cfpEndAt', 'DESC']
                 fields:
                     - { property: 'id', type: 'text' }
                     - { property: 'name', type: 'text' }

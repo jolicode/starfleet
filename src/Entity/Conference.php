@@ -25,7 +25,6 @@ class Conference
 {
     use TimestampableEntity;
 
-    const SOURCE_SALOON = 'saloon';
     const SOURCE_MANUAL = 'manual';
 
     /**
@@ -39,6 +38,11 @@ class Conference
      * @ORM\Column(name="remote_id", type="string", length=255, nullable=true)
      */
     private $remoteId;
+
+    /**
+     * @ORM\Column(name="hash", type="string", length=255, nullable=true, unique=true)
+     */
+    private $hash;
 
     /**
      * @ORM\Column(name="source", type="string", length=20)
@@ -72,7 +76,7 @@ class Conference
     private $startAt;
 
     /**
-     * @ORM\Column(name="end_at", type="datetime")
+     * @ORM\Column(name="end_at", type="datetime", nullable=true)
      */
     private $endAt;
 
@@ -137,6 +141,16 @@ class Conference
         return $this->remoteId;
     }
 
+    public function getHash(): ?string
+    {
+        return $this->hash;
+    }
+
+    public function setHash($hash): void
+    {
+        $this->hash = $hash;
+    }
+
     public function setSource(?string $source): self
     {
         $this->source = $source;
@@ -197,26 +211,26 @@ class Conference
         return $this->location;
     }
 
-    public function setStartAt(?\DateTime $startAt): self
+    public function setStartAt(?\DateTimeInterface $startAt): self
     {
         $this->startAt = $startAt;
 
         return $this;
     }
 
-    public function getStartAt(): ?\DateTime
+    public function getStartAt(): ?\DateTimeInterface
     {
         return $this->startAt;
     }
 
-    public function setEndAt(?\DateTime $endAt): self
+    public function setEndAt(?\DateTimeInterface $endAt): self
     {
         $this->endAt = $endAt;
 
         return $this;
     }
 
-    public function getEndAt(): ?\DateTime
+    public function getEndAt(): ?\DateTimeInterface
     {
         return $this->endAt;
     }
@@ -233,14 +247,14 @@ class Conference
         return $this->cfpUrl;
     }
 
-    public function setCfpEndAt(?\DateTime $cfpEndAt): self
+    public function setCfpEndAt(?\DateTimeInterface $cfpEndAt): self
     {
         $this->cfpEndAt = $cfpEndAt;
 
         return $this;
     }
 
-    public function getCfpEndAt(): ?\DateTime
+    public function getCfpEndAt(): ?\DateTimeInterface
     {
         return $this->cfpEndAt;
     }
