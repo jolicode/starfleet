@@ -4,7 +4,6 @@ easy_admin:
             class: App\Entity\Submit
             list:
                 fields:
-                    - { property: 'id', type: 'text' }
                     - { property: 'talk' }
                     - { property: 'conference' }
                     - { property: 'submittedAt', type: 'date' }
@@ -12,10 +11,10 @@ easy_admin:
                     - { property: 'users', type: 'array', label: 'Speakers' }
             form:
                 fields:
-                    - { type: 'group', css_class: 'col-sm-6', icon: 'pencil', label: 'Submit' }
+                    - { type: 'group', columns: 6, icon: 'pencil', label: 'Submit' }
                     - { property: 'talk', type: 'entity', type_options: { class: 'App\Entity\Talk' } }
                     - { property: 'conference', type: 'entity', type_options: { class: 'App\Entity\Conference' } }
                     - { property: 'submittedAt', 'type_options': { 'widget': 'single_text' } }
-                    - { type: 'group', css_class: 'col-sm-6', icon: 'cubes', label: 'Metadata' }
+                    - { type: 'group', columns: 6, icon: 'cubes', label: 'Metadata' }
                     - { property: 'status', type: 'choice', type_options: { choices: !php/const App\Entity\Submit::STATUSES, 'expanded': true, label_attr: { class: 'radio-inline' } } }
                     - { property: 'users', type: 'entity', type_options: { multiple: true, class: 'App\Entity\User' } }

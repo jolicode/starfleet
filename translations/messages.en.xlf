@@ -97,13 +97,13 @@
         <target>Talks we submitted</target>
       </segment>
     </unit>
-    <unit id="S5df14f.">
+    <unit id="cJ5teTv">
       <segment>
         <source>conferences.show.article_url.title</source>
         <target>We wrote a blog post</target>
       </segment>
     </unit>
-    <unit id="H3d1h3l">
+    <unit id="OMiyj82">
       <segment>
         <source>conferences.show.article_url.content</source>
         <target>Read our article about this conference.</target>
@@ -157,22 +157,28 @@
         <target>We did not submit any talk yet, but soon</target>
       </segment>
     </unit>
-    <unit id="Lg2s65ds">
+    <unit id="OIJBfCC">
       <segment>
         <source>conferences.list.live.title</source>
         <target>🔴 Live conferences! Find us there!</target>
       </segment>
     </unit>
-    <unit id="Lg2s65ds">
+    <unit id="mTr6ntT">
       <segment>
         <source>conferences.list.future.title</source>
         <target>Incoming conferences</target>
       </segment>
     </unit>
-    <unit id="J5ve2d5g">
+    <unit id="bj979D1">
       <segment>
         <source>conferences.list.past.title</source>
         <target>Past conferences</target>
+      </segment>
+    </unit>
+    <unit id="hfgu1xQ">
+      <segment>
+        <source>admin.conference.cfp_url.label</source>
+        <target>Go to CFP 👉</target>
       </segment>
     </unit>
   </file>

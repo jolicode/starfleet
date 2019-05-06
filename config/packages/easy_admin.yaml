@@ -4,14 +4,12 @@ imports:
 easy_admin:
     site_name: '🚀 Starfleet'
     design:
-        color_scheme: 'dark'
         brand_color: '#0C1A31'
-        form_theme: 'vertical'
         menu:
             - { entity: 'User', label: 'Users', icon: 'users' }
             - { entity: 'Conference', label: 'Conferences', icon: 'calendar' }
-            - { entity: 'Submit', label: 'Submits', icon: 'bullhorn' }
-            - { entity: 'Talk', label: 'Talks', icon: 'file' }
+            - { entity: 'Submit', label: 'Submits', icon: 'paper-plane' }
+            - { entity: 'Talk', label: 'Talks', icon: 'commenting' }
             - { entity: 'Tag', label: 'Tags', icon: 'tag' }
     formats:
         date: 'd/m/Y'

@@ -2,7 +2,7 @@ ARG PROJECT_NAME
 
 FROM ${PROJECT_NAME}_basephp
 
-RUN apk add --no-cache \
+RUN apk update && apk add --no-cache \
     curl \
     g++ \
     git \
