@@ -4,12 +4,11 @@ easy_admin:
             class: App\Entity\User
             list:
                 fields:
-                    - { property: 'id', type: 'text' }
                     - { property: 'name', type: 'text' }
                     - { property: 'email', type: 'email' }
                     - { property: 'submits' }
             form:
                 fields:
-                    - { type: 'group', css_class: 'col-sm-6', icon: 'pencil', label: 'User' }
+                    - { type: 'group', columns: 6, icon: 'pencil', label: 'User' }
                     - { property: 'name', type: 'text' }
                     - { property: 'email', type: 'email' }

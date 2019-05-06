@@ -25,10 +25,10 @@
         "prettier": "prettier --write \"assets/js/**/*.js\""
     },
     "dependencies": {
-        "bootstrap": "4.0.0",
+        "bootstrap": "^4.3",
         "font-awesome": "^4.7.0",
         "jquery": "^3.4.1",
-        "popper.js": "^1.12.9"
+        "popper.js": "^1.15"
     },
     "prettier": {
         "parser": "flow",

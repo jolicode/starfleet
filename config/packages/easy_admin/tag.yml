@@ -4,11 +4,10 @@ easy_admin:
             class: App\Entity\Tag
             list:
                 fields:
-                    - { property: 'id', type: 'text' }
                     - { property: 'name', type: 'text' }
                     - { property: 'conferences' }
                     - { property: 'selected'}
             form:
                 fields:
-                    - { type: 'group', css_class: 'col-sm-6', icon: 'pencil', label: 'Tag' }
+                    - { type: 'group', columns: 6, icon: 'pencil', label: 'Tag' }
                     - { property: 'name', type: 'text' }

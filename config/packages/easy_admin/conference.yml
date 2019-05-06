@@ -5,25 +5,23 @@ easy_admin:
             list:
                 sort: ['cfpEndAt', 'DESC']
                 fields:
-                    - { property: 'id', type: 'text' }
                     - { property: 'name', type: 'text' }
                     - { property: 'startAt', type: 'date' }
-                    - { property: 'cfpUrl', type: 'url' }
+                    - { property: 'cfpUrl', type: 'url', template: 'easy_admin/Conference/cfpUrl.html.twig' }
                     - { property: 'cfpEndAt', type: 'date' }
                     - { property: 'tags', type: 'array' }
-                    - { property: 'attended' }
             form:
                 fields:
-                    - { type: 'group', css_class: 'col-sm-6', icon: 'pencil', label: 'Conference' }
+                    - { type: 'group', columns: 4, icon: 'pencil', label: 'Conference' }
                     - { property: 'name', type: 'text' }
                     - { property: 'location', type: 'text' }
                     - { property: 'startAt', type: 'date', 'type_options': { 'widget': 'single_text' } }
                     - { property: 'endAt', type: 'date', 'type_options': { 'widget': 'single_text' } }
                     - { property: 'siteUrl', type: 'url' }
-                    - { type: 'group', css_class: 'col-sm-6', icon: 'bullhorn', label: 'CFP' }
+                    - { type: 'group', columns: 4, icon: 'bullhorn', label: 'CFP' }
                     - { property: 'cfpUrl', type: 'url' }
                     - { property: 'cfpEndAt', type: 'date', 'type_options': { 'widget': 'single_text' } }
-                    - { type: 'group', css_class: 'col-sm-6', icon: 'cubes', label: 'Metadata' }
+                    - { type: 'group', columns: 4, icon: 'cubes', label: 'Metadata' }
                     - { property: 'tags' }
                     - { property: 'articleUrl', type: 'url' }
                     - { property: 'attended' }
