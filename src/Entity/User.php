@@ -18,7 +18,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * @ORM\Table(name="user")
+ * @ORM\Table(name="users")
  * @ORM\Entity()
  */
 class User implements UserInterface, \Serializable

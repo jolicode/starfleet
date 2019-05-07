@@ -2,6 +2,7 @@ version: '3'
 
 volumes:
     mysql-data: {}
+    database-data: {}
 
 services:
     router:
@@ -33,10 +34,25 @@ services:
             - "traefik.frontend.rule=Host:${PROJECT_HOSTNAMES}"
 
     mysql:
-        build: services/mysql
+        image: mariadb:10.4
+        environment:
+            - MYSQL_ALLOW_EMPTY_PASSWORD=1
         volumes:
             - "mysql-data:/var/lib/mysql"
         labels:
             - "traefik.enable=false"
         ports:
           - "3306:3306"
+
+    database:
+        image: postgres:11-alpine
+        environment:
+            - POSTGRES_USER=starfleet
+            - POSTGRES_PASSWORD=starfleet
+            - POSTGRES_DB=starfleet
+        volumes:
+            - "database-data:/var/lib/postgresql/data"
+        labels:
+            - "traefik.enable=false"
+        ports:
+            - "5432:5432"

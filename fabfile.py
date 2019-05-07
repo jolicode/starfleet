@@ -159,6 +159,7 @@ def tests():
     docker_compose_run('SYMFONY_DEPRECATIONS_HELPER=disabled ./vendor/bin/simple-phpunit', no_deps=True)
 
 
+
 @task
 @with_builder
 def builder():
