@@ -59,7 +59,7 @@ class Participation
     private $needTicket = true;
 
     /**
-     * @ORM\Column(type="json_array")
+     * @ORM\Column(type="json")
      */
     private $marking = [];
 
