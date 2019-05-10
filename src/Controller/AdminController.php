@@ -45,13 +45,7 @@ class AdminController extends EasyAdminController
         $participation = $this->request->attributes->get('easyadmin')['item'];
         $workflow = $this->workflowRegistry->get($participation, 'participation_request');
 
-        $enabledTransitions = array_map(function (Transition $transition) {
-            return $transition->getName();
-        }, $workflow->getEnabledTransitions($participation));
-
-        $transitionToApply = array_intersect(ParticipationTransition::ACCEPT_TRANSITIONS, $enabledTransitions);
-
-        $workflow->apply($participation, reset($transitionToApply));
+        $workflow->apply($participation, ParticipationTransition::ACCEPT);
 
         $this->doctrineRegistry->getManager()->flush();
 
@@ -151,13 +145,7 @@ class AdminController extends EasyAdminController
         $participation = $this->request->attributes->get('easyadmin')['item'];
         $workflow = $this->workflowRegistry->get($participation, 'participation_request');
 
-        $enabledTransitions = array_map(function (Transition $transition) {
-            return $transition->getName();
-        }, $workflow->getEnabledTransitions($participation));
-
-        $transitionToApply = array_intersect(ParticipationTransition::REJECT_TRANSITIONS, $enabledTransitions);
-
-        $workflow->apply($participation, reset($transitionToApply));
+        $workflow->apply($participation, ParticipationTransition::REJECT);
 
         $this->doctrineRegistry->getManager()->flush();
 
@@ -177,13 +165,7 @@ class AdminController extends EasyAdminController
         $participation = $this->request->attributes->get('easyadmin')['item'];
         $workflow = $this->workflowRegistry->get($participation, 'participation_request');
 
-        $enabledTransitions = array_map(function (Transition $transition) {
-            return $transition->getName();
-        }, $workflow->getEnabledTransitions($participation));
-
-        $transitionToApply = array_intersect(ParticipationTransition::CANCEL_TRANSITIONS, $enabledTransitions);
-
-        $workflow->apply($participation, reset($transitionToApply));
+        $workflow->apply($participation, ParticipationTransition::CANCEL);
 
         $this->doctrineRegistry->getManager()->flush();
 

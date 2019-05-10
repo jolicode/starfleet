@@ -1,8 +1,7 @@
 version: '3'
 
 volumes:
-    mysql-data: {}
-    database-data: {}
+    postgres-data: {}
 
 services:
     router:
@@ -33,7 +32,7 @@ services:
             - "traefik.frontend.entryPoints=https"
             - "traefik.frontend.rule=Host:${PROJECT_HOSTNAMES}"
 
-    database:
+    postgres:
         image: postgres:11-alpine
         environment:
             - POSTGRES_USER=starfleet

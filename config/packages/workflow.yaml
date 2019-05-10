@@ -23,19 +23,19 @@ framework:
                 - !php/const App\Enum\Workflow\Place\Participation::CANCELLED
 
             transitions:
-                !php/const App\Enum\Workflow\Transition\Participation::ACCEPT:
-                     from: !php/const App\Enum\Workflow\Place\Participation::PENDING
-                     to: !php/const App\Enum\Workflow\Place\Participation::ACCEPTED
-                     metadata:
+                -   name: !php/const App\Enum\Workflow\Transition\Participation::ACCEPT
+                    from: !php/const App\Enum\Workflow\Place\Participation::PENDING
+                    to: !php/const App\Enum\Workflow\Place\Participation::ACCEPTED
+                    metadata:
                          title: 'Accept'
 
-                !php/const App\Enum\Workflow\Transition\Participation::ACCEPT_FROM_CANCELLED:
-                     from: !php/const App\Enum\Workflow\Place\Participation::CANCELLED
-                     to: !php/const App\Enum\Workflow\Place\Participation::ACCEPTED
-                     metadata:
+                -   name: !php/const App\Enum\Workflow\Transition\Participation::ACCEPT
+                    from: !php/const App\Enum\Workflow\Place\Participation::CANCELLED
+                    to: !php/const App\Enum\Workflow\Place\Participation::ACCEPTED
+                    metadata:
                          title: 'Accept'
 
-                !php/const APP\Enum\Workflow\Transition\Participation::BUY_TICKET:
+                -   name: !php/const APP\Enum\Workflow\Transition\Participation::BUY_TICKET
                     from: !php/const App\Enum\Workflow\Place\Participation::ACCEPTED
                     to:
                         - !php/const App\Enum\Workflow\Place\Participation::ACCEPTED
@@ -43,7 +43,7 @@ framework:
                     metadata:
                         title: 'Ticket bought'
 
-                !php/const APP\Enum\Workflow\Transition\Participation::RESERVE_TRANSPORT:
+                -   name: !php/const APP\Enum\Workflow\Transition\Participation::RESERVE_TRANSPORT
                     from: !php/const App\Enum\Workflow\Place\Participation::ACCEPTED
                     to:
                         - !php/const App\Enum\Workflow\Place\Participation::ACCEPTED
@@ -51,7 +51,7 @@ framework:
                     metadata:
                         title: 'Transport reserved'
 
-                !php/const APP\Enum\Workflow\Transition\Participation::BOOK_HOTEL:
+                -   name: !php/const APP\Enum\Workflow\Transition\Participation::BOOK_HOTEL
                     from: !php/const App\Enum\Workflow\Place\Participation::ACCEPTED
                     to:
                         - !php/const App\Enum\Workflow\Place\Participation::ACCEPTED
@@ -59,39 +59,34 @@ framework:
                     metadata:
                         title: 'Hotel booked'
 
-                !php/const App\Enum\Workflow\Transition\Participation::VALIDATE:
-                     from:
-                         - !php/const App\Enum\Workflow\Place\Participation::TICKET_BOUGHT
-                         - !php/const App\Enum\Workflow\Place\Participation::TRANSPORT_RESERVED
-                         - !php/const App\Enum\Workflow\Place\Participation::HOTEL_BOOKED
-                     to: !php/const App\Enum\Workflow\Place\Participation::VALIDATED
-                     metadata:
-                         title: 'Validate'
+                -   name: !php/const App\Enum\Workflow\Transition\Participation::VALIDATE
+                    from:
+                        - !php/const App\Enum\Workflow\Place\Participation::TICKET_BOUGHT
+                        - !php/const App\Enum\Workflow\Place\Participation::TRANSPORT_RESERVED
+                        - !php/const App\Enum\Workflow\Place\Participation::HOTEL_BOOKED
+                    to: !php/const App\Enum\Workflow\Place\Participation::VALIDATED
+                    metadata:
+                        title: 'Validate'
 
-                !php/const App\Enum\Workflow\Transition\Participation::REJECT:
+                -   name: !php/const App\Enum\Workflow\Transition\Participation::REJECT
                     from: !php/const App\Enum\Workflow\Place\Participation::PENDING
                     to: !php/const App\Enum\Workflow\Place\Participation::REJECTED
                     metadata:
                         title: 'Reject'
 
-                !php/const App\Enum\Workflow\Transition\Participation::REJECT_FROM_ACCEPTED:
+                -   name: !php/const App\Enum\Workflow\Transition\Participation::REJECT
                     from: !php/const App\Enum\Workflow\Place\Participation::ACCEPTED
                     to: !php/const App\Enum\Workflow\Place\Participation::REJECTED
                     metadata:
                         title: 'Reject'
 
-                !php/const App\Enum\Workflow\Transition\Participation::CANCEL:
-                     from: !php/const App\Enum\Workflow\Place\Participation::ACCEPTED
-                     to: !php/const App\Enum\Workflow\Place\Participation::CANCELLED
-                     metadata:
-                         title: 'Cancel'
-                !php/const App\Enum\Workflow\Transition\Participation::CANCEL_FROM_REJECTED:
-                     from: !php/const App\Enum\Workflow\Place\Participation::REJECTED
-                     to: !php/const App\Enum\Workflow\Place\Participation::CANCELLED
-                     metadata:
-                         title: 'Cancel'
-                !php/const App\Enum\Workflow\Transition\Participation::CANCEL_FROM_VALIDATED:
-                     from: !php/const App\Enum\Workflow\Place\Participation::VALIDATED
-                     to: !php/const App\Enum\Workflow\Place\Participation::CANCELLED
-                     metadata:
-                         title: 'Cancel'
+                -   name: !php/const App\Enum\Workflow\Transition\Participation::CANCEL
+                    from: !php/const App\Enum\Workflow\Place\Participation::ACCEPTED
+                    to: !php/const App\Enum\Workflow\Place\Participation::CANCELLED
+                    metadata:
+                        title: 'Cancel'
+                -   name: !php/const App\Enum\Workflow\Transition\Participation::CANCEL
+                    from: !php/const App\Enum\Workflow\Place\Participation::VALIDATED
+                    to: !php/const App\Enum\Workflow\Place\Participation::CANCELLED
+                    metadata:
+                        title: 'Cancel'
