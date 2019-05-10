@@ -10,83 +10,110 @@ framework:
                     - 'marking'
             supports:
                 - App\Entity\Participation
-            initial_marking: [!php/const App\Enum\Workflow\Place\Participation::PENDING]
+            initial_marking: [pending]
 
             places:
-                - !php/const App\Enum\Workflow\Place\Participation::PENDING
-                - !php/const App\Enum\Workflow\Place\Participation::ACCEPTED
-                - !php/const App\Enum\Workflow\Place\Participation::REJECTED
-                - !php/const App\Enum\Workflow\Place\Participation::TICKET_BOUGHT
-                - !php/const App\Enum\Workflow\Place\Participation::TRANSPORT_RESERVED
-                - !php/const App\Enum\Workflow\Place\Participation::HOTEL_BOOKED
-                - !php/const App\Enum\Workflow\Place\Participation::VALIDATED
-                - !php/const App\Enum\Workflow\Place\Participation::CANCELLED
+                - pending
+                - rejected
+                - waiting for ticket
+                - waiting for transport
+                - waiting for hotel
+                - ticket bought
+                - transport reserved
+                - hotel booked
+                - validated
+                - cancelled
 
             transitions:
                 -   name: !php/const App\Enum\Workflow\Transition\Participation::ACCEPT
-                    from: !php/const App\Enum\Workflow\Place\Participation::PENDING
-                    to: !php/const App\Enum\Workflow\Place\Participation::ACCEPTED
+                    from: pending
+                    to:
+                        - waiting for ticket
+                        - waiting for transport
+                        - waiting for hotel
                     metadata:
-                         title: 'Accept'
+                        title: 'Accept'
 
-                -   name: !php/const App\Enum\Workflow\Transition\Participation::ACCEPT
-                    from: !php/const App\Enum\Workflow\Place\Participation::CANCELLED
-                    to: !php/const App\Enum\Workflow\Place\Participation::ACCEPTED
-                    metadata:
-                         title: 'Accept'
+#                -   name: !php/const App\Enum\Workflow\Transition\Participation::ACCEPT
+#                    from: rejected
+#                    to:
+#                        - waiting for ticket
+#                        - waiting for transport
+#                        - waiting for hotel
+#                    metadata:
+#                        title: 'Accept'
+
+#                -   name: !php/const App\Enum\Workflow\Transition\Participation::ACCEPT
+#                    from: cancelled
+#                    to:
+#                        - waiting for ticket
+#                        - waiting for transport
+#                        - waiting for hotel
+#                    metadata:
+#                        title: 'Accept'
 
                 -   name: !php/const APP\Enum\Workflow\Transition\Participation::BUY_TICKET
-                    from: !php/const App\Enum\Workflow\Place\Participation::ACCEPTED
+                    from: waiting for ticket
                     to:
-                        - !php/const App\Enum\Workflow\Place\Participation::ACCEPTED
-                        - !php/const App\Enum\Workflow\Place\Participation::TICKET_BOUGHT
+                        - ticket bought
                     metadata:
                         title: 'Ticket bought'
 
                 -   name: !php/const APP\Enum\Workflow\Transition\Participation::RESERVE_TRANSPORT
-                    from: !php/const App\Enum\Workflow\Place\Participation::ACCEPTED
+                    from: waiting for transport
                     to:
-                        - !php/const App\Enum\Workflow\Place\Participation::ACCEPTED
-                        - !php/const App\Enum\Workflow\Place\Participation::TRANSPORT_RESERVED
+                        - transport reserved
                     metadata:
                         title: 'Transport reserved'
 
                 -   name: !php/const APP\Enum\Workflow\Transition\Participation::BOOK_HOTEL
-                    from: !php/const App\Enum\Workflow\Place\Participation::ACCEPTED
+                    from: waiting for hotel
                     to:
-                        - !php/const App\Enum\Workflow\Place\Participation::ACCEPTED
-                        - !php/const App\Enum\Workflow\Place\Participation::HOTEL_BOOKED
+                        - hotel booked
                     metadata:
                         title: 'Hotel booked'
 
                 -   name: !php/const App\Enum\Workflow\Transition\Participation::VALIDATE
                     from:
-                        - !php/const App\Enum\Workflow\Place\Participation::TICKET_BOUGHT
-                        - !php/const App\Enum\Workflow\Place\Participation::TRANSPORT_RESERVED
-                        - !php/const App\Enum\Workflow\Place\Participation::HOTEL_BOOKED
-                    to: !php/const App\Enum\Workflow\Place\Participation::VALIDATED
+                        - ticket bought
+                        - transport reserved
+                        - hotel booked
+                    to: validated
                     metadata:
                         title: 'Validate'
 
-                -   name: !php/const App\Enum\Workflow\Transition\Participation::REJECT
-                    from: !php/const App\Enum\Workflow\Place\Participation::PENDING
-                    to: !php/const App\Enum\Workflow\Place\Participation::REJECTED
+                -   name: !php/const App\Enum\Workflow\Transition\Participation::CANCEL
+                    from:
+                        - ticket bought
+                        - transport reserved
+                        - hotel booked
+                    to: cancelled
                     metadata:
-                        title: 'Reject'
+                        title: 'Cancel'
 
                 -   name: !php/const App\Enum\Workflow\Transition\Participation::REJECT
-                    from: !php/const App\Enum\Workflow\Place\Participation::ACCEPTED
-                    to: !php/const App\Enum\Workflow\Place\Participation::REJECTED
+                    from: pending
+                    to: rejected
                     metadata:
                         title: 'Reject'
 
                 -   name: !php/const App\Enum\Workflow\Transition\Participation::CANCEL
-                    from: !php/const App\Enum\Workflow\Place\Participation::ACCEPTED
-                    to: !php/const App\Enum\Workflow\Place\Participation::CANCELLED
+                    from: waiting for ticket
+                    to: cancelled
                     metadata:
                         title: 'Cancel'
                 -   name: !php/const App\Enum\Workflow\Transition\Participation::CANCEL
-                    from: !php/const App\Enum\Workflow\Place\Participation::VALIDATED
-                    to: !php/const App\Enum\Workflow\Place\Participation::CANCELLED
+                    from: waiting for transport
+                    to: cancelled
+                    metadata:
+                        title: 'Cancel'
+                -   name: !php/const App\Enum\Workflow\Transition\Participation::CANCEL
+                    from: waiting for hotel
+                    to: cancelled
+                    metadata:
+                        title: 'Cancel'
+                -   name: !php/const App\Enum\Workflow\Transition\Participation::CANCEL
+                    from: validated
+                    to: cancelled
                     metadata:
                         title: 'Cancel'

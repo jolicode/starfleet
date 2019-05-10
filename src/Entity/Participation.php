@@ -65,7 +65,7 @@ class Participation
 
     public function __construct()
     {
-        $this->marking = [ParticipationPlace::PENDING => 1];
+        $this->marking = ['pending' => 1];
     }
 
     public function getId(): ?int
