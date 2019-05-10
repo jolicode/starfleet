@@ -121,6 +121,15 @@ def migrate():
 
 @task
 @with_builder
+def migration():
+    """
+    Generate a diff migration
+    """
+    docker_compose_run('bin/console make:migration --no-interaction', no_deps=True)
+
+
+@task
+@with_builder
 def fixtures():
     """
     Load fixtures into database
@@ -157,7 +166,6 @@ def tests():
     """
     docker_compose_run('bin/console doctrine:fixtures:load --no-interaction', no_deps=True)
     docker_compose_run('SYMFONY_DEPRECATIONS_HELPER=disabled ./vendor/bin/simple-phpunit', no_deps=True)
-
 
 
 @task

@@ -6,7 +6,7 @@ easy_admin:
                 fields:
                     - { property: 'name', type: 'text' }
                     - { property: 'conferences' }
-                    - { property: 'selected'}
+                    - { property: 'selected' }
             form:
                 fields:
                     - { type: 'group', columns: 6, icon: 'pencil', label: 'Tag' }

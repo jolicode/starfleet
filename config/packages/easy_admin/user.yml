@@ -12,3 +12,13 @@ easy_admin:
                     - { type: 'group', columns: 6, icon: 'pencil', label: 'User' }
                     - { property: 'name', type: 'text' }
                     - { property: 'email', type: 'email' }
+                    - { type: 'group', columns: 6, icon: 'lock', label: 'Roles' }
+                    -   property: roles
+                        role: ROLE_ADMIN
+                        type: choice
+                        type_options:
+                            expanded: true
+                            multiple: true
+                            choices:
+                                Admin: ROLE_ADMIN
+                                User: ROLE_USER

@@ -181,5 +181,65 @@
         <target>Go to CFP 👉</target>
       </segment>
     </unit>
+    <unit id="58cSBN9">
+      <segment>
+        <source>action.accept</source>
+        <target>Accept</target>
+      </segment>
+    </unit>
+    <unit id="u2e0BTR">
+      <segment>
+        <source>action.reject</source>
+        <target>Reject</target>
+      </segment>
+    </unit>
+    <unit id="txWMTy2">
+      <segment>
+        <source>action.ticket bought</source>
+        <target>Ticket</target>
+      </segment>
+    </unit>
+    <unit id="BiTIRhC">
+      <segment>
+        <source>action.transport reserved</source>
+        <target>Transport</target>
+      </segment>
+    </unit>
+    <unit id="cH5Vhf1">
+      <segment>
+        <source>action.hotel booked</source>
+        <target>Hotel</target>
+      </segment>
+    </unit>
+    <unit id="FH1Y5_p">
+      <segment>
+        <source>ticket_bought</source>
+        <target>Ticket bought</target>
+      </segment>
+    </unit>
+    <unit id="otuAQjX">
+      <segment>
+        <source>transport_reserved</source>
+        <target>Transport reserved</target>
+      </segment>
+    </unit>
+    <unit id="ZYBLvto">
+      <segment>
+        <source>hotel_booked</source>
+        <target>Hotel booked</target>
+      </segment>
+    </unit>
+    <unit id="qQSQ0H.">
+      <segment>
+        <source>action.validate</source>
+        <target>Validate</target>
+      </segment>
+    </unit>
+    <unit id="4_Suw3N">
+      <segment>
+        <source>validated</source>
+        <target>Validated</target>
+      </segment>
+    </unit>
   </file>
 </xliff>

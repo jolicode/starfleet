@@ -1,4 +1,12 @@
 App\Entity\User:
+    admin:
+        name: 'ADMIN'
+        email: 'admin@starfleet.app'
+        bio: <sentence()>
+        createdAt: <dateTimeBetween('2016-01-01', '2017-01-01')>
+        updatedAt: '@self->createdAt'
+        __calls:
+            - addRole: ['ROLE_ADMIN']
     user_{1..10}:
         name: <name()>
         email: <email()>

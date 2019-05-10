@@ -1,0 +1,3 @@
+{% for marking in value|keys %}
+    {{ marking|trans ~ (not loop.last ? ',') }}
+{% endfor %}
