@@ -20,7 +20,6 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Workflow\Registry as WorkflowRegistry;
-use Symfony\Component\Workflow\Transition;
 
 class AdminController extends EasyAdminController
 {

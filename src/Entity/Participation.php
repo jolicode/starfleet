@@ -11,7 +11,6 @@
 
 namespace App\Entity;
 
-use App\Enum\Workflow\Place\Participation as ParticipationPlace;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
