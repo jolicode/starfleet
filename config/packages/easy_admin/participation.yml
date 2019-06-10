@@ -1,0 +1,25 @@
+easy_admin:
+    entities:
+        Participation:
+            class: App\Entity\Participation
+            disabled_actions: ['show']
+            templates:
+                list: 'easy_admin/Participation/list.html.twig'
+            list:
+                fields:
+                    - { property: 'conference' }
+                    - { property: 'participant' }
+                    - { property: 'asSpeaker' }
+                    - { property: 'needTransport' }
+                    - { property: 'needHotel' }
+                    - { property: 'needTicket' }
+                    - { property: 'marking', label: 'Status', template: 'easy_admin/Participation/marking.html.twig' }
+            form:
+                fields:
+                    - { type: 'group', columns: 6, icon: 'id-badge', label: 'Participation' }
+                    - { property: 'conference' }
+                    - { property: 'participant' }
+                    - { property: 'asSpeaker' }
+                    - { property: 'needTransport' }
+                    - { property: 'needHotel' }
+                    - { property: 'needTicket' }

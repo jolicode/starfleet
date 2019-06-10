@@ -1,0 +1,47 @@
+{% extends '@EasyAdmin/default/list.html.twig' %}
+
+{% block item_actions %}
+    {% set transition_action_icons = {
+        'accept' : 'check',
+        'reject' : 'times',
+        'cancel' : 'times-circle',
+        'ticket bought' : 'ticket',
+        'transport reserved' : 'plane',
+        'hotel booked' : 'bed',
+        'validate' : 'check-circle',
+    } %}
+
+    {% set _transition_actions = {} %}
+    {% for transition in workflow_transitions(item) %}
+        {% set transition_title = workflow_metadata(item, 'title', transition) %}
+        {% set _transition_actions = _transition_actions|merge({
+            (transition_title|lower) : {
+                name: transition.name,
+                type: 'method',
+                label: 'action.' ~ transition_title|lower,
+                title: transition_title,
+                css_class: transition_title == 'Cancel' ? 'text-danger action-show' : 'action-show',
+                icon: transition_action_icons[transition_title|lower] ?? 'circle',
+                target: '_self',
+            }
+        }) %}
+    {% endfor %}
+
+    {{ include('@EasyAdmin/default/includes/_actions.html.twig', {
+        actions: _transition_actions,
+        request_parameters: _request_parameters,
+        translation_domain: _entity_config.translation_domain,
+        trans_parameters: _trans_parameters,
+        item_id: _item_id,
+        item: item
+    }, with_context = false) }}
+
+    {{ include('easy_admin/Participation/includes/_actions_dropdown.html.twig', {
+        actions: _list_item_actions,
+        request_parameters: _request_parameters,
+        translation_domain: _entity_config.translation_domain,
+        trans_parameters: _trans_parameters,
+        item_id: _item_id,
+        item: item
+    }, with_context = false) }}
+{% endblock item_actions %}

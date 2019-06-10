@@ -80,9 +80,9 @@ class FetchConferencesCommand extends Command
             $progressBar->finish();
             $symfonyStyle->write("\n\n");
             unset($progressBar);
-        }
 
-        $this->em->flush();
+            $this->em->flush();
+        }
 
         $symfonyStyle->writeln("\n");
         $symfonyStyle->success($newConferencesCount.' newly added conference(s)');

@@ -8,6 +8,7 @@ easy_admin:
         menu:
             - { entity: 'User', label: 'Users', icon: 'users' }
             - { entity: 'Conference', label: 'Conferences', icon: 'calendar' }
+            - { entity: 'Participation', label: 'Participations', icon: 'id-badge' }
             - { entity: 'Submit', label: 'Submits', icon: 'paper-plane' }
             - { entity: 'Talk', label: 'Talks', icon: 'commenting' }
             - { entity: 'Tag', label: 'Tags', icon: 'tag' }
@@ -19,4 +20,4 @@ easy_admin:
         actions:
             - { name: 'show', icon: 'eye' }
             - { name: 'edit', icon: 'pencil' }
-            - { name: 'delete', icon: 'remove' }
+            - { name: 'delete', icon: 'trash' }

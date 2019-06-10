@@ -1,4 +1,7 @@
 {
+    "alterphp/easyadmin-extension-bundle": {
+        "version": "v2.1.1"
+    },
     "behat/transliterator": {
         "version": "v1.2.0"
     },
@@ -212,9 +215,6 @@
     "psr/log": {
         "version": "1.0.2"
     },
-    "psr/simple-cache": {
-        "version": "1.0.1"
-    },
     "ralouphie/getallheaders": {
         "version": "2.0.5"
     },
@@ -343,6 +343,18 @@
     },
     "symfony/intl": {
         "version": "v3.4.1"
+    },
+    "symfony/maker-bundle": {
+        "version": "1.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "1.0",
+            "ref": "fadbfe33303a76e25cb63401050439aa9b1a9c7f"
+        }
+    },
+    "symfony/mime": {
+        "version": "v4.3.0-beta1"
     },
     "symfony/monolog-bridge": {
         "version": "v3.4.1"
@@ -511,6 +523,18 @@
             "version": "1.0",
             "ref": "9954e3835ce82fee2682be8501ce0511bb867812"
         }
+    },
+    "symfony/workflow": {
+        "version": "3.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "3.3",
+            "ref": "7c8798612bf94fbe4cb75056a4cd7ea3a9183698"
+        },
+        "files": [
+            "config/packages/workflow.yaml"
+        ]
     },
     "symfony/yaml": {
         "version": "v3.4.1"

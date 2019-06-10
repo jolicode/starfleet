@@ -18,7 +18,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * @ORM\Table(name="user")
+ * @ORM\Table(name="users")
  * @ORM\Entity()
  */
 class User implements UserInterface, \Serializable
@@ -57,9 +57,20 @@ class User implements UserInterface, \Serializable
      */
     private $submits;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Participation", mappedBy="participant")
+     */
+    private $participations;
+
+    /**
+     * @ORM\Column(type="json")
+     */
+    private $roles = [];
+
     public function __construct()
     {
         $this->submits = new ArrayCollection();
+        $this->participations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -141,7 +152,20 @@ class User implements UserInterface, \Serializable
 
     public function getRoles(): array
     {
-        return ['ROLE_USER'];
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    public function addRole(string $role): self
+    {
+        if (!\in_array($role, $this->roles)) {
+            $this->roles[] = $role;
+        }
+
+        return $this;
     }
 
     public function getPassword()
@@ -178,5 +202,36 @@ class User implements UserInterface, \Serializable
             $this->id,
             $this->email,
             $this->googleId) = unserialize($serialized);
+    }
+
+    /**
+     * @return Collection|Participation[]
+     */
+    public function getParticipations(): Collection
+    {
+        return $this->participations;
+    }
+
+    public function addParticipation(Participation $participation): self
+    {
+        if (!$this->participations->contains($participation)) {
+            $this->participations[] = $participation;
+            $participation->setParticipant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeParticipation(Participation $participation): self
+    {
+        if ($this->participations->contains($participation)) {
+            $this->participations->removeElement($participation);
+            // set the owning side to null (unless already changed)
+            if ($participation->getParticipant() === $this) {
+                $participation->setParticipant(null);
+            }
+        }
+
+        return $this;
     }
 }

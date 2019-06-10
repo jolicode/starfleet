@@ -2,6 +2,10 @@ parameters:
     locale: 'en'
 
 services:
+    _instanceof:
+        App\Fetcher\FetcherInterface:
+            tags: ['app.fetcher']
+
     _defaults:
         autowire: true
         autoconfigure: true
@@ -14,11 +18,6 @@ services:
     App\Controller\:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
-
-    # @todo: check to use _instanceof for auto-tag FetcherInterface implementations
-    App\Fetcher\:
-        resource: '../src/Fetcher'
-        tags: ['app.fetcher']
 
     App\EventListener\DoctrineEventSubscriber:
         arguments:

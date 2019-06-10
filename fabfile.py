@@ -121,6 +121,15 @@ def migrate():
 
 @task
 @with_builder
+def migration():
+    """
+    Generate a diff migration
+    """
+    docker_compose_run('bin/console make:migration --no-interaction', no_deps=True)
+
+
+@task
+@with_builder
 def fixtures():
     """
     Load fixtures into database
