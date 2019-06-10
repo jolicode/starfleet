@@ -114,7 +114,7 @@ class Conference
     /**
      * TODO: remove when attendees tracking is implemented.
      *
-     * @ORM\Column(name="attended", type="boolean")
+     * @ORM\Column(name="attended", type="boolean", nullable=true)
      */
     private $attended = false;
 
