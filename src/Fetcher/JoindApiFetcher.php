@@ -110,26 +110,25 @@ class JoindApiFetcher implements FetcherInterface
                 continue;
             }
 
-            $fetchedConferences = $this->denormalizeConferences($data['events'], self::SOURCE, $tagName);
+            $tag = $this->tagRepository->findOneBy([
+                'name' => $tagName,
+                'selected' => true,
+            ]);
+
+            if (!$tag instanceof Tag) {
+                continue;
+            }
+
+            $fetchedConferences = $this->denormalizeConferences($data['events'], self::SOURCE, $tag);
             $conferences = array_merge($conferences, iterator_to_array($fetchedConferences));
         }
 
         return $conferences;
     }
 
-    public function denormalizeConferences(array $rawConferences, string $source, string $tagName): \Generator
+    public function denormalizeConferences(array $rawConferences, string $source, Tag $tag): \Generator
     {
         foreach ($rawConferences as $rawConference) {
-            $tag = $this->tagRepository->findOneBy(['name' => $tagName]);
-
-            if (!$tag) {
-                $tag = new Tag();
-                $tag->setName($tagName);
-                $tag->setSelected(true);
-
-                $this->em->persist($tag);
-            }
-
             $startDate = \DateTimeImmutable::createFromFormat(\DateTime::ISO8601, $rawConference['start_date']);
 
             // In case of invalid startDate, we skip the conference. It will be handled again later.

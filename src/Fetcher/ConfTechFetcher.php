@@ -105,8 +105,17 @@ class ConfTechFetcher implements FetcherInterface
                     continue;
                 }
 
+                $tag = $this->tagRepository->findOneBy([
+                    'name' => $tagName,
+                    'selected' => true,
+                ]);
+
+                if (!$tag instanceof Tag) {
+                    continue;
+                }
+
                 $data = json_decode($response->getContent(), true);
-                $fetchedConferences = $this->denormalizeConferences($data, self::SOURCE, $tagName);
+                $fetchedConferences = $this->denormalizeConferences($data, self::SOURCE, $tag);
                 $conferences = array_merge($conferences, iterator_to_array($fetchedConferences));
             }
         }
@@ -114,19 +123,9 @@ class ConfTechFetcher implements FetcherInterface
         return $conferences;
     }
 
-    public function denormalizeConferences(array $rawConferences, string $source, string $tagName): \Generator
+    public function denormalizeConferences(array $rawConferences, string $source, Tag $tag): \Generator
     {
         foreach ($rawConferences as $rawConference) {
-            $tag = $this->tagRepository->findOneBy(['name' => $tagName]);
-
-            if (!$tag) {
-                $tag = new Tag();
-                $tag->setName($tagName);
-                $tag->setSelected(true);
-
-                $this->em->persist($tag);
-            }
-
             $startDate = \DateTimeImmutable::createFromFormat('Y-m-d h:i:s', $rawConference['startDate'].' 00:00:00');
 
             // In case of invalid startDate, we skip the conference. It will be handled again later.

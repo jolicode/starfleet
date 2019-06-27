@@ -11,6 +11,8 @@
 
 namespace App\Fetcher;
 
+use App\Entity\Tag;
+
 interface FetcherInterface
 {
     public function isActive(): bool;
@@ -19,5 +21,5 @@ interface FetcherInterface
 
     public function fetch(): array;
 
-    public function denormalizeConferences(array $rawConferences, string $source, string $tagName): \Generator;
+    public function denormalizeConferences(array $rawConferences, string $source, Tag $tag): \Generator;
 }
