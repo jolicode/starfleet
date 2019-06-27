@@ -2,8 +2,9 @@
 yarn-error.log
 *.pyc
 .php_cs.cache
-/infrastructure/docker/services/router/etc/ssl/certs/key.pem
-/infrastructure/docker/services/router/etc/ssl/certs/cert.pem
+/infrastructure/docker/services/router/etc/ssl/certs/*
+/infrastructure/docker/services/router/etc/ssl/certs/*
+!/infrastructure/docker/services/router/etc/ssl/certs/.gitkeep
 
 
 ###> symfony/framework-bundle ###

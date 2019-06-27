@@ -10,8 +10,8 @@
   address = ":443"
     [entryPoints.https.tls]
        [[entryPoints.https.tls.certificates]]
-       CertFile = "/etc/ssl/certs/cert.pem"
-       KeyFile = "/etc/ssl/certs/key.pem"
+       CertFile = "/etc/ssl/certs/_wildcard.starfleet.app.pem"
+       KeyFile = "/etc/ssl/certs/_wildcard.starfleet.app-key.pem"
 
 [web]
 address = ":8080"
