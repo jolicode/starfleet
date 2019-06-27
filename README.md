@@ -15,6 +15,8 @@
 
 Use [mkcert](https://github.com/FiloSottile/mkcert) to install a CA on your system to be able to generate a valid self-signed certificate for local.starfleet.app
 
+`$ mkcert *.starfleet.app`
+
 > certificate and key must be placed in infrastructure/docker/services/router/etc/ssl/certs
 
 Install Python virtualenv to be able to use fabric commands to control easily the Docker stack
