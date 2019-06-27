@@ -118,6 +118,15 @@ class ConfTechFetcher implements FetcherInterface
     {
         foreach ($rawConferences as $rawConference) {
             $tag = $this->tagRepository->findOneBy(['name' => $tagName]);
+
+            if (!$tag) {
+                $tag = new Tag();
+                $tag->setName($tagName);
+                $tag->setSelected(true);
+
+                $this->em->persist($tag);
+            }
+
             $startDate = \DateTimeImmutable::createFromFormat('Y-m-d h:i:s', $rawConference['startDate'].' 00:00:00');
 
             // In case of invalid startDate, we skip the conference. It will be handled again later.

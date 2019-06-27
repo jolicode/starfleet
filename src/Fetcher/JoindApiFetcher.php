@@ -121,6 +121,15 @@ class JoindApiFetcher implements FetcherInterface
     {
         foreach ($rawConferences as $rawConference) {
             $tag = $this->tagRepository->findOneBy(['name' => $tagName]);
+
+            if (!$tag) {
+                $tag = new Tag();
+                $tag->setName($tagName);
+                $tag->setSelected(true);
+
+                $this->em->persist($tag);
+            }
+
             $startDate = \DateTimeImmutable::createFromFormat(\DateTime::ISO8601, $rawConference['start_date']);
 
             // In case of invalid startDate, we skip the conference. It will be handled again later.
