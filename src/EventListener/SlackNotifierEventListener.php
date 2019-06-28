@@ -17,7 +17,6 @@ use App\Event\NewConferenceEvent;
 use App\Event\NewConferencesEvent;
 use App\Event\NewTalkSubmittedEvent;
 use App\Event\SubmitStatusChangedEvent;
-use App\Events;
 use App\SlackNotifier;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -33,11 +32,11 @@ class SlackNotifierEventListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            Events::NEW_TALK_SUBMITTED => 'onNewTalkSubmitted',
-            Events::NEW_CONFERENCE_ADDED => 'onNewConferenceAdded',
-            Events::NEW_CONFERENCES_ADDED => 'onNewConferencesAdded',
-            Events::SUBMIT_STATUS_CHANGED => 'onSubmitStatusChanged',
-            Events::CFP_ENDING_SOON => 'onCfpEndingSoon',
+            NewTalkSubmittedEvent::class => 'onNewTalkSubmitted',
+            NewConferenceEvent::class => 'onNewConferenceAdded',
+            NewConferencesEvent::class => 'onNewConferencesAdded',
+            SubmitStatusChangedEvent::class => 'onSubmitStatusChanged',
+            CfpEndingSoonEvent::class => 'onCfpEndingSoon',
         ];
     }
 

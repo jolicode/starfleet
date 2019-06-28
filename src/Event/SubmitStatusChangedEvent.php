@@ -13,7 +13,7 @@ namespace App\Event;
 
 use App\Entity\Submit;
 use App\SlackNotifier;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class SubmitStatusChangedEvent extends Event
 {

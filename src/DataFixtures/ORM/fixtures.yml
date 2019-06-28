@@ -15,66 +15,36 @@ App\Entity\User:
         updatedAt: '@self->createdAt'
 
 App\Entity\Tag:
-    tag_android:
-        name: 'Android'
-    tag_apple:
-        name: 'Apple'
-    tag_cplusplus:
-        name: 'C++'
     tag_css:
         name: 'CSS'
-    tag_dart:
-        name: 'Dart'
-    tag_data:
-        name: 'Data'
+        selected: true
     tag_devops:
         name: 'DevOps'
-    tag_dotnet:
-        name: 'Dotnet'
-    tag_elixir:
-        name: 'Elixir'
-    tag_facebook:
-        name: 'Facebook'
-    tag_flutter:
-        name: 'Flutter'
+        selected: true
     tag_general:
         name: 'General'
+        selected: true
     tag_go:
         name: 'Go'
-    tag_google:
-        name: 'Google'
-    tag_graphql:
-        name: 'GraphQL'
+        selected: true
     tag_html:
         name: 'HTML'
-    tag_ios:
-        name: 'iOS'
-    tag_java:
-        name: 'Java'
+        selected: true
     tag_javascript:
         name: 'Javascript'
-    tag_microsoft:
-        name: 'Microsoft'
-    tag_nodejs:
-        name: 'NodeJS'
+        selected: true
     tag_php:
         name: 'PHP'
-    tag_python:
-        name: 'Python'
+        selected: true
     tag_react_native:
         name: 'React Native'
-    tag_ruby:
-        name: 'Ruby'
+        selected: true
     tag_rust:
         name: 'Rust'
-    tag_scala:
-        name: 'Scala'
+        selected: true
     tag_security:
         name: 'Security'
-    tag_tech_comm:
-        name: 'TechComm'
-    tag_ux:
-        name: 'UX'
+        selected: true
 
 App\Entity\Conference:
     conference_{1..5}: &conferenceDefault

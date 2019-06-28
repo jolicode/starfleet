@@ -17,7 +17,6 @@ use App\Event\NewConferenceEvent;
 use App\Event\NewConferencesEvent;
 use App\Event\NewTalkSubmittedEvent;
 use App\Event\SubmitStatusChangedEvent;
-use App\Events;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
@@ -54,7 +53,7 @@ class DoctrineEventSubscriber implements EventSubscriber
     public function postPersist(LifecycleEventArgs $args)
     {
         if ($args->getObject() instanceof Submit) {
-            $this->eventDispatcher->dispatch(Events::NEW_TALK_SUBMITTED, new NewTalkSubmittedEvent($args->getObject()));
+            $this->eventDispatcher->dispatch(new NewTalkSubmittedEvent($args->getObject()));
         }
 
         if ($args->getObject() instanceof Conference) {
@@ -65,16 +64,16 @@ class DoctrineEventSubscriber implements EventSubscriber
     public function preUpdate(PreUpdateEventArgs $args)
     {
         if ($args->getObject() instanceof Submit && $args->hasChangedField('status')) {
-            $this->eventDispatcher->dispatch(Events::SUBMIT_STATUS_CHANGED, new SubmitStatusChangedEvent($args->getObject()));
+            $this->eventDispatcher->dispatch(new SubmitStatusChangedEvent($args->getObject()));
         }
     }
 
     public function postFlush()
     {
         if (1 === \count($this->conferencesAdded)) {
-            $this->eventDispatcher->dispatch(Events::NEW_CONFERENCE_ADDED, new NewConferenceEvent($this->conferencesAdded[0], $this->router));
+            $this->eventDispatcher->dispatch(new NewConferenceEvent($this->conferencesAdded[0], $this->router));
         } elseif (\count($this->conferencesAdded) > 1) {
-            $this->eventDispatcher->dispatch(Events::NEW_CONFERENCES_ADDED, new NewConferencesEvent($this->conferencesAdded, $this->router));
+            $this->eventDispatcher->dispatch(new NewConferencesEvent($this->conferencesAdded, $this->router));
         }
     }
 }
