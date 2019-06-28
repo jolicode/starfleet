@@ -145,6 +145,14 @@ def fetch():
     """
     docker_compose_run('bin/console starfleet:conferences:fetch', no_deps=True)
 
+@task
+@with_builder
+def remind():
+    """
+    Remind ending of CFPs
+    """
+    docker_compose_run('bin/console starfleet:conferences:remind-cfp-ending-soon', no_deps=True)
+
 
 @task
 @with_builder
