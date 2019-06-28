@@ -11,6 +11,8 @@
 
 namespace App;
 
+use Symfony\Contracts\HttpClient\HttpClientInterface;
+
 class SlackNotifier
 {
     const EMPTY_PAYLOAD = [
@@ -35,19 +37,20 @@ class SlackNotifier
         'fields' => [],
     ];
 
+    private $httpClient;
     private $webHookUrl;
 
-    public function __construct(string $webHookUrl)
+    public function __construct(string $webHookUrl, HttpClientInterface $httpClient)
     {
         $this->webHookUrl = $webHookUrl;
+        $this->httpClient = $httpClient;
     }
 
     public function notify(array $payload)
     {
-//        $this->httpClient->sendRequest(
-//            $this->messageFactory->createRequest('POST', $this->webHookUrl, [
-//                'Content-type' => 'application/json',
-//            ], json_encode($payload))
-//        );
+        $this->httpClient->request('POST', $this->webHookUrl, [
+            'headers' => ['Content-type' => 'application/json'],
+            'body' => json_encode($payload),
+        ]);
     }
 }

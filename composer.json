@@ -42,7 +42,6 @@
         "twig/extensions": "^1.5"
     },
     "require-dev": {
-        "codedungeon/phpunit-result-printer": "^0.4.4",
         "doctrine/doctrine-fixtures-bundle": "^3.0",
         "friendsofphp/php-cs-fixer": "^2.9",
         "nelmio/alice": "^3.1",
