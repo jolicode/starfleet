@@ -94,7 +94,9 @@ class FetchConferencesCommand extends Command
             $this->em->flush();
         }
 
-        $this->eventDispatcher->dispatch(new NewConferencesEvent($newConferences, $this->router));
+        if (\count($newConferences) > 0) {
+            $this->eventDispatcher->dispatch(new NewConferencesEvent($newConferences, $this->router));
+        }
 
         $symfonyStyle->writeln("\n");
         $symfonyStyle->success($newConferencesCount.' newly added conference(s)');
