@@ -39,24 +39,24 @@ class CfpEndingSoonEvent extends Event
     public function buildAttachment(): array
     {
         $cfpAttachment = SlackNotifier::ATTACHMENT;
-        $template = '🔊  CFP for %s is closing %s';
+        $template = '🔊  CFP for %s (%s) is closing %s';
         $conferenceLink = sprintf('<%s|%s>', $this->conference->getCfpUrl(), $this->conference->getName());
 
         switch ($this->remainingDays) {
             case 30:
-                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, 'in *'.$this->remainingDays.' days* ! 😀');
+                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, $this->conference->getLocation(), 'in *'.$this->remainingDays.' days* ! 😀');
                 break;
             case 20:
-                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, 'in *'.$this->remainingDays.' days* ! 🙂');
+                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, $this->conference->getLocation(), 'in *'.$this->remainingDays.' days* ! 🙂');
                 break;
             case 10:
-                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, 'in *'.$this->remainingDays.' days* ! 😮');
+                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, $this->conference->getLocation(), 'in *'.$this->remainingDays.' days* ! 😮');
                 break;
             case 5:
-                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, 'in *'.$this->remainingDays.' days* ! 😨');
+                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, $this->conference->getLocation(), 'in *'.$this->remainingDays.' days* ! 😨');
                 break;
             case 1:
-                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, 'in *'.$this->remainingDays.' day* ! 😰');
+                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, $this->conference->getLocation(), 'in *'.$this->remainingDays.' day* ! 😰');
                 break;
             case 0:
                 $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, '*today* ! 😱');
