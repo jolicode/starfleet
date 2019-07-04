@@ -1,1 +1,5 @@
-<a href="{{ value }}" target="_blank" rel="noopener noreferrer">{{ 'admin.conference.cfp_url.label'|trans }}</a>
+{% if value is not null %}
+    <a href="{{ value }}" target="_blank" rel="noopener noreferrer">{{ 'admin.conference.cfp_url.label'|trans }}</a>
+{% else %}
+    <span class="badge badge-secondary">Null</span>
+{% endif %}

@@ -8,5 +8,6 @@
  docker = "*"
  pyaml = "==16.12.2"
  Fabric = ">=1.13.1,<2.0"
+ pycodestyle = "*"
  [requires]
  python_version = "2.7"

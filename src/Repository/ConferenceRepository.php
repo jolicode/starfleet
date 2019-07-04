@@ -66,7 +66,8 @@ class ConferenceRepository extends EntityRepository
     private function createAttendedQueryBuilder()
     {
         return $this->createQueryBuilder('c')
-            ->andWhere('c.attended = 1')
+            ->andWhere('c.attended = :attended')
+            ->setParameter('attended', true)
             ->orderBy('c.startAt', 'DESC')
         ;
     }

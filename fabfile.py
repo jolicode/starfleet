@@ -145,6 +145,7 @@ def fetch():
     """
     docker_compose_run('bin/console starfleet:conferences:fetch', no_deps=True)
 
+
 @task
 @with_builder
 def remind():
