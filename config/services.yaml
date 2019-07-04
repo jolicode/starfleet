@@ -1,5 +1,8 @@
 parameters:
     locale: 'en'
+    router.request_context.host: '%env(ROUTER_HOST)%'
+    router.request_context.scheme: 'https'
+    asset.request_context.secure: true
 
 services:
     _instanceof:
