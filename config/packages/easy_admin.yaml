@@ -9,9 +9,17 @@ easy_admin:
             - { entity: 'User', label: 'Users', icon: 'users' }
             - { entity: 'Conference', label: 'Conferences', icon: 'calendar' }
             - { entity: 'Participation', label: 'Participations', icon: 'id-badge' }
-            - { entity: 'Submit', label: 'Submits', icon: 'paper-plane' }
             - { entity: 'Talk', label: 'Talks', icon: 'commenting' }
             - { entity: 'Tag', label: 'Tags', icon: 'tag' }
+        assets:
+            css:
+                - 'build/css/admin.css'
+                - 'bundles/easyadmin/bootstrap-all.css'
+            js:
+                - 'build/js/admin.js'
+                - 'bundles/easyadmin/bootstrap-all.js'
+        templates:
+            layout: 'easy_admin/layout.html.twig'
     formats:
         date: 'd/m/Y'
         time: 'H:i'

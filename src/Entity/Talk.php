@@ -42,7 +42,7 @@ class Talk
     private $intro;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Submit", mappedBy="talk")
+     * @ORM\OneToMany(targetEntity="App\Entity\Submit", mappedBy="talk", cascade={"persist", "remove"})
      */
     private $submits;
 

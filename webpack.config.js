@@ -11,10 +11,12 @@ Encore
     .enableBuildNotifications()
 
     .addEntry('js/app', './assets/js/app.js')
+    .addEntry('js/admin', './assets/js/admin.js')
     .configureBabel(function(babelConfig) {
         babelConfig.presets.push('es2015');
     })
 
+    .addStyleEntry('css/admin', './assets/css/admin.scss')
     .addStyleEntry('css/app', './assets/css/app.scss')
     .enableSassLoader(function(sassOptions) {}, {
         resolveUrlLoader: false,
