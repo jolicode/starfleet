@@ -2,6 +2,7 @@ easy_admin:
     entities:
         User:
             class: App\Entity\User
+            disabled_actions: ['show']
             list:
                 fields:
                     - { property: 'name', type: 'text' }
