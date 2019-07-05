@@ -14,16 +14,30 @@
                 <div class="row mb-3">
                     <div class="col-12">
                         <p class="text-center">
-                            <a href="{{ conference.siteUrl }}" target="_blank" class="btn btn-outline-secondary btn-lg">{{ 'conference.card.site_button_label'|trans }} <i class="fa fa-external-link"></i></a>
+                            <a href="{{ conference.siteUrl }}"
+                               target="_blank"
+                               class="btn btn-outline-secondary btn-lg">
+                                {{ 'conference.card.site_button_label'|trans }}&nbsp;
+                                <i class="fa fa-external-link"></i>
+                            </a>
+
                             {% if conference.cfpUrl is not null %}
-                                <a href="{{ conference.cfpUrl }}" target="_blank" class="btn btn-outline-success btn-lg">{{ 'conferences.card.cfp_button_label'|trans }} <i class="fa fa-external-link"></i></a>
+                                <a href="{{ conference.cfpUrl }}"
+                                   target="_blank"
+                                   class="btn btn-outline-success btn-lg">
+                                    {{ 'conferences.card.cfp_button_label'|trans }}&nbsp;
+                                    <i class="fa fa-external-link"></i>
+                                </a>
                             {% endif %}
                         </p>
                     </div>
                 </div>
                 <div class="row pb-5">
                     <aside class="col-3">
-                        <p class="h5 font-weight-normal"><i class="fa fa-calendar-o"></i> {{ 'conferences.show.sidebar.dates_title'|trans }}</p>
+                        <p class="h5 font-weight-normal">
+                            <i class="fa fa-calendar-o"></i>&nbsp;
+                            {{ 'conferences.show.sidebar.dates_title'|trans }}
+                        </p>
                         <p>
                             {{ 'date.from'|trans }} <strong>{{ conference.startAt|date('d F Y') }}</strong>
                             <br>
@@ -31,17 +45,40 @@
                         </p>
                         <hr>
 
-                        <p class="h5 font-weight-normal"><i class="fa fa-map"></i> {{ 'conferences.show.sidebar.location_title'|trans }}</p>
+                        <p class="h5 font-weight-normal">
+                            <i class="fa fa-map"></i>&nbsp;
+                            {{ 'conferences.show.sidebar.location_title'|trans }}
+                        </p>
                         <p>{{ conference.location }}</p>
                         <hr>
 
-                        <p class="h5 font-weight-normal"><i class="fa fa-bullhorn"></i> {{ 'conferences.show.sidebar.cfp_title'|trans }}</p>
-                        <p>{{ 'conferences.show.sidebar.cfp_end_at'|trans }} <strong>{{ conference.cfpEndAt|date('d F Y') }}</strong></p>
+                        <p class="h5 font-weight-normal">
+                            <i class="fa fa-users"></i>&nbsp;
+                            {{ 'conferences.show.sidebar.number_of_participants'|trans }}
+                        </p>
+                        <p>{{ conference.participations|length }}</p>
                         <hr>
 
-                        <p class="h5 font-weight-normal"><i class="fa fa-tags"></i> {{ 'conferences.show.sidebar.tags_title'|trans }}</p>
+                        <p class="h5 font-weight-normal">
+                            <i class="fa fa-bullhorn"></i>&nbsp;
+                            {{ 'conferences.show.sidebar.cfp_title'|trans }}
+                        </p>
+                        <p>
+                            {{ 'conferences.show.sidebar.cfp_end_at'|trans }}&nbsp;
+                            <strong>{{ conference.cfpEndAt|date('d F Y') }}</strong>
+                        </p>
+                        <hr>
+
+                        <p class="h5 font-weight-normal">
+                            <i class="fa fa-tags"></i>&nbsp;
+                            {{ 'conferences.show.sidebar.tags_title'|trans }}
+                        </p>
+
                         {% for tag in conference.tags %}
-                            <a href="{{ path('conferences_list_by_tag', {tag: tag.name}) }}" class="badge badge-info">{{ tag.name }}</a>
+                            <a href="{{ path('conferences_list_by_tag', {tag: tag.name}) }}"
+                               class="badge badge-info">
+                                {{ tag.name }}
+                            </a>
                         {% endfor %}
                     </aside>
                     <article class="col-9">

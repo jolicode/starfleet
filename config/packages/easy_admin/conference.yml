@@ -1,10 +1,21 @@
 easy_admin:
     entities:
+        PassedConference:
+            class: App\Entity\Conference
+            list:
+                sort: ['endAt', 'DESC']
+                dql_filter: 'entity.endAt <= CURRENT_DATE()'
+                fields:
+                    - { property: 'name', type: 'text' }
+                    - { property: 'startAt', type: 'date' }
+                    - { property: 'endAt', type: 'date' }
+                    - { property: 'tags', type: 'array' }
         Conference:
             class: App\Entity\Conference
             disabled_actions: ['show']
             list:
-                sort: ['cfpEndAt', 'DESC']
+                sort: ['cfpEndAt', 'ASC']
+                dql_filter: 'entity.startAt >= CURRENT_DATE()'
                 fields:
                     - { property: 'name', type: 'text' }
                     - { property: 'startAt', type: 'date' }
@@ -25,4 +36,3 @@ easy_admin:
                     - { type: 'group', columns: 4, icon: 'cubes', label: 'Metadata' }
                     - { property: 'tags' }
                     - { property: 'articleUrl', type: 'url' }
-                    - { property: 'attended' }

@@ -11,28 +11,19 @@
 
 namespace App\Controller;
 
-use App\Entity\Conference;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use App\Repository\ConferenceRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ConferenceController extends AbstractController
 {
-    protected $registry;
-
-    public function __construct(RegistryInterface $registry)
-    {
-        $this->registry = $registry;
-    }
-
     /**
      * @Route("/", name="conferences_list")
      */
-    public function listAction(Request $request)
+    public function listAction(ConferenceRepository $conferenceRepository)
     {
-        $conferences = $this->registry->getRepository(Conference::class)->findAttendedConferences();
+        $conferences = $conferenceRepository->findAttendedConferences();
 
         return $this->renderList($conferences);
     }
@@ -40,9 +31,9 @@ class ConferenceController extends AbstractController
     /**
      * @Route("/conferences/tagged/{tag}", name="conferences_list_by_tag")
      */
-    public function listByTagAction(Request $request, string $tag)
+    public function listByTagAction(string $tag, ConferenceRepository $conferenceRepository)
     {
-        $conferences = $this->registry->getRepository(Conference::class)->findAttendedConferencesByTag($tag);
+        $conferences = $conferenceRepository->findAttendedConferencesByTag($tag);
 
         if (!$conferences) {
             $this->addFlash('info', 'No conferences found for tag "'.$tag.'"');
@@ -56,12 +47,12 @@ class ConferenceController extends AbstractController
     /**
      * @Route("/conferences/{slug}", name="conferences_show")
      */
-    public function showAction(Request $request, string $slug)
+    public function showAction(string $slug, ConferenceRepository $conferenceRepository)
     {
-        $conference = $this->registry->getRepository(Conference::class)->findOneAttended($slug);
+        $conference = $conferenceRepository->findOneAttended($slug);
 
         if (!$conference) {
-            throw $this->createNotFoundException('Conference not found.');
+            throw $this->createNotFoundException("Conference with slug '$slug' not found.");
         }
 
         return $this->render('conferences/show.html.twig', [
@@ -69,20 +60,17 @@ class ConferenceController extends AbstractController
         ]);
     }
 
-    /**
-     * @param Conference[] $conferences
-     */
     private function renderList(array $conferences): Response
     {
         $futureConferences = $pastConferences = $liveConferences = [];
 
-        $startOfDay = (new \DateTime())->setTime(0, 0, 0);
-        $endOfDay = (new \DateTime())->setTime(23, 59, 59);
+        $startOfToday = (new \DateTime())->setTime(0, 0, 0);
+        $endOfToday = (new \DateTime())->setTime(23, 59, 59);
 
         foreach ($conferences as $conference) {
-            if ($conference->getEndAt() < $startOfDay) {
+            if ($conference->getEndAt() < $startOfToday) {
                 $pastConferences[] = $conference;
-            } elseif ($conference->getStartAt() > $endOfDay) {
+            } elseif ($conference->getStartAt() > $endOfToday) {
                 $futureConferences[] = $conference;
             } else {
                 $liveConferences[] = $conference;

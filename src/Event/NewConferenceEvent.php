@@ -71,12 +71,14 @@ class NewConferenceEvent extends Event
         $locationField['value'] = $this->conference->getLocation();
         array_push($conferenceAttachment['fields'], $locationField);
 
-        $starfleetLinkField = SlackNotifier::SHORT_FIELD;
-        $starfleetLinkField['title'] = 'Starfleet link  🚀';
-        $starfleetLinkField['value'] = $this->router->generate('conferences_show', [
-            'slug' => $this->conference->getSlug(),
-        ], UrlGeneratorInterface::ABSOLUTE_URL);
-        array_push($conferenceAttachment['fields'], $starfleetLinkField);
+        if ($this->conference->getParticipations()->count() > 0) {
+            $starfleetLinkField = SlackNotifier::SHORT_FIELD;
+            $starfleetLinkField['title'] = 'Starfleet link  🚀';
+            $starfleetLinkField['value'] = $this->router->generate('conferences_show', [
+                'slug' => $this->conference->getSlug(),
+            ], UrlGeneratorInterface::ABSOLUTE_URL);
+            array_push($conferenceAttachment['fields'], $starfleetLinkField);
+        }
 
         $payload['attachments'] = [
             $conferenceAttachment,

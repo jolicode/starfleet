@@ -241,5 +241,11 @@
         <target>Validated</target>
       </segment>
     </unit>
+    <unit id="ZjSum3N">
+      <segment>
+        <source>conferences.show.sidebar.number_of_participants</source>
+        <target>How many of us are going?</target>
+      </segment>
+    </unit>
   </file>
 </xliff>

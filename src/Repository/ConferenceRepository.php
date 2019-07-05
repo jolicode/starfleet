@@ -12,10 +12,16 @@
 namespace App\Repository;
 
 use App\Entity\Conference;
-use Doctrine\ORM\EntityRepository;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class ConferenceRepository extends EntityRepository
+class ConferenceRepository extends ServiceEntityRepository
 {
+    public function __construct(RegistryInterface $registry)
+    {
+        parent::__construct($registry, Conference::class);
+    }
+
     public function findEndingCfps(): array
     {
         $today = new \DateTime();
@@ -65,10 +71,11 @@ class ConferenceRepository extends EntityRepository
 
     private function createAttendedQueryBuilder()
     {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.attended = :attended')
-            ->setParameter('attended', true)
-            ->orderBy('c.startAt', 'DESC')
+        $qb = $this->createQueryBuilder('c');
+        $qb->andWhere('SIZE(c.participations) > 0')
+            ->orderBy('c.startAt', 'ASC')
         ;
+
+        return $qb;
     }
 }
