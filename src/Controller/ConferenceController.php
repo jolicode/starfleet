@@ -28,7 +28,7 @@ class ConferenceController extends AbstractController
     }
 
     /**
-     * @Route("/conferences", name="conferences_list")
+     * @Route("/", name="conferences_list")
      */
     public function listAction(Request $request)
     {
