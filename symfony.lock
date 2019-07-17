@@ -146,6 +146,9 @@
     "league/oauth2-google": {
         "version": "2.0.1"
     },
+    "martin-georgiev/postgresql-for-doctrine": {
+        "version": "v1.2"
+    },
     "monolog/monolog": {
         "version": "1.23.0"
     },
