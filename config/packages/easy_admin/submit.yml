@@ -2,6 +2,7 @@ easy_admin:
     entities:
         Submit:
             class: App\Entity\Submit
+            disabled_actions: ['show']
             list:
                 fields:
                     - { property: 'talk' }
@@ -12,9 +13,25 @@ easy_admin:
             form:
                 fields:
                     - { type: 'group', columns: 6, icon: 'pencil', label: 'Submit' }
-                    - { property: 'talk', type: 'entity', type_options: { class: 'App\Entity\Talk' } }
-                    - { property: 'conference', type: 'entity', type_options: { class: 'App\Entity\Conference' } }
+                    -   property: 'talk'
+                        type: entity
+                        type_options:
+                            class: App\Entity\Talk
+                    -   property: 'conference'
+                        type: easyadmin_autocomplete
+                        type_options:
+                            class: App\Entity\Conference
                     - { property: 'submittedAt', 'type_options': { 'widget': 'single_text' } }
                     - { type: 'group', columns: 6, icon: 'cubes', label: 'Metadata' }
-                    - { property: 'status', type: 'choice', type_options: { choices: !php/const App\Entity\Submit::STATUSES, 'expanded': true, label_attr: { class: 'radio-inline' } } }
-                    - { property: 'users', type: 'entity', type_options: { multiple: true, class: 'App\Entity\User' } }
+                    -   property: 'status'
+                        type: 'choice'
+                        type_options:
+                            choices: !php/const App\Entity\Submit::STATUSES
+                            expanded: true
+                            label_attr:
+                                class: 'radio-inline'
+                    -   property: 'users'
+                        type: easyadmin_autocomplete
+                        type_options:
+                            multiple: true
+                            class: App\Entity\User
