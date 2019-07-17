@@ -125,7 +125,9 @@ class Conference
 
     public function __toString(): string
     {
-        return $this->name ?? (string) $this->id;
+        $startYear = $this->getStartAt() ? $this->getStartAt()->format('Y') : '';
+
+        return trim(sprintf('%s %s', $this->getName(), "($startYear)")) ?? '';
     }
 
     public function getId(): ?int
