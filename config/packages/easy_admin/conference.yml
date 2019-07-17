@@ -4,7 +4,7 @@ easy_admin:
             class: App\Entity\Conference
             list:
                 sort: ['endAt', 'DESC']
-                dql_filter: 'entity.endAt <= CURRENT_DATE()'
+                dql_filter: 'entity.endAt < CURRENT_DATE()'
                 fields:
                     - { property: 'name', type: 'text' }
                     - { property: 'startAt', type: 'date' }
@@ -14,7 +14,7 @@ easy_admin:
             class: App\Entity\Conference
             disabled_actions: ['show']
             list:
-                sort: ['cfpEndAt', 'ASC']
+                sort: ['startAt', 'ASC']
                 dql_filter: 'entity.startAt >= CURRENT_DATE()'
                 fields:
                     - { property: 'name', type: 'text' }
