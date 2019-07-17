@@ -11,17 +11,19 @@
 
 namespace App\Repository;
 
-use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\Mapping;
+use App\Entity\Tag;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Psr\Log\LoggerInterface;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class TagRepository extends EntityRepository
+class TagRepository extends ServiceEntityRepository
 {
     private $logger;
 
-    public function __construct($em, Mapping\ClassMetadata $class, LoggerInterface $logger = null)
+    public function __construct(RegistryInterface $registry, LoggerInterface $logger)
     {
-        parent::__construct($em, $class);
+        parent::__construct($registry, Tag::class);
+
         $this->logger = $logger;
     }
 }

@@ -112,13 +112,6 @@ class Conference
     private $articleUrl;
 
     /**
-     * TODO: remove when attendees tracking is implemented.
-     *
-     * @ORM\Column(name="attended", type="boolean", nullable=true)
-     */
-    private $attended = false;
-
-    /**
      * @ORM\OneToMany(targetEntity="App\Entity\Participation", mappedBy="conference")
      */
     private $participations;
@@ -128,6 +121,11 @@ class Conference
         $this->submits = new ArrayCollection();
         $this->tags = new ArrayCollection();
         $this->participations = new ArrayCollection();
+    }
+
+    public function __toString(): string
+    {
+        return $this->name ?? (string) $this->id;
     }
 
     public function getId(): ?int
@@ -325,23 +323,6 @@ class Conference
     public function getArticleUrl(): ?string
     {
         return $this->articleUrl;
-    }
-
-    public function setAttended(bool $attended): self
-    {
-        $this->attended = $attended;
-
-        return $this;
-    }
-
-    public function isAttended(): bool
-    {
-        return $this->attended;
-    }
-
-    public function __toString(): string
-    {
-        return $this->name ?? (string) $this->id;
     }
 
     /**

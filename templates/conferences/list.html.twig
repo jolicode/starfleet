@@ -1,34 +1,45 @@
 {% extends 'base.html.twig' %}
 
-{% macro display_conferences(conferences, title) %}
-    {% if conferences|length > 0 %}
-        <h3 class="text-center">{{ title|trans }}</h3>
-
+{% macro display_conferences(conferences, id, activeTab) %}
+    <div class="tab-pane fade show p-3{{ activeTab == id ? ' active' }}"
+         id="{{ id }}"
+         role="tabpanel"
+         aria-labelledby="{{ id }}-tab">
         <div class="row text-center mt-5 mb-5">
             {% for conference in conferences %}
                 <div class="col-4 mb-3">
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title font-weight-normal">
-                                <a href="{{ path('conferences_show', {slug: conference.slug}) }}">{{ conference.name }}</a>
+                                <a href="{{ path('conferences_show', {slug: conference.slug}) }}">
+                                    {{ conference.name }}
+                                </a>
                             </h5>
-                            <h6 class="card-subtitle mb-2 text-muted font-weight-normal">{{ conference.location }}</h6>
+                            <h6 class="card-subtitle mb-2 text-muted font-weight-normal">
+                                {{ conference.location }}
+                            </h6>
                             <p class="card-text">
-                                <small>{{ conference.startAt|date('d F Y') }} - {{ conference.endAt|date('d F Y') }}</small>
+                                <small>
+                                    {{ conference.startAt|date('d F Y') }} - {{ conference.endAt|date('d F Y') }}
+                                </small>
                             </p>
-                            <a href="{{ conference.siteUrl }}" target="_blank" class="btn btn-outline-secondary btn-sm">{{ 'conference.card.site_button_label'|trans }} <i class="fa fa-external-link"></i></a>
+                            <a href="{{ conference.siteUrl }}" target="_blank" class="btn btn-outline-secondary btn-sm">
+                                {{ 'conference.card.site_button_label'|trans }} <i class="fa fa-external-link"></i>
+                            </a>
                             {% if conference.cfpUrl is not null %}
-                                <a href="{{ conference.cfpUrl }}" target="_blank" class="btn btn-outline-success btn-sm">{{ 'conferences.card.cfp_button_label'|trans }} <i class="fa fa-external-link"></i></a>
+                                <a href="{{ conference.cfpUrl }}" target="_blank" class="btn btn-outline-success btn-sm">
+                                    {{ 'conferences.card.cfp_button_label'|trans }} <i class="fa fa-external-link"></i>
+                                </a>
                             {% endif %}
                         </div>
                     </div>
                 </div>
             {% endfor %}
         </div>
-    {% endif %}
+    </div>
 {% endmacro %}
 
-{% import _self as template %}
+{% import _self as macro %}
 
 {% block body %}
     <section class="text-dark">
@@ -57,9 +68,55 @@
                     </div>
                 </div>
 
-                {{ template.display_conferences(liveConferences, 'conferences.list.live.title') }}
-                {{ template.display_conferences(futureConferences, 'conferences.list.future.title') }}
-                {{ template.display_conferences(pastConferences, 'conferences.list.past.title') }}
+                {% set activeTab = activeTab|default(liveConferences|length > 0 ? 'live' : futureConferences|length > 0 ? 'future' : 'past') %}
+
+                <ul class="nav nav-tabs" id="conferencesTabs" role="tablist">
+                    {% if liveConferences|length > 0 %}
+                        <li class="nav-item">
+                            <a class="nav-link{{ activeTab == 'live' ? ' active' }}"
+                               id="live-tab"
+                               data-toggle="tab"
+                               href="#live"
+                               role="tab"
+                               aria-controls="Live"
+                               aria-selected="{{ activeTab == 'live' ? 'true' : 'false' }}">
+                                {{ 'conferences.list.live.title'|trans }}
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if futureConferences|length > 0 %}
+                        <li class="nav-item">
+                            <a class="nav-link{{ activeTab == 'future' ? ' active' }}"
+                               id="future-tab"
+                               data-toggle="tab"
+                               href="#future"
+                               role="tab"
+                               aria-controls="Future"
+                               aria-selected="{{ activeTab == 'future' ? 'true' : 'false' }}">
+                                {{ 'conferences.list.future.title'|trans }}
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if pastConferences|length > 0 %}
+                        <li class="nav-item">
+                            <a class="nav-link{{ activeTab == 'past' ? ' active' }}"
+                               id="past-tab"
+                               data-toggle="tab"
+                               href="#past"
+                               role="tab"
+                               aria-controls="Past"
+                               aria-selected="{{ activeTab == 'past' ? 'true' : 'false' }}">
+                                {{ 'conferences.list.past.title'|trans }}
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+
+                <div class="tab-content" id="conferencesTabsContent">
+                    {{ liveConferences|length > 0 ? macro.display_conferences(liveConferences, 'live', activeTab) }}
+                    {{ futureConferences|length > 0 ? macro.display_conferences(futureConferences, 'future', activeTab) }}
+                    {{ pastConferences|length > 0 ? macro.display_conferences(pastConferences, 'past', activeTab) }}
+                </div>
             </div>
         </div>
     </section>

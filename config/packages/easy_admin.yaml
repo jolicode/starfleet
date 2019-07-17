@@ -6,11 +6,12 @@ easy_admin:
     design:
         brand_color: '#0C1A31'
         menu:
-            - { entity: 'User', label: 'Users', icon: 'users' }
-            - { entity: 'Conference', label: 'Conferences', icon: 'calendar' }
+            - { entity: 'Conference', label: 'Next Conferences', icon: 'forward', default: true }
+            - { entity: 'PassedConference', label: 'Passed Conferences', icon: 'backward' }
             - { entity: 'Participation', label: 'Participations', icon: 'id-badge' }
-            - { entity: 'Talk', label: 'Talks', icon: 'commenting' }
+            - { entity: 'Talk', label: 'Talks', icon: 'file-text-o' }
             - { entity: 'Tag', label: 'Tags', icon: 'tag' }
+            - { entity: 'User', label: 'Users', icon: 'users' }
         assets:
             css:
                 - 'build/css/admin.css'
