@@ -9,10 +9,10 @@
  * please view the LICENSE file that was distributed with this source code.
  */
 
-namespace App\Security;
+namespace App\Security\Authenticator;
 
 use App\Entity\User;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Client\OAuth2Client;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\SocialAuthenticator;
@@ -30,14 +30,15 @@ class GoogleAuthenticator extends SocialAuthenticator
     private $em;
     private $urlGenerator;
 
-    public function __construct(ClientRegistry $clientRegistry, ManagerRegistry $doctrine, UrlGeneratorInterface $urlGenerator)
+    public function __construct(ClientRegistry $clientRegistry, ManagerRegistry $registry,
+        UrlGeneratorInterface $urlGenerator)
     {
         $this->clientRegistry = $clientRegistry;
-        $this->em = $doctrine->getManager();
+        $this->em = $registry->getManager();
         $this->urlGenerator = $urlGenerator;
     }
 
-    public function supports(Request $request)
+    public function supports(Request $request): bool
     {
         return 'connect_google_check' === $request->attributes->get('_route');
     }
@@ -47,7 +48,7 @@ class GoogleAuthenticator extends SocialAuthenticator
         return $this->fetchAccessToken($this->getGoogleClient());
     }
 
-    public function getUser($credentials, UserProviderInterface $userProvider)
+    public function getUser($credentials, UserProviderInterface $userProvider): User
     {
         /** @var GoogleUser $googleUser */
         $googleUser = $this->getGoogleClient()
@@ -60,6 +61,7 @@ class GoogleAuthenticator extends SocialAuthenticator
             return $existingUser;
         }
 
+        /** @var User $user */
         $user = $this->em->getRepository(User::class)
             ->findOneBy(['email' => $googleUser->getEmail()]);
 

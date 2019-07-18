@@ -146,6 +146,9 @@
     "league/oauth2-client": {
         "version": "2.2.1"
     },
+    "league/oauth2-github": {
+        "version": "2.0.0"
+    },
     "league/oauth2-google": {
         "version": "2.0.1"
     },

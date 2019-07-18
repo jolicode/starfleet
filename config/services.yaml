@@ -31,10 +31,6 @@ services:
         arguments:
             $webHookUrl: '%env(SLACK_WEB_HOOK_URL)%'
 
-    App\DataFixtures\ORM\:
-        resource: '../src/DataFixtures/ORM'
-        tags: [doctrine.fixture.orm]
-
     twig.date_extension:
         class: Twig_Extensions_Extension_Date
         tags:

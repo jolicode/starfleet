@@ -23,6 +23,8 @@ easy_admin:
                 - 'bundles/easyadmin/bootstrap-all.js'
         templates:
             layout: 'easy_admin/layout.html.twig'
+    user:
+        name_property_path: 'name'
     formats:
         date: 'd/m/Y'
         time: 'H:i'

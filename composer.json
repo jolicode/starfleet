@@ -19,6 +19,7 @@
         "easycorp/easyadmin-bundle": "^2.3",
         "geocoder-php/nominatim-provider": "^5.1",
         "knpuniversity/oauth2-client-bundle": "^1.15",
+        "league/oauth2-github": "^2.0",
         "league/oauth2-google": "^3.0",
         "myclabs/php-enum": "^1.6",
         "php-http/guzzle6-adapter": "^2.0",
