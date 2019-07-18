@@ -41,25 +41,26 @@ class CfpEndingSoonEvent extends Event
         $cfpAttachment = SlackNotifier::ATTACHMENT;
         $template = '🔊  CFP for %s (%s) is closing %s';
         $conferenceLink = sprintf('<%s|%s>', $this->conference->getCfpUrl(), $this->conference->getName());
+        $countdown = 'in *'.$this->remainingDays.' day'.$this->remainingDays > 1 ? 's' : ''.'* !';
 
         switch ($this->remainingDays) {
             case 30:
-                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, $this->conference->getLocation(), 'in *'.$this->remainingDays.' days* ! 😀');
+                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, $this->conference->getLocation(), $countdown.' 😀');
                 break;
             case 20:
-                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, $this->conference->getLocation(), 'in *'.$this->remainingDays.' days* ! 🙂');
+                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, $this->conference->getLocation(), $countdown.' 🙂');
                 break;
             case 10:
-                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, $this->conference->getLocation(), 'in *'.$this->remainingDays.' days* ! 😮');
+                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, $this->conference->getLocation(), $countdown.' 😮');
                 break;
             case 5:
-                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, $this->conference->getLocation(), 'in *'.$this->remainingDays.' days* ! 😨');
+                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, $this->conference->getLocation(), $countdown.' 😨');
                 break;
             case 1:
-                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, $this->conference->getLocation(), 'in *'.$this->remainingDays.' day* ! 😰');
+                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, $this->conference->getLocation(), $countdown.' 😰');
                 break;
             case 0:
-                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, '*today* ! 😱');
+                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, $this->conference->getLocation(), '*today* ! 😱');
                 break;
         }
 
