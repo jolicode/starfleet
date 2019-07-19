@@ -12,16 +12,13 @@
 namespace App\Command;
 
 use App\Entity\Conference;
-use App\Event\NewConferencesEvent;
 use App\Fetcher\FetcherInterface;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class FetchConferencesCommand extends Command
 {
@@ -29,18 +26,13 @@ class FetchConferencesCommand extends Command
     private $em;
     private $serializer;
     private $conferenceRepository;
-    private $router;
-    private $eventDispatcher;
 
-    public function __construct(iterable $fetchers, RegistryInterface $doctrine, SerializerInterface $serializer,
-        RouterInterface $router, EventDispatcherInterface $eventDispatcher)
+    public function __construct(iterable $fetchers, RegistryInterface $doctrine, SerializerInterface $serializer)
     {
         $this->fetchers = $fetchers;
         $this->em = $doctrine->getManager();
         $this->serializer = $serializer;
         $this->conferenceRepository = $this->em->getRepository(Conference::class);
-        $this->router = $router;
-        $this->eventDispatcher = $eventDispatcher;
 
         parent::__construct();
     }
@@ -92,10 +84,6 @@ class FetchConferencesCommand extends Command
             unset($progressBar);
 
             $this->em->flush();
-        }
-
-        if (\count($newConferences) > 0) {
-            $this->eventDispatcher->dispatch(new NewConferencesEvent($newConferences, $this->router));
         }
 
         $symfonyStyle->writeln("\n");
