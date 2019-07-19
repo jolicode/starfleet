@@ -13,6 +13,7 @@ namespace App\Repository;
 
 use App\Entity\Conference;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 class ConferenceRepository extends ServiceEntityRepository
@@ -30,7 +31,7 @@ class ConferenceRepository extends ServiceEntityRepository
         $threshold = new \DateTime('+31 days');
         $threshold->setTime(0, 0, 0);
 
-        return $this->createQueryBuilder('c')
+        return $this->createAttendedQueryBuilder()
             ->andWhere('c.cfpEndAt IS NOT NULL AND c.cfpEndAt >= :today AND c.cfpEndAt < :threshold')
             ->setParameter('today', $today)
             ->setParameter('threshold', $threshold)
@@ -69,10 +70,13 @@ class ConferenceRepository extends ServiceEntityRepository
         ;
     }
 
-    private function createAttendedQueryBuilder()
+    private function createAttendedQueryBuilder(): QueryBuilder
     {
-        $qb = $this->createQueryBuilder('c');
-        $qb->andWhere('SIZE(c.participations) > 0')
+        $qb = $this->createQueryBuilder('c')
+            ->innerJoin('c.participations', 'p')
+            ->andWhere('SIZE(c.participations) > 0')
+            ->andWhere('CONTAINS(p.marking, :marking) = true')
+            ->setParameter('marking', '{"validated": 1}')
             ->orderBy('c.startAt', 'ASC')
         ;
 
