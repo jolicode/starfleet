@@ -30,6 +30,7 @@ services:
     App\SlackNotifier:
         arguments:
             $webHookUrl: '%env(SLACK_WEB_HOOK_URL)%'
+            $env: '%env(APP_ENV)%'
 
     twig.date_extension:
         class: Twig_Extensions_Extension_Date

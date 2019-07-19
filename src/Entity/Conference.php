@@ -117,7 +117,7 @@ class Conference
     private $excluded = false;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Participation", mappedBy="conference")
+     * @ORM\OneToMany(targetEntity="App\Entity\Participation", mappedBy="conference", cascade={"persist"})
      */
     private $participations;
 

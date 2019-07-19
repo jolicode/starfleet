@@ -17,14 +17,15 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 trait CreateAuthenticatedClientTrait
 {
-    protected static function createAuthenticatedClient(User $user = null)
+    protected static function createAuthenticatedClient(User $user = null, bool $isAdmin = false)
     {
         $client = static::createClient();
         $container = static::$kernel->getContainer();
 
         if (!$user) {
+            $email = ($isAdmin ? 'admin' : 'user').'@starfleet.app';
             $user = $container->get('doctrine')->getRepository(User::class)
-                ->findOneByEmail('admin@starfleet.app');
+                ->findOneByEmail($email);
         }
 
         $token = new UsernamePasswordToken($user, $user->getPassword(), 'main', $user->getRoles());

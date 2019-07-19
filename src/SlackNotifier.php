@@ -39,18 +39,22 @@ class SlackNotifier
 
     private $httpClient;
     private $webHookUrl;
+    private $env;
 
-    public function __construct(string $webHookUrl, HttpClientInterface $httpClient)
+    public function __construct(string $webHookUrl, HttpClientInterface $httpClient, string $env)
     {
         $this->webHookUrl = $webHookUrl;
         $this->httpClient = $httpClient;
+        $this->env = $env;
     }
 
     public function notify(array $payload)
     {
-        $this->httpClient->request('POST', $this->webHookUrl, [
-            'headers' => ['Content-type' => 'application/json'],
-            'body' => json_encode($payload),
-        ]);
+        if ('test' !== $this->env) {
+            $this->httpClient->request('POST', $this->webHookUrl, [
+                'headers' => ['Content-type' => 'application/json'],
+                'body' => json_encode($payload),
+            ]);
+        }
     }
 }
