@@ -81,10 +81,11 @@ jobs:
                     pip install pipenv==11.1.4
                     pipenv install
             - run:
-                name: Install everything
+                name: Install and build everything
                 command: |
                     set -x
                     pipenv run fab start
+                    pipenv run fab webpack
             - run:
                 name: Run unit and functional tests
                 command: |
