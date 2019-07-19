@@ -28,8 +28,8 @@ class User implements UserInterface, \Serializable
 
     /**
      * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Column(name="id", type="integer")
      */
     private $id;
 
@@ -387,6 +387,7 @@ class User implements UserInterface, \Serializable
             $this->getPassword(),
             $this->getSalt(),
             $this->getGoogleId(),
+            $this->getGithubId(),
         ]);
     }
 
@@ -397,6 +398,7 @@ class User implements UserInterface, \Serializable
             $this->email,
             $this->password,
             $this->salt,
-            $this->googleId) = unserialize($serialized);
+            $this->googleId,
+            $this->githubId) = unserialize($serialized);
     }
 }
