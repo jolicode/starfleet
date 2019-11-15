@@ -31,7 +31,7 @@ class ConferenceRepository extends ServiceEntityRepository
         $threshold = new \DateTime('+31 days');
         $threshold->setTime(0, 0, 0);
 
-        return $this->createAttendedQueryBuilder()
+        return $this->createQueryBuilder('c')
             ->andWhere('c.cfpEndAt IS NOT NULL AND c.cfpEndAt >= :today AND c.cfpEndAt < :threshold')
             ->setParameter('today', $today)
             ->setParameter('threshold', $threshold)
