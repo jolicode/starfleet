@@ -36,6 +36,7 @@ class SecurityController extends AbstractController
     {
         $client = $clientRegistry->getClient('google');
         dd($client->fetchUser());
+
         return $this->redirectToRoute('conferences_list');
     }
 
