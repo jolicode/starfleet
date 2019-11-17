@@ -41,7 +41,7 @@ class CfpEndingSoonEvent extends Event
         $cfpAttachment = SlackNotifier::ATTACHMENT;
         $template = '🔊  CFP for %s (%s) is closing %s';
         $conferenceLink = sprintf('<%s|%s>', $this->conference->getCfpUrl(), $this->conference->getName());
-        $countdown = 'in *'.$this->remainingDays.' day'.$this->remainingDays > 1 ? 's' : ''.'* !';
+        $countdown = 'in '.$this->remainingDays.' day'.($this->remainingDays > 1 ? 's' : '').'!';
 
         switch ($this->remainingDays) {
             case 30:
