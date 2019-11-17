@@ -23,6 +23,7 @@ RUN mkdir -p ~/.composer
 
 ENV PATH $PATH:/home/app/.composer/vendor/bin/
 ENV TERM xterm
+ENV COMPOSER_MEMORY_LIMIT -1
 
 WORKDIR /home/app/app
 

@@ -63,7 +63,7 @@ class GoogleAuthenticator extends SocialAuthenticator
         $user = $this->em->getRepository(User::class)
             ->findOneBy(['email' => $googleUser->getEmail()]);
 
-        if ($user) {
+        if ($user instanceof User) {
             $user->setGoogleId($googleUser->getId());
 
             $this->em->flush();

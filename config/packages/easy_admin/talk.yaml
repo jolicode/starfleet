@@ -12,7 +12,7 @@ easy_admin:
                     - { property: 'intro' }
                     - { property: 'createdAt' }
                     - { property: 'updatedAt' }
-                    - { property: submits, label: 'Submits', type: embedded_list, type_options: { entity: Submit, filters: { 'entity.talk': 'form:parent.data.id' } } }
+                    #- { property: submits, label: 'Submits', type: embedded_list, type_options: { entity: Submit, filters: { 'entity.talk': 'form:parent.data.id' } } }
             new:
                 fields: &talkFields
                     1: { type: 'group', columns: 6, icon: 'pencil', label: 'Talk' }

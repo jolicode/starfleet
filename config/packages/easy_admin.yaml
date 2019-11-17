@@ -1,5 +1,5 @@
 imports:
-    - { resource: easy_admin/*.yml }
+    - { resource: easy_admin/*.yaml }
 
 easy_admin:
     site_name: '🚀 Starfleet'

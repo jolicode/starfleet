@@ -3,7 +3,7 @@ version: 2
 jobs:
     check-php-cs:
         docker:
-            - image: circleci/php:7.2-node-browsers
+            - image: circleci/php:7.3-node-browsers
         steps:
             - checkout
             - run:
@@ -26,7 +26,7 @@ jobs:
 
     check-lint:
         docker:
-            - image: circleci/php:7.2-node-browsers
+            - image: circleci/php:7.3-node-browsers
         working_directory: ~/project
         steps:
             - checkout
