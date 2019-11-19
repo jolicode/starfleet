@@ -58,7 +58,7 @@ class Participation
     private $needTicket = true;
 
     /**
-     * @ORM\Column(type="jsonb")
+     * @ORM\Column(type="json")
      */
     private $marking = [];
 
