@@ -1,0 +1,12 @@
+easy_admin:
+    entities:
+        ExcludedTag:
+            class: App\Entity\ExcludedTag
+            disabled_actions: ['show']
+            list:
+                fields:
+                    - { property: 'name', type: 'text' }
+            form:
+                fields:
+                    - { type: 'group', columns: 6, icon: 'pencil', label: 'Tag' }
+                    - { property: 'name', type: 'text' }

@@ -12,6 +12,7 @@
 namespace App\Fetcher;
 
 use App\Entity\Conference;
+use App\Entity\ExcludedTag;
 use App\Entity\Tag;
 use App\Enum\TagEnum;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -64,6 +65,7 @@ class JoindApiFetcher implements FetcherInterface
     private $serializer;
     private $logger;
     private $tagRepository;
+    private $excludedTags;
 
     public function __construct(ManagerRegistry $doctrine, SerializerInterface $serializer, LoggerInterface $logger)
     {
@@ -74,6 +76,7 @@ class JoindApiFetcher implements FetcherInterface
         $this->logger = $logger;
         $this->conferenceRepository = $this->em->getRepository(Conference::class);
         $this->tagRepository = $this->em->getRepository(Tag::class);
+        $this->excludedTags = $this->em->getRepository(ExcludedTag::class)->findAll();
     }
 
     public function isActive(): bool
@@ -119,6 +122,7 @@ class JoindApiFetcher implements FetcherInterface
             }
 
             $fetchedConferences = $this->denormalizeConferences($data['events'], self::SOURCE, $tag);
+
             $conferences = array_merge($conferences, iterator_to_array($fetchedConferences));
         }
 
@@ -148,6 +152,13 @@ class JoindApiFetcher implements FetcherInterface
             $conference->setSiteUrl($rawConference['href']);
             $conference->addTag($tag);
 
+            $excluded = false;
+            foreach ($this->excludedTags as $excludedTag) {
+                if (fnmatch($excludedTag->getName(), $rawConference['name'], FNM_CASEFOLD)) {
+                    $excluded = true;
+                }
+            }
+            $conference->setExcluded($excluded);
             if ($rawConference['end_date']) {
                 $endDate = \DateTimeImmutable::createFromFormat(\DateTime::ISO8601, $rawConference['end_date']);
                 $conference->setEndAt($endDate);
