@@ -20,6 +20,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -41,16 +43,6 @@ class TalkSubmitType extends AbstractType
             ->add('submittedAt', DateType::class, [
                 'widget' => 'single_text',
             ])
-            ->add('status', ChoiceType::class, [
-                'choices' => array_flip(Submit::STATUS_EMOJIS),
-                'expanded' => true,
-                'data' => Submit::STATUS_PENDING,
-            ])
-            ->add('users', EasyAdminAutocompleteType::class, [
-                'class' => User::class,
-                'multiple' => true,
-                'data' => [$this->user],
-            ])
             ->add('conference', EasyAdminAutocompleteType::class, [
                 'class' => Conference::class,
             ])
@@ -62,8 +54,25 @@ class TalkSubmitType extends AbstractType
                 'attr' => [
                     'class' => 'd-none',
                 ],
-            ])
-        ;
+            ]);
+
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+            $form = $event->getForm();
+            $submit = $event->getData();
+            if ($submit) {
+                $form
+                    ->add('status', ChoiceType::class, [
+                        'choices' => array_flip(Submit::STATUS_EMOJIS),
+                        'expanded' => true,
+                        'data' => $submit->getStatus(),
+                    ])
+                    ->add('users', EasyAdminAutocompleteType::class, [
+                        'class' => User::class,
+                        'multiple' => true,
+                        'data' => $submit->getUsers()->toArray(),
+                    ]);
+            }
+        });
     }
 
     public function configureOptions(OptionsResolver $resolver)
