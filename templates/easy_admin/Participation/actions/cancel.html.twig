@@ -1,0 +1,10 @@
+{% if item.marking['waiting for ticket'] is defined
+    or item.marking['waiting for transport'] is defined
+    or item.marking['waiting for hotel'] is defined
+    or item.marking['ticket bought'] is defined
+    or item.marking['transport reserved'] is defined
+    or item.marking['hotel booked'] is defined
+    or item.marking.validated is defined %}
+    {{ include('@EasyAdmin/default/action.html.twig', {
+        action: action}) }}
+{% endif %}
