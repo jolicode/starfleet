@@ -13,10 +13,12 @@ namespace App\Fetcher;
 
 use App\Entity\Conference;
 use App\Entity\ExcludedTag;
+use App\Entity\Continent;
 use App\Entity\Tag;
 use App\Enum\TagEnum;
 use Behat\Transliterator\Transliterator;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use GuzzleHttp\Client;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -67,8 +69,9 @@ class ConfTechFetcher implements FetcherInterface
     private $logger;
     private $tagRepository;
     private $excludedTags;
+    private $continentGuesser;
 
-    public function __construct(ManagerRegistry $doctrine, SerializerInterface $serializer, LoggerInterface $logger)
+    public function __construct(ManagerRegistry $doctrine, SerializerInterface $serializer, LoggerInterface $logger, ContinentGuesser $continentGuesser)
     {
         $this->em = $doctrine->getManager();
         // @todo replace with proper DI when http-client will be released as stable
@@ -78,6 +81,7 @@ class ConfTechFetcher implements FetcherInterface
         $this->conferenceRepository = $this->em->getRepository(Conference::class);
         $this->tagRepository = $this->em->getRepository(Tag::class);
         $this->excludedTags = $this->em->getRepository(ExcludedTag::class)->findAll();
+        $this->continentGuesser = $continentGuesser;
     }
 
     public function isActive(): bool
@@ -130,7 +134,14 @@ class ConfTechFetcher implements FetcherInterface
     public function denormalizeConferences(array $rawConferences, string $source, Tag $tag): \Generator
     {
         foreach ($rawConferences as $rawConference) {
+            $query = sprintf('%s %s', $rawConference['city'], 'U.S.A.' === $rawConference['country'] ? 'United States of America' : $rawConference['country']);
+            $continent = $this->continentGuesser->getContinent($query);
+
             $startDate = \DateTimeImmutable::createFromFormat('Y-m-d h:i:s', $rawConference['startDate'].' 00:00:00');
+
+            if (!$continent->getEnabled() || !$continent instanceof Continent) {
+                continue;
+            }
 
             // In case of invalid startDate, we skip the conference. It will be handled again later.
             if (!$startDate) {

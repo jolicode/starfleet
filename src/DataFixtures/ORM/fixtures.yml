@@ -90,3 +90,23 @@ App\Entity\Submit:
         users: ['@user*']
         conference: '@conference*'
         talk: '@talk*'
+
+App\Entity\Continent:
+    continent_africa:
+        name: 'Africa'
+        enabled: true
+    continent_asia:
+        name: 'Asia'
+        enabled: true
+    continent_europe:
+        name: 'Europe'
+        enabled: true
+    continent_north_america:
+        name: 'North America'
+        enabled: true
+    continent_oceania:
+        name: 'Oceania'
+        enabled: true
+    continent_south_america:
+        name: 'South America'
+        enabled: true
