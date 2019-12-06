@@ -33,6 +33,7 @@ class ConferenceRepository extends ServiceEntityRepository
 
         return $this->createQueryBuilder('c')
             ->andWhere('c.cfpEndAt IS NOT NULL AND c.cfpEndAt >= :today AND c.cfpEndAt < :threshold')
+            ->andWhere('c.excluded = FALSE')
             ->setParameter('today', $today)
             ->setParameter('threshold', $threshold)
             ->getQuery()

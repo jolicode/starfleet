@@ -156,6 +156,7 @@ class JoindApiFetcher implements FetcherInterface
             foreach ($this->excludedTags as $excludedTag) {
                 if (fnmatch($excludedTag->getName(), $rawConference['name'], FNM_CASEFOLD)) {
                     $excluded = true;
+                    break;
                 }
             }
             $conference->setExcluded($excluded);
