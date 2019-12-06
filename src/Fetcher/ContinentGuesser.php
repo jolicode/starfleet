@@ -12,20 +12,20 @@
 namespace App\Fetcher;
 
 use App\Entity\Continent;
+use App\Repository\ContinentRepository;
 use Geocoder\Provider\Nominatim\Nominatim;
 use Geocoder\Query\GeocodeQuery;
 use Geocoder\StatefulGeocoder;
 use Http\Adapter\Guzzle6\Client;
 use SameerShelavale\PhpCountriesArray\CountriesArray;
-use Symfony\Bridge\Doctrine\RegistryInterface;
 
 class ContinentGuesser
 {
     private $continents;
 
-    public function __construct(RegistryInterface $doctrine)
+    public function __construct(ContinentRepository $continentRepository)
     {
-        $this->continents = $doctrine->getManager()->getRepository(Continent::class)->findAllAsKey();
+        $this->continents = $continentRepository->findAllAsKey();
     }
 
     public function getContinent(string $queryString): ?Continent
