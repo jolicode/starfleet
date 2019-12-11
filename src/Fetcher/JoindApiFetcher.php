@@ -14,9 +14,8 @@ namespace App\Fetcher;
 use App\Entity\Conference;
 use App\Entity\Tag;
 use App\Enum\TagEnum;
-use GuzzleHttp\Client;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
-use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -66,7 +65,7 @@ class JoindApiFetcher implements FetcherInterface
     private $logger;
     private $tagRepository;
 
-    public function __construct(RegistryInterface $doctrine, SerializerInterface $serializer, LoggerInterface $logger)
+    public function __construct(ManagerRegistry $doctrine, SerializerInterface $serializer, LoggerInterface $logger)
     {
         $this->em = $doctrine->getManager();
         // @todo replace with proper DI when http-client will be released as stable

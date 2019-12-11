@@ -16,10 +16,10 @@ use App\Entity\Participation;
 use App\Entity\Submit;
 use App\Entity\Talk;
 use App\Enum\Workflow\Transition\Participation as ParticipationTransition;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -31,7 +31,7 @@ class AdminController extends EasyAdminController
     protected $doctrineRegistry;
     protected $logger;
 
-    public function __construct(WorkflowRegistry $workflowRegistry, RegistryInterface $doctrineRegistry, LoggerInterface $logger)
+    public function __construct(WorkflowRegistry $workflowRegistry, ManagerRegistry $doctrineRegistry, LoggerInterface $logger)
     {
         $this->workflowRegistry = $workflowRegistry;
         $this->doctrineRegistry = $doctrineRegistry;

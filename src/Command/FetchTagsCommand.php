@@ -13,7 +13,7 @@ namespace App\Command;
 
 use App\Entity\Tag;
 use App\Enum\TagEnum;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -22,7 +22,7 @@ class FetchTagsCommand extends Command
 {
     private $em;
 
-    public function __construct(RegistryInterface $doctrine)
+    public function __construct(ManagerRegistry $doctrine)
     {
         $this->em = $doctrine->getManager();
         parent::__construct();
