@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Starfleet Project.
+ *
+ * (c) Starfleet <msantostefano@jolicode.com>
+ *
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
+ */
+
 namespace App\Doctrine\ORM\Query\AST\Functions;
 
 use Doctrine\ORM\Query\AST\Functions\FunctionNode;
@@ -62,7 +71,7 @@ abstract class BaseFunction extends FunctionNode
     {
         $nodesMappingCount = \count($this->nodesMapping);
         $lastNode = $nodesMappingCount - 1;
-        for ($i = 0; $i < $nodesMappingCount; $i++) {
+        for ($i = 0; $i < $nodesMappingCount; ++$i) {
             $parserMethod = $this->nodesMapping[$i];
             $this->nodes[$i] = $parser->{$parserMethod}();
             if ($i < $lastNode) {
@@ -78,6 +87,6 @@ abstract class BaseFunction extends FunctionNode
             $dispatched[] = $node->dispatch($sqlWalker);
         }
 
-        return \vsprintf($this->functionPrototype, $dispatched);
+        return vsprintf($this->functionPrototype, $dispatched);
     }
 }
