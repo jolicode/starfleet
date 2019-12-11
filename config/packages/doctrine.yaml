@@ -12,6 +12,10 @@ doctrine:
                 driver: pdo_pgsql
                 server_version: '11.2'
                 url: '%env(resolve:DATABASE_URL)%'
+                mapping_types:
+                    jsonb: jsonb
+        types:
+            jsonb: App\Doctrine\DBAL\Types\Jsonb
     orm:
         auto_generate_proxy_classes: '%kernel.debug%'
         entity_managers:
