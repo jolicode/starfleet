@@ -23,6 +23,7 @@
                 css_class: transition_title == 'Cancel' ? 'text-danger action-show' : 'action-show',
                 icon: transition_action_icons[transition_title|lower] ?? 'circle',
                 target: '_self',
+                template: 'easy_admin/Participation/actions/' ~ transition.name ~ '.html.twig'
             }
         }) %}
     {% endfor %}

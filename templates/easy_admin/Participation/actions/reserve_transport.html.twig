@@ -1,0 +1,4 @@
+{% if item.marking['waiting for transport'] is defined %}
+    {{ include('@EasyAdmin/default/action.html.twig', {
+        action: action}) }}
+{% endif %}
