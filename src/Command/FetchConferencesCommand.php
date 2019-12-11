@@ -13,7 +13,7 @@ namespace App\Command;
 
 use App\Entity\Conference;
 use App\Fetcher\FetcherInterface;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -27,7 +27,7 @@ class FetchConferencesCommand extends Command
     private $serializer;
     private $conferenceRepository;
 
-    public function __construct(iterable $fetchers, RegistryInterface $doctrine, SerializerInterface $serializer)
+    public function __construct(iterable $fetchers, ManagerRegistry $doctrine, SerializerInterface $serializer)
     {
         $this->fetchers = $fetchers;
         $this->em = $doctrine->getManager();

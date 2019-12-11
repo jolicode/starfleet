@@ -13,7 +13,7 @@ namespace App\Command;
 
 use App\Entity\Conference;
 use App\Event\CfpEndingSoonEvent;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -26,7 +26,7 @@ class RemindEndingCfpCommand extends Command
     private $repository;
     private $eventDispatcher;
 
-    public function __construct(RegistryInterface $doctrine, EventDispatcherInterface $eventDispatcher)
+    public function __construct(ManagerRegistry $doctrine, EventDispatcherInterface $eventDispatcher)
     {
         parent::__construct();
 

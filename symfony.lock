@@ -41,9 +41,6 @@
             "ref": "44d3aa7752dd46f77ba11af2297a25e1dedfb4d0"
         }
     },
-    "doctrine/doctrine-cache-bundle": {
-        "version": "1.3.2"
-    },
     "doctrine/doctrine-fixtures-bundle": {
         "version": "3.0",
         "recipe": {
@@ -142,9 +139,6 @@
     },
     "league/oauth2-google": {
         "version": "2.0.1"
-    },
-    "martin-georgiev/postgresql-for-doctrine": {
-        "version": "v1.2"
     },
     "monolog/monolog": {
         "version": "1.23.0"
@@ -266,9 +260,6 @@
             "ref": "9f94d3ea453cd8a3b95db7f82592d7344fe3a76a"
         }
     },
-    "symfony/contracts": {
-        "version": "v1.0.2"
-    },
     "symfony/debug": {
         "version": "v3.4.1"
     },
@@ -295,6 +286,9 @@
     },
     "symfony/dotenv": {
         "version": "v3.4.1"
+    },
+    "symfony/error-handler": {
+        "version": "v4.4.0-rc1"
     },
     "symfony/event-dispatcher": {
         "version": "v3.4.1"
@@ -325,6 +319,9 @@
     },
     "symfony/http-client": {
         "version": "4.3-dev"
+    },
+    "symfony/http-client-contracts": {
+        "version": "v2.0.0"
     },
     "symfony/http-foundation": {
         "version": "v3.4.1"

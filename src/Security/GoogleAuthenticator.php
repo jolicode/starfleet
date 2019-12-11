@@ -12,11 +12,11 @@
 namespace App\Security;
 
 use App\Entity\User;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Client\OAuth2Client;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\SocialAuthenticator;
 use League\OAuth2\Client\Provider\GoogleUser;
-use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -30,7 +30,7 @@ class GoogleAuthenticator extends SocialAuthenticator
     private $em;
     private $urlGenerator;
 
-    public function __construct(ClientRegistry $clientRegistry, RegistryInterface $doctrine, UrlGeneratorInterface $urlGenerator)
+    public function __construct(ClientRegistry $clientRegistry, ManagerRegistry $doctrine, UrlGeneratorInterface $urlGenerator)
     {
         $this->clientRegistry = $clientRegistry;
         $this->em = $doctrine->getManager();
