@@ -12,6 +12,7 @@
 namespace App\Fetcher;
 
 use App\Entity\Conference;
+use App\Entity\ExcludedTag;
 use App\Entity\Tag;
 use App\Enum\TagEnum;
 use Behat\Transliterator\Transliterator;
@@ -65,6 +66,7 @@ class ConfTechFetcher implements FetcherInterface
     private $serializer;
     private $logger;
     private $tagRepository;
+    private $excludedTags;
 
     public function __construct(ManagerRegistry $doctrine, SerializerInterface $serializer, LoggerInterface $logger)
     {
@@ -75,6 +77,7 @@ class ConfTechFetcher implements FetcherInterface
         $this->logger = $logger;
         $this->conferenceRepository = $this->em->getRepository(Conference::class);
         $this->tagRepository = $this->em->getRepository(Tag::class);
+        $this->excludedTags = $this->em->getRepository(ExcludedTag::class)->findAll();
     }
 
     public function isActive(): bool
@@ -116,6 +119,7 @@ class ConfTechFetcher implements FetcherInterface
 
                 $data = json_decode($response->getContent(), true);
                 $fetchedConferences = $this->denormalizeConferences($data, self::SOURCE, $tag);
+
                 $conferences = array_merge($conferences, iterator_to_array($fetchedConferences));
             }
         }
@@ -145,6 +149,15 @@ class ConfTechFetcher implements FetcherInterface
             $conference->setStartAt($startDate);
             $conference->setSiteUrl($rawConference['url']);
             $conference->addTag($tag);
+
+            $excluded = false;
+            foreach ($this->excludedTags as $excludedTag) {
+                if (fnmatch($excludedTag->getName(), $rawConference['name'], FNM_CASEFOLD)) {
+                    $excluded = true;
+                    break;
+                }
+            }
+            $conference->setExcluded($excluded);
 
             if (\array_key_exists('endDate', $rawConference)) {
                 $endDate = \DateTimeImmutable::createFromFormat('Y-m-d h:i:s', $rawConference['endDate'].' 00:00:00');

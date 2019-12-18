@@ -71,6 +71,9 @@ class FetchConferencesCommand extends Command
                         ++$updatedConferencesCount;
                     }
                 } else {
+                    if ($conference->getExcluded()) {
+                        continue;
+                    }
                     $newConferences[] = $conference;
                     ++$newConferencesCount;
                     $this->em->persist($conference);
@@ -133,6 +136,11 @@ class FetchConferencesCommand extends Command
 
         if ($conference->getSiteUrl() !== $existingConference->getSiteUrl()) {
             $existingConference->setSiteUrl($conference->getSiteUrl());
+            $updated = true;
+        }
+
+        if ($conference->getExcluded() !== $existingConference->getExcluded()) {
+            $existingConference->setExcluded($conference->getExcluded());
             $updated = true;
         }
 
