@@ -190,7 +190,7 @@ def builder():
 @with_builder
 def webpack():
     """
-    Bash into a builder container
+    Install dependencies for css and js for dev env
     """
     docker_compose_run('yarn dev')
 
@@ -199,7 +199,7 @@ def webpack():
 @with_builder
 def webpack_watch():
     """
-    Bash into a builder container
+    Compile css and js for dev env
     """
     docker_compose_run('yarn watch')
 

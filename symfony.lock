@@ -170,6 +170,9 @@
     "paragonie/random_compat": {
         "version": "v2.0.11"
     },
+    "php": {
+        "version": "7.3"
+    },
     "php-cs-fixer/diff": {
         "version": "v1.2.0"
     },
@@ -259,6 +262,9 @@
             "version": "3.3",
             "ref": "9f94d3ea453cd8a3b95db7f82592d7344fe3a76a"
         }
+    },
+    "symfony/contracts": {
+        "version": "v1.1.8"
     },
     "symfony/debug": {
         "version": "v3.4.1"
