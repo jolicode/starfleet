@@ -13,6 +13,12 @@ easy_admin:
                     - { type: 'group', columns: 6, icon: 'pencil', label: 'User' }
                     - { property: 'name', type: 'text' }
                     - { property: 'email', type: 'email' }
+                    - { property: 'job', type: 'text' }
+                    - { property: 'twitterAccount', type: 'text' }
+                    - { property: 'tshirtSize', type: 'choice', type_options: { choices: { XS: 'XS', S: 'S', M: 'M', L: 'L', XL: 'XL', XXL: 'XXL', XXXL: 'XXXL' } } }
+                    - { property: 'bio', type: 'textarea' }
+                    - { property: 'foodPreferences', type: 'textarea' }
+                    - { property: 'allergies', type: 'textarea' }
                     - { type: 'group', columns: 6, icon: 'lock', label: 'Roles' }
                     -   property: roles
                         role: ROLE_ADMIN
