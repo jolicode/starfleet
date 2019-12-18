@@ -17,10 +17,6 @@ easy_admin:
         assets:
             css:
                 - 'build/css/admin.css'
-                - 'bundles/easyadmin/bootstrap-all.css'
-            js:
-                - 'build/js/admin.js'
-                - 'bundles/easyadmin/bootstrap-all.js'
         templates:
             layout: 'easy_admin/layout.html.twig'
     user:

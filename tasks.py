@@ -149,7 +149,7 @@ def tests(c):
     """
     with Builder(c):
         fixtures(c)
-        docker_compose_run(c, 'SYMFONY_DEPRECATIONS_HELPER=disabled php ./vendor/bin/simple-phpunit')
+        docker_compose_run(c, 'php ./vendor/bin/simple-phpunit')
 
 
 @task
@@ -159,6 +159,15 @@ def webpack_watch(c):
     """
     with Builder(c):
         docker_compose_run(c, 'yarn run watch')
+
+
+@task
+def webpack(c):
+    """
+    Compile CSS and JS files for dev env
+    """
+    with Builder(c):
+        docker_compose_run(c, 'yarn run dev')
 
 
 @task

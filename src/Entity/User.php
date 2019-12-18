@@ -220,7 +220,6 @@ class User implements UserInterface, \Serializable
         return $this;
     }
 
-
     public function getBio(): ?string
     {
         return $this->bio;

@@ -41,3 +41,7 @@ services:
         arguments:
             - !tagged app.fetcher
             - '@doctrine'
+
+    App\Security\Authenticator\GitHubAuthenticator:
+        arguments:
+            $allowedGitHubOrganization: '%env(APP_ALLOWED_GITHUB_ORGANIZATION)%'

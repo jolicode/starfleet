@@ -1,6 +1,8 @@
 {% trans_default_domain easyadmin_config('translation_domain') %}
 {% extends easyadmin_config('design.templates.layout') %}
 
+{% block content_title %}{{ easyadmin_config('site_name') }}{% endblock %}
+
 {% block body_class 'page-login' %}
 
 {% block wrapper_wrapper %}
@@ -24,6 +26,12 @@
                 {{ error.messageKey|trans(error.messageData, 'security') }}
             </div>
         {% endif %}
+
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                {{ include('flashes/'~label~'.html.twig', { message: message }) }}
+            {% endfor %}
+        {% endfor %}
 
         <section class="content">
             <form method="post" action="{{ action|default('') }}">
@@ -60,17 +68,17 @@
 
                     <a href="{{ path('connect_google') }}"
                        class="btn btn-secondary btn-lg btn-block">
-                        Log in with Google&nbsp;
                         <i class="ml-1">
                             {{ include('@images/google.svg') }}
                         </i>
+                        <span>&nbsp;Log in with Google</span>
                     </a>
                     <a href="{{ path('connect_github') }}"
                        class="btn btn-secondary btn-lg btn-block">
-                        Log in with GitHub&nbsp;
                         <i class="ml-1">
                             {{ include('@images/github.svg') }}
                         </i>
+                        <span>&nbsp;Log in with GitHub</span>
                     </a>
                 </div>
             </form>

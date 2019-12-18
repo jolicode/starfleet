@@ -33,7 +33,7 @@ class SecurityController extends AbstractController
             'error' => $error,
             'csrf_token_intention' => 'authenticate',
             'target_path' => $this->generateUrl('easyadmin'),
-            'sign_in_label' => 'Log in',
+            'sign_in_label' => 'Login',
         ]);
     }
 
