@@ -34,11 +34,11 @@ class ContinentGuesser
         $geocoder = new StatefulGeocoder($provider);
         $countriesArray = CountriesArray::get2d('alpha2', ['continent']);
         $results = $geocoder->geocodeQuery(GeocodeQuery::create($queryString));
-        $continent = $this->continents[$countriesArray[$results->first()->getCountry()->getCode()]['continent']];
 
         if (!$results->count()) {
             return null;
         }
+        $continent = $this->continents[$countriesArray[$results->first()->getCountry()->getCode()]['continent']];
 
         return $continent;
     }

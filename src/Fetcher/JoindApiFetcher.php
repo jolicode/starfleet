@@ -12,8 +12,8 @@
 namespace App\Fetcher;
 
 use App\Entity\Conference;
-use App\Entity\ExcludedTag;
 use App\Entity\Continent;
+use App\Entity\ExcludedTag;
 use App\Entity\Tag;
 use App\Enum\TagEnum;
 use Doctrine\Common\Persistence\ManagerRegistry;

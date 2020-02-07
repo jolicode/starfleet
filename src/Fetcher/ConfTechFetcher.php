@@ -12,8 +12,8 @@
 namespace App\Fetcher;
 
 use App\Entity\Conference;
-use App\Entity\ExcludedTag;
 use App\Entity\Continent;
+use App\Entity\ExcludedTag;
 use App\Entity\Tag;
 use App\Enum\TagEnum;
 use Behat\Transliterator\Transliterator;
@@ -139,7 +139,7 @@ class ConfTechFetcher implements FetcherInterface
 
             $startDate = \DateTimeImmutable::createFromFormat('Y-m-d h:i:s', $rawConference['startDate'].' 00:00:00');
 
-            if (!$continent->getEnabled() || !$continent instanceof Continent) {
+            if (!$continent instanceof Continent || !$continent->getEnabled()) {
                 continue;
             }
 
