@@ -2,6 +2,9 @@
     "behat/transliterator": {
         "version": "v1.2.0"
     },
+    "clue/stream-filter": {
+        "version": "v1.4.1"
+    },
     "composer/semver": {
         "version": "1.4.2"
     },
@@ -119,6 +122,12 @@
     "gedmo/doctrine-extensions": {
         "version": "v2.4.31"
     },
+    "geocoder-php/common-http": {
+        "version": "4.2.0"
+    },
+    "geocoder-php/nominatim-provider": {
+        "version": "5.1.1"
+    },
     "guzzlehttp/guzzle": {
         "version": "6.3.0"
     },
@@ -176,6 +185,24 @@
     "php-cs-fixer/diff": {
         "version": "v1.2.0"
     },
+    "php-http/discovery": {
+        "version": "1.7.0"
+    },
+    "php-http/guzzle6-adapter": {
+        "version": "v2.0.1"
+    },
+    "php-http/httplug": {
+        "version": "v2.0.0"
+    },
+    "php-http/message": {
+        "version": "1.8.0"
+    },
+    "php-http/message-factory": {
+        "version": "v1.0.2"
+    },
+    "php-http/promise": {
+        "version": "v1.0.0"
+    },
     "php-translation/common": {
         "version": "0.2.3"
     },
@@ -200,6 +227,9 @@
     "psr/container": {
         "version": "1.0.0"
     },
+    "psr/http-client": {
+        "version": "1.0.0"
+    },
     "psr/http-message": {
         "version": "1.0.1"
     },
@@ -208,6 +238,9 @@
     },
     "ralouphie/getallheaders": {
         "version": "2.0.5"
+    },
+    "sameer-shelavale/php-countries-array": {
+        "version": "v1.0.5"
     },
     "sebastian/comparator": {
         "version": "3.0.2"
@@ -264,7 +297,7 @@
         }
     },
     "symfony/contracts": {
-        "version": "v1.1.8"
+        "version": "v1.0.2"
     },
     "symfony/debug": {
         "version": "v3.4.1"
@@ -277,9 +310,6 @@
             "version": "3.3",
             "ref": "de31e687f3964939abd1f66817bd96ed34bc2eee"
         }
-    },
-    "symfony/debug-pack": {
-        "version": "v1.0.3"
     },
     "symfony/dependency-injection": {
         "version": "v3.4.1"
@@ -294,7 +324,7 @@
         "version": "v3.4.1"
     },
     "symfony/error-handler": {
-        "version": "v4.4.0-rc1"
+        "version": "v4.4.1"
     },
     "symfony/event-dispatcher": {
         "version": "v3.4.1"
@@ -325,9 +355,6 @@
     },
     "symfony/http-client": {
         "version": "4.3-dev"
-    },
-    "symfony/http-client-contracts": {
-        "version": "v2.0.0"
     },
     "symfony/http-foundation": {
         "version": "v3.4.1"
@@ -368,9 +395,6 @@
     "symfony/options-resolver": {
         "version": "v3.4.1"
     },
-    "symfony/orm-pack": {
-        "version": "v1.0.4"
-    },
     "symfony/phpunit-bridge": {
         "version": "3.3",
         "recipe": {
@@ -406,9 +430,6 @@
     },
     "symfony/process": {
         "version": "v3.4.1"
-    },
-    "symfony/profiler-pack": {
-        "version": "v1.0.2"
     },
     "symfony/property-access": {
         "version": "v3.4.1"
@@ -503,15 +524,6 @@
             "ref": "6bdfa1a95f6b2e677ab985cd1af2eae35d62e0f6"
         }
     },
-    "symfony/web-server-bundle": {
-        "version": "3.3",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "3.3",
-            "ref": "dae9b39fd6717970be7601101ce5aa960bf53d9a"
-        }
-    },
     "symfony/webpack-encore-bundle": {
         "version": "1.6",
         "recipe": {
@@ -560,6 +572,9 @@
     },
     "webmozart/assert": {
         "version": "1.2.0"
+    },
+    "willdurand/geocoder": {
+        "version": "4.2.1"
     },
     "zendframework/zend-code": {
         "version": "3.3.0"

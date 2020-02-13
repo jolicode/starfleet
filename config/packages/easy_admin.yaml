@@ -13,6 +13,7 @@ easy_admin:
             - { entity: 'Tag', label: 'Tags', icon: 'tag' }
             - { entity: 'ExcludedTag', label: 'Excluded Tags', icon: 'times' }
             - { entity: 'User', label: 'Users', icon: 'users' }
+            - { entity: 'Continent', label: 'Continents', icon: 'globe' }
         assets:
             css:
                 - 'build/css/admin.css'
