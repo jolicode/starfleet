@@ -86,6 +86,9 @@
     "doctrine/reflection": {
         "version": "v1.0.0"
     },
+    "doctrine/sql-formatter": {
+        "version": "1.1.0"
+    },
     "easycorp/easy-log-handler": {
         "version": "1.0",
         "recipe": {
@@ -137,9 +140,6 @@
     "guzzlehttp/psr7": {
         "version": "1.4.2"
     },
-    "jdorn/sql-formatter": {
-        "version": "v1.2.17"
-    },
     "knpuniversity/oauth2-client-bundle": {
         "version": "1.15.0"
     },
@@ -180,7 +180,7 @@
         "version": "v2.0.11"
     },
     "php": {
-        "version": "7.3"
+        "version": "7.4"
     },
     "php-cs-fixer/diff": {
         "version": "v1.2.0"
@@ -314,6 +314,9 @@
     "symfony/dependency-injection": {
         "version": "v3.4.1"
     },
+    "symfony/deprecation-contracts": {
+        "version": "v2.1.2"
+    },
     "symfony/doctrine-bridge": {
         "version": "v3.4.1"
     },
@@ -377,9 +380,6 @@
             "ref": "fadbfe33303a76e25cb63401050439aa9b1a9c7f"
         }
     },
-    "symfony/mime": {
-        "version": "v4.3.0-beta1"
-    },
     "symfony/monolog-bridge": {
         "version": "v3.4.1"
     },
@@ -410,11 +410,17 @@
     "symfony/polyfill-iconv": {
         "version": "v1.11.0"
     },
+    "symfony/polyfill-intl-grapheme": {
+        "version": "v1.17.1"
+    },
     "symfony/polyfill-intl-icu": {
         "version": "v1.6.0"
     },
     "symfony/polyfill-intl-idn": {
         "version": "v1.11.0"
+    },
+    "symfony/polyfill-intl-normalizer": {
+        "version": "v1.17.1"
     },
     "symfony/polyfill-mbstring": {
         "version": "v1.6.0"
@@ -428,11 +434,17 @@
     "symfony/polyfill-php73": {
         "version": "v1.11.0"
     },
+    "symfony/polyfill-php80": {
+        "version": "v1.17.1"
+    },
     "symfony/process": {
         "version": "v3.4.1"
     },
     "symfony/property-access": {
         "version": "v3.4.1"
+    },
+    "symfony/property-info": {
+        "version": "v5.1.2"
     },
     "symfony/routing": {
         "version": "3.3",
@@ -472,6 +484,9 @@
     },
     "symfony/stopwatch": {
         "version": "v3.4.1"
+    },
+    "symfony/string": {
+        "version": "v5.1.2"
     },
     "symfony/swiftmailer-bundle": {
         "version": "2.5",

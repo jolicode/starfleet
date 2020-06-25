@@ -1,10 +1,11 @@
+*.pyc
+/infrastructure/certs/*
+/infrastructure/certs/*
+!/infrastructure/certs/.gitkeep
+
 /public/build/
 yarn-error.log
-*.pyc
 .php_cs.cache
-/infrastructure/docker/services/router/etc/ssl/certs/*
-/infrastructure/docker/services/router/etc/ssl/certs/*
-!/infrastructure/docker/services/router/etc/ssl/certs/.gitkeep
 
 
 ###> symfony/framework-bundle ###
