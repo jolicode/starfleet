@@ -1,46 +1,34 @@
-version: '3'
+version: '3.7'
 
 volumes:
-    database-data: {}
+    postgres-data: {}
 
 services:
     router:
         build: services/router
-        ports:
-            - "80:80"
-            - "443:443"
-            - "8080:8080"
         volumes:
             - "/var/run/docker.sock:/var/run/docker.sock"
-        # # Use network alias if you need to access a container via a specific
-        # # host by using the routing from another container
-        # networks:
-        #     default:
-        #         aliases:
-        #             - api.app.test
-        labels:
-            - "traefik.enable=false"
+        network_mode: host
 
     frontend:
         build: services/frontend
         depends_on:
-            - database
+            - postgres
         volumes:
-            - "../../${PROJECT_DIRECTORY}:/var/www:cached"
+            - "../../${PROJECT_DIRECTORY}:/home/app/application:cached"
         labels:
-            - "traefik.port=80"
-            - "traefik.frontend.entryPoints=https"
-            - "traefik.frontend.rule=Host:${PROJECT_HOSTNAMES}"
+            - "traefik.enable=true"
+            - "traefik.http.routers.${PROJECT_NAME}-frontend.rule=Host(${PROJECT_DOMAINS})"
+            - "traefik.http.routers.${PROJECT_NAME}-frontend.tls=true"
+            - "traefik.http.routers.${PROJECT_NAME}-frontend-unsecure.rule=Host(${PROJECT_DOMAINS})"
+            # Comment the next line to be able to access frontend via HTTP instead of HTTPS
+            - "traefik.http.routers.${PROJECT_NAME}-frontend-unsecure.middlewares=redirect-to-https@file"
 
-    database:
-        image: postgres:11-alpine
+    postgres:
+        build: services/postgres
         environment:
             - POSTGRES_USER=starfleet
             - POSTGRES_PASSWORD=starfleet
             - POSTGRES_DB=starfleet
         volumes:
-            - "database-data:/var/lib/postgresql/data"
-        labels:
-            - "traefik.enable=false"
-        ports:
-            - "5432:5432"
+            - postgres-data:/var/lib/postgresql/data

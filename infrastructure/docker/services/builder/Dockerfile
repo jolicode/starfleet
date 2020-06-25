@@ -1,30 +1,32 @@
 ARG PROJECT_NAME
 
-FROM ${PROJECT_NAME}_basephp
+FROM ${PROJECT_NAME}_php-base
 
-RUN apk update && apk add --no-cache \
-    curl \
-    g++ \
-    git \
-    make \
-    mariadb-client \
-    nodejs \
-    npm \
-    php7-phar \
-    py2-pip \
-    python \
-    yarn
+ARG NODEJS_VERSION=12.x
+RUN echo "deb https://deb.nodesource.com/node_${NODEJS_VERSION} buster main" > /etc/apt/sources.list.d/nodejs.list \
+    && apt-key adv --fetch-keys https://deb.nodesource.com/gpgkey/nodesource.gpg.key
 
-RUN pip install pycodestyle
+# Default toys
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        curl \
+        git \
+        make \
+        nodejs \
+        sudo \
+    && apt-get clean \
+    && npm install -g yarn \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# Config
+COPY etc/. /etc/
+RUN adduser app sudo \
+    && mkdir /var/log/php \
+    && chmod 777 /var/log/php \
+    && phpenmod app-default \
+    && phpenmod app-builder
 
-RUN mkdir -p ~/.composer
+# Composer
+COPY --from=composer:1.10.7 /usr/bin/composer /usr/bin/composer
 
-ENV PATH $PATH:/home/app/.composer/vendor/bin/
-ENV TERM xterm
-ENV COMPOSER_MEMORY_LIMIT -1
-
-WORKDIR /home/app/app
-
-CMD ["echo"]
+WORKDIR /home/app/application
