@@ -48,9 +48,34 @@ class User implements UserInterface, \Serializable
     private $email;
 
     /**
+     * @ORM\Column(name="job", type="string", length=255, nullable=true)
+     */
+    private $job;
+
+    /**
+     * @ORM\Column(name="twitter_account", type="string", length=255, nullable=true)
+     */
+    private $twitterAccount;
+
+    /**
+     * @ORM\Column(name="tshirt_size", type="string", length=10, nullable=true)
+     */
+    private $tshirtSize;
+
+    /**
      * @ORM\Column(name="bio", type="text", nullable=true)
      */
     private $bio;
+
+    /**
+     * @ORM\Column(name="food_preferences", type="text", nullable=true)
+     */
+    private $foodPreferences;
+
+    /**
+     * @ORM\Column(name="allergies", type="text", nullable=true)
+     */
+    private $allergies;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Submit", mappedBy="users")
@@ -114,9 +139,40 @@ class User implements UserInterface, \Serializable
         return $this->email;
     }
 
-    public function getBio(): ?string
+    public function setJob(?string $job): self
     {
-        return $this->bio;
+        $this->job = $job;
+
+        return $this;
+    }
+
+    public function getJob(): ?string
+    {
+        return $this->job;
+    }
+
+    public function setTwitterAccount(?string $twitterAccount): self
+    {
+        $this->twitterAccount = $twitterAccount;
+
+        return $this;
+    }
+
+    public function getTwitterAccount(): ?string
+    {
+        return $this->twitterAccount;
+    }
+
+    public function setTshirtSize(?string $tshirtSize): self
+    {
+        $this->tshirtSize = $tshirtSize;
+
+        return $this;
+    }
+
+    public function getTshirtSize(): ?string
+    {
+        return $this->tshirtSize;
     }
 
     public function setBio(?string $bio): self
@@ -124,6 +180,36 @@ class User implements UserInterface, \Serializable
         $this->bio = $bio;
 
         return $this;
+    }
+
+
+    public function getBio(): ?string
+    {
+        return $this->bio;
+    }
+
+    public function setFoodPreferences(?string $foodPreferences): self
+    {
+        $this->foodPreferences = $foodPreferences;
+
+        return $this;
+    }
+
+    public function getFoodPreferences(): ?string
+    {
+        return $this->foodPreferences;
+    }
+
+    public function setAllergies(?string $allergies): self
+    {
+        $this->allergies = $allergies;
+
+        return $this;
+    }
+
+    public function getAllergies(): ?string
+    {
+        return $this->allergies;
     }
 
     public function addSubmit(Submit $submit): self
