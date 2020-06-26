@@ -30,10 +30,7 @@ services:
     App\SlackNotifier:
         arguments:
             $webHookUrl: '%env(SLACK_WEB_HOOK_URL)%'
-
-    App\DataFixtures\ORM\:
-        resource: '../src/DataFixtures/ORM'
-        tags: [doctrine.fixture.orm]
+            $env: '%env(APP_ENV)%'
 
     twig.date_extension:
         class: Twig_Extensions_Extension_Date
@@ -44,3 +41,7 @@ services:
         arguments:
             - !tagged app.fetcher
             - '@doctrine'
+
+    App\Security\Authenticator\GitHubAuthenticator:
+        arguments:
+            $allowedGitHubOrganization: '%env(APP_ALLOWED_GITHUB_ORGANIZATION)%'

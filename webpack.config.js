@@ -11,7 +11,6 @@ Encore
     .enableBuildNotifications()
 
     .addEntry('js/app', './assets/js/app.js')
-    .addEntry('js/admin', './assets/js/admin.js')
     .configureBabel(function(babelConfig) {
         babelConfig.presets.push('es2015');
     })

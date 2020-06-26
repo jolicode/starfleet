@@ -10,3 +10,9 @@ knpu_oauth2_client:
             hosted_domain: '%env(APP_ALLOWED_EMAIL_DOMAINS)%'
             user_fields: {}
             use_oidc_mode: false
+        github:
+            type: github
+            client_id: '%env(OAUTH_GITHUB_CLIENT_ID)%'
+            client_secret: '%env(OAUTH_GITHUB_CLIENT_SECRET)%'
+            redirect_route: connect_github_check
+            redirect_params: {}

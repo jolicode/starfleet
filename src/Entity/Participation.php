@@ -26,7 +26,7 @@ class Participation
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Conference", inversedBy="participations")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Conference", inversedBy="participations", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $conference;

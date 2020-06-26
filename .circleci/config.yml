@@ -3,30 +3,30 @@ version: 2
 jobs:
     check-php-cs:
         docker:
-            - image: circleci/php:7.3-node-browsers
+            - image: circleci/php:7.4-node-browsers
         steps:
             - checkout
             - run:
                   name: Install PHP CS Fixer
-                  command: wget https://cs.sensiolabs.org/download/php-cs-fixer-v2.phar -O php-cs-fixer
+                  command: wget https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/v2.16.3/php-cs-fixer.phar -O php-cs-fixer
             - run:
                   name: Check PHP CS
                   command: php php-cs-fixer fix --dry-run --allow-risky yes --diff --config=.php_cs
 
     check-python-cs:
         docker:
-            - image: circleci/python:2.7
+            - image: circleci/python:3.8
         working_directory: ~/project
         steps:
             - checkout
             - run: sudo pip install pycodestyle
             - run:
                   name: Check cs
-                  command: pycodestyle fabfile.py --ignore=E501,W605,E722
+                  command: pycodestyle invoke.py tasks.py --ignore=E501,W605,E722
 
     check-lint:
         docker:
-            - image: circleci/php:7.3-node-browsers
+            - image: circleci/php:7.4-node-browsers
         working_directory: ~/project
         steps:
             - checkout
@@ -81,15 +81,16 @@ jobs:
                     pip install pipenv==11.1.4
                     pipenv install
             - run:
-                name: Install everything
+                name: Install and build everything
                 command: |
                     set -x
-                    pipenv run fab start
+                    pipenv run inv start
+                    pipenv run inv webpack
             - run:
                 name: Run unit and functional tests
                 command: |
                     set -x
-                    pipenv run fab tests
+                    pipenv run inv tests
 
             - save_cache:
                 key: func-cache-{{ checksum "~/project/composer.lock" }}

@@ -39,6 +39,7 @@ class DoctrineEventSubscriber implements EventSubscriber
     {
         return [
             'preFlush',
+            'prePersist',
             'postPersist',
             'preUpdate',
             'postFlush',
@@ -48,6 +49,13 @@ class DoctrineEventSubscriber implements EventSubscriber
     public function preFlush()
     {
         $this->conferencesAdded = [];
+    }
+
+    public function prePersist(LifecycleEventArgs $args)
+    {
+        if (method_exists($args->getObject(), 'setCreatedAt')) {
+            $args->getObject()->setCreatedAt(new \DateTime());
+        }
     }
 
     public function postPersist(LifecycleEventArgs $args)
@@ -65,6 +73,10 @@ class DoctrineEventSubscriber implements EventSubscriber
     {
         if ($args->getObject() instanceof Submit && $args->hasChangedField('status')) {
             $this->eventDispatcher->dispatch(new SubmitStatusChangedEvent($args->getObject()));
+        }
+
+        if (method_exists($args->getObject(), 'setUpdatedAt')) {
+            $args->getObject()->setUpdatedAt(new \DateTime());
         }
     }
 
