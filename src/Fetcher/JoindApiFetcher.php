@@ -12,6 +12,8 @@
 namespace App\Fetcher;
 
 use App\Entity\Conference;
+use App\Entity\Continent;
+use App\Entity\ExcludedTag;
 use App\Entity\Tag;
 use App\Enum\TagEnum;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -64,8 +66,10 @@ class JoindApiFetcher implements FetcherInterface
     private $serializer;
     private $logger;
     private $tagRepository;
+    private $excludedTags;
+    private $continentGuesser;
 
-    public function __construct(ManagerRegistry $doctrine, SerializerInterface $serializer, LoggerInterface $logger)
+    public function __construct(ManagerRegistry $doctrine, SerializerInterface $serializer, LoggerInterface $logger, ContinentGuesser $continentGuesser)
     {
         $this->em = $doctrine->getManager();
         // @todo replace with proper DI when http-client will be released as stable
@@ -74,6 +78,8 @@ class JoindApiFetcher implements FetcherInterface
         $this->logger = $logger;
         $this->conferenceRepository = $this->em->getRepository(Conference::class);
         $this->tagRepository = $this->em->getRepository(Tag::class);
+        $this->excludedTags = $this->em->getRepository(ExcludedTag::class)->findAll();
+        $this->continentGuesser = $continentGuesser;
     }
 
     public function isActive(): bool
@@ -119,6 +125,7 @@ class JoindApiFetcher implements FetcherInterface
             }
 
             $fetchedConferences = $this->denormalizeConferences($data['events'], self::SOURCE, $tag);
+
             $conferences = array_merge($conferences, iterator_to_array($fetchedConferences));
         }
 
@@ -128,6 +135,14 @@ class JoindApiFetcher implements FetcherInterface
     public function denormalizeConferences(array $rawConferences, string $source, Tag $tag): \Generator
     {
         foreach ($rawConferences as $rawConference) {
+            $city = str_ireplace('_', ' ', $rawConference['tz_place']);
+            $query = sprintf('%s', $city);
+            $continent = $this->continentGuesser->getContinent($query);
+
+            if (!$continent->getEnabled() || !$continent instanceof Continent) {
+                continue;
+            }
+
             $startDate = \DateTimeImmutable::createFromFormat(\DateTime::ISO8601, $rawConference['start_date']);
 
             // In case of invalid startDate, we skip the conference. It will be handled again later.
@@ -143,11 +158,19 @@ class JoindApiFetcher implements FetcherInterface
             $conference->setHash($hash);
             $conference->setSlug($slug);
             $conference->setName($rawConference['name']);
-            $conference->setLocation($rawConference['tz_place']);
+            $conference->setLocation($city);
             $conference->setStartAt($startDate);
             $conference->setSiteUrl($rawConference['href']);
             $conference->addTag($tag);
 
+            $excluded = false;
+            foreach ($this->excludedTags as $excludedTag) {
+                if (fnmatch($excludedTag->getName(), $rawConference['name'], FNM_CASEFOLD)) {
+                    $excluded = true;
+                    break;
+                }
+            }
+            $conference->setExcluded($excluded);
             if ($rawConference['end_date']) {
                 $endDate = \DateTimeImmutable::createFromFormat(\DateTime::ISO8601, $rawConference['end_date']);
                 $conference->setEndAt($endDate);

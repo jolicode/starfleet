@@ -22,7 +22,6 @@ final class Version20190610155709 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('alter schema public rename to starfleet;');
         $this->addSql('CREATE SEQUENCE conference_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE submit_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE tag_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
@@ -64,7 +63,6 @@ final class Version20190610155709 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('CREATE SCHEMA public');
         $this->addSql('ALTER TABLE conferences_tags DROP CONSTRAINT FK_48E3E609604B8382');
         $this->addSql('ALTER TABLE submit DROP CONSTRAINT FK_3F31B343604B8382');
         $this->addSql('ALTER TABLE participation DROP CONSTRAINT FK_AB55E24F604B8382');

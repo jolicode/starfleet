@@ -1,0 +1,13 @@
+easy_admin:
+    entities:
+        Continent:
+            class: App\Entity\Continent
+            disabled_actions: ['show', 'delete', 'new']
+            list:
+                fields:
+                    - { property: 'name', type: 'text' }
+                    - { property: 'enabled', type: 'toggle' }
+            form:
+                fields:
+                    - { property: 'name', type: 'text', 'type_options':{ disabled: true }}
+                    - { property: 'enabled' }

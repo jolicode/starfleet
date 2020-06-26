@@ -112,6 +112,11 @@ class Conference
     private $articleUrl;
 
     /**
+     * @ORM\Column(name="excluded", type="boolean", options={"default"=0})
+     */
+    private $excluded = false;
+
+    /**
      * @ORM\OneToMany(targetEntity="App\Entity\Participation", mappedBy="conference")
      */
     private $participations;
@@ -354,6 +359,18 @@ class Conference
                 $participation->setConference(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getExcluded(): ?bool
+    {
+        return $this->excluded;
+    }
+
+    public function setExcluded(bool $excluded): self
+    {
+        $this->excluded = $excluded;
 
         return $this;
     }

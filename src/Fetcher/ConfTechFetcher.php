@@ -12,10 +12,13 @@
 namespace App\Fetcher;
 
 use App\Entity\Conference;
+use App\Entity\Continent;
+use App\Entity\ExcludedTag;
 use App\Entity\Tag;
 use App\Enum\TagEnum;
 use Behat\Transliterator\Transliterator;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use GuzzleHttp\Client;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -65,8 +68,10 @@ class ConfTechFetcher implements FetcherInterface
     private $serializer;
     private $logger;
     private $tagRepository;
+    private $excludedTags;
+    private $continentGuesser;
 
-    public function __construct(ManagerRegistry $doctrine, SerializerInterface $serializer, LoggerInterface $logger)
+    public function __construct(ManagerRegistry $doctrine, SerializerInterface $serializer, LoggerInterface $logger, ContinentGuesser $continentGuesser)
     {
         $this->em = $doctrine->getManager();
         // @todo replace with proper DI when http-client will be released as stable
@@ -75,6 +80,8 @@ class ConfTechFetcher implements FetcherInterface
         $this->logger = $logger;
         $this->conferenceRepository = $this->em->getRepository(Conference::class);
         $this->tagRepository = $this->em->getRepository(Tag::class);
+        $this->excludedTags = $this->em->getRepository(ExcludedTag::class)->findAll();
+        $this->continentGuesser = $continentGuesser;
     }
 
     public function isActive(): bool
@@ -116,6 +123,7 @@ class ConfTechFetcher implements FetcherInterface
 
                 $data = json_decode($response->getContent(), true);
                 $fetchedConferences = $this->denormalizeConferences($data, self::SOURCE, $tag);
+
                 $conferences = array_merge($conferences, iterator_to_array($fetchedConferences));
             }
         }
@@ -126,7 +134,14 @@ class ConfTechFetcher implements FetcherInterface
     public function denormalizeConferences(array $rawConferences, string $source, Tag $tag): \Generator
     {
         foreach ($rawConferences as $rawConference) {
+            $query = sprintf('%s %s', $rawConference['city'], 'U.S.A.' === $rawConference['country'] ? 'United States of America' : $rawConference['country']);
+            $continent = $this->continentGuesser->getContinent($query);
+
             $startDate = \DateTimeImmutable::createFromFormat('Y-m-d h:i:s', $rawConference['startDate'].' 00:00:00');
+
+            if (!$continent instanceof Continent || !$continent->getEnabled()) {
+                continue;
+            }
 
             // In case of invalid startDate, we skip the conference. It will be handled again later.
             if (!$startDate) {
@@ -145,6 +160,15 @@ class ConfTechFetcher implements FetcherInterface
             $conference->setStartAt($startDate);
             $conference->setSiteUrl($rawConference['url']);
             $conference->addTag($tag);
+
+            $excluded = false;
+            foreach ($this->excludedTags as $excludedTag) {
+                if (fnmatch($excludedTag->getName(), $rawConference['name'], FNM_CASEFOLD)) {
+                    $excluded = true;
+                    break;
+                }
+            }
+            $conference->setExcluded($excluded);
 
             if (\array_key_exists('endDate', $rawConference)) {
                 $endDate = \DateTimeImmutable::createFromFormat('Y-m-d h:i:s', $rawConference['endDate'].' 00:00:00');
