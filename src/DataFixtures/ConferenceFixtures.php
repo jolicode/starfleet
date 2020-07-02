@@ -15,7 +15,7 @@ use App\Entity\Conference;
 use App\Entity\Participation;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 
 class ConferenceFixtures extends Fixture implements DependentFixtureInterface
 {
@@ -75,6 +75,6 @@ class ConferenceFixtures extends Fixture implements DependentFixtureInterface
 
     public function getDependencies()
     {
-        return [UserFixtures::class];
+        return [UserFixtures::class, TagFixtures::class];
     }
 }

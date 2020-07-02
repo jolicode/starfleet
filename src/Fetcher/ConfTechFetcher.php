@@ -15,51 +15,38 @@ use App\Entity\Conference;
 use App\Entity\Continent;
 use App\Entity\ExcludedTag;
 use App\Entity\Tag;
-use App\Enum\TagEnum;
 use Behat\Transliterator\Transliterator;
 use Doctrine\Common\Persistence\ManagerRegistry;
-use GuzzleHttp\Client;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\String\Slugger\AsciiSlugger;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 class ConfTechFetcher implements FetcherInterface
 {
     use HashConferenceTrait;
 
     const SOURCE = 'conf-tech';
-    // Use to match source topics with Starfleet Tags
     const TAGS_SYNONYMS = [
-        'android', //0
-        null, //1
-        null, //2
-        'css', //3
-        null, //4
-        'data', //5
-        'devops', //6
-        'dotnet', //7
-        'elixir', //8
-        null, //9
-        null, //10
-        'general', //11
-        'golang', //12
-        null, //13
-        'graphql', //14
-        null, //15
-        'ios', //16
-        null, //17
-        'javascript', //18
-        null, //19
-        null, //20
-        'php', //21
-        'python', //22
-        null, //23
-        'ruby', //24
-        'rust', //25
-        null, //26
-        'security', //27
-        'tech-comm', //28
-        'ux', //29
+//        'android',
+        'css',
+//        'data',
+//        'devops',
+//        'dotnet',
+//        'elixir',
+//        'general',
+//        'golang',
+//        'graphql',
+//        'ios',
+        'javascript',
+//        'php',
+//        'python',
+//        'ruby',
+//        'rust',
+//        'security',
+//        'tech-comm',
+//        'ux',
     ];
 
     private $em;
@@ -70,8 +57,10 @@ class ConfTechFetcher implements FetcherInterface
     private $tagRepository;
     private $excludedTags;
     private $continentGuesser;
+    private $slugger;
 
-    public function __construct(ManagerRegistry $doctrine, SerializerInterface $serializer, LoggerInterface $logger, ContinentGuesser $continentGuesser)
+    public function __construct(ManagerRegistry $doctrine, SerializerInterface $serializer,
+        LoggerInterface $logger, ContinentGuesser $continentGuesser)
     {
         $this->em = $doctrine->getManager();
         // @todo replace with proper DI when http-client will be released as stable
@@ -82,6 +71,7 @@ class ConfTechFetcher implements FetcherInterface
         $this->tagRepository = $this->em->getRepository(Tag::class);
         $this->excludedTags = $this->em->getRepository(ExcludedTag::class)->findAll();
         $this->continentGuesser = $continentGuesser;
+        $this->slugger = new AsciiSlugger();
     }
 
     public function isActive(): bool
@@ -94,45 +84,48 @@ class ConfTechFetcher implements FetcherInterface
         return "https://raw.githubusercontent.com/tech-conferences/conference-data/master/conferences/$params[date]/$params[tag].json";
     }
 
-    public function fetch(): array
+    public function fetch(): \Generator
     {
-        $conferences = [];
-
         foreach ([date('Y'), date('Y', strtotime('+1 year'))] as $date) {
-            // @todo: use enabled tags instead of all tags from enum
-            foreach (array_combine(TagEnum::toArray(), self::TAGS_SYNONYMS) as $tagName => $tagSynonym) {
-                if (null === $tagSynonym) {
+            foreach ($this->tagRepository->findBy(['selected' => true]) as $tag) {
+                $tagKey = array_search($this->slugger->slug(strtolower($tag->getName()))->toString(), self::TAGS_SYNONYMS);
+
+                if (false === $tagKey) {
                     continue;
                 }
 
-                $response = $this->httpClient->request('GET', $this->getUrl(['date' => $date, 'tag' => $tagSynonym]));
+                $tagSynonym = self::TAGS_SYNONYMS[$tagKey];
+                $url = $this->getUrl(['date' => $date, 'tag' => $tagSynonym]);
+
+                try {
+                    $response = $this->httpClient->request('GET', $url);
+                } catch (TransportExceptionInterface $exception) {
+                    $this->logger->error('HttpClient Transport Exception', [
+                        'url' => $url,
+                        'source' => self::SOURCE,
+                        'exception' => $exception->getMessage(),
+                    ]);
+                    continue;
+                }
 
                 if (404 === $response->getStatusCode()) {
-                    $this->logger->error('Source URL returns 404', ['url' => $this->getUrl(), 'source' => self::SOURCE]);
-                    continue;
-                }
-
-                $tag = $this->tagRepository->findOneBy([
-                    'name' => $tagName,
-                    'selected' => true,
-                ]);
-
-                if (!$tag instanceof Tag) {
+                    $this->logger->error('Source URL returns 404', [
+                        'url' => $url,
+                        'source' => self::SOURCE, ]);
                     continue;
                 }
 
                 $data = json_decode($response->getContent(), true);
-                $fetchedConferences = $this->denormalizeConferences($data, self::SOURCE, $tag);
 
-                $conferences = array_merge($conferences, iterator_to_array($fetchedConferences));
+                yield $url => $this->denormalizeConferences($data, $tag);
             }
         }
-
-        return $conferences;
     }
 
-    public function denormalizeConferences(array $rawConferences, string $source, Tag $tag): \Generator
+    public function denormalizeConferences(array $rawConferences, Tag $tag): array
     {
+        $conferences = [];
+
         foreach ($rawConferences as $rawConference) {
             $query = sprintf('%s %s', $rawConference['city'], 'U.S.A.' === $rawConference['country'] ? 'United States of America' : $rawConference['country']);
             $continent = $this->continentGuesser->getContinent($query);
@@ -148,12 +141,10 @@ class ConfTechFetcher implements FetcherInterface
                 continue;
             }
 
-            $hash = $this->hash($rawConference['name'], $rawConference['url'], $startDate);
             $slug = Transliterator::transliterate(sprintf('%s %s %s', $rawConference['name'], $rawConference['city'], $startDate->format('Y')));
 
             $conference = new Conference();
-            $conference->setSource($source);
-            $conference->setHash($hash);
+            $conference->setSource(self::SOURCE);
             $conference->setSlug($slug);
             $conference->setName($rawConference['name']);
             $conference->setLocation($rawConference['city']);
@@ -188,7 +179,9 @@ class ConfTechFetcher implements FetcherInterface
                 $conference->setCfpEndAt($cfpEndAt);
             }
 
-            yield $hash => $conference;
+            $conferences[] = $conference;
         }
+
+        return $conferences;
     }
 }

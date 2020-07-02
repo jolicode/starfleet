@@ -1,112 +1,39 @@
-App\Entity\User:
-    admin:
-        name: 'ADMIN'
-        email: 'admin@starfleet.app'
-        bio: <sentence()>
-        createdAt: <dateTimeBetween('2016-01-01', '2017-01-01')>
-        updatedAt: '@self->createdAt'
-        __calls:
-            - addRole: ['ROLE_ADMIN']
-    user_{1..10}:
-        name: <name()>
-        email: <email()>
-        bio: <sentence()>
-        createdAt: <dateTimeBetween('2016-01-01', '2017-01-01')>
-        updatedAt: '@self->createdAt'
+# This file is not used anymore, but everything has not been converted to classic doctrine fixtures
+# @todo: convert
 
-App\Entity\Tag:
-    tag_css:
-        name: 'CSS'
-        selected: true
-    tag_devops:
-        name: 'DevOps'
-        selected: true
-    tag_general:
-        name: 'General'
-        selected: true
-    tag_go:
-        name: 'Go'
-        selected: true
-    tag_html:
-        name: 'HTML'
-        selected: true
-    tag_javascript:
-        name: 'Javascript'
-        selected: true
-    tag_php:
-        name: 'PHP'
-        selected: true
-    tag_react_native:
-        name: 'React Native'
-        selected: true
-    tag_rust:
-        name: 'Rust'
-        selected: true
-    tag_security:
-        name: 'Security'
-        selected: true
-
-App\Entity\Conference:
-    conference_{1..5}: &conferenceDefault
-        name: 'conference_<current()>'
-        description: <paragraph()>
-        slug: <slug()>
-        location: <city()>
-        startAt: <dateTimeBetween('2016-01-01', '2017-01-01')>
-        endAt: <dateTimeInInterval($startAt, '+ 2 days')>
-        cfpUrl: <url()>
-        cfpEndAt: <dateTimeInInterval('now', '+ 20 days')>
-        siteUrl: <url()>
-        createdAt: <dateTimeBetween('2016-01-01', '2017-01-01')>
-        updatedAt: '@self->createdAt'
-        tags: ['@tag*']
-        source: 'fixtures'
-    conference_{6..10}:
-        <<: *conferenceDefault
-        cfpEndAt: <dateTimeInInterval('now', '+ 10 days')>
-    conference_{11..15}:
-        <<: *conferenceDefault
-        cfpEndAt: <dateTimeInInterval('now', '+ 5 days')>
-    conference_{16..20}:
-        <<: *conferenceDefault
-        cfpEndAt: <dateTimeInInterval('now', '+ 1 days')>
-    conference_{21..25}:
-        <<: *conferenceDefault
-        cfpEndAt: <dateTimeInInterval('now', '+ 0 days')>
-
-App\Entity\Talk:
-    talk_{1..30}:
-        title: 'talk_<current()> 👍'
-        intro: <sentence()>
-        createdAt: <dateTimeBetween('2016-01-01', '2018-01-01')>
-        updatedAt: '@self->createdAt'
-
-App\Entity\Submit:
-    submit_{1..20}:
-        submittedAt: <dateTimeBetween('2016-01-01', '2018-01-01')>
-        status: <randomElement(<(App\Entity\Submit::STATUSES)>)>
-        createdAt: <dateTimeBetween('2016-01-01', '2018-01-01')>
-        updatedAt: '@self->createdAt'
-        users: ['@user*']
-        conference: '@conference*'
-        talk: '@talk*'
-
-App\Entity\Continent:
-    continent_africa:
-        name: 'Africa'
-        enabled: true
-    continent_asia:
-        name: 'Asia'
-        enabled: true
-    continent_europe:
-        name: 'Europe'
-        enabled: true
-    continent_north_america:
-        name: 'North America'
-        enabled: true
-    continent_oceania:
-        name: 'Oceania'
-        enabled: true
-    continent_south_america:
-        name: 'South America'
-        enabled: true
+#App\Entity\Talk:
+#    talk_{1..30}:
+#        title: 'talk_<current()> 👍'
+#        intro: <sentence()>
+#        createdAt: <dateTimeBetween('2016-01-01', '2018-01-01')>
+#        updatedAt: '@self->createdAt'
+#
+#App\Entity\Submit:
+#    submit_{1..20}:
+#        submittedAt: <dateTimeBetween('2016-01-01', '2018-01-01')>
+#        status: <randomElement(<(App\Entity\Submit::STATUSES)>)>
+#        createdAt: <dateTimeBetween('2016-01-01', '2018-01-01')>
+#        updatedAt: '@self->createdAt'
+#        users: ['@user*']
+#        conference: '@conference*'
+#        talk: '@talk*'
+#
+#App\Entity\Continent:
+#    continent_africa:
+#        name: 'Africa'
+#        enabled: true
+#    continent_asia:
+#        name: 'Asia'
+#        enabled: true
+#    continent_europe:
+#        name: 'Europe'
+#        enabled: true
+#    continent_north_america:
+#        name: 'North America'
+#        enabled: true
+#    continent_oceania:
+#        name: 'Oceania'
+#        enabled: true
+#    continent_south_america:
+#        name: 'South America'
+#        enabled: true

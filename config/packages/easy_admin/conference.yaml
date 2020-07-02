@@ -3,24 +3,30 @@ easy_admin:
         PassedConference:
             class: App\Entity\Conference
             list:
+                actions:
+                    - { name: 'excludeConference', label: 'Exclude', icon: 'times' }
                 sort: ['endAt', 'DESC']
-                dql_filter: 'entity.endAt < CURRENT_DATE()'
+                dql_filter: 'entity.endAt < CURRENT_DATE() AND entity.excluded = false'
                 fields:
                     - { property: 'name', type: 'text' }
                     - { property: 'startAt', type: 'date' }
                     - { property: 'endAt', type: 'date' }
+                    - { property: 'source', type: 'text' }
                     - { property: 'tags', type: 'array' }
-        Conference:
+        NextConference:
             class: App\Entity\Conference
             disabled_actions: ['show']
             list:
+                actions:
+                    - { name: 'excludeConference', label: 'Exclude', icon: 'times' }
                 sort: ['startAt', 'ASC']
-                dql_filter: 'entity.startAt >= CURRENT_DATE()'
+                dql_filter: 'entity.endAt >= CURRENT_DATE() AND entity.excluded = false'
                 fields:
                     - { property: 'name', type: 'text' }
                     - { property: 'startAt', type: 'date' }
                     - { property: 'cfpUrl', type: 'url', template: 'easy_admin/Conference/cfpUrl.html.twig' }
                     - { property: 'cfpEndAt', type: 'date' }
+                    - { property: 'source', type: 'text' }
                     - { property: 'tags', type: 'array' }
             form:
                 fields:
@@ -36,3 +42,17 @@ easy_admin:
                     - { type: 'group', columns: 4, icon: 'cubes', label: 'Metadata' }
                     - { property: 'tags' }
                     - { property: 'articleUrl', type: 'url' }
+        ExcludedConferences:
+            class: App\Entity\Conference
+            list:
+                actions:
+                    - { name: 'includeConference', label: 'Re-include', icon: 'arrow-left' }
+                sort: ['endAt', 'DESC']
+                dql_filter: 'entity.excluded = true'
+                fields:
+                    - { property: 'name', type: 'text' }
+                    - { property: 'startAt', type: 'date' }
+                    - { property: 'cfpUrl', type: 'url', template: 'easy_admin/Conference/cfpUrl.html.twig' }
+                    - { property: 'cfpEndAt', type: 'date' }
+                    - { property: 'source', type: 'text' }
+                    - { property: 'tags', type: 'array' }

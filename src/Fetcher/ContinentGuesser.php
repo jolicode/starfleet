@@ -38,8 +38,7 @@ class ContinentGuesser
         if (!$results->count()) {
             return null;
         }
-        $continent = $this->continents[$countriesArray[$results->first()->getCountry()->getCode()]['continent']];
 
-        return $continent;
+        return $this->continents[$countriesArray[$results->first()->getCountry()->getCode()]['continent']];
     }
 }

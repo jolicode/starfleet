@@ -40,11 +40,6 @@ class Conference
     private $remoteId;
 
     /**
-     * @ORM\Column(name="hash", type="string", length=255, nullable=true, unique=true)
-     */
-    private $hash;
-
-    /**
      * @ORM\Column(name="source", type="string", length=20)
      */
     private $source = self::SOURCE_MANUAL;
@@ -150,16 +145,6 @@ class Conference
     public function getRemoteId(): ?string
     {
         return $this->remoteId;
-    }
-
-    public function getHash(): ?string
-    {
-        return $this->hash;
-    }
-
-    public function setHash($hash): void
-    {
-        $this->hash = $hash;
     }
 
     public function setSource(?string $source): self

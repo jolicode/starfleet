@@ -19,7 +19,7 @@ interface FetcherInterface
 
     public function getUrl(array $params = []): string;
 
-    public function fetch(): array;
+    public function fetch(): \Generator;
 
-    public function denormalizeConferences(array $rawConferences, string $source, Tag $tag): \Generator;
+    public function denormalizeConferences(array $rawConferences, Tag $tag): array;
 }

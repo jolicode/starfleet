@@ -136,9 +136,6 @@
             ".php_cs.dist"
         ]
     },
-    "fzaninotto/faker": {
-        "version": "v1.9.1"
-    },
     "gedmo/doctrine-extensions": {
         "version": "v2.4.41"
     },
@@ -190,24 +187,8 @@
     "monolog/monolog": {
         "version": "2.1.0"
     },
-    "myclabs/deep-copy": {
-        "version": "1.9.5"
-    },
     "myclabs/php-enum": {
         "version": "1.7.6"
-    },
-    "nelmio/alice": {
-        "version": "3.2",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "3.2",
-            "ref": "0b9900ece737bec7752e4155c0164639dd9b0cb0"
-        },
-        "files": [
-            "config/packages/dev/nelmio_alice.yaml",
-            "config/packages/test/nelmio_alice.yaml"
-        ]
     },
     "nikic/php-parser": {
         "version": "v4.5.0"
@@ -292,18 +273,6 @@
     },
     "sameer-shelavale/php-countries-array": {
         "version": "v1.0.5"
-    },
-    "sebastian/comparator": {
-        "version": "4.0.2"
-    },
-    "sebastian/diff": {
-        "version": "4.0.1"
-    },
-    "sebastian/exporter": {
-        "version": "4.0.1"
-    },
-    "sebastian/recursion-context": {
-        "version": "4.0.1"
     },
     "sensio/framework-extra-bundle": {
         "version": "5.2",

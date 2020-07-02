@@ -16,7 +16,6 @@ use App\Entity\Participation;
 use App\Entity\Submit;
 use App\Entity\Talk;
 use App\Enum\Workflow\Transition\Participation as ParticipationTransition;
-use Doctrine\Common\Persistence\ManagerRegistry;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -28,14 +27,180 @@ use Symfony\Component\Workflow\Registry as WorkflowRegistry;
 class AdminController extends EasyAdminController
 {
     protected $workflowRegistry;
-    protected $doctrineRegistry;
     protected $logger;
 
-    public function __construct(WorkflowRegistry $workflowRegistry, ManagerRegistry $doctrineRegistry, LoggerInterface $logger)
+    public function __construct(WorkflowRegistry $workflowRegistry, LoggerInterface $logger)
     {
         $this->workflowRegistry = $workflowRegistry;
-        $this->doctrineRegistry = $doctrineRegistry;
         $this->logger = $logger;
+    }
+
+    public function excludeConferenceAction(): Response
+    {
+        /** @var Conference $conference */
+        $conference = $this->request->attributes->get('easyadmin')['item'];
+        $conference->setExcluded(true);
+
+        $this->em->flush();
+
+        return $this->redirectToRoute('easyadmin', [
+            'action' => 'list',
+            'entity' => $this->request->query->get('entity'),
+        ]);
+    }
+
+    public function includeConferenceAction(): Response
+    {
+        /** @var Conference $conference */
+        $conference = $this->request->attributes->get('easyadmin')['item'];
+        $conference->setExcluded(false);
+
+        $this->em->flush();
+
+        return $this->redirectToRoute('easyadmin', [
+            'action' => 'list',
+            'entity' => $this->request->query->get('entity'),
+        ]);
+    }
+
+    /**
+     * @Route(path="/participation/accept", name="participation_accept")
+     * @Security("has_role('ROLE_ADMIN')")
+     */
+    public function acceptAction(): Response
+    {
+        /** @var Participation $participation */
+        $participation = $this->request->attributes->get('easyadmin')['item'];
+        $workflow = $this->workflowRegistry->get($participation, 'participation_request');
+
+        $workflow->apply($participation, ParticipationTransition::ACCEPT);
+
+        $this->em->flush();
+
+        return $this->redirectToRoute('easyadmin', [
+            'action' => 'list',
+            'entity' => $this->request->query->get('entity'),
+        ]);
+    }
+
+    /**
+     * @Route(path="/participation/buy_ticket", name="participation_buy_ticket")
+     * @Security("has_role('ROLE_ADMIN')")
+     */
+    public function buy_ticketAction(): Response
+    {
+        /** @var Participation $participation */
+        $participation = $this->request->attributes->get('easyadmin')['item'];
+        $workflow = $this->workflowRegistry->get($participation, 'participation_request');
+
+        $workflow->apply($participation, ParticipationTransition::BUY_TICKET);
+
+        $this->em->flush();
+
+        return $this->redirectToRoute('easyadmin', [
+            'action' => 'list',
+            'entity' => $this->request->query->get('entity'),
+        ]);
+    }
+
+    /**
+     * @Route(path="/participation/reserve_transport", name="participation_reserve_transport")
+     * @Security("has_role('ROLE_ADMIN')")
+     */
+    public function reserve_transportAction(): Response
+    {
+        /** @var Participation $participation */
+        $participation = $this->request->attributes->get('easyadmin')['item'];
+        $workflow = $this->workflowRegistry->get($participation, 'participation_request');
+
+        $workflow->apply($participation, ParticipationTransition::RESERVE_TRANSPORT);
+
+        $this->em->flush();
+
+        return $this->redirectToRoute('easyadmin', [
+            'action' => 'list',
+            'entity' => $this->request->query->get('entity'),
+        ]);
+    }
+
+    /**
+     * @Route(path="/participation/book_hotel", name="participation_book_hotel")
+     * @Security("has_role('ROLE_ADMIN')")
+     */
+    public function book_hotelAction(): Response
+    {
+        /** @var Participation $participation */
+        $participation = $this->request->attributes->get('easyadmin')['item'];
+        $workflow = $this->workflowRegistry->get($participation, 'participation_request');
+
+        $workflow->apply($participation, ParticipationTransition::BOOK_HOTEL);
+
+        $this->em->flush();
+
+        return $this->redirectToRoute('easyadmin', [
+            'action' => 'list',
+            'entity' => $this->request->query->get('entity'),
+        ]);
+    }
+
+    /**
+     * @Route(path="/participation/validate", name="participation_validate")
+     * @Security("has_role('ROLE_ADMIN')")
+     */
+    public function validateAction(): Response
+    {
+        /** @var Participation $participation */
+        $participation = $this->request->attributes->get('easyadmin')['item'];
+        $workflow = $this->workflowRegistry->get($participation, 'participation_request');
+
+        $workflow->apply($participation, ParticipationTransition::VALIDATE);
+
+        $this->em->flush();
+
+        return $this->redirectToRoute('easyadmin', [
+            'action' => 'list',
+            'entity' => $this->request->query->get('entity'),
+        ]);
+    }
+
+    /**
+     * @Route(path="/participation/reject", name="participation_reject")
+     * @Security("has_role('ROLE_ADMIN')")
+     */
+    public function rejectAction(): Response
+    {
+        /** @var Participation $participation */
+        $participation = $this->request->attributes->get('easyadmin')['item'];
+        $workflow = $this->workflowRegistry->get($participation, 'participation_request');
+
+        $workflow->apply($participation, ParticipationTransition::REJECT);
+
+        $this->em->flush();
+
+        return $this->redirectToRoute('easyadmin', [
+            'action' => 'list',
+            'entity' => $this->request->query->get('entity'),
+        ]);
+    }
+
+    /**
+     * @Route(path="/participation/cancel", name="participation_cancel")
+     * @Security("has_role('ROLE_ADMIN')")
+     */
+    public function cancelAction(): Response
+    {
+        /** @var Participation $participation */
+        $participation = $this->request->attributes->get('easyadmin')['item'];
+        $workflow = $this->workflowRegistry->get($participation, 'participation_request');
+
+        $workflow->apply($participation, ParticipationTransition::CANCEL);
+
+        $this->em->flush();
+
+        return $this->redirectToRoute('easyadmin', [
+            'action' => 'list',
+            'entity' => $this->request->query->get('entity'),
+        ]);
     }
 
     protected function persistTalkEntity(Talk $talk, Form $newForm)
@@ -57,145 +222,5 @@ class AdminController extends EasyAdminController
 
         $this->em->persist($talk);
         $this->em->flush();
-    }
-
-    /**
-     * @Route(path="/admin/participation/accept", name="participation_accept")
-     * @Security("has_role('ROLE_ADMIN')")
-     */
-    protected function acceptAction(): Response
-    {
-        /** @var Participation $participation */
-        $participation = $this->request->attributes->get('easyadmin')['item'];
-        $workflow = $this->workflowRegistry->get($participation, 'participation_request');
-
-        $workflow->apply($participation, ParticipationTransition::ACCEPT);
-
-        $this->doctrineRegistry->getManager()->flush();
-
-        return $this->redirectToRoute('easyadmin', [
-            'action' => 'list',
-            'entity' => $this->request->query->get('entity'),
-        ]);
-    }
-
-    /**
-     * @Route(path="/admin/participation/buy_ticket", name="participation_buy_ticket")
-     * @Security("has_role('ROLE_ADMIN')")
-     */
-    protected function buy_ticketAction(): Response
-    {
-        /** @var Participation $participation */
-        $participation = $this->request->attributes->get('easyadmin')['item'];
-        $workflow = $this->workflowRegistry->get($participation, 'participation_request');
-
-        $workflow->apply($participation, ParticipationTransition::BUY_TICKET);
-
-        $this->doctrineRegistry->getManager()->flush();
-
-        return $this->redirectToRoute('easyadmin', [
-            'action' => 'list',
-            'entity' => $this->request->query->get('entity'),
-        ]);
-    }
-
-    /**
-     * @Route(path="/admin/participation/reserve_transport", name="participation_reserve_transport")
-     * @Security("has_role('ROLE_ADMIN')")
-     */
-    protected function reserve_transportAction(): Response
-    {
-        /** @var Participation $participation */
-        $participation = $this->request->attributes->get('easyadmin')['item'];
-        $workflow = $this->workflowRegistry->get($participation, 'participation_request');
-
-        $workflow->apply($participation, ParticipationTransition::RESERVE_TRANSPORT);
-
-        $this->doctrineRegistry->getManager()->flush();
-
-        return $this->redirectToRoute('easyadmin', [
-            'action' => 'list',
-            'entity' => $this->request->query->get('entity'),
-        ]);
-    }
-
-    /**
-     * @Route(path="/admin/participation/book_hotel", name="participation_book_hotel")
-     * @Security("has_role('ROLE_ADMIN')")
-     */
-    protected function book_hotelAction(): Response
-    {
-        /** @var Participation $participation */
-        $participation = $this->request->attributes->get('easyadmin')['item'];
-        $workflow = $this->workflowRegistry->get($participation, 'participation_request');
-
-        $workflow->apply($participation, ParticipationTransition::BOOK_HOTEL);
-
-        $this->doctrineRegistry->getManager()->flush();
-
-        return $this->redirectToRoute('easyadmin', [
-            'action' => 'list',
-            'entity' => $this->request->query->get('entity'),
-        ]);
-    }
-
-    /**
-     * @Route(path="/admin/participation/validate", name="participation_validate")
-     * @Security("has_role('ROLE_ADMIN')")
-     */
-    protected function validateAction(): Response
-    {
-        /** @var Participation $participation */
-        $participation = $this->request->attributes->get('easyadmin')['item'];
-        $workflow = $this->workflowRegistry->get($participation, 'participation_request');
-
-        $workflow->apply($participation, ParticipationTransition::VALIDATE);
-
-        $this->doctrineRegistry->getManager()->flush();
-
-        return $this->redirectToRoute('easyadmin', [
-            'action' => 'list',
-            'entity' => $this->request->query->get('entity'),
-        ]);
-    }
-
-    /**
-     * @Route(path="/admin/participation/reject", name="participation_reject")
-     * @Security("has_role('ROLE_ADMIN')")
-     */
-    protected function rejectAction(): Response
-    {
-        /** @var Participation $participation */
-        $participation = $this->request->attributes->get('easyadmin')['item'];
-        $workflow = $this->workflowRegistry->get($participation, 'participation_request');
-
-        $workflow->apply($participation, ParticipationTransition::REJECT);
-
-        $this->doctrineRegistry->getManager()->flush();
-
-        return $this->redirectToRoute('easyadmin', [
-            'action' => 'list',
-            'entity' => $this->request->query->get('entity'),
-        ]);
-    }
-
-    /**
-     * @Route(path="/admin/participation/cancel", name="participation_cancel")
-     * @Security("has_role('ROLE_ADMIN')")
-     */
-    protected function cancelAction(): Response
-    {
-        /** @var Participation $participation */
-        $participation = $this->request->attributes->get('easyadmin')['item'];
-        $workflow = $this->workflowRegistry->get($participation, 'participation_request');
-
-        $workflow->apply($participation, ParticipationTransition::CANCEL);
-
-        $this->doctrineRegistry->getManager()->flush();
-
-        return $this->redirectToRoute('easyadmin', [
-            'action' => 'list',
-            'entity' => $this->request->query->get('entity'),
-        ]);
     }
 }

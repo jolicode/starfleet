@@ -72,16 +72,23 @@ class ConferenceRepository extends ServiceEntityRepository
         ;
     }
 
+    public function getAllConferencesAsRow(): array
+    {
+        return $this->createQueryBuilder('c')
+            ->select('c.name, c.startAt, c.endAt, c.excluded')
+            ->getQuery()
+            ->getArrayResult()
+        ;
+    }
+
     private function createAttendedQueryBuilder(): QueryBuilder
     {
-        $qb = $this->createQueryBuilder('c')
+        return $this->createQueryBuilder('c')
             ->innerJoin('c.participations', 'p')
             ->andWhere('SIZE(c.participations) > 0')
             ->andWhere('CONTAINS(p.marking, :marking) = true')
             ->setParameter('marking', '{"validated": 1}')
             ->orderBy('c.startAt', 'ASC')
         ;
-
-        return $qb;
     }
 }
