@@ -46,6 +46,11 @@ class TalkSubmitType extends AbstractType
             ->add('conference', EasyAdminAutocompleteType::class, [
                 'class' => Conference::class,
             ])
+            ->add('status', ChoiceType::class, [
+                'choices' => array_flip(Submit::STATUS_EMOJIS),
+                'expanded' => true,
+                'data' => Submit::STATUS_PENDING,
+            ])
             ->add('talk', EasyAdminAutocompleteType::class, [
                 'label' => false,
                 'class' => Talk::class,
