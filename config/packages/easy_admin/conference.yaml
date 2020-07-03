@@ -3,6 +3,7 @@ easy_admin:
         PassedConference:
             class: App\Entity\Conference
             list:
+                filters: ['name', 'location', 'startAt', 'tags', 'source']
                 actions:
                     - { name: 'excludeConference', label: 'Exclude', icon: 'times' }
                 sort: ['endAt', 'DESC']
@@ -17,12 +18,14 @@ easy_admin:
             class: App\Entity\Conference
             disabled_actions: ['show']
             list:
+                filters: ['name', 'location', 'startAt', 'tags', 'source']
                 actions:
                     - { name: 'excludeConference', label: 'Exclude', icon: 'times' }
                 sort: ['startAt', 'ASC']
                 dql_filter: 'entity.endAt >= CURRENT_DATE() AND entity.excluded = false'
                 fields:
                     - { property: 'name', type: 'text' }
+                    - { property: 'location', type: 'text' }
                     - { property: 'startAt', type: 'date' }
                     - { property: 'cfpUrl', type: 'url', template: 'easy_admin/Conference/cfpUrl.html.twig' }
                     - { property: 'cfpEndAt', type: 'date' }
@@ -45,6 +48,7 @@ easy_admin:
         ExcludedConferences:
             class: App\Entity\Conference
             list:
+                filters: ['name', 'location', 'startAt', 'tags', 'source']
                 actions:
                     - { name: 'includeConference', label: 'Re-include', icon: 'arrow-left' }
                 sort: ['endAt', 'DESC']

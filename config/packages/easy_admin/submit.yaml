@@ -4,6 +4,7 @@ easy_admin:
             class: App\Entity\Submit
             disabled_actions: ['show']
             list:
+                filters: ['talk', 'conference', 'submittedAt', 'status', 'users']
                 fields:
                     - { property: 'talk' }
                     - { property: 'conference' }

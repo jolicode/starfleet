@@ -11,12 +11,12 @@
 
 namespace App\Controller;
 
+use AlterPHP\EasyAdminExtensionBundle\Controller\EasyAdminController;
 use App\Entity\Conference;
 use App\Entity\Participation;
 use App\Entity\Submit;
 use App\Entity\Talk;
 use App\Enum\Workflow\Transition\Participation as ParticipationTransition;
-use EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\Form;
