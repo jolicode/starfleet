@@ -15,49 +15,39 @@ use App\Entity\Conference;
 use App\Entity\Continent;
 use App\Entity\ExcludedTag;
 use App\Entity\Tag;
-use App\Enum\TagEnum;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\String\Slugger\AsciiSlugger;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 class JoindApiFetcher implements FetcherInterface
 {
     use HashConferenceTrait;
 
     const SOURCE = 'joind';
-    // Use to match source topics with Starfleet Tags
     const TAGS_SYNONYMS = [
-        'android', //0
-        null, //1
-        null, //2
-        'css', //3
-        null, //4
-        'data', //5
-        'devops', //6
-        'dotnet', //7
-        'elixir', //8
-        'facebook', //9
-        null, //10
-        null, //11
-        'golang', //12
-        null, //13
-        null, //14
-        'html', //15
-        'ios', //16
-        'java', //17
-        'javascript', //18
-        null, //19
-        'nodejs', //20
-        'php', //21
-        'python', //22
-        'react native', //23
-        'ruby', //24
-        'rust', //25
-        null, //26
-        'security', //27
-        null, //28
-        'ux', //29
+        'android',
+        'css',
+        'data',
+        'devops',
+        'dotnet',
+        'elixir',
+        'facebook',
+        'golang',
+        'html',
+        'ios',
+        'java',
+        'javascript',
+        'nodejs',
+        'php',
+        'python',
+        'react native',
+        'ruby',
+        'rust',
+        'security',
+        'ux',
     ];
 
     private $em;
@@ -68,6 +58,7 @@ class JoindApiFetcher implements FetcherInterface
     private $tagRepository;
     private $excludedTags;
     private $continentGuesser;
+    private $slugger;
 
     public function __construct(ManagerRegistry $doctrine, SerializerInterface $serializer, LoggerInterface $logger, ContinentGuesser $continentGuesser)
     {
@@ -80,6 +71,7 @@ class JoindApiFetcher implements FetcherInterface
         $this->tagRepository = $this->em->getRepository(Tag::class);
         $this->excludedTags = $this->em->getRepository(ExcludedTag::class)->findAll();
         $this->continentGuesser = $continentGuesser;
+        $this->slugger = new AsciiSlugger();
     }
 
     public function isActive(): bool
@@ -92,20 +84,31 @@ class JoindApiFetcher implements FetcherInterface
         return 'https://api.joind.in/v2.1/events?verbose=yes&resultsperpage=20&startdate='.$params['startdate'].'&tags[]='.$params['tag'];
     }
 
-    public function fetch(): array
+    public function fetch(): \Generator
     {
-        $conferences = [];
+        foreach ($this->tagRepository->findBy(['selected' => true]) as $tag) {
+            $tagKey = array_search($this->slugger->slug(strtolower($tag->getName()))->toString(), self::TAGS_SYNONYMS);
 
-        // @todo: use enabled tags instead of all tags from enum
-        foreach (array_combine(TagEnum::toArray(), self::TAGS_SYNONYMS) as $tagName => $tagSynonym) {
-            if (null === $tagSynonym) {
+            if (false === $tagKey) {
                 continue;
             }
 
-            $response = $this->httpClient->request('GET', $this->getUrl(['startdate' => date('Y'), 'tag' => $tagSynonym]));
+            $tagSynonym = self::TAGS_SYNONYMS[$tagKey];
+            $url = $this->getUrl(['startdate' => date('Y'), 'tag' => $tagSynonym]);
+
+            try {
+                $response = $this->httpClient->request('GET', $url);
+            } catch (TransportExceptionInterface $exception) {
+                $this->logger->error('HttpClient Transport Exception', [
+                    'url' => $url,
+                    'source' => self::SOURCE,
+                    'exception' => $exception->getMessage(),
+                ]);
+                continue;
+            }
 
             if (404 === $response->getStatusCode()) {
-                $this->logger->error('Source URL returns 404', ['url' => $this->getUrl(), 'source' => self::SOURCE]);
+                $this->logger->error('Source URL returns 404', ['url' => $this->getUrl(['startdate' => date('Y'), 'tag' => $tagSynonym]), 'source' => self::SOURCE]);
                 continue;
             }
 
@@ -115,25 +118,14 @@ class JoindApiFetcher implements FetcherInterface
                 continue;
             }
 
-            $tag = $this->tagRepository->findOneBy([
-                'name' => $tagName,
-                'selected' => true,
-            ]);
-
-            if (!$tag instanceof Tag) {
-                continue;
-            }
-
-            $fetchedConferences = $this->denormalizeConferences($data['events'], self::SOURCE, $tag);
-
-            $conferences = array_merge($conferences, iterator_to_array($fetchedConferences));
+            yield $url => $this->denormalizeConferences($data['events'], $tag);
         }
-
-        return $conferences;
     }
 
-    public function denormalizeConferences(array $rawConferences, string $source, Tag $tag): \Generator
+    public function denormalizeConferences(array $rawConferences, Tag $tag): array
     {
+        $conferences = [];
+
         foreach ($rawConferences as $rawConference) {
             $city = str_ireplace('_', ' ', $rawConference['tz_place']);
             $query = sprintf('%s', $city);
@@ -150,12 +142,10 @@ class JoindApiFetcher implements FetcherInterface
                 continue;
             }
 
-            $hash = $this->hash($rawConference['name'], $rawConference['href'], $startDate);
             $slug = $rawConference['url_friendly_name'];
 
             $conference = new Conference();
-            $conference->setSource($source);
-            $conference->setHash($hash);
+            $conference->setSource(self::SOURCE);
             $conference->setSlug($slug);
             $conference->setName($rawConference['name']);
             $conference->setLocation($city);
@@ -189,7 +179,9 @@ class JoindApiFetcher implements FetcherInterface
                 $conference->setCfpEndAt($cfpEndAt);
             }
 
-            yield $hash => $conference;
+            $conferences[] = $conference;
         }
+
+        return $conferences;
     }
 }

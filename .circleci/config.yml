@@ -22,7 +22,7 @@ jobs:
             - run: sudo pip install pycodestyle
             - run:
                   name: Check cs
-                  command: pycodestyle invoke.py tasks.py --ignore=E501,W605,E722
+                  command: pycodestyle --ignore=E501,W605,E722 invoke.py tasks.py
 
     check-lint:
         docker:
@@ -57,6 +57,7 @@ jobs:
     tests:
         machine:
             docker_layer_caching: true
+            image: ubuntu-1604:201903-01
         working_directory: ~/project
         steps:
             - checkout
@@ -77,20 +78,21 @@ jobs:
             - run:
                 name: Install Requirements
                 command: |
-                    set -x
-                    pip install pipenv==11.1.4
-                    pipenv install
+                    set -e
+                    pip install --upgrade pip
+                    pip install --user pipenv
+                    ~/.local/bin/pipenv install
             - run:
                 name: Install and build everything
                 command: |
                     set -x
-                    pipenv run inv start
-                    pipenv run inv webpack
+                    ~/.local/bin/pipenv run inv start
+                    ~/.local/bin/pipenv run inv webpack
             - run:
                 name: Run unit and functional tests
                 command: |
                     set -x
-                    pipenv run inv tests
+                    ~/.local/bin/pipenv run inv tests
 
             - save_cache:
                 key: func-cache-{{ checksum "~/project/composer.lock" }}
