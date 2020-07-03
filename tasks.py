@@ -131,7 +131,7 @@ def reset(c):
 
 
 @task
-def fix_cs(c, dry_run=False):
+def cs_fix(c, dry_run=False):
     """
     Fix coding standards in code
     """

@@ -6,6 +6,7 @@ easy_admin:
             templates:
                 list: 'easy_admin/Participation/list.html.twig'
             list:
+                filters: ['conference', 'participant']
                 fields:
                     - { property: 'conference' }
                     - { property: 'participant' }
