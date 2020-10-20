@@ -46,6 +46,7 @@ class AdminController extends EasyAdminController
         return $this->redirectToRoute('easyadmin', [
             'action' => 'list',
             'entity' => $this->request->query->get('entity'),
+            'page' => $this->request->query->get('page'),
         ]);
     }
 
@@ -60,6 +61,7 @@ class AdminController extends EasyAdminController
         return $this->redirectToRoute('easyadmin', [
             'action' => 'list',
             'entity' => $this->request->query->get('entity'),
+            'page' => $this->request->query->get('page'),
         ]);
     }
 
