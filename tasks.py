@@ -266,6 +266,7 @@ def help(c):
     print(Fore.GREEN + 'Available URLs for this project:' + Fore.RESET)
     for domain in [c.root_domain] + c.extra_domains:
         print("* " + Fore.YELLOW + "https://" + domain + Fore.RESET)
+        print("* " + Fore.YELLOW + "https://" + domain + "/admin with admin@starfleet.app/password" + Fore.RESET)
 
     try:
         response = json.loads(requests.get('http://%s:8080/api/http/routers' % (c.root_domain)).text)

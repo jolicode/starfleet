@@ -23,19 +23,17 @@ Install Python virtualenv to be able to use fabric commands to control easily th
 
 `$ pipenv install`
 
-Enter in pipenv shell to get access to `fab` command
+Enter in pipenv shell to get access to `inv` command
 
 `$ pipenv shell`
 
 If it's your first install of Starfleet, run
 
-`$ fab start`
-
-If not, just up the containers with
-
-`$ fab up`
+`$ inv start`
 
 Open [https://local.starfleet.app](https://local.starfleet.app) in your browser 🚀
+
+You'll need to configure a Slack web hook url, go to `https://[your-slack-organization].slack.com/apps/A0F7XDUAZ-incoming-webhooks`.
 
 ## Changes
 
