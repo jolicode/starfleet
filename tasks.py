@@ -63,6 +63,7 @@ def install(c):
     with Builder(c):
         docker_compose_run(c, 'composer install -n --prefer-dist --optimize-autoloader', no_deps=True)
         run_in_docker_or_locally_for_dinghy(c, 'yarn', no_deps=True)
+        run_in_docker_or_locally_for_dinghy(c, 'yarn run dev', no_deps=True)
 
 
 @task
