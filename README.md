@@ -7,31 +7,49 @@
 
 > Share your conferences activity to your buddies
 
+## Requirements
+
+This project requires:
+
+- Docker 
+- [mkcert](https://github.com/FiloSottile/mkcert)
+- [pipenv](https://github.com/pypa/pipenv)
+
 ## Installation
 
 ### Local
 
-> Add `local.starfleet.app` to your hosts file
+First, you will need to add `local.starfleet.app` to your hosts file:
+```
+127.0.0.1 local.starfleet.app
+```
 
-Use [mkcert](https://github.com/FiloSottile/mkcert) to install a CA on your system to be able to generate a valid self-signed certificate for local.starfleet.app
+Install pipenv dependencies:
+```bash
+pipenv install
+```
 
-`$ mkcert *.starfleet.app`
+Enter in pipenv shell to get access to `inv` command:
+```bash
+pipenv shell
+```
 
-> certificate and key must be placed in infrastructure/docker/services/router/etc/ssl/certs
+Generate your SSL certificates with:
+```bash
+inv generate_certificates
+```
 
-Install Python virtualenv to be able to use fabric commands to control easily the Docker stack
-
-`$ pipenv install`
-
-Enter in pipenv shell to get access to `inv` command
-
-`$ pipenv shell`
-
-If it's your first install of Starfleet, run
-
-`$ inv start`
+If it's your first install of Starfleet, run:
+```bash
+inv start
+```
 
 Open [https://local.starfleet.app](https://local.starfleet.app) in your browser 🚀
+
+If you need to enter a shell to run specific command, run the following command:
+```bash
+inv builder
+```
 
 You'll need to configure a Slack web hook url, go to `https://[your-slack-organization].slack.com/apps/A0F7XDUAZ-incoming-webhooks`.
 

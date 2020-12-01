@@ -281,6 +281,14 @@ def help(c):
     except:
         pass
 
+@task
+def generate_certificates(c):
+    """
+    Generates the cert.pem and cert-key.pem files
+    """
+    with c.cd(c.project_directory + '/infrastructure/docker/services/router/etc/ssl/certs/'):
+        c.run('mkcert -cert-file cert.pem -key-file key.pem "*.starfleet.app"')
+
 
 def run_in_docker_or_locally_for_dinghy(c, command, no_deps=False):
     """
