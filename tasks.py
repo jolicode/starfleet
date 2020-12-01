@@ -282,6 +282,7 @@ def help(c):
     except:
         pass
 
+
 @task
 def generate_certificates(c):
     """
