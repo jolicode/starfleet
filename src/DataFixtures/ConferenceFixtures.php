@@ -13,14 +13,24 @@ namespace App\DataFixtures;
 
 use App\Entity\Conference;
 use App\Entity\Participation;
+use App\EventListener\SlackNotifierEventListener;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
 class ConferenceFixtures extends Fixture implements DependentFixtureInterface
 {
+    private $slackNotifierEventListener;
+
+    public function __construct(SlackNotifierEventListener $slackNotifierEventListener)
+    {
+        $this->slackNotifierEventListener = $slackNotifierEventListener;
+    }
+
     public function load(ObjectManager $manager)
     {
+        $this->slackNotifierEventListener->disable();
+
         $nextConference = new Conference();
         $nextConference->setName('Next Conf');
         $nextConference->setSiteUrl('https://next-conf.test');
