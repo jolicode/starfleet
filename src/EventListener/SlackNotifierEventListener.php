@@ -23,10 +23,20 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class SlackNotifierEventListener implements EventSubscriberInterface
 {
     private $slackNotifier;
+    private $disabled;
 
     public function __construct(SlackNotifier $slackNotifier)
     {
         $this->slackNotifier = $slackNotifier;
+        $this->disabled = false;
+    }
+
+    /**
+     * Disable the listener, useful while loading fixtures for example.
+     */
+    public function disable()
+    {
+        $this->disabled = true;
     }
 
     public static function getSubscribedEvents()
@@ -42,6 +52,10 @@ class SlackNotifierEventListener implements EventSubscriberInterface
 
     public function onNewTalkSubmitted(NewTalkSubmittedEvent $event)
     {
+        if ($this->disabled) {
+            return;
+        }
+
         $payload = SlackNotifier::EMPTY_PAYLOAD;
         array_push($payload['attachments'], $event->buildAttachment());
         $this->slackNotifier->notify($payload);
@@ -49,6 +63,10 @@ class SlackNotifierEventListener implements EventSubscriberInterface
 
     public function onNewConferenceAdded(NewConferenceEvent $event)
     {
+        if ($this->disabled) {
+            return;
+        }
+
         $payload = SlackNotifier::EMPTY_PAYLOAD;
         array_push($payload['attachments'], $event->buildAttachment());
         $this->slackNotifier->notify($payload);
@@ -56,6 +74,9 @@ class SlackNotifierEventListener implements EventSubscriberInterface
 
     public function onNewConferencesAdded(NewConferencesEvent $event)
     {
+        if ($this->disabled) {
+            return;
+        }
         $payload = SlackNotifier::EMPTY_PAYLOAD;
         $newConferences = $event->getNewConferences();
         $conferenceAttachment = SlackNotifier::ATTACHMENT;
@@ -72,6 +93,10 @@ class SlackNotifierEventListener implements EventSubscriberInterface
 
     public function onSubmitStatusChanged(SubmitStatusChangedEvent $event)
     {
+        if ($this->disabled) {
+            return;
+        }
+
         if (Submit::STATUS_PENDING === $event->getSubmit()->getStatus()) {
             return;
         }
@@ -83,6 +108,10 @@ class SlackNotifierEventListener implements EventSubscriberInterface
 
     public function onCfpEndingSoon(CfpEndingSoonEvent $event)
     {
+        if ($this->disabled) {
+            return;
+        }
+
         $payload = SlackNotifier::EMPTY_PAYLOAD;
         array_push($payload['attachments'], $event->buildAttachment());
         $this->slackNotifier->notify($payload);
