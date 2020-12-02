@@ -1,0 +1,7 @@
+{% for submit in item.submits %}
+    <ul style="margin-bottom:0">
+    {% for user in submit.users %}
+        <li>{{ user.name }}</li>
+    {% endfor %}
+    </ul>
+{% endfor %}
