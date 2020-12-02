@@ -1,0 +1,5 @@
+{% for submit in value %}
+    {% for user in submit.users %}
+        {{ user.name }}{% if not loop.last %}, {% endif %}
+    {% endfor %}
+{% endfor %}

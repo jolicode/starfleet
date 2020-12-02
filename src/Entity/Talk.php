@@ -101,6 +101,11 @@ class Talk
         return $this;
     }
 
+    public function getAuthors()
+    {
+        return $this->getSubmits();
+    }
+
     public function __toString(): string
     {
         return $this->getTitle() ?? (string) $this->id;

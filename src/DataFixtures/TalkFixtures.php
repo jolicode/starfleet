@@ -2,9 +2,7 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Submit;
 use App\Entity\Talk;
-use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -12,13 +10,11 @@ class TalkFixtures extends Fixture
 {
     public function load(ObjectManager $manager)
     {
-
         $talk = new Talk();
         $talk->setTitle('TalkTitle');
         $talk->setIntro('TalkIntro');
-        $talk->addAuthor($this->getReference('user'));
-        $talk->addAuthor($this->getReference('admin'));
         $manager->persist($talk);
+        $this->setReference('talk', $talk);
 
         $manager->flush();
     }
