@@ -67,7 +67,7 @@ class Submit
     private $users;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Conference", inversedBy="submits")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Conference", inversedBy="submits", cascade={"persist"})
      */
     private $conference;
 

@@ -12,10 +12,9 @@
 namespace App\DataFixtures;
 
 use App\Entity\Continent;
-use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
-class ContinentFixtures extends Fixture
+class ContinentFixtures extends BaseFixtures
 {
     public function load(ObjectManager $manager)
     {

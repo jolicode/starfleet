@@ -101,6 +101,24 @@ class Talk
         return $this;
     }
 
+    public function getUniqueUsers()
+    {
+        $uniqueNames = [];
+        foreach ($this->getSubmits() as $submit) {
+            $usersNames = [];
+            foreach ($submit->getUsers() as $user) {
+                $usersNames[] = $user->getName();
+            }
+
+            sort($usersNames);
+            $uniqueNames[] = $usersNames;
+        }
+        $uniqueNames = array_unique($uniqueNames, \SORT_REGULAR);
+        sort($uniqueNames);
+
+        return $uniqueNames;
+    }
+
     public function __toString(): string
     {
         return $this->getTitle() ?? (string) $this->id;
