@@ -42,6 +42,13 @@ class UserFixtures extends Fixture
         $manager->persist($user);
         $this->setReference('user', $user);
 
+        $user = new User();
+        $user->setEmail('user2@starfleet.app');
+        $user->setName('User2');
+        $user->setPassword($this->passwordEncoder->encodePassword($user, 'password'));
+        $manager->persist($user);
+        $this->setReference('user2', $user);
+
         $manager->flush();
     }
 }

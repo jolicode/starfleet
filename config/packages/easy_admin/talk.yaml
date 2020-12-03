@@ -8,7 +8,7 @@ easy_admin:
                     - { property: 'title', type: 'text' }
                     - { property: 'submits' }
                     - { property: 'createdAt', type: 'date' }
-                    - { property: 'authors', type: 'text', template: 'easy_admin/talk/authors.html.twig' }
+                    - { property: 'authors', template: 'easy_admin/talk/authors.html.twig' }
             show:
                 fields:
                     - { property: 'title' }

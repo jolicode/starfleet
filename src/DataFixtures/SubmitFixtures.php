@@ -19,6 +19,35 @@ class SubmitFixtures extends Fixture implements DependentFixtureInterface
         $submit->setTalk($this->getReference('talk'));
         $manager->persist($submit);
 
+        $submit = new Submit();
+        $submit->setSubmittedAt(new \DateTime());
+        $submit->setStatus('pending');
+        $submit->addUser($this->getReference('user'));
+        $submit->setTalk($this->getReference('talk2'));
+        $manager->persist($submit);
+
+        $submit = new Submit();
+        $submit->setSubmittedAt(new \DateTime());
+        $submit->setStatus('pending');
+        $submit->addUser($this->getReference('admin'));
+        $submit->setTalk($this->getReference('talk3'));
+        $manager->persist($submit);
+
+        $submit = new Submit();
+        $submit->setSubmittedAt(new \DateTime());
+        $submit->setStatus('pending');
+        $submit->addUser($this->getReference('admin'));
+        $submit->setTalk($this->getReference('talk'));
+        $manager->persist($submit);
+
+        $submit = new Submit();
+        $submit->setSubmittedAt(new \DateTime());
+        $submit->setStatus('pending');
+        $submit->addUser($this->getReference('user2'));
+        $submit->addUser($this->getReference('admin'));
+        $submit->setTalk($this->getReference('talk'));
+        $manager->persist($submit);
+
         $manager->flush();
     }
 
