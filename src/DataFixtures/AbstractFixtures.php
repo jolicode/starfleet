@@ -21,7 +21,7 @@ use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
-class BaseFixtures extends Fixture implements ContainerAwareInterface
+abstract class AbstractFixtures extends Fixture implements ContainerAwareInterface
 {
     use ContainerAwareTrait;
 

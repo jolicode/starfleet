@@ -69,7 +69,7 @@
                 </div>
 
                 {% set activeTab = activeTab|default(liveConferences|length > 0 ? 'live' : futureConferences|length > 0 ? 'future' : 'past') %}
-    
+
                 <ul class="nav nav-tabs" id="conferencesTabs" role="tablist">
                     {% if liveConferences|length > 0 %}
                         <li class="nav-item">

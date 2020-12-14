@@ -14,7 +14,7 @@ namespace App\DataFixtures;
 use App\EventListener\SlackNotifierEventListener;
 use Doctrine\Persistence\ObjectManager;
 
-class DevelopmentFixtures extends BaseFixtures
+class DevelopmentFixtures extends AbstractFixtures
 {
     private $slackNotifierEventListener;
 

@@ -101,7 +101,7 @@ class Talk
         return $this;
     }
 
-    public function getUniqueUsers()
+    public function getUniqueUsers(): array
     {
         $uniqueNames = [];
         foreach ($this->getSubmits() as $submit) {

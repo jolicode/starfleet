@@ -14,7 +14,7 @@ namespace App\DataFixtures;
 use App\Entity\Continent;
 use Doctrine\Persistence\ObjectManager;
 
-class ContinentFixtures extends BaseFixtures
+class ContinentFixtures extends AbstractFixtures
 {
     public function load(ObjectManager $manager)
     {

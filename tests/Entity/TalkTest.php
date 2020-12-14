@@ -14,6 +14,7 @@ namespace App\Tests\Entity;
 use App\Entity\Submit;
 use App\Entity\Talk;
 use App\Entity\User;
+use Generator;
 use PHPUnit\Framework\TestCase;
 
 class TalkTest extends TestCase
@@ -39,10 +40,10 @@ class TalkTest extends TestCase
         }
 
         $result = $talk->getUniqueUsers();
-        self::assertSame($expectedAmount, \count($result));
+        self::assertCount($expectedAmount, $result);
     }
 
-    public function provideUsers()
+    public function provideUsers(): Generator
     {
         yield [
             [['user1'], ['user1']], 1,

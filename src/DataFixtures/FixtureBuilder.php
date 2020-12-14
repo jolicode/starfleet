@@ -16,11 +16,12 @@ use App\Entity\Participation;
 use App\Entity\Submit;
 use App\Entity\Talk;
 use App\Entity\User;
+use Faker\Generator;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class FixtureBuilder
 {
-    private static $faker;
+    private static ?Generator $faker = null;
 
     public static function createTalk(array $description = []): Talk
     {

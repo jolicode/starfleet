@@ -14,7 +14,7 @@ namespace App\DataFixtures;
 use App\Entity\Tag;
 use Doctrine\Persistence\ObjectManager;
 
-class TagFixtures extends BaseFixtures
+class TagFixtures extends AbstractFixtures
 {
     public function load(ObjectManager $manager)
     {
