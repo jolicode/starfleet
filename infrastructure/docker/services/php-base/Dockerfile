@@ -17,6 +17,7 @@ ARG PHP_VERSION=7.4
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         php${PHP_VERSION}-apcu \
+        php${PHP_VERSION}-cli \
         php${PHP_VERSION}-common \
         php${PHP_VERSION}-curl \
         php${PHP_VERSION}-iconv \
