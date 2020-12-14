@@ -1,5 +1,8 @@
 translation:
     locales: ["en"]
+    edit_in_place:
+        enabled: false
+        config_name: app
     configs:
         app:
             dirs: ["%kernel.project_dir%/templates", "%kernel.project_dir%/src"]

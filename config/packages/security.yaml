@@ -2,13 +2,11 @@ security:
     encoders:
         App\Entity\User:
             algorithm: native
-
     providers:
         user:
             entity:
                 class: App\Entity\User
                 property: email
-
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/

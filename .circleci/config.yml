@@ -38,9 +38,6 @@ jobs:
             - run:
                   name: Composer install
                   command: composer install --no-scripts
-            - run:
-                  name: Create .env
-                  command: cp .env.dist .env
             - save_cache:
                   key: composer-cache-project-{{ checksum "~/project/composer.lock" }}
                   paths:

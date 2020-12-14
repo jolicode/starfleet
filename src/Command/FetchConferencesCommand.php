@@ -13,7 +13,7 @@ namespace App\Command;
 
 use App\Entity\Conference;
 use App\Fetcher\FetcherInterface;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
@@ -112,17 +112,21 @@ class FetchConferencesCommand extends Command
 
             $distance = levenshtein(strtolower($currentConferenceName), strtolower($existingConferenceName));
 
-            if (0 === $distance
+            if (
+                0 === $distance
                 && $existingConference['startAt']->format('Y-m-d') === $conference->getStartAt()->format('Y-m-d')
-                && $existingConference['endAt']->format('Y-m-d') === $conference->getEndAt()->format('Y-m-d')) {
+                && $existingConference['endAt']->format('Y-m-d') === $conference->getEndAt()->format('Y-m-d')
+            ) {
                 $matchedConference = $conference;
                 $shortest = $distance;
                 break;
             }
 
             if ($distance <= $shortest || $shortest < 0) {
-                if ($existingConference['startAt']->format('Y-m-d') === $conference->getStartAt()->format('Y-m-d')
-                    && $existingConference['endAt']->format('Y-m-d') === $conference->getEndAt()->format('Y-m-d')) {
+                if (
+                    $existingConference['startAt']->format('Y-m-d') === $conference->getStartAt()->format('Y-m-d')
+                    && $existingConference['endAt']->format('Y-m-d') === $conference->getEndAt()->format('Y-m-d')
+                ) {
                     $matchedConference = $conference;
                 }
                 $shortest = $distance;

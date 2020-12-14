@@ -15,7 +15,7 @@ use App\Entity\Conference;
 use App\Entity\Continent;
 use App\Entity\ExcludedTag;
 use App\Entity\Tag;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\Serializer\SerializerInterface;

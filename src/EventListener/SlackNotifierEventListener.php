@@ -57,7 +57,7 @@ class SlackNotifierEventListener implements EventSubscriberInterface
         }
 
         $payload = SlackNotifier::EMPTY_PAYLOAD;
-        array_push($payload['attachments'], $event->buildAttachment());
+        $payload['attachments'][] = $event->buildAttachment();
         $this->slackNotifier->notify($payload);
     }
 
@@ -68,7 +68,7 @@ class SlackNotifierEventListener implements EventSubscriberInterface
         }
 
         $payload = SlackNotifier::EMPTY_PAYLOAD;
-        array_push($payload['attachments'], $event->buildAttachment());
+        $payload['attachments'][] = $event->buildAttachment();
         $this->slackNotifier->notify($payload);
     }
 
@@ -84,10 +84,10 @@ class SlackNotifierEventListener implements EventSubscriberInterface
 
         foreach ($newConferences as $newConference) {
             $conferenceField = $event->buildAttachmentField($newConference);
-            array_push($conferenceAttachment['fields'], $conferenceField);
+            $conferenceAttachment['fields'][] = $conferenceField;
         }
 
-        array_push($payload['attachments'], $conferenceAttachment);
+        $payload['attachments'][] = $conferenceAttachment;
         $this->slackNotifier->notify($payload);
     }
 
@@ -102,7 +102,7 @@ class SlackNotifierEventListener implements EventSubscriberInterface
         }
 
         $payload = SlackNotifier::EMPTY_PAYLOAD;
-        array_push($payload['attachments'], $event->buildAttachment());
+        $payload['attachments'][] = $event->buildAttachment();
         $this->slackNotifier->notify($payload);
     }
 
@@ -113,7 +113,7 @@ class SlackNotifierEventListener implements EventSubscriberInterface
         }
 
         $payload = SlackNotifier::EMPTY_PAYLOAD;
-        array_push($payload['attachments'], $event->buildAttachment());
+        $payload['attachments'][] = $event->buildAttachment();
         $this->slackNotifier->notify($payload);
     }
 }

@@ -16,7 +16,7 @@ use App\Entity\Continent;
 use App\Entity\ExcludedTag;
 use App\Entity\Tag;
 use Behat\Transliterator\Transliterator;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -59,9 +59,12 @@ class ConfTechFetcher implements FetcherInterface
     private $continentGuesser;
     private $slugger;
 
-    public function __construct(ManagerRegistry $doctrine, SerializerInterface $serializer,
-        LoggerInterface $logger, ContinentGuesser $continentGuesser)
-    {
+    public function __construct(
+        ManagerRegistry $doctrine,
+        SerializerInterface $serializer,
+        LoggerInterface $logger,
+        ContinentGuesser $continentGuesser
+    ) {
         $this->em = $doctrine->getManager();
         // @todo replace with proper DI when http-client will be released as stable
         $this->httpClient = HttpClient::create();
@@ -111,7 +114,8 @@ class ConfTechFetcher implements FetcherInterface
                 if (404 === $response->getStatusCode()) {
                     $this->logger->error('Source URL returns 404', [
                         'url' => $url,
-                        'source' => self::SOURCE, ]);
+                        'source' => self::SOURCE,
+                    ]);
                     continue;
                 }
 

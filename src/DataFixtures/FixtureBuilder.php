@@ -158,7 +158,7 @@ class FixtureBuilder
         return $participation;
     }
 
-    private static function getFaker(): \Faker\Generator
+    private static function getFaker(): Generator
     {
         if (null === self::$faker) {
             self::$faker = \Faker\Factory::create();

@@ -13,7 +13,7 @@ namespace App\Repository;
 
 use App\Entity\ExcludedTag;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method ExcludedTag|null find($id, $lockMode = null, $lockVersion = null)

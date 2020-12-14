@@ -45,12 +45,12 @@ class SubmitStatusChangedEvent extends Event
         $speakersField = SlackNotifier::LONG_FIELD;
         $speakersField['title'] = \count($this->submit->getUsers()) > 1 ? 'Speakers' : 'Speaker';
         $speakersField['value'] = $this->submit->reduceSpeakersNames();
-        array_push($talkAttachment['fields'], $speakersField);
+        $talkAttachment['fields'][] = $speakersField;
 
         $conferenceField = SlackNotifier::SHORT_FIELD;
         $conferenceField['title'] = 'Conference';
         $conferenceField['value'] = '<'.$this->submit->getConference()->getSiteUrl().'|'.$this->submit->getConference()->getName().'>';
-        array_push($talkAttachment['fields'], $conferenceField);
+        $talkAttachment['fields'][] = $conferenceField;
 
         return $talkAttachment;
     }

@@ -18,8 +18,8 @@ use App\Event\NewConferencesEvent;
 use App\Event\NewTalkSubmittedEvent;
 use App\Event\SubmitStatusChangedEvent;
 use Doctrine\Common\EventSubscriber;
-use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Routing\RouterInterface;
 
