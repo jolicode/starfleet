@@ -32,7 +32,7 @@ class Participation
     private $conference;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="participations")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="participations", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $participant;

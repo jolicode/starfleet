@@ -398,6 +398,7 @@ class User implements UserInterface, \Serializable
             $this->password,
             $this->salt,
             $this->googleId,
-            $this->githubId) = unserialize($serialized);
+            $this->githubId
+        ) = unserialize($serialized);
     }
 }

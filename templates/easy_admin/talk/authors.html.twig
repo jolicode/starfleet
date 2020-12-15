@@ -1,12 +1,9 @@
-{% set uniqueUsers = [] %}
-{% for submit in item.submits %}
-    {% for user in submit.users %}
-        {% if submit.users|length > 1 %}
-            {{ user.name }}{% if not loop.last %} + {% endif %}
-        {% elseif user not in uniqueUsers %}
-            {% set uniqueUsers = uniqueUsers|merge([user]) %}
-            {{ user.name }}
-        {% endif %}
+<ul>
+    {% for submit in item.uniqueUsers %}
+        <li>
+            {% for user in submit %}
+                {{ user }}{% if not loop.last %}, {% endif %}
+            {% endfor %}
+        </li>
     {% endfor %}
-    {% if not loop.last %}/{% endif %}
-{% endfor %}
+</ul>
