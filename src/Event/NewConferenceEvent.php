@@ -66,10 +66,15 @@ class NewConferenceEvent extends Event
         }
         $conferenceAttachment['fields'][] = $endDateField;
 
-        $locationField = SlackNotifier::SHORT_FIELD;
-        $locationField['title'] = 'Location  🗺';
-        $locationField['value'] = $this->conference->getLocation();
-        $conferenceAttachment['fields'][] = $locationField;
+        $cityField = SlackNotifier::SHORT_FIELD;
+        $cityField['title'] = 'City  🏙️';
+        $cityField['value'] = $this->conference->getCity();
+        $conferenceAttachment['fields'][] = $cityField;
+
+        $countryField = SlackNotifier::SHORT_FIELD;
+        $countryField['title'] = 'Country  🗺';
+        $countryField['value'] = $this->conference->getCountry();
+        $conferenceAttachment['fields'][] = $countryField;
 
         if ($this->conference->getParticipations()->count() > 0) {
             $starfleetLinkField = SlackNotifier::SHORT_FIELD;
