@@ -113,7 +113,7 @@ class Talk
             sort($usersNames);
             $uniqueNames[] = $usersNames;
         }
-        $uniqueNames = array_unique($uniqueNames, \SORT_REGULAR);
+        $uniqueNames = array_unique($uniqueNames, SORT_REGULAR);
         sort($uniqueNames);
 
         return $uniqueNames;

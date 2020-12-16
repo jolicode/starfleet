@@ -49,13 +49,13 @@ class NewConferenceEvent extends Event
             }
             $cfpField['value'] = '<'.$this->conference->getCfpUrl().'|Submit a talk>  👉';
 
-            array_push($conferenceAttachment['fields'], $cfpField);
+            $conferenceAttachment['fields'][] = $cfpField;
         }
 
         $startDateField = SlackNotifier::SHORT_FIELD;
         $startDateField['title'] = 'From  🕑';
         $startDateField['value'] = $this->conference->getStartAt()->format('d F Y');
-        array_push($conferenceAttachment['fields'], $startDateField);
+        $conferenceAttachment['fields'][] = $startDateField;
 
         $endDateField = SlackNotifier::SHORT_FIELD;
         $endDateField['title'] = 'To  🕣';
@@ -64,12 +64,12 @@ class NewConferenceEvent extends Event
         } else {
             $endDateField['value'] = 'Unknown';
         }
-        array_push($conferenceAttachment['fields'], $endDateField);
+        $conferenceAttachment['fields'][] = $endDateField;
 
         $locationField = SlackNotifier::SHORT_FIELD;
         $locationField['title'] = 'Location  🗺';
         $locationField['value'] = $this->conference->getLocation();
-        array_push($conferenceAttachment['fields'], $locationField);
+        $conferenceAttachment['fields'][] = $locationField;
 
         if ($this->conference->getParticipations()->count() > 0) {
             $starfleetLinkField = SlackNotifier::SHORT_FIELD;
@@ -77,7 +77,7 @@ class NewConferenceEvent extends Event
             $starfleetLinkField['value'] = $this->router->generate('conferences_show', [
                 'slug' => $this->conference->getSlug(),
             ], UrlGeneratorInterface::ABSOLUTE_URL);
-            array_push($conferenceAttachment['fields'], $starfleetLinkField);
+            $conferenceAttachment['fields'][] = $starfleetLinkField;
         }
 
         $payload['attachments'] = [

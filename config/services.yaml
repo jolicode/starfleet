@@ -10,16 +10,20 @@ services:
             tags: ['app.fetcher']
 
     _defaults:
+        public: false
         autowire: true
         autoconfigure: true
-        public: false
 
     App\:
-        resource: '../src/*'
-        exclude: '../src/{Entity,Migrations,Tests}'
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+            - '../src/Tests/'
 
     App\Controller\:
-        resource: '../src/Controller'
+        resource: '../src/Controller/'
         tags: ['controller.service_arguments']
 
     App\EventListener\DoctrineEventSubscriber:

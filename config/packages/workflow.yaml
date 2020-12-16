@@ -5,9 +5,8 @@ framework:
             audit_trail:
                 enabled: true
             marking_store:
-                type: 'multiple_state'
-                arguments:
-                    - 'marking'
+                type: 'method'
+                property: 'marking'
             supports:
                 - App\Entity\Participation
             initial_marking: [pending]

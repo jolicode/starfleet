@@ -68,13 +68,13 @@ class CfpEndingSoonEvent extends Event
             $talksField = SlackNotifier::SHORT_FIELD;
             $talksField['title'] = 'Talks submitted by colleagues';
             $talksField['value'] = $this->conference->getSubmits()->count().'  📝';
-            array_push($cfpAttachment['fields'], $talksField);
+            $cfpAttachment['fields'][] = $talksField;
         }
 
         $actionsField = SlackNotifier::SHORT_FIELD;
         $actionsField['title'] = 'Submit a talk';
         $actionsField['value'] = sprintf('<%s|%s>', $this->conference->getCfpUrl(), 'Go to the CFP  👉');
-        array_push($cfpAttachment['fields'], $actionsField);
+        $cfpAttachment['fields'][] = $actionsField;
 
         return $cfpAttachment;
     }

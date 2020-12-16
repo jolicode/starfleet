@@ -39,17 +39,17 @@ class NewTalkSubmittedEvent extends Event
         $speakersField = SlackNotifier::LONG_FIELD;
         $speakersField['title'] = \count($this->submit->getUsers()) > 1 ? 'Speakers' : 'Speaker';
         $speakersField['value'] = $this->submit->reduceSpeakersNames();
-        array_push($talkAttachment['fields'], $speakersField);
+        $talkAttachment['fields'][] = $speakersField;
 
         $statusField = SlackNotifier::SHORT_FIELD;
         $statusField['title'] = 'Status';
         $statusField['value'] = Submit::STATUS_EMOJIS[$this->submit->getStatus()];
-        array_push($talkAttachment['fields'], $statusField);
+        $talkAttachment['fields'][] = $statusField;
 
         $conferenceField = SlackNotifier::SHORT_FIELD;
         $conferenceField['title'] = 'Conference';
         $conferenceField['value'] = '<'.$this->submit->getConference()->getSiteUrl().'|'.$this->submit->getConference()->getName().'>';
-        array_push($talkAttachment['fields'], $conferenceField);
+        $talkAttachment['fields'][] = $conferenceField;
 
         return $talkAttachment;
     }
