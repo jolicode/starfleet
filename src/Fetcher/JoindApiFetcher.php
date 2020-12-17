@@ -57,10 +57,10 @@ class JoindApiFetcher implements FetcherInterface
     private $logger;
     private $tagRepository;
     private $excludedTags;
-    private $continentGuesser;
+    private $locationGuesser;
     private $slugger;
 
-    public function __construct(ManagerRegistry $doctrine, SerializerInterface $serializer, LoggerInterface $logger, ContinentGuesser $continentGuesser)
+    public function __construct(ManagerRegistry $doctrine, SerializerInterface $serializer, LoggerInterface $logger, LocationGuesser $locationGuesser)
     {
         $this->em = $doctrine->getManager();
         // @todo replace with proper DI when http-client will be released as stable
@@ -70,7 +70,7 @@ class JoindApiFetcher implements FetcherInterface
         $this->conferenceRepository = $this->em->getRepository(Conference::class);
         $this->tagRepository = $this->em->getRepository(Tag::class);
         $this->excludedTags = $this->em->getRepository(ExcludedTag::class)->findAll();
-        $this->continentGuesser = $continentGuesser;
+        $this->locationGuesser = $locationGuesser;
         $this->slugger = new AsciiSlugger();
     }
 
@@ -129,7 +129,8 @@ class JoindApiFetcher implements FetcherInterface
         foreach ($rawConferences as $rawConference) {
             $city = str_ireplace('_', ' ', $rawConference['tz_place']);
             $query = sprintf('%s', $city);
-            $continent = $this->continentGuesser->getContinent($query);
+            $continent = $this->locationGuesser->getContinent($query);
+            $country = $this->locationGuesser->getCountry($query);
 
             if (!$continent->getEnabled() || !$continent instanceof Continent) {
                 continue;
@@ -148,7 +149,8 @@ class JoindApiFetcher implements FetcherInterface
             $conference->setSource(self::SOURCE);
             $conference->setSlug($slug);
             $conference->setName($rawConference['name']);
-            $conference->setLocation($city);
+            $conference->setCity($city);
+            $conference->setCountry($country);
             $conference->setStartAt($startDate);
             $conference->setSiteUrl($rawConference['href']);
             $conference->addTag($tag);

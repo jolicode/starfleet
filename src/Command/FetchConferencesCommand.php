@@ -149,8 +149,13 @@ class FetchConferencesCommand extends Command
             $updated = true;
         }
 
-        if ($conference->getLocation() !== $existingConference->getLocation()) {
-            $existingConference->setLocation($conference->getLocation());
+        if ($conference->getCity() !== $existingConference->getCity()) {
+            $existingConference->setCity($conference->getCity());
+            $updated = true;
+        }
+
+        if ($conference->getCountry() !== $existingConference->getCountry()) {
+            $existingConference->setCountry($conference->getCountry());
             $updated = true;
         }
 

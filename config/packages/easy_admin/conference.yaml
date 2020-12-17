@@ -26,7 +26,7 @@ easy_admin:
                 fields:
                     - { property: 'name', type: 'text' }
                     - { property: 'city', type: 'text' }
-                    - { property: 'country', type: 'country'}
+                    - { property: 'country', type: 'country', template: 'easy_admin/Conference/country.html.twig'}
                     - { property: 'startAt', type: 'date' }
                     - { property: 'cfpUrl', type: 'url', template: 'easy_admin/Conference/cfpUrl.html.twig' }
                     - { property: 'cfpEndAt', type: 'date' }
