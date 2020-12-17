@@ -1,3 +1,7 @@
 #talk_submits [name$="[talk][autocomplete]"] + .select2 {
     display: none;
 }
+
+td.text > ul {
+    margin-bottom: 0;
+}

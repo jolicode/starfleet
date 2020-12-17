@@ -129,7 +129,7 @@ class FixtureBuilder
         $conference->setCfpUrl($description['cfpUrl']);
         $conference->setStartAt($description['startAt']);
         $conference->setEndAt($description['endAt']);
-        $conference->setCfpEndAt($description['endAt']);
+        $conference->setCfpEndAt($description['cfpEndAt']);
 
         foreach ($description['participations'] as $participation) {
             $conference->addParticipation($participation);
