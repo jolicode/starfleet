@@ -25,7 +25,7 @@ trait CreateAuthenticatedClientTrait
         if (!$user) {
             $email = ($isAdmin ? 'admin' : 'user').'@starfleet.app';
             $user = $container->get('doctrine')->getRepository(User::class)
-                ->findOneByEmail($email);
+                ->findOneBy(['email' => $email]);
         }
 
         $token = new UsernamePasswordToken($user, $user->getPassword(), 'main', $user->getRoles());

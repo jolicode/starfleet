@@ -14,7 +14,7 @@ namespace App\Security\Authenticator;
 use App\Entity\User;
 use Doctrine\Persistence\ManagerRegistry;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
-use KnpU\OAuth2ClientBundle\Client\OAuth2Client;
+use KnpU\OAuth2ClientBundle\Client\OAuth2ClientInterface;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\SocialAuthenticator;
 use League\OAuth2\Client\Provider\GoogleUser;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -61,7 +61,7 @@ class GoogleAuthenticator extends SocialAuthenticator
             return $existingUser;
         }
 
-        /** @var User $user */
+        /** @var User|null $user */
         $user = $this->em->getRepository(User::class)
             ->findOneBy(['email' => $googleUser->getEmail()]);
 
@@ -92,7 +92,7 @@ class GoogleAuthenticator extends SocialAuthenticator
         return $user;
     }
 
-    private function getGoogleClient(): OAuth2Client
+    private function getGoogleClient(): OAuth2ClientInterface
     {
         return $this->clientRegistry->getClient('google');
     }
