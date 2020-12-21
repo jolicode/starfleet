@@ -63,6 +63,8 @@ class Submit
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\User", inversedBy="submits")
      * @ORM\JoinTable(name="submits_users")
+     *
+     * @var Collection<User>
      */
     private $users;
 

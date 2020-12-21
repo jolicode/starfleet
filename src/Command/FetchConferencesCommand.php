@@ -62,7 +62,7 @@ class FetchConferencesCommand extends Command
 
         /** @var FetcherInterface $fetcher */
         foreach ($this->fetchers as $fetcher) {
-            $fetchersSection->overwrite(sprintf('Processing %d/%d fetchers : %s', ++$currentFetcher, $nbFetchers, \get_class($fetcher)), true);
+            $fetchersSection->overwrite(sprintf('Processing %d/%d fetchers : %s', ++$currentFetcher, $nbFetchers, \get_class($fetcher)));
 
             if (!$fetcher->isActive()) {
                 continue;

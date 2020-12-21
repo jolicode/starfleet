@@ -43,6 +43,8 @@ class Talk
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Submit", mappedBy="talk", cascade={"persist", "remove"})
+     *
+     * @var Collection<Submit>
      */
     private $submits;
 

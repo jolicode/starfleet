@@ -92,12 +92,16 @@ class Conference
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Submit", mappedBy="conference")
+     *
+     * @var Collection<Submit>
      */
     private $submits;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Tag", inversedBy="conferences")
      * @ORM\JoinTable(name="conferences_tags")
+     *
+     * @var Collection<Tag>
      */
     private $tags;
 
@@ -113,6 +117,8 @@ class Conference
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Participation", mappedBy="conference", cascade={"persist"})
+     *
+     * @var Collection<Participation>
      */
     private $participations;
 

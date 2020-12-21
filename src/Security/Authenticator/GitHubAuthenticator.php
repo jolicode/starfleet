@@ -14,13 +14,12 @@ namespace App\Security\Authenticator;
 use App\Entity\User;
 use Doctrine\Persistence\ManagerRegistry;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
-use KnpU\OAuth2ClientBundle\Client\OAuth2Client;
+use KnpU\OAuth2ClientBundle\Client\OAuth2ClientInterface;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\SocialAuthenticator;
 use League\OAuth2\Client\Provider\GithubResourceOwner;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -33,17 +32,15 @@ class GitHubAuthenticator extends SocialAuthenticator
     private $urlGenerator;
     private $allowedGitHubOrganization;
     private $httpClient;
-    private $requestStack;
 
     public function __construct(ClientRegistry $clientRegistry, ManagerRegistry $registry,
-        UrlGeneratorInterface $urlGenerator, RequestStack $requestStack, string $allowedGitHubOrganization)
+        UrlGeneratorInterface $urlGenerator, string $allowedGitHubOrganization)
     {
         $this->clientRegistry = $clientRegistry;
         $this->em = $registry->getManager();
         $this->urlGenerator = $urlGenerator;
         $this->allowedGitHubOrganization = $allowedGitHubOrganization;
         $this->httpClient = HttpClient::create();
-        $this->requestStack = $requestStack;
     }
 
     public function supports(Request $request): bool
@@ -80,7 +77,7 @@ class GitHubAuthenticator extends SocialAuthenticator
             return $existingUser;
         }
 
-        /** @var User $user */
+        /** @var User|null $user */
         $user = $this->em->getRepository(User::class)
             ->findOneBy(['email' => $githubUser->getEmail()]);
 
@@ -103,7 +100,7 @@ class GitHubAuthenticator extends SocialAuthenticator
         return $user;
     }
 
-    private function getGitHubClient(): OAuth2Client
+    private function getGitHubClient(): OAuth2ClientInterface
     {
         return $this->clientRegistry->getClient('github');
     }
@@ -115,7 +112,8 @@ class GitHubAuthenticator extends SocialAuthenticator
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
-        $this->requestStack->getCurrentRequest()->getSession()->getFlashBag()->add('error', 'Your GitHub user is not in the allowed organization, or the membership is private.');
+        // @phpstan-ignore-next-line
+        $request->getSession()->getFlashBag()->add('error', 'Your GitHub user is not in the allowed organization, or the membership is private.');
 
         return new RedirectResponse($this->urlGenerator->generate('login'));
     }

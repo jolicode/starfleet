@@ -11,9 +11,8 @@
 
 namespace App\Command;
 
-use App\Entity\Conference;
 use App\Event\CfpEndingSoonEvent;
-use Doctrine\Persistence\ManagerRegistry;
+use App\Repository\ConferenceRepository;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -23,14 +22,14 @@ class RemindEndingCfpCommand extends Command
 {
     const REMAINING_DAYS_STEPS = [30, 20, 10, 5, 1, 0];
 
-    private $repository;
+    private ConferenceRepository $repository;
     private $eventDispatcher;
 
-    public function __construct(ManagerRegistry $doctrine, EventDispatcherInterface $eventDispatcher)
+    public function __construct(ConferenceRepository $conferenceRepository, EventDispatcherInterface $eventDispatcher)
     {
         parent::__construct();
 
-        $this->repository = $doctrine->getManager()->getRepository(Conference::class);
+        $this->repository = $conferenceRepository;
         $this->eventDispatcher = $eventDispatcher;
     }
 
@@ -40,7 +39,7 @@ class RemindEndingCfpCommand extends Command
         $this->setDescription('Trigger event for cfp ending soon');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $today = new \DateTime();
         $today->setTime(0, 0, 0);
@@ -53,5 +52,7 @@ class RemindEndingCfpCommand extends Command
                 $this->eventDispatcher->dispatch(new CfpEndingSoonEvent($conference, $remainingDays));
             }
         }
+
+        return 0;
     }
 }

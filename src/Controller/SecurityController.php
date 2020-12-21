@@ -42,7 +42,7 @@ class SecurityController extends AbstractController
      */
     public function connectGoogleAction(ClientRegistry $clientRegistry): Response
     {
-        return $clientRegistry->getClient('google')->redirect();
+        return $clientRegistry->getClient('google')->redirect([], []);
     }
 
     /**
@@ -61,7 +61,7 @@ class SecurityController extends AbstractController
      */
     public function connectGitHubAction(ClientRegistry $clientRegistry)
     {
-        return $clientRegistry->getClient('github')->redirect();
+        return $clientRegistry->getClient('github')->redirect([], []);
     }
 
     /**

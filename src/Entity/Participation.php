@@ -60,7 +60,7 @@ class Participation
     /**
      * @ORM\Column(type="jsonb")
      */
-    private $marking = [];
+    private array $marking = [];
 
     public function __construct()
     {

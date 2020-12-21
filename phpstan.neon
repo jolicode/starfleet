@@ -1,0 +1,18 @@
+includes:
+    - vendor/phpstan/phpstan-doctrine/extension.neon
+    - vendor/phpstan/phpstan-doctrine/rules.neon
+    - vendor/phpstan/phpstan-symfony/extension.neon
+
+parameters:
+    level: 5
+    paths:
+        - src
+        
+    tmpDir: var/phpstan-tmp
+    inferPrivatePropertyTypeFromConstructor: true
+
+    symfony:
+        container_xml_path: 'var/cache/dev/App_KernelDevDebugContainer.xml'
+
+    doctrine:
+        objectManagerLoader: var/phpstan-utilities/object-manager.php

@@ -15,6 +15,7 @@ yarn-error.log
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
 /var/
+!/var/phpstan-utilities/
 /vendor/
 ###< symfony/framework-bundle ###
 
