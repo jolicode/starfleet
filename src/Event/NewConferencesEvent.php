@@ -39,7 +39,11 @@ class NewConferencesEvent extends Event
         $conferenceField['short'] = false;
 
         if (null !== $conference->getStartAt() && null !== $conference->getEndAt()) {
-            $conferenceField['title'] = 'From '.$conference->getStartAt()->format('d F Y').' to '.$conference->getEndAt()->format('d F Y').' at '.$conference->getLocation();
+            if (null !== $conference->getCountry() && 'Online' !== $conference->getCountry()) {
+                $conferenceField['title'] = 'From '.$conference->getStartAt()->format('d F Y').' to '.$conference->getEndAt()->format('d F Y').' at '.$conference->getCity().' ('.$conference->getCountry().')';
+            } else {
+                $conferenceField['title'] = 'From '.$conference->getStartAt()->format('d F Y').' to '.$conference->getEndAt()->format('d F Y').' at '.$conference->getCity();
+            }
         }
 
         $starfleetLink = $this->router->generate('conferences_show', [

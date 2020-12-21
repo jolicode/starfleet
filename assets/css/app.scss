@@ -160,6 +160,10 @@ header nav {
     animation-timing-function: linear;
 }
 
+.country-flag {
+    width: 1.5rem;
+}
+
 @keyframes floating {
     0% {
         transform: translate(0%,0%) rotate(random(30) + deg);

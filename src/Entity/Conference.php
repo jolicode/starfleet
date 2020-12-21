@@ -61,11 +61,6 @@ class Conference
     private $description;
 
     /**
-     * @ORM\Column(name="location", type="string", length=255)
-     */
-    private $location;
-
-    /**
      * @ORM\Column(name="start_at", type="datetime")
      */
     private $startAt;
@@ -121,6 +116,16 @@ class Conference
      * @var Collection<Participation>
      */
     private $participations;
+
+    /**
+     * @ORM\Column(name="country", type="string", length=255, nullable=true)
+     */
+    private ?string $country = null;
+
+    /**
+     * @ORM\Column(name="city", type="string", length=255, nullable=true)
+     */
+    private ?string $city = null;
 
     public function __construct()
     {
@@ -199,18 +204,6 @@ class Conference
         $this->description = $description;
 
         return $this;
-    }
-
-    public function setLocation(?string $location): self
-    {
-        $this->location = $location;
-
-        return $this;
-    }
-
-    public function getLocation(): ?string
-    {
-        return $this->location;
     }
 
     public function setStartAt(?\DateTimeInterface $startAt): self
@@ -362,6 +355,30 @@ class Conference
     public function setExcluded(bool $excluded): self
     {
         $this->excluded = $excluded;
+
+        return $this;
+    }
+
+    public function getCountry(): ?string
+    {
+        return $this->country;
+    }
+
+    public function setCountry(?string $country): self
+    {
+        $this->country = $country;
+
+        return $this;
+    }
+
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    public function setCity(?string $city): self
+    {
+        $this->city = $city;
 
         return $this;
     }

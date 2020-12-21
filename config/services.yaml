@@ -49,3 +49,16 @@ services:
     App\Security\Authenticator\GitHubAuthenticator:
         arguments:
             $allowedGitHubOrganization: '%env(APP_ALLOWED_GITHUB_ORGANIZATION)%'
+
+    Http\Adapter\Guzzle6\Client:
+
+    Geocoder\Provider\Nominatim\Nominatim:
+        arguments:
+            $client: '@Http\Adapter\Guzzle6\Client'
+            $rootUrl: 'https://nominatim.openstreetmap.org/'
+            $userAgent: 'Fetch some geoloc thx OSM'
+
+    Geocoder\StatefulGeocoder:
+        arguments:
+            $provider: '@Geocoder\Provider\Nominatim\Nominatim'
+            $locale: 'en'

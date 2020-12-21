@@ -45,22 +45,22 @@ class CfpEndingSoonEvent extends Event
 
         switch ($this->remainingDays) {
             case 30:
-                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, $this->conference->getLocation(), $countdown.' 😀');
+                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, $this->conference->getCity(), $countdown.' 😀');
                 break;
             case 20:
-                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, $this->conference->getLocation(), $countdown.' 🙂');
+                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, $this->conference->getCity(), $countdown.' 🙂');
                 break;
             case 10:
-                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, $this->conference->getLocation(), $countdown.' 😮');
+                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, $this->conference->getCity(), $countdown.' 😮');
                 break;
             case 5:
-                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, $this->conference->getLocation(), $countdown.' 😨');
+                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, $this->conference->getCity(), $countdown.' 😨');
                 break;
             case 1:
-                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, $this->conference->getLocation(), $countdown.' 😰');
+                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, $this->conference->getCity(), $countdown.' 😰');
                 break;
             case 0:
-                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, $this->conference->getLocation(), '*today* ! 😱');
+                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, $this->conference->getCity(), '*today* ! 😱');
                 break;
         }
 

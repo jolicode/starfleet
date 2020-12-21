@@ -56,14 +56,14 @@ class ConfTechFetcher implements FetcherInterface
     private $logger;
     private $tagRepository;
     private $excludedTags;
-    private $continentGuesser;
+    private $locationGuesser;
     private $slugger;
 
     public function __construct(
         ManagerRegistry $doctrine,
         SerializerInterface $serializer,
         LoggerInterface $logger,
-        ContinentGuesser $continentGuesser
+        LocationGuesser $locationGuesser
     ) {
         $this->em = $doctrine->getManager();
         // @todo replace with proper DI when http-client will be released as stable
@@ -73,7 +73,7 @@ class ConfTechFetcher implements FetcherInterface
         $this->conferenceRepository = $this->em->getRepository(Conference::class);
         $this->tagRepository = $this->em->getRepository(Tag::class);
         $this->excludedTags = $this->em->getRepository(ExcludedTag::class)->findAll();
-        $this->continentGuesser = $continentGuesser;
+        $this->locationGuesser = $locationGuesser;
         $this->slugger = new AsciiSlugger();
     }
 
@@ -132,7 +132,8 @@ class ConfTechFetcher implements FetcherInterface
 
         foreach ($rawConferences as $rawConference) {
             $query = sprintf('%s %s', $rawConference['city'], 'U.S.A.' === $rawConference['country'] ? 'United States of America' : $rawConference['country']);
-            $continent = $this->continentGuesser->getContinent($query);
+            $continent = $this->locationGuesser->getContinent($query);
+            $country = $this->locationGuesser->getCountry($query);
 
             $startDate = \DateTimeImmutable::createFromFormat('Y-m-d h:i:s', $rawConference['startDate'].' 00:00:00');
 
@@ -151,7 +152,8 @@ class ConfTechFetcher implements FetcherInterface
             $conference->setSource(self::SOURCE);
             $conference->setSlug($slug);
             $conference->setName($rawConference['name']);
-            $conference->setLocation($rawConference['city']);
+            $conference->setCity($rawConference['city']);
+            $conference->setCountry($country);
             $conference->setStartAt($startDate);
             $conference->setSiteUrl($rawConference['url']);
             $conference->addTag($tag);

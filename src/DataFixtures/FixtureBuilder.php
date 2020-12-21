@@ -110,8 +110,9 @@ class FixtureBuilder
     {
         $description = array_replace([
             'id' => uuid_create(),
-            'name' => self::getFaker()->name,
-            'location' => self::getFaker()->country,
+            'name' => $cityName = self::getFaker()->city,
+            'country' => array_rand(array_flip(['gb', 'es', 'it', 'fr', 'de'])),
+            'city' => $cityName,
             'siteUrl' => self::getFaker()->url,
             'cfpUrl' => self::getFaker()->url,
             'startAt' => $date = self::getFaker()->dateTimeThisMonth->modify('+ 10 days'),
@@ -124,7 +125,8 @@ class FixtureBuilder
 
         ReflectionHelper::setProperty($conference, 'id', $description['id']);
         $conference->setName($description['name']);
-        $conference->setLocation($description['location']);
+        $conference->setCity($description['city']);
+        $conference->setCountry($description['country']);
         $conference->setSiteUrl($description['siteUrl']);
         $conference->setCfpUrl($description['cfpUrl']);
         $conference->setStartAt($description['startAt']);
