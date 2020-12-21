@@ -85,11 +85,15 @@ class User implements UserInterface, \Serializable
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Submit", mappedBy="users")
+     *
+     * @var Collection<Submit>
      */
     private $submits;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Participation", mappedBy="participant")
+     *
+     * @var Collection<Participation>
      */
     private $participations;
 

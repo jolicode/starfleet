@@ -52,7 +52,7 @@ jobs:
                   when: always
             - run:
                     name: Run PHPStan
-                    command: php -d memory_limit=-1 vendor/bin/phpstan analyse -c ./phpstan.neon.dist src
+                    command: php -d memory_limit=-1 vendor/bin/phpstan analyse
 
     tests:
         machine:

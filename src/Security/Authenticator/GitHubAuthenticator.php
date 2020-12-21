@@ -20,8 +20,6 @@ use League\OAuth2\Client\Provider\GithubResourceOwner;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -34,17 +32,15 @@ class GitHubAuthenticator extends SocialAuthenticator
     private $urlGenerator;
     private $allowedGitHubOrganization;
     private $httpClient;
-    private RequestStack $requestStack;
 
     public function __construct(ClientRegistry $clientRegistry, ManagerRegistry $registry,
-        UrlGeneratorInterface $urlGenerator, RequestStack $requestStack, string $allowedGitHubOrganization)
+        UrlGeneratorInterface $urlGenerator, string $allowedGitHubOrganization)
     {
         $this->clientRegistry = $clientRegistry;
         $this->em = $registry->getManager();
         $this->urlGenerator = $urlGenerator;
         $this->allowedGitHubOrganization = $allowedGitHubOrganization;
         $this->httpClient = HttpClient::create();
-        $this->requestStack = $requestStack;
     }
 
     public function supports(Request $request): bool
@@ -85,7 +81,7 @@ class GitHubAuthenticator extends SocialAuthenticator
         $user = $this->em->getRepository(User::class)
             ->findOneBy(['email' => $githubUser->getEmail()]);
 
-        if ($user instanceof User) {
+        if ($user) {
             $user->setGithubId($githubUser->getId());
 
             $this->em->flush();
@@ -116,9 +112,8 @@ class GitHubAuthenticator extends SocialAuthenticator
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
-        /** @var Session $session */
-        $session = $this->requestStack->getCurrentRequest()->getSession();
-        $session->getFlashBag()->add('error', 'Your GitHub user is not in the allowed organization, or the membership is private.');
+        // @phpstan-ignore-next-line
+        $request->getSession()->getFlashBag()->add('error', 'Your GitHub user is not in the allowed organization, or the membership is private.');
 
         return new RedirectResponse($this->urlGenerator->generate('login'));
     }

@@ -1,5 +1,6 @@
 includes:
     - vendor/phpstan/phpstan-doctrine/extension.neon
+    - vendor/phpstan/phpstan-doctrine/rules.neon
     - vendor/phpstan/phpstan-symfony/extension.neon
 
 parameters:
@@ -13,4 +14,5 @@ parameters:
     symfony:
         container_xml_path: 'var/cache/dev/App_KernelDevDebugContainer.xml'
 
-    ignoreErrors: []
+    doctrine:
+        objectManagerLoader: var/phpstan-utilities/object-manager.php

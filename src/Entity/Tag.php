@@ -38,6 +38,8 @@ class Tag
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Conference", mappedBy="tags")
+     *
+     * @var Collection<Conference>
      */
     private $conferences;
 
