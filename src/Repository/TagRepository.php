@@ -26,4 +26,15 @@ class TagRepository extends ServiceEntityRepository
 
         $this->logger = $logger;
     }
+
+    public function findTagByName(string $name): ?Tag
+    {
+        $tag = $this->createQueryBuilder('a')
+            ->where('lower(a.name) = lower(:name)')
+            ->setParameter('name', $name)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        return $tag;
+    }
 }

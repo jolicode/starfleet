@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "22b1aa38944f7b33b9e467b229128690",
+    "content-hash": "06bd49b02ca0280c151a33ef47df3778",
     "packages": [
         {
             "name": "alterphp/easyadmin-extension-bundle",
