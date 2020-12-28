@@ -154,6 +154,15 @@ def tests(c):
 
 
 @task
+def phpstan(c):
+    """
+    Runs PHPStan
+    """
+    with Builder(c):
+        docker_compose_run(c, 'php ./vendor/bin/phpstan analyse')
+
+
+@task
 def webpack_watch(c):
     """
     Compile and watch CSS and JS files for dev env
