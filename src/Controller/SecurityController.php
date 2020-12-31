@@ -51,7 +51,6 @@ class SecurityController extends AbstractController
     public function connectGoogleCheckAction(Request $request, ClientRegistry $clientRegistry): Response
     {
         $client = $clientRegistry->getClient('google');
-        dd($client->fetchUser());
 
         return $this->redirectToRoute('conferences_list');
     }
