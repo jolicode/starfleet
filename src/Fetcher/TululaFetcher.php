@@ -148,7 +148,7 @@ class TululaFetcher implements FetcherInterface
 
             if ($rawConference['isOnline']) {
                 $conference->setCity('Online');
-                $conference->setCountry(null);
+                $conference->setOnline(true);
             } else {
                 $conference->setCity($city);
                 $conference->setCountry($rawConference['venue']['countryCode']);

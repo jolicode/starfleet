@@ -119,19 +119,26 @@ class FixtureBuilder
             'endAt' => clone $date->modify('+ 1 days'),
             'cfpEndAt' => clone $date->modify('- 7 days'),
             'participations' => [],
+            'online' => false,
         ], $description);
 
         $conference = new Conference();
 
         ReflectionHelper::setProperty($conference, 'id', $description['id']);
         $conference->setName($description['name']);
-        $conference->setCity($description['city']);
-        $conference->setCountry($description['country']);
         $conference->setSiteUrl($description['siteUrl']);
         $conference->setCfpUrl($description['cfpUrl']);
         $conference->setStartAt($description['startAt']);
         $conference->setEndAt($description['endAt']);
         $conference->setCfpEndAt($description['cfpEndAt']);
+        $conference->setOnline($description['online']);
+
+        if ($description['online']) {
+            $conference->setCity('Online');
+        } else {
+            $conference->setCity($description['city']);
+            $conference->setCountry($description['country']);
+        }
 
         foreach ($description['participations'] as $participation) {
             $conference->addParticipation($participation);

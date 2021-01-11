@@ -66,15 +66,22 @@ class NewConferenceEvent extends Event
         }
         $conferenceAttachment['fields'][] = $endDateField;
 
-        $cityField = SlackNotifier::SHORT_FIELD;
-        $cityField['title'] = 'City  🏙️';
-        $cityField['value'] = $this->conference->getCity();
-        $conferenceAttachment['fields'][] = $cityField;
+        if ($this->conference->isOnline()) {
+            $cityField = SlackNotifier::SHORT_FIELD;
+            $cityField['title'] = 'Online Conference 🖥️';
+            $cityField['value'] = '127.0.0.1';
+            $conferenceAttachment['fields'][] = $cityField;
+        } else {
+            $cityField = SlackNotifier::SHORT_FIELD;
+            $cityField['title'] = 'City  🏙️';
+            $cityField['value'] = $this->conference->getCity();
+            $conferenceAttachment['fields'][] = $cityField;
 
-        $countryField = SlackNotifier::SHORT_FIELD;
-        $countryField['title'] = 'Country  🗺';
-        $countryField['value'] = $this->conference->getCountry();
-        $conferenceAttachment['fields'][] = $countryField;
+            $countryField = SlackNotifier::SHORT_FIELD;
+            $countryField['title'] = 'Country  🗺';
+            $countryField['value'] = $this->conference->getCountry();
+            $conferenceAttachment['fields'][] = $countryField;
+        }
 
         if ($this->conference->getParticipations()->count() > 0) {
             $starfleetLinkField = SlackNotifier::SHORT_FIELD;

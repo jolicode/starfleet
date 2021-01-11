@@ -49,7 +49,11 @@
                             <i class="fa fa-map"></i>&nbsp;
                             {{ 'conferences.show.sidebar.location_title'|trans }}
                         </p>
-                        <p>{{ conference.location }}</p>
+                        {% if conference.online %}
+                            <p>Online</p>
+                        {% else %}
+                            <p>{{ conference.city }}</p>
+                        {% endif %}
                         <hr>
 
                         <p class="h5 font-weight-normal">

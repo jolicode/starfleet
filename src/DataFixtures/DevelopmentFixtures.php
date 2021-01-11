@@ -50,6 +50,24 @@ class DevelopmentFixtures extends AbstractFixtures
             'password' => 'password',
         ]);
 
+        $onlineConference = $this->addConference([
+            'name' => 'Online Conf',
+            'siteUrl' => 'https://online-conf.test',
+            'cfpUrl' => 'https://cfp.online-conf.test',
+            'startAt' => new \DateTime('+ 15 days'),
+            'endAt' => new \DateTime('+ 16 days'),
+            'cfpEndAt' => new \DateTime('+ 8 days'),
+            'online' => true,
+        ]);
+
+        $onlineParticipation = $this->addParticipation([
+            'participant' => $user1,
+            'conference' => $onlineConference,
+            'asSpeaker' => true,
+            'marking' => ['validated' => 1],
+        ]);
+        $onlineConference->addParticipation($onlineParticipation);
+
         $nextConference = $this->addConference([
             'name' => 'Next Conf',
             'siteUrl' => 'https://next-conf.test',

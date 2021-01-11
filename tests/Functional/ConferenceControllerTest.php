@@ -24,7 +24,7 @@ class ConferenceControllerTest extends WebTestCase
         $this->assertSelectorTextContains('#conferencesTabs', 'Incoming conferences');
         $this->assertSelectorTextContains('#conferencesTabs', '🔴 Live conferences! Find us there!');
         $this->assertSelectorTextContains('#conferencesTabs', 'Past conferences');
-        $this->assertCount(1, $crawler->filter('div#future div.card'));
+        $this->assertCount(2, $crawler->filter('div#future div.card'));
         $this->assertCount(1, $crawler->filter('div#live div.card'));
         $this->assertCount(1, $crawler->filter('div#past div.card'));
     }

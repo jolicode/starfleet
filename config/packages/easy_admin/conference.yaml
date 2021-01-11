@@ -38,6 +38,7 @@ easy_admin:
                     - { property: 'name', type: 'text' }
                     - { property: 'city', type: 'text' }
                     - { property: 'country', type: 'country' }
+                    - { property: 'online', type: 'checkbox' }
                     - { property: 'startAt', type: 'date', 'type_options': { 'widget': 'single_text' } }
                     - { property: 'endAt', type: 'date', 'type_options': { 'widget': 'single_text' } }
                     - { property: 'siteUrl', type: 'url' }
