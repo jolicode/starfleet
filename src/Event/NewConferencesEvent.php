@@ -41,6 +41,8 @@ class NewConferencesEvent extends Event
         if (null !== $conference->getStartAt() && null !== $conference->getEndAt()) {
             if (null !== $conference->getCountry() && !$conference->isOnline()) {
                 $conferenceField['title'] = 'From '.$conference->getStartAt()->format('d F Y').' to '.$conference->getEndAt()->format('d F Y').' at '.$conference->getCity().' ('.$conference->getCountry().')';
+            } elseif ($conference->isOnline()) {
+                $conferenceField['title'] = 'From '.$conference->getStartAt()->format('d F Y').' to '.$conference->getEndAt()->format('d F Y').' Online';
             } else {
                 $conferenceField['title'] = 'From '.$conference->getStartAt()->format('d F Y').' to '.$conference->getEndAt()->format('d F Y').' at '.$conference->getCity();
             }

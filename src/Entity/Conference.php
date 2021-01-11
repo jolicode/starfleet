@@ -127,6 +127,11 @@ class Conference
      */
     private ?string $city = null;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private bool $online = false;
+
     public function __construct()
     {
         $this->submits = new ArrayCollection();
@@ -383,12 +388,15 @@ class Conference
         return $this;
     }
 
+    public function setOnline(bool $online): self
+    {
+        $this->online = $online;
+
+        return $this;
+    }
+
     public function isOnline(): bool
     {
-        if ('online' !== strtolower($this->city)) {
-            return false;
-        }
-
-        return true;
+        return $this->online;
     }
 }

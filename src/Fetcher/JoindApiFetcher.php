@@ -153,6 +153,10 @@ class JoindApiFetcher implements FetcherInterface
             $conference->setSiteUrl($rawConference['href']);
             $conference->addTag($tag);
 
+            if ('online' === $city) {
+                $conference->setOnline(true);
+            }
+
             $excluded = false;
             foreach ($this->excludedTags as $excludedTag) {
                 if (fnmatch($excludedTag->getName(), $rawConference['name'], FNM_CASEFOLD)) {

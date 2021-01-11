@@ -156,6 +156,10 @@ class ConfTechFetcher implements FetcherInterface
             $conference->setSiteUrl($rawConference['url']);
             $conference->addTag($tag);
 
+            if ('online' === strtolower($rawConference['city'])) {
+                $conference->setOnline(true);
+            }
+
             $excluded = false;
             foreach ($this->excludedTags as $excludedTag) {
                 if (fnmatch($excludedTag->getName(), $rawConference['name'], FNM_CASEFOLD)) {
