@@ -99,7 +99,7 @@ class Tag
         $this->selected = $selected;
     }
 
-    public function isSelected()
+    public function isSelected(): bool
     {
         return $this->selected;
     }

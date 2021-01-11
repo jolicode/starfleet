@@ -382,4 +382,13 @@ class Conference
 
         return $this;
     }
+
+    public function isOnline(): bool
+    {
+        if ('online' !== strtolower($this->city)) {
+            return false;
+        }
+
+        return true;
+    }
 }

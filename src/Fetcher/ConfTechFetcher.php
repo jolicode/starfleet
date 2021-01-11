@@ -25,8 +25,6 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 class ConfTechFetcher implements FetcherInterface
 {
-    use HashConferenceTrait;
-
     const SOURCE = 'conf-tech';
     const TAGS_SYNONYMS = [
         'android',

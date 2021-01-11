@@ -24,8 +24,6 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 class JoindApiFetcher implements FetcherInterface
 {
-    use HashConferenceTrait;
-
     const SOURCE = 'joind';
     const TAGS_SYNONYMS = [
         'android',
