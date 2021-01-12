@@ -14,7 +14,6 @@ namespace App\Fetcher;
 use App\Entity\Conference;
 use App\Entity\Continent;
 use App\Entity\Tag;
-use App\Repository\ExcludedTagRepository;
 use App\Repository\TagRepository;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -25,6 +24,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 class TululaFetcher implements FetcherInterface
 {
     private const SOURCE = 'tulula';
+    private const TULULA_URL = 'https://tulu.la/api/public';
     private const TAG_ALLOW_LIST = [
         'android',
         'css',
@@ -52,15 +52,13 @@ class TululaFetcher implements FetcherInterface
 
     private LocationGuesser $locationGuesser;
     private TagRepository $tagRepository;
-    private ExcludedTagRepository $excludedTagRepository;
     private HttpClientInterface $client;
     private LoggerInterface $logger;
 
-    public function __construct(LocationGuesser $locationGuesser, TagRepository $tagRepository, ExcludedTagRepository $excludedTagRepository, ?HttpClientInterface $client = null, ?LoggerInterface $logger = null)
+    public function __construct(LocationGuesser $locationGuesser, TagRepository $tagRepository, ?HttpClientInterface $client = null, ?LoggerInterface $logger = null)
     {
         $this->locationGuesser = $locationGuesser;
         $this->tagRepository = $tagRepository;
-        $this->excludedTagRepository = $excludedTagRepository;
         $this->client = $client ?: HttpClient::create();
         $this->logger = $logger ?: new NullLogger();
     }
@@ -70,14 +68,8 @@ class TululaFetcher implements FetcherInterface
         return true;
     }
 
-    public function getUrl(array $params = []): string
-    {
-        return 'https://tulu.la/api/public';
-    }
-
     public function fetch(): \Generator
     {
-        $validConferences = [];
         $tags = [];
 
         foreach ($this->queryTululaEvents() as $conference) {
@@ -93,77 +85,62 @@ class TululaFetcher implements FetcherInterface
                     }
 
                     if ($tag && $tag->isSelected()) {
-                        $validConferences[$tagName][] = $conference;
+                        yield $this->denormalizeConference($conference, $tags[$tagName]);
                         break;
                     }
                 }
             }
         }
-
-        foreach ($validConferences as $tagName => $conferencesByTag) {
-            yield $this->denormalizeConferences($conferencesByTag, $tags[$tagName]);
-        }
     }
 
-    public function denormalizeConferences(array $rawConferences, Tag $tag): array
+    private function denormalizeConference(array $rawConference, Tag $tag): ?Conference
     {
-        $conferences = [];
-        $excluded = false;
-        if ($this->excludedTagRepository->findOneBy(['name' => $tag->getName()])) {
-            $excluded = true;
-        }
+        $city = null;
+        if (!$rawConference['isOnline']) {
+            if ($city = $rawConference['venue']['city'] ?: $rawConference['venue']['state']) {
+                $continent = $this->locationGuesser->getContinent($city);
 
-        foreach ($rawConferences as $rawConference) {
-            $city = null;
-            if (!$rawConference['isOnline']) {
-                if ($city = $rawConference['venue']['city'] ?: $rawConference['venue']['state']) {
-                    $continent = $this->locationGuesser->getContinent($city);
-
-                    if (!$continent instanceof Continent || !$continent->getEnabled()) {
-                        continue;
-                    }
+                if (!$continent instanceof Continent || !$continent->getEnabled()) {
+                    return null;
                 }
             }
-
-            $startDate = \DateTimeImmutable::createFromFormat('Y-m-d', $rawConference['dateStart']);
-            $endDate = \DateTimeImmutable::createFromFormat('Y-m-d', $rawConference['dateEnd']);
-            $cfpEndDate = \DateTimeImmutable::createFromFormat('Y-m-d', $rawConference['cfpDateEnd']);
-
-            // In case of invalid startDate, we skip the conference. It will be handled again later.
-            if (!$startDate) {
-                continue;
-            }
-
-            $conference = new Conference();
-            $conference->setSource(self::SOURCE);
-            $conference->setSlug($rawConference['slug']);
-            $conference->setName($rawConference['name']);
-            $conference->setStartAt($startDate);
-            $conference->setEndAt($endDate);
-            $conference->setCfpEndAt($cfpEndDate);
-            $conference->setSiteUrl($rawConference['url']);
-            $conference->addTag($tag);
-            $conference->setCfpUrl($rawConference['cfpUrl']);
-            $conference->setExcluded($excluded);
-
-            if ($rawConference['isOnline']) {
-                $conference->setCity('Online');
-                $conference->setOnline(true);
-            } else {
-                $conference->setCity($city);
-                $conference->setCountry($rawConference['venue']['countryCode']);
-            }
-
-            $conferences[] = $conference;
         }
 
-        return $conferences;
+        $startDate = \DateTimeImmutable::createFromFormat('Y-m-d', $rawConference['dateStart']);
+        $endDate = \DateTimeImmutable::createFromFormat('Y-m-d', $rawConference['dateEnd']);
+        $cfpEndDate = \DateTimeImmutable::createFromFormat('Y-m-d', $rawConference['cfpDateEnd']);
+
+        // In case of invalid startDate, we skip the conference. It will be handled again later.
+        if (!$startDate) {
+            return null;
+        }
+
+        $conference = new Conference();
+        $conference->setSource(self::SOURCE);
+        $conference->setSlug($rawConference['slug']);
+        $conference->setName($rawConference['name']);
+        $conference->setStartAt($startDate);
+        $conference->setEndAt($endDate);
+        $conference->setCfpEndAt($cfpEndDate);
+        $conference->setSiteUrl($rawConference['url']);
+        $conference->addTag($tag);
+        $conference->setCfpUrl($rawConference['cfpUrl']);
+
+        if ($rawConference['isOnline']) {
+            $conference->setCity('Online');
+            $conference->setOnline(true);
+        } else {
+            $conference->setCity($city);
+            $conference->setCountry($rawConference['venue']['countryCode']);
+        }
+
+        return $conference;
     }
 
     private function queryTululaEvents(): ?array
     {
         try {
-            $response = $this->client->request('POST', $this->getUrl(), [
+            $response = $this->client->request('POST', self::TULULA_URL, [
                 'headers' => [
                     'Content-Type' => 'application/json',
                 ],
@@ -211,7 +188,7 @@ class TululaFetcher implements FetcherInterface
             ]);
         } catch (TransportExceptionInterface $exception) {
             $this->logger->error('HttpClient Transport Exception.', [
-                'url' => $this->getUrl(),
+                'url' => self::TULULA_URL,
                 'source' => self::SOURCE,
                 'exception' => $exception->getMessage(),
             ]);
@@ -221,7 +198,7 @@ class TululaFetcher implements FetcherInterface
 
         if (200 !== $statusCode = $response->getStatusCode()) {
             $this->logger->error(sprintf('Source URL returns %d.', $statusCode), [
-                'url' => $this->getUrl(),
+                'url' => self::TULULA_URL,
                 'source' => self::SOURCE,
             ]);
 

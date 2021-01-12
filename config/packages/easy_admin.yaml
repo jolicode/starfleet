@@ -12,7 +12,7 @@ easy_admin:
             - { entity: 'Participation', label: 'Participations', icon: 'id-badge' }
             - { entity: 'Talk', label: 'Talks', icon: 'file-text-o' }
             - { entity: 'Tag', label: 'Tags', icon: 'tag' }
-            - { entity: 'ExcludedTag', label: 'Excluded Tags', icon: 'times' }
+            - { entity: 'ConferenceFilter', label: 'Ignored Subjects', icon: 'times' }
             - { entity: 'User', label: 'Users', icon: 'users' }
             - { entity: 'Continent', label: 'Continents', icon: 'globe' }
         assets:
