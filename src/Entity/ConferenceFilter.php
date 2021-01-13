@@ -14,9 +14,9 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\ExcludedTagRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\ConferenceFilterRepository")
  */
-class ExcludedTag
+class ConferenceFilter
 {
     /**
      * @ORM\Id()

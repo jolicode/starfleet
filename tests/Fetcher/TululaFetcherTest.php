@@ -15,7 +15,6 @@ use App\Entity\Continent;
 use App\Entity\Tag;
 use App\Fetcher\LocationGuesser;
 use App\Fetcher\TululaFetcher;
-use App\Repository\ExcludedTagRepository;
 use App\Repository\TagRepository;
 use Prophecy\Argument;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -39,17 +38,17 @@ class TululaFetcherTest extends KernelTestCase
             return self::assertEmpty(iterator_to_array($result));
         }
 
-        $fetchedConference = iterator_to_array($result)[0][0];
-
-        self::assertSame($rawConference['name'], $fetchedConference->getName());
-        self::assertSame($rawConference['url'], $fetchedConference->getSiteUrl());
-        self::assertTrue(\DateTimeImmutable::createFromFormat('Y-m-d', $rawConference['dateStart'])->format('Y-m-d') === $fetchedConference->getStartAt()->format('Y-m-d'));
-        self::assertTrue(\DateTimeImmutable::createFromFormat('Y-m-d', $rawConference['dateEnd'])->format('Y-m-d') === $fetchedConference->getEndAt()->format('Y-m-d'));
-        self::assertTrue(\DateTimeImmutable::createFromFormat('Y-m-d', $rawConference['cfpDateEnd'])->format('Y-m-d') === $fetchedConference->getCfpEndAt()->format('Y-m-d'));
-        self::assertSame($rawConference['cfpUrl'], $fetchedConference->getCfpUrl());
-        self::assertSame($rawConference['isOnline'], $fetchedConference->isOnline());
-        self::assertSame($rawConference['slug'], $fetchedConference->getSlug());
-        self::assertSame($expectedItems['expectedCity'], $fetchedConference->getCity());
+        foreach ($result as $fetchedConference) {
+            self::assertSame($rawConference['name'], $fetchedConference->getName());
+            self::assertSame($rawConference['url'], $fetchedConference->getSiteUrl());
+            self::assertTrue(\DateTimeImmutable::createFromFormat('Y-m-d', $rawConference['dateStart'])->format('Y-m-d') === $fetchedConference->getStartAt()->format('Y-m-d'));
+            self::assertTrue(\DateTimeImmutable::createFromFormat('Y-m-d', $rawConference['dateEnd'])->format('Y-m-d') === $fetchedConference->getEndAt()->format('Y-m-d'));
+            self::assertTrue(\DateTimeImmutable::createFromFormat('Y-m-d', $rawConference['cfpDateEnd'])->format('Y-m-d') === $fetchedConference->getCfpEndAt()->format('Y-m-d'));
+            self::assertSame($rawConference['cfpUrl'], $fetchedConference->getCfpUrl());
+            self::assertSame($rawConference['isOnline'], $fetchedConference->isOnline());
+            self::assertSame($rawConference['slug'], $fetchedConference->getSlug());
+            self::assertSame($expectedItems['expectedCity'], $fetchedConference->getCity());
+        }
     }
 
     public function provideConferences(): \Generator
@@ -219,16 +218,11 @@ class TululaFetcherTest extends KernelTestCase
         $tag->setName($expectedItems['expectedTag']);
         $tag->setSelected(true);
 
-        $excludedTagRepository = $this->prophesize(ExcludedTagRepository::class);
-        $excludedTagRepository
-            ->findOneBy(Argument::type('array'))
-            ->willReturn(null);
         $client = new MockHttpClient($response);
 
         $fetcher = new TululaFetcher(
             $locationGuesser->reveal(),
             $tagRepository->reveal(),
-            $excludedTagRepository->reveal(),
             $client
         );
 

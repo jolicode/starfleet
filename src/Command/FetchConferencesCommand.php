@@ -12,28 +12,29 @@
 namespace App\Command;
 
 use App\Entity\Conference;
+use App\Entity\ConferenceFilter;
 use App\Fetcher\FetcherInterface;
+use App\Repository\ConferenceFilterRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Serializer\SerializerInterface;
 
 class FetchConferencesCommand extends Command
 {
     private $fetchers;
     private $em;
-    private $serializer;
     private $conferenceRepository;
+    private ConferenceFilterRepository $conferenceFilterRepository;
 
-    public function __construct(iterable $fetchers, ManagerRegistry $doctrine, SerializerInterface $serializer)
+    public function __construct(iterable $fetchers, ManagerRegistry $doctrine, ConferenceFilterRepository $conferenceFilterRepository)
     {
         $this->fetchers = $fetchers;
         $this->em = $doctrine->getManager();
-        $this->serializer = $serializer;
         $this->conferenceRepository = $this->em->getRepository(Conference::class);
+        $this->conferenceFilterRepository = $conferenceFilterRepository;
 
         parent::__construct();
     }
@@ -60,6 +61,8 @@ class FetchConferencesCommand extends Command
         $fetchersSection = $output->section();
         $fetchersSection->write(sprintf('Processing %d/%d fetchers : %s', $currentFetcher, $nbFetchers, ''), true);
 
+        $allFilters = $this->conferenceFilterRepository->findAll();
+
         /** @var FetcherInterface $fetcher */
         foreach ($this->fetchers as $fetcher) {
             $fetchersSection->overwrite(sprintf('Processing %d/%d fetchers : %s', ++$currentFetcher, $nbFetchers, \get_class($fetcher)));
@@ -68,28 +71,25 @@ class FetchConferencesCommand extends Command
                 continue;
             }
 
-            foreach ($fetcher->fetch() as $url => $conferences) {
-                foreach ($conferences as $conference) {
-                    if ($conference->getExcluded()) {
-                        continue;
-                    }
-
-                    $matchedConference = $this->retrieveConferenceIfExists($conference);
-
-                    if ($matchedConference instanceof Conference) {
-                        if ($this->updateExistingConference($matchedConference, $conference)) {
-                            ++$updatedConferencesCount;
-                        }
-                    } else {
-                        $notMatchedConferences[] = $conference;
-                        $this->em->persist($conference);
-                        ++$newConferencesCount;
-                    }
+            foreach ($fetcher->fetch() as $conference) {
+                if ($this->shouldBeIgnored($allFilters, $conference)) {
+                    continue;
                 }
 
-                $this->em->flush();
+                $matchedConference = $this->retrieveConferenceIfExists($conference);
+
+                if ($matchedConference instanceof Conference) {
+                    if ($this->updateExistingConference($matchedConference, $conference)) {
+                        ++$updatedConferencesCount;
+                    }
+                } else {
+                    $notMatchedConferences[] = $conference;
+                    $this->em->persist($conference);
+                    ++$newConferencesCount;
+                }
             }
         }
+        $this->em->flush();
 
         $io->newLine(1);
         $io->success($newConferencesCount.' newly added conference(s)');
@@ -196,5 +196,21 @@ class FetchConferencesCommand extends Command
         }
 
         return $updated;
+    }
+
+    /**
+     * @param ConferenceFilter[] $filters
+     */
+    private function shouldBeIgnored(array $filters, Conference $conference): bool
+    {
+        foreach ($filters as $conferenceFilter) {
+            if (fnmatch($conferenceFilter->getName(), $conference->getName(), FNM_CASEFOLD)) {
+                $conference->setExcluded(true);
+
+                return true;
+            }
+        }
+
+        return false;
     }
 }

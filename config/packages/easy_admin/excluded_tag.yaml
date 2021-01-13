@@ -1,7 +1,7 @@
 easy_admin:
     entities:
-        ExcludedTag:
-            class: App\Entity\ExcludedTag
+        ConferenceFilter:
+            class: App\Entity\ConferenceFilter
             disabled_actions: ['show']
             list:
                 fields:

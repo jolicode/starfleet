@@ -13,7 +13,6 @@ namespace App\Fetcher;
 
 use App\Entity\Conference;
 use App\Entity\Continent;
-use App\Entity\ExcludedTag;
 use App\Entity\Tag;
 use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
@@ -54,7 +53,6 @@ class JoindApiFetcher implements FetcherInterface
     private $serializer;
     private $logger;
     private $tagRepository;
-    private $excludedTags;
     private $locationGuesser;
     private $slugger;
 
@@ -67,7 +65,6 @@ class JoindApiFetcher implements FetcherInterface
         $this->logger = $logger;
         $this->conferenceRepository = $this->em->getRepository(Conference::class);
         $this->tagRepository = $this->em->getRepository(Tag::class);
-        $this->excludedTags = $this->em->getRepository(ExcludedTag::class)->findAll();
         $this->locationGuesser = $locationGuesser;
         $this->slugger = new AsciiSlugger();
     }
@@ -110,82 +107,72 @@ class JoindApiFetcher implements FetcherInterface
                 continue;
             }
 
-            $data = json_decode($response->getContent(), true);
+            $data = $response->toArray();
 
             if (0 === $data['meta']['total']) {
                 continue;
             }
 
-            yield $url => $this->denormalizeConferences($data['events'], $tag);
+            foreach ($data['events'] as $rawConference) {
+                yield $url => $this->denormalizeConference($rawConference, $tag);
+            }
         }
     }
 
-    public function denormalizeConferences(array $rawConferences, Tag $tag): array
+    public function denormalizeConference(array $rawConference, Tag $tag): ?Conference
     {
-        $conferences = [];
+        $city = str_ireplace('_', ' ', $rawConference['tz_place']);
+        $query = sprintf('%s', $city);
+        $continent = $this->locationGuesser->getContinent($query);
+        $country = $this->locationGuesser->getCountry($query);
 
-        foreach ($rawConferences as $rawConference) {
-            $city = str_ireplace('_', ' ', $rawConference['tz_place']);
-            $query = sprintf('%s', $city);
-            $continent = $this->locationGuesser->getContinent($query);
-            $country = $this->locationGuesser->getCountry($query);
-
-            if (!$continent->getEnabled() || !$continent instanceof Continent) {
-                continue;
-            }
-
-            $startDate = \DateTimeImmutable::createFromFormat(\DateTime::ISO8601, $rawConference['start_date']);
-
-            // In case of invalid startDate, we skip the conference. It will be handled again later.
-            if (!$startDate) {
-                continue;
-            }
-
-            $slug = $rawConference['url_friendly_name'];
-
-            $conference = new Conference();
-            $conference->setSource(self::SOURCE);
-            $conference->setSlug($slug);
-            $conference->setName($rawConference['name']);
-            $conference->setCity($city);
-            $conference->setCountry($country);
-            $conference->setStartAt($startDate);
-            $conference->setSiteUrl($rawConference['href']);
-            $conference->addTag($tag);
-
-            if ('online' === $city) {
-                $conference->setOnline(true);
-            }
-
-            $excluded = false;
-            foreach ($this->excludedTags as $excludedTag) {
-                if (fnmatch($excludedTag->getName(), $rawConference['name'], FNM_CASEFOLD)) {
-                    $excluded = true;
-                    break;
-                }
-            }
-            $conference->setExcluded($excluded);
-            if ($rawConference['end_date']) {
-                $endDate = \DateTimeImmutable::createFromFormat(\DateTime::ISO8601, $rawConference['end_date']);
-                $conference->setEndAt($endDate);
-            }
-
-            if ($rawConference['description']) {
-                $conference->setDescription($rawConference['description']);
-            }
-
-            if ($rawConference['cfp_url']) {
-                $conference->setCfpUrl($rawConference['cfp_url']);
-            }
-
-            if ($rawConference['cfp_end_date']) {
-                $cfpEndAt = \DateTimeImmutable::createFromFormat(\DateTime::ISO8601, $rawConference['cfp_end_date']);
-                $conference->setCfpEndAt($cfpEndAt);
-            }
-
-            $conferences[] = $conference;
+        if (!$continent->getEnabled() || !$continent instanceof Continent) {
+            return null;
         }
 
-        return $conferences;
+        $startDate = \DateTimeImmutable::createFromFormat(\DateTime::ISO8601, $rawConference['start_date']);
+
+        // In case of invalid startDate, we skip the conference. It will be handled again later.
+        if (!$startDate) {
+            return null;
+        }
+
+        $slug = $rawConference['url_friendly_name'];
+
+        $conference = new Conference();
+        $conference->setSource(self::SOURCE);
+        $conference->setSlug($slug);
+        $conference->setName($rawConference['name']);
+        $conference->setCity($city);
+        $conference->setCountry($country);
+        $conference->setStartAt($startDate);
+        $conference->setSiteUrl($rawConference['href']);
+        $conference->addTag($tag);
+
+        if ('online' === $city) {
+            $conference->setOnline(true);
+        }
+
+        if ($rawConference['end_date']) {
+            $endDate = \DateTimeImmutable::createFromFormat(\DateTime::ISO8601, $rawConference['end_date']);
+            $conference->setEndAt($endDate);
+        }
+
+        if ($rawConference['description']) {
+            $conference->setDescription($rawConference['description']);
+        }
+
+        if ($rawConference['cfp_url']) {
+            $conference->setCfpUrl($rawConference['cfp_url']);
+        }
+
+        if ($rawConference['cfp_end_date']) {
+            $cfpEndAt = \DateTimeImmutable::createFromFormat(\DateTime::ISO8601, $rawConference['cfp_end_date']);
+            $conference->setCfpEndAt($cfpEndAt);
+        }
+
+        $conferences[] = $conference;
+
+        return $conference;
     }
 }
