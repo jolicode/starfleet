@@ -241,6 +241,12 @@
         <target>Validated</target>
       </segment>
     </unit>
+    <unit id="knHiV5P">
+      <segment>
+        <source>online</source>
+        <target>Online</target>
+      </segment>
+    </unit>
     <unit id="ZjSum3N">
       <segment>
         <source>conferences.show.sidebar.number_of_participants</source>

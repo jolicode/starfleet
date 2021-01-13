@@ -50,7 +50,7 @@
                             {{ 'conferences.show.sidebar.location_title'|trans }}
                         </p>
                         {% if conference.online %}
-                            <p>Online</p>
+                            <p>{{ 'online'|trans }}</p>
                         {% else %}
                             <p>{{ conference.city }}</p>
                         {% endif %}
