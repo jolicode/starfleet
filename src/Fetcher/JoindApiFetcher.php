@@ -13,118 +13,142 @@ namespace App\Fetcher;
 
 use App\Entity\Conference;
 use App\Entity\Continent;
-use App\Entity\Tag;
-use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpClient\HttpClient;
-use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\String\Slugger\AsciiSlugger;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class JoindApiFetcher implements FetcherInterface
 {
-    const SOURCE = 'joind';
-    const TAGS_SYNONYMS = [
+    private const SOURCE = 'joind';
+    // The API provides with the possibility of filtering only the events with an active CfP, but since conferences are sometimes annouced before their CfP is open, we don't use it
+    private const JOINDIN_URL = 'https://api.joind.in/v2.1/events?verbose=yes&filter=upcoming';
+
+    // These are all the tags available for fetching from Joind.In
+    // If you feel like one is missing, which is very likely because there are many, feel free to add one from https://api.joind.in/v2.1/events?verbose=yes?resultsperpage=100
+    private const SOURCE_AVAILABLE_TAGS = [
+        'accessibility',
+        'afup',
+        'ai',
         'android',
+        'angular',
+        'angularday',
+        'bootstrap',
+        'community',
+        'composer',
+        'composer2',
         'css',
         'data',
+        'design systems',
+        'dev',
         'devops',
         'dotnet',
+        'ecommberlin',
+        'ecommerce',
         'elixir',
         'facebook',
+        'frontend',
         'golang',
+        'grusp',
         'html',
+        'infection',
         'ios',
+        'iot',
         'java',
         'javascript',
+        'laravel',
+        'logistics',
+        'marketing',
+        'marketing automation',
+        'mautic',
+        'mauticon',
+        'meetup',
         'nodejs',
+        'ohdear',
+        'ohdearapp',
+        'open source',
         'php',
+        'phpbenelux',
+        'phpsw',
+        'php8',
         'python',
+        'reactphp',
         'react native',
+        'retail',
         'ruby',
         'rust',
         'security',
+        'symfony',
+        'tailwind',
+        'ui',
         'ux',
+        'variable fonts',
+        'web dev',
     ];
 
-    private $em;
-    private $conferenceRepository;
-    private $httpClient;
-    private $serializer;
-    private $logger;
-    private $tagRepository;
-    private $locationGuesser;
-    private $slugger;
+    private LocationGuesser $locationGuesser;
+    private HttpClientInterface $client;
+    private LoggerInterface $logger;
 
-    public function __construct(ManagerRegistry $doctrine, SerializerInterface $serializer, LoggerInterface $logger, LocationGuesser $locationGuesser)
+    public function __construct(LocationGuesser $locationGuesser, ?HttpClientInterface $client = null, ?LoggerInterface $logger)
     {
-        $this->em = $doctrine->getManager();
-        // @todo replace with proper DI when http-client will be released as stable
-        $this->httpClient = HttpClient::create();
-        $this->serializer = $serializer;
-        $this->logger = $logger;
-        $this->conferenceRepository = $this->em->getRepository(Conference::class);
-        $this->tagRepository = $this->em->getRepository(Tag::class);
         $this->locationGuesser = $locationGuesser;
-        $this->slugger = new AsciiSlugger();
+        $this->client = $client ?: HttpClient::create();
+        $this->logger = $logger ?: new NullLogger();
     }
 
-    public function isActive(): bool
+    public function fetch(array $configuration = []): ?\Generator
     {
-        return true;
-    }
+        if (0 === \count($configuration) || 0 === \count($configuration['tags'])) {
+            $this->logger->warning(sprintf('The %s is not configured and will not fetch anything. Please add a configuration in the admin.', self::class));
 
-    public function getUrl(array $params = []): string
-    {
-        return 'https://api.joind.in/v2.1/events?verbose=yes&resultsperpage=20&startdate='.$params['startdate'].'&tags[]='.$params['tag'];
-    }
+            return;
+        }
 
-    public function fetch(): \Generator
-    {
-        foreach ($this->tagRepository->findBy(['selected' => true]) as $tag) {
-            $tagKey = array_search($this->slugger->slug(strtolower($tag->getName()))->toString(), self::TAGS_SYNONYMS);
+        $url = self::JOINDIN_URL;
 
-            if (false === $tagKey) {
-                continue;
+        // Sometimes, an event will have no tags. If you want to fetch them anyway, you should set the `allowEmptyTags` option to true in the admin
+        if ($configuration['allowEmptyTags']) {
+            foreach ($this->queryJoindIn($url.'&tags[]=') as $conference) {
+                yield $this->denormalizeConference($conference);
             }
+        }
 
-            $tagSynonym = self::TAGS_SYNONYMS[$tagKey];
-            $url = $this->getUrl(['startdate' => date('Y'), 'tag' => $tagSynonym]);
+        foreach ($configuration['tags'] as $tag) {
+            $url .= sprintf('&tags[]=%s', $tag);
+        }
 
-            try {
-                $response = $this->httpClient->request('GET', $url);
-            } catch (TransportExceptionInterface $exception) {
-                $this->logger->error('HttpClient Transport Exception', [
-                    'url' => $url,
-                    'source' => self::SOURCE,
-                    'exception' => $exception->getMessage(),
-                ]);
-                continue;
-            }
-
-            if (404 === $response->getStatusCode()) {
-                $this->logger->error('Source URL returns 404', ['url' => $this->getUrl(['startdate' => date('Y'), 'tag' => $tagSynonym]), 'source' => self::SOURCE]);
-                continue;
-            }
-
-            $data = $response->toArray();
-
-            if (0 === $data['meta']['total']) {
-                continue;
-            }
-
-            foreach ($data['events'] as $rawConference) {
-                yield $url => $this->denormalizeConference($rawConference, $tag);
-            }
+        foreach ($this->queryJoindIn($url) as $conference) {
+            yield $this->denormalizeConference($conference);
         }
     }
 
-    public function denormalizeConference(array $rawConference, Tag $tag): ?Conference
+    public function configureForm(FormBuilderInterface $formBuilder): FormBuilderInterface
+    {
+        return $formBuilder
+            ->add('tags', ChoiceType::class, [
+                'label' => 'Tags',
+                'choices' => array_combine(self::SOURCE_AVAILABLE_TAGS, self::SOURCE_AVAILABLE_TAGS),
+                'expanded' => false,
+                'multiple' => true,
+                'required' => false,
+            ])
+            ->add('allowEmptyTags', CheckboxType::class, [
+                'label' => 'Allow Empty Tags',
+                'help' => 'Fetch conferences with no tags at all',
+                'required' => false,
+            ]);
+    }
+
+    public function denormalizeConference(array $rawConference): ?Conference
     {
         $city = str_ireplace('_', ' ', $rawConference['tz_place']);
-        $query = sprintf('%s', $city);
-        $continent = $this->locationGuesser->getContinent($query);
-        $country = $this->locationGuesser->getCountry($query);
+        $continent = $this->locationGuesser->getContinent($city);
+        $country = $this->locationGuesser->getCountry($city);
 
         if (!$continent->getEnabled() || !$continent instanceof Continent) {
             return null;
@@ -147,7 +171,10 @@ class JoindApiFetcher implements FetcherInterface
         $conference->setCountry($country);
         $conference->setStartAt($startDate);
         $conference->setSiteUrl($rawConference['href']);
-        $conference->addTag($tag);
+
+        foreach ($rawConference['tags'] as $tag) {
+            $conference->addTag($tag);
+        }
 
         if ('online' === $city) {
             $conference->setOnline(true);
@@ -174,5 +201,33 @@ class JoindApiFetcher implements FetcherInterface
         $conferences[] = $conference;
 
         return $conference;
+    }
+
+    private function queryJoindIn(string $url): ?array
+    {
+        try {
+            $response = $this->client->request('GET', $url);
+        } catch (TransportExceptionInterface $exception) {
+            $this->logger->error('HttpClient Transport Exception', [
+                'url' => $url,
+                'source' => self::SOURCE,
+                'exception' => $exception->getMessage(),
+            ]);
+
+            return null;
+        }
+
+        if (200 !== $statusCode = $response->getStatusCode()) {
+            $this->logger->error(sprintf('Source URL returns %d', $statusCode), [
+                'url' => $url,
+                'source' => self::SOURCE,
+            ]);
+
+            return null;
+        }
+
+        $result = $response->toArray();
+
+        return $result['events'];
     }
 }

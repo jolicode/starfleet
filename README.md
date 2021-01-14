@@ -53,6 +53,14 @@ inv builder
 
 You'll need to configure a Slack web hook url, go to `https://[your-slack-organization].slack.com/apps/A0F7XDUAZ-incoming-webhooks`.
 
+## Usage
+
+By default, the fetchers are not configured and won't fetch anything. You first need to head to the admin and configure them in the `fetcher` menu, then you can run `inv fetch-conferences`.
+
+If you want to add a source, you only have to implement the `FetcherInterface`.
+
+Some fetchers will use tags to fetch their data, and some of these tags may be missing. If this is the case, you should find the fetcher in `src\Fetcher` and add the missing tag to its tags list.
+
 ## Changes
 
 View the [CHANGELOG](CHANGELOG.md) file attached to this project.

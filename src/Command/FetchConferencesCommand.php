@@ -15,7 +15,10 @@ use App\Entity\Conference;
 use App\Entity\ConferenceFilter;
 use App\Fetcher\FetcherInterface;
 use App\Repository\ConferenceFilterRepository;
+use App\Repository\ConferenceRepository;
+use App\Repository\FetcherConfigurationRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
@@ -24,22 +27,24 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class FetchConferencesCommand extends Command
 {
-    private $fetchers;
-    private $em;
-    private $conferenceRepository;
+    private iterable $fetchers;
+    private ObjectManager $em;
+    private ConferenceRepository $conferenceRepository;
+    private FetcherConfigurationRepository $fetcherConfigurationRepository;
     private ConferenceFilterRepository $conferenceFilterRepository;
 
-    public function __construct(iterable $fetchers, ManagerRegistry $doctrine, ConferenceFilterRepository $conferenceFilterRepository)
+    public function __construct(iterable $fetchers, ManagerRegistry $doctrine, ConferenceRepository $conferenceRepository, FetcherConfigurationRepository $fetcherConfigurationRepository, ConferenceFilterRepository $conferenceFilterRepository)
     {
         $this->fetchers = $fetchers;
         $this->em = $doctrine->getManager();
-        $this->conferenceRepository = $this->em->getRepository(Conference::class);
+        $this->conferenceRepository = $conferenceRepository;
+        $this->fetcherConfigurationRepository = $fetcherConfigurationRepository;
         $this->conferenceFilterRepository = $conferenceFilterRepository;
 
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('starfleet:conferences:fetch');
         $this->setDescription('Fetch conferences from Fetcher Classes');
@@ -59,19 +64,25 @@ class FetchConferencesCommand extends Command
         $nbFetchers = \count($this->fetchers);
         $currentFetcher = 0;
         $fetchersSection = $output->section();
-        $fetchersSection->write(sprintf('Processing %d/%d fetchers : %s', $currentFetcher, $nbFetchers, ''), true);
 
         $allFilters = $this->conferenceFilterRepository->findAll();
 
         /** @var FetcherInterface $fetcher */
         foreach ($this->fetchers as $fetcher) {
-            $fetchersSection->overwrite(sprintf('Processing %d/%d fetchers : %s', ++$currentFetcher, $nbFetchers, \get_class($fetcher)));
+            $io->newLine(1);
+            $fetchersSection->write(sprintf('Processing %d/%d fetchers : %s', ++$currentFetcher, $nbFetchers, \get_class($fetcher)));
 
-            if (!$fetcher->isActive()) {
+            $name = (new \ReflectionClass($fetcher))->getShortName();
+            $fetcherConfiguration = $this->fetcherConfigurationRepository->findOneOrCreate($name);
+            $config = [];
+
+            if (!$fetcherConfiguration->isActive()) {
                 continue;
             }
 
-            foreach ($fetcher->fetch() as $conference) {
+            $config = $fetcherConfiguration->getConfiguration();
+
+            foreach ($fetcher->fetch($config) as $conference) {
                 if ($this->shouldBeIgnored($allFilters, $conference)) {
                     continue;
                 }

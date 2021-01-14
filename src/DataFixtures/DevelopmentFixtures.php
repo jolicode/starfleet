@@ -75,6 +75,9 @@ class DevelopmentFixtures extends AbstractFixtures
             'startAt' => new \DateTime('+ 10 days'),
             'endAt' => new \DateTime('+ 11 days'),
             'cfpEndAt' => new \DateTime('+ 3 days'),
+            'tags' => [
+                'JavaScript',
+            ],
         ]);
 
         $nextParticipation = $this->addParticipation([
@@ -92,6 +95,9 @@ class DevelopmentFixtures extends AbstractFixtures
             'startAt' => new \DateTime('- 1 days'),
             'endAt' => new \DateTime('+ 1 days'),
             'cfpEndAt' => new \DateTime('- 30 days'),
+            'tags' => [
+                'PHP',
+            ],
         ]);
 
         $liveParticipation = $this->addParticipation([
@@ -109,6 +115,9 @@ class DevelopmentFixtures extends AbstractFixtures
             'startAt' => new \DateTime('- 20 days'),
             'endAt' => new \DateTime('- 18 days'),
             'cfpEndAt' => new \DateTime('- 60 days'),
+            'tags' => [
+                'PHP',
+            ],
         ]);
 
         $passedParticipation = $this->addParticipation([

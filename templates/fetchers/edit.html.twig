@@ -1,0 +1,62 @@
+{% extends '@EasyAdmin/default/layout.html.twig' %}
+
+{% form_theme form with easyadmin_config('design.form_theme') only %}
+
+{% block content_header %}
+    <div class="d-flex flex-row justify-content-between align-content-center w-100">
+        <div class="content-header-title">
+            <h1 class="title">{{ 'fetcher.edit.title'|trans }}</h1>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content_title %}
+    {{ 'edit'|trans }} {{ fetcher.fetcherClass }}
+{% endblock %}
+
+{% block main %}
+
+    {{ form_start(form, { 'attr': {'class': 'edit-form'} }) }}
+
+    <fieldset>
+        <legend>
+            <i class="fa fa-fw fa-pencil"></i>
+                {{ fetcher.fetcherClass|replace({"Fetcher": ""}) }}
+        </legend>
+        <div class="row">
+            {% for config in form.configuration %}
+                <div class="col-12">
+                    {{ form_row(config) }}
+                </div>
+            {% endfor %}
+            <div class="col-12">
+                {{ form_row(form.active) }}
+            </div>
+        </div>
+    </fieldset>
+
+    <section class="content-footer">
+        {% block content_footer %}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary action-save">
+                <i class="fa fa-save"></i>
+                    <span class="btn-label">{{ 'fetcher.edit.save'|trans }}</span>
+                </button>
+                <a href="{{ path('fetcher_list') }}" name="list" class="btn btn-link pr-0 action-list" title target="_self">{{ 'fetcher.edit_go_to_list'|trans }}</a>
+            </div>
+        {% endblock %}
+    </section>
+    {{ form_end(form) }}
+
+{% endblock %}
+
+{# This looks ugly but we need to overwrite this block or the content_footer block will be rendered twice #}
+{%- block content_footer_wrapper -%}{%- endblock -%}
+
+{% block body_javascript %}
+    <script>
+        $(document).ready(function() {
+            $('#fetcher_form_configuration_tags').select2();
+        });
+    </script>
+{% endblock %}

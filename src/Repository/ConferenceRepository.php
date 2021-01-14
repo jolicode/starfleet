@@ -46,16 +46,15 @@ class ConferenceRepository extends ServiceEntityRepository
     {
         return $this->createAttendedQueryBuilder()
             ->getQuery()
-            ->execute()
-        ;
+            ->execute();
     }
 
     public function findAttendedConferencesByTag(string $tag): array
     {
         return $this->createAttendedQueryBuilder()
-            ->leftJoin('c.tags', 't')
-            ->andWhere('t.name = :tagName')
-            ->setParameter('tagName', $tag)
+            ->select('c')
+            ->andWhere('CONTAINS(c.tags, :tagName) = true')
+            ->setParameter('tagName', json_encode($tag))
             ->getQuery()
             ->execute()
         ;

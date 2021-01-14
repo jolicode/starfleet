@@ -120,6 +120,11 @@ class FixtureBuilder
             'cfpEndAt' => clone $date->modify('- 7 days'),
             'participations' => [],
             'online' => false,
+            'tags' => [
+                'PHP',
+                'DevOps',
+                'Security',
+            ],
         ], $description);
 
         $conference = new Conference();
@@ -138,6 +143,10 @@ class FixtureBuilder
         } else {
             $conference->setCity($description['city']);
             $conference->setCountry($description['country']);
+        }
+
+        foreach ($description['tags'] as $tag) {
+            $conference->addTag($tag);
         }
 
         foreach ($description['participations'] as $participation) {

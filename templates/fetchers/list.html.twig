@@ -1,0 +1,69 @@
+{% extends '@EasyAdmin/default/layout.html.twig' %}
+
+{% block content_title %}
+    Fetchers
+{% endblock %}
+
+{% block main %}
+    <table class="table datagrid">
+        <thead>
+            <tr>
+                <th class="text"><a href="#">Name</a></th>
+                <th class="text"><a href="#">Active</a></th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for fetcher in fetchers %}
+            <tr>
+                <td>{{ fetcher.fetcherClass|replace({"Fetcher": ""}) }}</td>
+                <td class="toggle">
+                    <div class="checkbox-switch">
+                        <label>
+                            <input type="checkbox" name="active" data-name="{{ fetcher.fetcherClass }}" {% if fetcher.active %}checked{% endif %}>
+                            <span>
+                            </span>
+                        </label>    
+                    </div>
+                </td>
+                <td class="actions">
+                    <a href="{{ path('fetcher_edit', {fetcher: fetcher.fetcherClass}) }}" class="action-edit">
+                        <i class="fa fa-pencil"></i>
+                        {{ 'edit'|trans }}
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block body_javascript %}
+<script>
+    $(function() {
+        const toggles = document.querySelectorAll('.checkbox-switch input[type="checkbox"]');
+        for (i = 0; i < toggles.length; i++) {
+            toggles[i].addEventListener('change', function () {
+                const toggle = this;
+                const newValue = this.checked;
+                const oldValue = !newValue;
+                const fetcherClass = this.dataset.name;
+
+                let toggleUrl = "{{ path('fetcher_toggle_active', { 'fetcher': 'fetcherClass', 'value': 'toggleValue' }) }}";
+                toggleUrl = toggleUrl.replace('fetcherClass', fetcherClass);
+                toggleUrl = toggleUrl.replace('toggleValue', newValue.toString());
+                const toggleRequest = $.ajax({ type: "GET", url: toggleUrl, data: {} });
+
+                toggleRequest.done(function(result) {});
+
+                toggleRequest.fail(function() {
+                    // in case of error, restore the original value and disable the toggle
+                    toggle.checked = oldValue;
+                    toggle.disabled = true;
+                    toggle.closest('.checkbox-switch').classList.add('disabled');
+                });
+            });
+        }
+    });
+</script>
+{% endblock %}

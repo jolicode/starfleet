@@ -13,10 +13,11 @@ namespace App\Fetcher;
 
 use App\Entity\Conference;
 use App\Entity\Continent;
-use App\Entity\Tag;
-use App\Repository\TagRepository;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -25,75 +26,144 @@ class TululaFetcher implements FetcherInterface
 {
     private const SOURCE = 'tulula';
     private const TULULA_URL = 'https://tulu.la/api/public';
-    private const TAG_ALLOW_LIST = [
-        'android',
-        'css',
+
+    // These are all the tags available for fetching from Tulula.
+    // If you feel like one is missing, which is very likely because there are many, you could add one by running the command, dumping the results and adding the missing tag to this list.
+    private const SOURCE_AVAILABLE_TAGS = [
+        'AI/ML',
+        'AR/VR',
+        'aws',
+        'Azure',
+        'Big Data',
+        'analytics',
+        'Android',
+        'api',
+        'architecture',
+        'Big Data',
+        'bootcamp',
+        'chaos engineering',
+        'CI/CD',
+        'Cloud',
+        'codecamp',
+        'community',
+        'containers',
+        'cms',
+        'CSS',
         'data',
-        'devops',
-        'dotnet',
-        'facebook',
-        'golang',
-        'html',
-        'ios',
-        'java',
-        'javascript',
-        'nodejs',
-        'php',
-        'python',
+        'Database',
+        'data science',
+        'developers',
+        'DevOps',
+        'Django',
+        'Docker',
+        'event sourcing',
+        'Flask',
+        'free',
+        'frontend',
+        'game develoment',
+        'general',
+        'Go',
+        'GraphQL',
+        'infrastructure',
+        'innovation',
+        'integration',
+        'IoS',
+        'IoT',
+        'Java',
+        'JavaScript',
+        'jvm',
+        'Kotlin',
+        'Kubernetes',
+        'microservices',
+        'Microsoft',
+        'mobile',
+        'monitoring',
+        'non-technical skills',
+        'Open Source',
+        'performance',
+        'PHP',
+        'programing',
+        'prometheus',
+        'pwa',
+        'Python',
+        'qa testing',
+        'React',
         'react native',
-        'ruby',
-        'rust',
-        'security',
-        'ux',
-        'ai/ml',
+        'resiliency engineering',
+        'Robotics',
+        'rpa',
+        'Security',
+        'serverless',
+        'service mesh',
         'sql',
-        'iot',
+        'software',
+        'software engineering',
+        'sre',
+        'Swift',
+        'systems performance',
+        'technology',
+        'Ux design',
+        'Web',
+        'women',
+        'women in tech',
     ];
 
     private LocationGuesser $locationGuesser;
-    private TagRepository $tagRepository;
     private HttpClientInterface $client;
     private LoggerInterface $logger;
 
-    public function __construct(LocationGuesser $locationGuesser, TagRepository $tagRepository, ?HttpClientInterface $client = null, ?LoggerInterface $logger = null)
+    public function __construct(LocationGuesser $locationGuesser, ?HttpClientInterface $client = null, ?LoggerInterface $logger = null)
     {
         $this->locationGuesser = $locationGuesser;
-        $this->tagRepository = $tagRepository;
         $this->client = $client ?: HttpClient::create();
         $this->logger = $logger ?: new NullLogger();
     }
 
-    public function isActive(): bool
+    public function fetch(array $configuration = []): ?\Generator
     {
-        return true;
-    }
+        if (0 === \count($configuration) || 0 === \count($configuration['tags'])) {
+            $this->logger->warning(sprintf('The %s is not configured and will not fetch anything. Please add a configuration in the admin.', self::class));
 
-    public function fetch(): \Generator
-    {
-        $tags = [];
+            return;
+        }
 
-        foreach ($this->queryTululaEvents() as $conference) {
-            foreach ($conference['tags'] as $tagName) {
-                $tagName = strtolower($tagName['name']);
+        foreach ($this->queryTulula() as $conference) {
+            if (0 === \count($conference['tags'])) {
+                // Sometimes, an event will have no tags. If you want to fetch them anyway, you should set the `allowEmptyTags` option to true in the admin
+                if ($configuration['allowEmptyTags']) {
+                    yield $this->denormalizeConference($conference);
+                    continue;
+                }
+                continue;
+            }
 
-                if (\in_array($tagName, self::TAG_ALLOW_LIST)) {
-                    if (!\array_key_exists($tagName, $tags)) {
-                        $tag = $this->tagRepository->findTagByName($tagName);
-                        $tags[$tagName] = $tag;
-                    } else {
-                        $tag = $tags[$tagName];
-                    }
-
-                    if ($tag && $tag->isSelected()) {
-                        yield $this->denormalizeConference($conference, $tags[$tagName]);
-                        break;
-                    }
+            foreach ($conference['tags'] as $tag) {
+                if (\in_array($tag['name'], $configuration['tags'])) {
+                    yield $this->denormalizeConference($conference);
+                    break;
                 }
             }
         }
     }
 
-    private function denormalizeConference(array $rawConference, Tag $tag): ?Conference
+    public function configureForm(FormBuilderInterface $formBuilder): FormBuilderInterface
+    {
+        return $formBuilder
+            ->add('tags', ChoiceType::class, [
+                'label' => 'Tags',
+                'choices' => array_combine(self::SOURCE_AVAILABLE_TAGS, self::SOURCE_AVAILABLE_TAGS),
+                'expanded' => false,
+                'multiple' => true,
+                'required' => false,
+            ])
+            ->add('allowEmptyTags', CheckboxType::class, [
+                'label' => 'Allow Empty Tags',
+                'help' => 'Fetch conferences with no tags at all',
+                'required' => false,
+            ]);
+    }
+
+    private function denormalizeConference(array $rawConference): ?Conference
     {
         $city = null;
         if (!$rawConference['isOnline']) {
@@ -123,8 +193,11 @@ class TululaFetcher implements FetcherInterface
         $conference->setEndAt($endDate);
         $conference->setCfpEndAt($cfpEndDate);
         $conference->setSiteUrl($rawConference['url']);
-        $conference->addTag($tag);
         $conference->setCfpUrl($rawConference['cfpUrl']);
+
+        foreach ($rawConference['tags'] as $tag) {
+            $conference->addTag($tag['name']);
+        }
 
         if ($rawConference['isOnline']) {
             $conference->setCity('Online');
@@ -137,7 +210,7 @@ class TululaFetcher implements FetcherInterface
         return $conference;
     }
 
-    private function queryTululaEvents(): ?array
+    private function queryTulula(): ?array
     {
         try {
             $response = $this->client->request('POST', self::TULULA_URL, [
@@ -148,7 +221,6 @@ class TululaFetcher implements FetcherInterface
                     'variables' => [
                         'filter' => [
                             'cfpFrom' => date('Y-m-d'),
-                            'cfpIsActive' => true,
                         ],
                     ],
                     'query' => <<<QUERY

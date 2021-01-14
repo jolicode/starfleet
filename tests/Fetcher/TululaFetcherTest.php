@@ -12,10 +12,8 @@
 namespace App\Tests\Fetcher;
 
 use App\Entity\Continent;
-use App\Entity\Tag;
 use App\Fetcher\LocationGuesser;
 use App\Fetcher\TululaFetcher;
-use App\Repository\TagRepository;
 use Prophecy\Argument;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpClient\MockHttpClient;
@@ -26,15 +24,14 @@ class TululaFetcherTest extends KernelTestCase
     /**
      * @dataProvider provideConferences
      */
-    public function testFetch(array $rawConference, array $expectedItems)
+    public function testFetch(array $rawConference, array $expectedItems, array $fetcherConfig = [])
     {
         $data['data']['events']['events'][] = $rawConference;
 
         $response = new MockResponse(json_encode($data));
-        $result = $this->createFetcher($response, $expectedItems)->fetch();
+        $result = $this->createFetcher($response)->fetch($fetcherConfig);
 
-        // If the tag is not selected, the conference should not be yielded and the response should be empty
-        if (null === $expectedItems['expectedTag']) {
+        if (null === $expectedItems['expectedTags']) {
             return self::assertEmpty(iterator_to_array($result));
         }
 
@@ -75,10 +72,14 @@ class TululaFetcherTest extends KernelTestCase
                 ],
             ],
             [
-                'expectedTag' => 'php',
+                'expectedTags' => 'php',
                 'expectedCity' => 'Maubeuge',
             ],
+            [
+                'tags' => ['php'],
+            ],
         ];
+
         yield [
             [
                 'name' => 'Symfony World Online',
@@ -100,10 +101,14 @@ class TululaFetcherTest extends KernelTestCase
                 ],
             ],
             [
-                'expectedTag' => 'php',
+                'expectedTags' => 'php',
                 'expectedCity' => 'Online',
             ],
+            [
+                'tags' => ['php'],
+            ],
         ];
+
         yield [
             [
                 'name' => 'Tulula provided city in the state field',
@@ -126,10 +131,14 @@ class TululaFetcherTest extends KernelTestCase
                 ],
             ],
             [
-                'expectedTag' => 'php',
+                'expectedTags' => 'php',
                 'expectedCity' => 'X-Files Land',
             ],
+            [
+                'tags' => ['php'],
+            ],
         ];
+
         yield [
             [
                 'name' => 'Tulula didn\'t provide the city name at all',
@@ -152,21 +161,24 @@ class TululaFetcherTest extends KernelTestCase
                 ],
             ],
             [
-                'expectedTag' => 'php',
+                'expectedTags' => 'php',
                 'expectedCity' => '',
+            ],
+            [
+                'tags' => ['php'],
             ],
         ];
 
         yield [
             [
-                'name' => 'Jardin Zen Land',
-                'url' => 'https://peaceandlove',
+                'name' => 'Conf with no selected tags',
+                'url' => 'https://not-interesting.com',
                 'dateStart' => '2000-01-15',
                 'dateEnd' => '2000-01-17',
                 'cfpDateEnd' => '2000-01-01',
-                'cfpUrl' => '/innerpeace',
+                'cfpUrl' => '/idontcare.com',
                 'isOnline' => false,
-                'slug' => 'i-need-a-break',
+                'slug' => 'not-interrested-sorry',
                 'venue' => [
                     'countryCode' => 'fr',
                     'state' => '',
@@ -174,17 +186,105 @@ class TululaFetcherTest extends KernelTestCase
                 ],
                 'tags' => [
                     [
-                        'name' => 'jardinage',
+                        'name' => 'not what I like',
                     ],
                     [
-                        'name' => 'zen',
+                        'name' => 'uninterresting stuff',
                     ],
                 ],
             ],
             [
-                'expectedTag' => null,
+                'expectedTags' => null,
                 'expectedCity' => 'Chaillé-sous-les-Ormeaux',
             ],
+            [
+                'tags' => ['php'],
+            ],
+        ];
+
+        yield [
+            [
+                'name' => 'Conf with no tags and allowEmptyTags is false',
+                'url' => 'https://it-should-return-nothing.com',
+                'dateStart' => '2000-01-15',
+                'dateEnd' => '2000-01-17',
+                'cfpDateEnd' => '2000-01-01',
+                'cfpUrl' => '/i-dont-want-empty-tags',
+                'isOnline' => false,
+                'slug' => 'i-am-not-here',
+                'venue' => [
+                    'countryCode' => 'fr',
+                    'state' => '',
+                    'city' => 'no-tags-city',
+                ],
+                'tags' => [],
+            ],
+            [
+                'expectedTags' => null,
+                'expectedCity' => 'no-tags-city',
+            ],
+            [
+                'tags' => ['php'],
+                'allowEmptyTags' => false,
+            ],
+        ];
+
+        yield [
+            [
+                'name' => 'Conf with no tags and allowEmptyTags is true',
+                'url' => 'https://it-should-return-the-conference.com',
+                'dateStart' => '2000-01-15',
+                'dateEnd' => '2000-01-17',
+                'cfpDateEnd' => '2000-01-01',
+                'cfpUrl' => '/i-want-empty-tags',
+                'isOnline' => false,
+                'slug' => 'i-am-here',
+                'venue' => [
+                    'countryCode' => 'fr',
+                    'state' => '',
+                    'city' => 'no-tags-city',
+                ],
+                'tags' => [],
+            ],
+            [
+                'expectedTags' => [],
+                'expectedCity' => 'no-tags-city',
+            ],
+            [
+                'tags' => ['php'],
+                'allowEmptyTags' => true,
+            ],
+        ];
+
+        yield [
+            [
+                'name' => 'The fetcher doesn\'t have any config',
+                'url' => 'https://it-should-return-the-conference.com',
+                'dateStart' => '2000-01-15',
+                'dateEnd' => '2000-01-17',
+                'cfpDateEnd' => '2000-01-01',
+                'cfpUrl' => '/it-fetches-everything',
+                'isOnline' => false,
+                'slug' => 'i-am-fetched',
+                'venue' => [
+                    'countryCode' => 'fr',
+                    'state' => '',
+                    'city' => 'no-configuration-fetcher-city',
+                ],
+                'tags' => [
+                    [
+                        'name' => 'php',
+                    ],
+                    [
+                        'name' => 'symfony',
+                    ],
+                ],
+            ],
+            [
+                'expectedTags' => null,
+                'expectedCity' => 'no-configuration-fetcher-city',
+            ],
+            [],
         ];
     }
 
@@ -194,15 +294,24 @@ class TululaFetcherTest extends KernelTestCase
         $response = new MockResponse($realTululaData);
         $result = $this
             ->createFetcher($response, [
-                'expectedTag' => 'php',
+                'expectedTags' => 'php',
                 'expectedCity' => 'n/a',
             ])
-            ->fetch();
+            ->fetch([
+                'tags' => [
+                    'PHP',
+                    'CSS',
+                    'JavaScript',
+                    'Java',
+                    'Python',
+                ],
+                'allowEmptyTags' => false,
+            ]);
 
         self::assertNotEmpty(iterator_to_array($result));
     }
 
-    private function createFetcher(MockResponse $response, array $expectedItems): TululaFetcher
+    private function createFetcher(MockResponse $response): TululaFetcher
     {
         $locationGuesser = $this->prophesize(LocationGuesser::class);
         $locationGuesser
@@ -211,18 +320,10 @@ class TululaFetcherTest extends KernelTestCase
         $continent->setName('Europe');
         $continent->setEnabled(true);
 
-        $tagRepository = $this->prophesize(TagRepository::class);
-        $tagRepository
-            ->findTagByName(Argument::type('string'))
-            ->willReturn($tag = new Tag());
-        $tag->setName($expectedItems['expectedTag']);
-        $tag->setSelected(true);
-
         $client = new MockHttpClient($response);
 
         $fetcher = new TululaFetcher(
             $locationGuesser->reveal(),
-            $tagRepository->reveal(),
             $client
         );
 

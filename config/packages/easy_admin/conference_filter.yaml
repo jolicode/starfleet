@@ -1,14 +1,12 @@
 easy_admin:
     entities:
-        Tag:
-            class: App\Entity\Tag
+        ConferenceFilter:
+            class: App\Entity\ConferenceFilter
             disabled_actions: ['show']
             list:
                 fields:
                     - { property: 'name', type: 'text' }
-                    - { property: 'conferences' }
-                    - { property: 'selected' }
             form:
                 fields:
-                    - { type: 'group', columns: 6, icon: 'pencil', label: 'Tag' }
+                    - { type: 'group', columns: 6, icon: 'pencil', label: 'Filter' }
                     - { property: 'name', type: 'text' }

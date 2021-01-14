@@ -11,9 +11,11 @@
 
 namespace App\Fetcher;
 
+use Symfony\Component\Form\FormBuilderInterface;
+
 interface FetcherInterface
 {
-    public function isActive(): bool;
+    public function fetch(array $configuration = []): ?\Generator;
 
-    public function fetch(): \Generator;
+    public function configureForm(FormBuilderInterface $formBuilder): FormBuilderInterface;
 }
