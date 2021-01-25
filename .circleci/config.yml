@@ -57,7 +57,7 @@ jobs:
     tests:
         machine:
             docker_layer_caching: true
-            image: ubuntu-1604:201903-01
+            image: ubuntu-2004:202010-01
         working_directory: ~/project
         steps:
             - checkout
