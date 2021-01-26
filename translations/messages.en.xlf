@@ -247,6 +247,36 @@
         <target>Online</target>
       </segment>
     </unit>
+    <unit id="5zr9nY">
+      <segment>
+        <source>edit</source>
+        <target>Edit</target>
+      </segment>
+    </unit>
+    <unit id="Q97nbW">
+      <segment>
+        <source>fetcher.edit.title</source>
+        <target>Edit Fetcher</target>
+      </segment>
+    </unit>
+    <unit id="QMmT4i">
+      <segment>
+        <source>fetcher.edit.save</source>
+        <target>save changes</target>
+      </segment>
+    </unit>
+    <unit id="HYNX3x">
+      <segment>
+        <source>fetcher.edit_go_to_list</source>
+        <target>Back to listing</target>
+      </segment>
+    </unit>
+    <unit id="5JxSux">
+      <segment>
+        <source>fetcher.edit.success</source>
+        <target>Fetcher successfully edited</target>
+      </segment>
+    </unit>
     <unit id="ZjSum3N">
       <segment>
         <source>conferences.show.sidebar.number_of_participants</source>

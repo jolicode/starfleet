@@ -93,14 +93,6 @@ class Conference
     private $submits;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Tag", inversedBy="conferences")
-     * @ORM\JoinTable(name="conferences_tags")
-     *
-     * @var Collection<Tag>
-     */
-    private $tags;
-
-    /**
      * @ORM\Column(name="article_url", type="text", nullable=true)
      */
     private $articleUrl;
@@ -132,10 +124,14 @@ class Conference
      */
     private bool $online = false;
 
+    /**
+     * @ORM\Column(type="jsonb")
+     */
+    private array $tags = [];
+
     public function __construct()
     {
         $this->submits = new ArrayCollection();
-        $this->tags = new ArrayCollection();
         $this->participations = new ArrayCollection();
     }
 
@@ -290,25 +286,6 @@ class Conference
         return $this->submits;
     }
 
-    public function addTag(Tag $tag): self
-    {
-        $this->tags[] = $tag;
-
-        return $this;
-    }
-
-    public function removeTag(Tag $tag): self
-    {
-        $this->tags->removeElement($tag);
-
-        return $this;
-    }
-
-    public function getTags(): ?Collection
-    {
-        return $this->tags;
-    }
-
     public function setArticleUrl(?string $articleUrl): self
     {
         $this->articleUrl = $articleUrl;
@@ -398,5 +375,17 @@ class Conference
     public function isOnline(): bool
     {
         return $this->online;
+    }
+
+    public function addTag(string $tag): self
+    {
+        $this->tags[] = $tag;
+
+        return $this;
+    }
+
+    public function getTags(): array
+    {
+        return $this->tags;
     }
 }

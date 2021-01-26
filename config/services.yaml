@@ -62,3 +62,11 @@ services:
         arguments:
             $provider: '@Geocoder\Provider\Nominatim\Nominatim'
             $locale: 'en'
+    
+    App\Controller\Admin\FetcherController:
+        arguments:
+            - !tagged_locator { tag: 'app.fetcher' }
+    
+    App\Fetcher\ConfTechFetcher:
+        arguments:
+            $projectDir: '%kernel.project_dir%'

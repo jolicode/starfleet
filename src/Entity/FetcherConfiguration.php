@@ -1,0 +1,88 @@
+<?php
+
+/*
+ * This file is part of the Starfleet Project.
+ *
+ * (c) Starfleet <msantostefano@jolicode.com>
+ *
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
+ */
+
+namespace App\Entity;
+
+use App\Repository\FetcherConfigurationRepository;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
+/**
+ * @ORM\Entity(repositoryClass=FetcherConfigurationRepository::class)
+ * @UniqueEntity("fetcherClass")
+ */
+class FetcherConfiguration
+{
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    private int $id;
+
+    /**
+     * @ORM\Column(name="fetcher_class", type="string", length=255, unique=true)
+     */
+    private string $fetcherClass;
+
+    /**
+     * This is an array that will configure the way events are fetched.
+     * All fetchers are different so there is no common configuration.
+     *
+     * @ORM\Column(type="jsonb")
+     */
+    private array $configuration = [];
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private bool $active = true;
+
+    public function __construct(string $fetcherClass)
+    {
+        $this->fetcherClass = $fetcherClass;
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function getFetcherClass(): string
+    {
+        return $this->fetcherClass;
+    }
+
+    public function setFetcherClass(string $fetcherClass): void
+    {
+        $this->fetcherClass = $fetcherClass;
+    }
+
+    public function getConfiguration(): array
+    {
+        return $this->configuration;
+    }
+
+    public function setConfiguration(array $configuration): void
+    {
+        $this->configuration = $configuration;
+    }
+
+    public function isActive(): bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(bool $active): void
+    {
+        $this->active = $active;
+    }
+}

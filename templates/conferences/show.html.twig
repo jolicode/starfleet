@@ -79,9 +79,9 @@
                         </p>
 
                         {% for tag in conference.tags %}
-                            <a href="{{ path('conferences_list_by_tag', {tag: tag.name}) }}"
+                            <a href="{{ path('conferences_list_by_tag', {tag: tag}) }}"
                                class="badge badge-info">
-                                {{ tag.name }}
+                                {{ tag }}
                             </a>
                         {% endfor %}
                     </aside>
