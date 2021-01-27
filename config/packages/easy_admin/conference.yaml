@@ -2,6 +2,7 @@ easy_admin:
     entities:
         PassedConference:
             class: App\Entity\Conference
+            disabled_actions: ['edit']
             list:
                 filters: ['name', 'city', 'country', 'startAt', 'tags', 'source']
                 actions:
@@ -46,7 +47,6 @@ easy_admin:
                     - { property: 'cfpUrl', type: 'url' }
                     - { property: 'cfpEndAt', type: 'date', 'type_options': { 'widget': 'single_text' } }
                     - { type: 'group', columns: 4, icon: 'cubes', label: 'Metadata' }
-                    - { property: 'tags' }
                     - { property: 'articleUrl', type: 'url' }
         ExcludedConferences:
             class: App\Entity\Conference
