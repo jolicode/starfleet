@@ -37,7 +37,7 @@ class TalkSubmitType extends AbstractType
         $this->requestStack = $requestStack;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('submittedAt', DateType::class, [
@@ -80,7 +80,7 @@ class TalkSubmitType extends AbstractType
         });
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Submit::class,

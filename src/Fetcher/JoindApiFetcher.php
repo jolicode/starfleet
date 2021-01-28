@@ -101,7 +101,12 @@ class JoindApiFetcher implements FetcherInterface
         $this->logger = $logger ?: new NullLogger();
     }
 
-    public function fetch(array $configuration = []): ?\Generator
+    /**
+     * @param array<mixed> $configuration
+     *
+     * @return \Generator<Conference>
+     */
+    public function fetch(array $configuration = []): \Generator
     {
         if (0 === \count($configuration) || 0 === \count($configuration['tags'])) {
             $this->logger->warning(sprintf('The %s is not configured and will not fetch anything. Please add a configuration in the admin.', self::class));
@@ -144,6 +149,7 @@ class JoindApiFetcher implements FetcherInterface
             ]);
     }
 
+    /** @param array<mixed> $rawConference */
     public function denormalizeConference(array $rawConference): ?Conference
     {
         $city = str_ireplace('_', ' ', $rawConference['tz_place']);
@@ -203,6 +209,7 @@ class JoindApiFetcher implements FetcherInterface
         return $conference;
     }
 
+    /** @return array<array>|null */
     private function queryJoindIn(string $url): ?array
     {
         try {

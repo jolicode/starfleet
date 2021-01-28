@@ -48,17 +48,17 @@ class Submit
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\Column(name="submitted_at", type="date")
      */
-    private $submittedAt;
+    private \DateTimeInterface $submittedAt;
 
     /**
      * @ORM\Column(name="status", type="string", length=255)
      */
-    private $status;
+    private string $status;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\User", inversedBy="submits")
@@ -66,17 +66,17 @@ class Submit
      *
      * @var Collection<User>
      */
-    private $users;
+    private Collection $users;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Conference", inversedBy="submits", cascade={"persist"})
      */
-    private $conference;
+    private ?Conference $conference = null;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Talk", inversedBy="submits")
      */
-    private $talk;
+    private ?Talk $talk = null;
 
     public function __construct()
     {
@@ -95,7 +95,7 @@ class Submit
         return $this;
     }
 
-    public function getSubmittedAt(): ?\DateTime
+    public function getSubmittedAt(): ?\DateTimeInterface
     {
         return $this->submittedAt;
     }
@@ -112,7 +112,8 @@ class Submit
         return $this->status;
     }
 
-    public function getUsers(): ?Collection
+    /** @return Collection<User> */
+    public function getUsers(): Collection
     {
         return $this->users;
     }

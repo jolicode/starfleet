@@ -36,6 +36,7 @@ class Jsonb extends Type
      *
      * @param array|object|null $value the value to convert
      */
+    // @phpstan-ignore-next-line
     public function convertToDatabaseValue($value, AbstractPlatform $platform): ?string
     {
         if (null === $value) {
@@ -49,6 +50,8 @@ class Jsonb extends Type
      * Converts a value from its database representation to its PHP representation of this type.
      *
      * @param string|null $value the value to convert
+     *
+     * @return array<mixed>|null
      */
     public function convertToPHPValue($value, AbstractPlatform $platform): ?array
     {
@@ -97,6 +100,7 @@ class Jsonb extends Type
         return $postgresValue;
     }
 
+    /** @return array<mixed> */
     protected function transformFromPostgresJson(string $postgresValue): array
     {
         return json_decode($postgresValue, true);

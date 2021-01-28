@@ -27,12 +27,14 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class FetchConferencesCommand extends Command
 {
+    /** @var iterable<FetcherInterface> */
     private iterable $fetchers;
     private ObjectManager $em;
     private ConferenceRepository $conferenceRepository;
     private FetcherConfigurationRepository $fetcherConfigurationRepository;
     private ConferenceFilterRepository $conferenceFilterRepository;
 
+    /** @param iterable<FetcherInterface> $fetchers */
     public function __construct(iterable $fetchers, ManagerRegistry $doctrine, ConferenceRepository $conferenceRepository, FetcherConfigurationRepository $fetcherConfigurationRepository, ConferenceFilterRepository $conferenceFilterRepository)
     {
         $this->fetchers = $fetchers;
@@ -67,7 +69,6 @@ class FetchConferencesCommand extends Command
 
         $allFilters = $this->conferenceFilterRepository->findAll();
 
-        /** @var FetcherInterface $fetcher */
         foreach ($this->fetchers as $fetcher) {
             $io->newLine(1);
             $fetchersSection->write(sprintf('Processing %d/%d fetchers : %s', ++$currentFetcher, $nbFetchers, \get_class($fetcher)));

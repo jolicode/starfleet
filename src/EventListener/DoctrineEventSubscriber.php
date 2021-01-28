@@ -25,9 +25,10 @@ use Symfony\Component\Routing\RouterInterface;
 
 class DoctrineEventSubscriber implements EventSubscriber
 {
-    private $eventDispatcher;
-    private $router;
-    private $conferencesAdded = [];
+    private EventDispatcherInterface $eventDispatcher;
+    private RouterInterface $router;
+    /** @var array<Conference> */
+    private array $conferencesAdded = [];
 
     public function __construct(EventDispatcherInterface $eventDispatcher, RouterInterface $router)
     {
@@ -35,7 +36,8 @@ class DoctrineEventSubscriber implements EventSubscriber
         $this->router = $router;
     }
 
-    public function getSubscribedEvents()
+    /** @return array<string> */
+    public function getSubscribedEvents(): array
     {
         return [
             'preFlush',
@@ -46,19 +48,19 @@ class DoctrineEventSubscriber implements EventSubscriber
         ];
     }
 
-    public function preFlush()
+    public function preFlush(): void
     {
         $this->conferencesAdded = [];
     }
 
-    public function prePersist(LifecycleEventArgs $args)
+    public function prePersist(LifecycleEventArgs $args): void
     {
         if (method_exists($args->getObject(), 'setCreatedAt')) {
             $args->getObject()->setCreatedAt(new \DateTime());
         }
     }
 
-    public function postPersist(LifecycleEventArgs $args)
+    public function postPersist(LifecycleEventArgs $args): void
     {
         if ($args->getObject() instanceof Submit) {
             $this->eventDispatcher->dispatch(new NewTalkSubmittedEvent($args->getObject()));
@@ -69,7 +71,7 @@ class DoctrineEventSubscriber implements EventSubscriber
         }
     }
 
-    public function preUpdate(PreUpdateEventArgs $args)
+    public function preUpdate(PreUpdateEventArgs $args): void
     {
         if ($args->getObject() instanceof Submit && $args->hasChangedField('status')) {
             $this->eventDispatcher->dispatch(new SubmitStatusChangedEvent($args->getObject()));
@@ -80,7 +82,7 @@ class DoctrineEventSubscriber implements EventSubscriber
         }
     }
 
-    public function postFlush()
+    public function postFlush(): void
     {
         if (1 === \count($this->conferencesAdded)) {
             $this->eventDispatcher->dispatch(new NewConferenceEvent($this->conferencesAdded[0], $this->router));

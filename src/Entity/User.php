@@ -31,91 +31,93 @@ class User implements UserInterface, \Serializable
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(name="id", type="integer")
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\Column(name="google_id", type="string", length=255, nullable=true)
      */
-    private $googleId;
+    private ?string $googleId = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $githubId;
+    private ?string $githubId = null;
 
     /**
      * @ORM\Column(name="name", type="string", length=255, nullable=true)
      */
-    private $name;
+    private ?string $name = null;
 
     /**
      * @ORM\Column(name="email", type="string", length=255, unique=true)
      */
-    private $email;
+    private string $email;
 
     /**
      * @ORM\Column(name="job", type="string", length=255, nullable=true)
      */
-    private $job;
+    private ?string $job = null;
 
     /**
      * @ORM\Column(name="twitter_account", type="string", length=255, nullable=true)
      */
-    private $twitterAccount;
+    private ?string $twitterAccount = null;
 
     /**
      * @ORM\Column(name="tshirt_size", type="string", length=10, nullable=true)
      */
-    private $tshirtSize;
+    private ?string $tshirtSize = null;
 
     /**
      * @ORM\Column(name="bio", type="text", nullable=true)
      */
-    private $bio;
+    private ?string $bio = null;
 
     /**
      * @ORM\Column(name="food_preferences", type="text", nullable=true)
      */
-    private $foodPreferences;
+    private ?string $foodPreferences = null;
 
     /**
      * @ORM\Column(name="allergies", type="text", nullable=true)
      */
-    private $allergies;
+    private ?string $allergies = null;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Submit", mappedBy="users")
      *
      * @var Collection<Submit>
      */
-    private $submits;
+    private Collection $submits;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Participation", mappedBy="participant")
      *
      * @var Collection<Participation>
      */
-    private $participations;
+    private Collection $participations;
 
     /**
      * @ORM\Column(type="json")
+     *
+     * @var array<mixed>
      */
-    private $roles = [];
+    private array $roles = [];
 
     /**
      * @Assert\Length(max=4096)
      */
-    protected $plainPassword;
+    protected string $plainPassword;
 
     /**
      * @Assert\Length(max=4096)
      */
-    protected $salt;
+    protected ?string $salt = null;
 
     /**
      * @ORM\Column(type="string", nullable=true)
      */
-    private $password;
+    private ?string $password = null;
 
     public function __construct()
     {
@@ -275,6 +277,7 @@ class User implements UserInterface, \Serializable
         return array_unique($roles);
     }
 
+    /** @param array<string> $roles */
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
@@ -376,10 +379,10 @@ class User implements UserInterface, \Serializable
     /**
      * @see UserInterface
      */
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
         // If you store any temporary, sensitive data on the user, clear it here
-        $this->plainPassword = null;
+        $this->plainPassword = '';
     }
 
     public function serialize(): ?string
@@ -394,6 +397,7 @@ class User implements UserInterface, \Serializable
         ]);
     }
 
+    /** @return array<mixed> */
     public function unserialize($serialized): ?array
     {
         return list(

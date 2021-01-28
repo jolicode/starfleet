@@ -23,6 +23,7 @@ class ConferenceRepository extends ServiceEntityRepository
         parent::__construct($registry, Conference::class);
     }
 
+    /** @return array<mixed> */
     public function findEndingCfps(): array
     {
         $today = new \DateTime();
@@ -39,16 +40,19 @@ class ConferenceRepository extends ServiceEntityRepository
             ->setParameter('threshold', $threshold)
             ->getQuery()
             ->execute()
-        ;
+            ;
     }
 
+    /** @return array<mixed> */
     public function findAttendedConferences(): array
     {
         return $this->createAttendedQueryBuilder()
             ->getQuery()
-            ->execute();
+            ->execute()
+            ;
     }
 
+    /** @return array<mixed> */
     public function findAttendedConferencesByTag(string $tag): array
     {
         return $this->createAttendedQueryBuilder()
@@ -57,7 +61,7 @@ class ConferenceRepository extends ServiceEntityRepository
             ->setParameter('tagName', json_encode($tag))
             ->getQuery()
             ->execute()
-        ;
+            ;
     }
 
     public function findOneAttended(string $slug): ?Conference
@@ -68,16 +72,17 @@ class ConferenceRepository extends ServiceEntityRepository
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult()
-        ;
+            ;
     }
 
+    /** @return array<mixed> */
     public function getAllConferencesAsRow(): array
     {
         return $this->createQueryBuilder('c')
             ->select('c.name, c.startAt, c.endAt, c.excluded')
             ->getQuery()
             ->getArrayResult()
-        ;
+            ;
     }
 
     private function createAttendedQueryBuilder(): QueryBuilder
@@ -88,6 +93,6 @@ class ConferenceRepository extends ServiceEntityRepository
             ->andWhere('CONTAINS(p.marking, :marking) = true')
             ->setParameter('marking', '{"validated": 1}')
             ->orderBy('c.startAt', 'ASC')
-        ;
+            ;
     }
 }

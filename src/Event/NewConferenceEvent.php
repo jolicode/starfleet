@@ -33,6 +33,7 @@ class NewConferenceEvent extends Event
         return $this->conference;
     }
 
+    /** @return array<string,mixed> */
     public function buildAttachment(): array
     {
         $conferenceAttachment = SlackNotifier::ATTACHMENT;

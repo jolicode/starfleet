@@ -23,17 +23,17 @@ class Continent
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\Column(type="string", length=20)
      */
-    private $name;
+    private string $name;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $enabled;
+    private bool $enabled;
 
     public function getId(): ?int
     {

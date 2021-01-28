@@ -16,7 +16,7 @@ use Doctrine\Persistence\ObjectManager;
 
 class ContinentFixtures extends AbstractFixtures
 {
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $continents = [
             'Africa',

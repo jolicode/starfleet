@@ -11,6 +11,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Conference;
 use App\Repository\ConferenceRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,7 +22,7 @@ class ConferenceController extends AbstractController
     /**
      * @Route("/", name="conferences_list")
      */
-    public function listAction(ConferenceRepository $conferenceRepository)
+    public function listAction(ConferenceRepository $conferenceRepository): Response
     {
         $conferences = $conferenceRepository->findAttendedConferences();
 
@@ -31,7 +32,7 @@ class ConferenceController extends AbstractController
     /**
      * @Route("/conferences/tagged/{tag}", name="conferences_list_by_tag")
      */
-    public function listByTagAction(string $tag, ConferenceRepository $conferenceRepository)
+    public function listByTagAction(string $tag, ConferenceRepository $conferenceRepository): Response
     {
         $conferences = $conferenceRepository->findAttendedConferencesByTag($tag);
 
@@ -47,7 +48,7 @@ class ConferenceController extends AbstractController
     /**
      * @Route("/conferences/{slug}", name="conferences_show")
      */
-    public function showAction(string $slug, ConferenceRepository $conferenceRepository)
+    public function showAction(string $slug, ConferenceRepository $conferenceRepository): Response
     {
         $conference = $conferenceRepository->findOneAttended($slug);
 
@@ -60,6 +61,7 @@ class ConferenceController extends AbstractController
         ]);
     }
 
+    /** @param array<Conference> $conferences */
     private function renderList(array $conferences): Response
     {
         $futureConferences = $pastConferences = $liveConferences = [];

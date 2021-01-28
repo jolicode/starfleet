@@ -29,24 +29,24 @@ class Talk
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\Column(name="title", type="string", length=255)
      */
-    private $title;
+    private string $title;
 
     /**
      * @ORM\Column(name="intro", type="text")
      */
-    private $intro;
+    private string $intro;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Submit", mappedBy="talk", cascade={"persist", "remove"})
      *
      * @var Collection<Submit>
      */
-    private $submits;
+    private Collection $submits;
 
     public function __construct()
     {
@@ -82,7 +82,8 @@ class Talk
         return $this->intro;
     }
 
-    public function getSubmits(): ?Collection
+    /** @return Collection<Submit> */
+    public function getSubmits(): Collection
     {
         return $this->submits;
     }
@@ -103,6 +104,7 @@ class Talk
         return $this;
     }
 
+    /** @return array<int,array> */
     public function getUniqueUsers(): array
     {
         $uniqueNames = [];

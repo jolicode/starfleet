@@ -36,6 +36,7 @@ class CfpEndingSoonEvent extends Event
         return $this->remainingDays;
     }
 
+    /** @return array<string,mixed> */
     public function buildAttachment(): array
     {
         $cfpAttachment = SlackNotifier::ATTACHMENT;

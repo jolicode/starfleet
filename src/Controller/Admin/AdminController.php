@@ -202,7 +202,7 @@ class AdminController extends EasyAdminController
         ]);
     }
 
-    protected function persistTalkEntity(Talk $talk, Form $newForm)
+    protected function persistTalkEntity(Talk $talk, Form $newForm): void
     {
         $conference = $newForm->get('conference')->getData();
 

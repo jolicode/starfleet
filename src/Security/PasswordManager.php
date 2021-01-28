@@ -34,7 +34,7 @@ class PasswordManager
         return $this->encoder->isPasswordValid($encodedPassword, $plainPassword, $salt);
     }
 
-    public function updateLoginablePassword(User $user)
+    public function updateLoginablePassword(User $user): void
     {
         $user->setPassword($this->encodePassword($user->getPlainPassword(), $user->getSalt()));
         $user->eraseCredentials();

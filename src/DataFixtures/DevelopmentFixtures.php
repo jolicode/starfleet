@@ -23,7 +23,7 @@ class DevelopmentFixtures extends AbstractFixtures
         $this->slackNotifierEventListener = $slackNotifierEventListener;
     }
 
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         parent::load($manager);
 

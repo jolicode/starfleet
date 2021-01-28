@@ -30,8 +30,7 @@ class GoogleAuthenticator extends SocialAuthenticator
     private $em;
     private $urlGenerator;
 
-    public function __construct(ClientRegistry $clientRegistry, ManagerRegistry $registry,
-        UrlGeneratorInterface $urlGenerator)
+    public function __construct(ClientRegistry $clientRegistry, ManagerRegistry $registry, UrlGeneratorInterface $urlGenerator)
     {
         $this->clientRegistry = $clientRegistry;
         $this->em = $registry->getManager();
@@ -107,7 +106,7 @@ class GoogleAuthenticator extends SocialAuthenticator
         return new RedirectResponse($this->urlGenerator->generate('conferences_list'));
     }
 
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey)
     {
         $url = $this->getPreviousUrl($request, $providerKey);
 

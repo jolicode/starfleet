@@ -19,7 +19,8 @@ use SameerShelavale\PhpCountriesArray\CountriesArray;
 
 class LocationGuesser
 {
-    private $continents;
+    /** @var array<Continent> */
+    private array $continents;
     private StatefulGeocoder $geocoder;
 
     public function __construct(ContinentRepository $continentRepository, StatefulGeocoder $geocoder)
