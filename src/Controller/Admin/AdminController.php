@@ -17,7 +17,6 @@ use App\Entity\Participation;
 use App\Entity\Submit;
 use App\Entity\Talk;
 use App\Enum\Workflow\Transition\Participation as ParticipationTransition;
-use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,13 +25,11 @@ use Symfony\Component\Workflow\Registry as WorkflowRegistry;
 
 class AdminController extends EasyAdminController
 {
-    protected $workflowRegistry;
-    protected $logger;
+    protected WorkflowRegistry $workflowRegistry;
 
-    public function __construct(WorkflowRegistry $workflowRegistry, LoggerInterface $logger)
+    public function __construct(WorkflowRegistry $workflowRegistry)
     {
         $this->workflowRegistry = $workflowRegistry;
-        $this->logger = $logger;
     }
 
     public function excludeConferenceAction(): Response

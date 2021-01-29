@@ -2,7 +2,7 @@ easy_admin:
     entities:
         PassedConference:
             class: App\Entity\Conference
-            disabled_actions: ['edit']
+            disabled_actions: ['edit', 'delete']
             list:
                 filters: ['name', 'city', 'country', 'startAt', 'tags', 'source']
                 actions:
@@ -17,7 +17,7 @@ easy_admin:
                     - { property: 'tags', type: 'array' }
         NextConference:
             class: App\Entity\Conference
-            disabled_actions: ['show']
+            disabled_actions: ['show', 'delete']
             list:
                 filters: ['name', 'city', 'country', 'startAt', 'tags', 'source']
                 actions:
@@ -50,6 +50,7 @@ easy_admin:
                     - { property: 'articleUrl', type: 'url' }
         ExcludedConferences:
             class: App\Entity\Conference
+            disabled_actions: ['delete']
             list:
                 filters: ['name', 'city', 'country', 'startAt', 'tags', 'source']
                 actions:
