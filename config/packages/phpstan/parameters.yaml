@@ -1,0 +1,2 @@
+parameters:
+    container.dumper.inline_class_loader: false
