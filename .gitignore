@@ -2,6 +2,7 @@
 /infrastructure/certs/*
 /infrastructure/certs/*
 !/infrastructure/certs/.gitkeep
+/infrastructure/docker/docker-compose.override.yml
 
 /public/build/
 yarn-error.log

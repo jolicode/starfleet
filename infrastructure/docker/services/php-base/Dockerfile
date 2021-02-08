@@ -4,6 +4,7 @@ RUN apt-get update \
     && apt install -y --no-install-recommends \
         ca-certificates \
         gnupg \
+        wget \
     && echo "deb https://packages.sury.org/php buster main" > /etc/apt/sources.list.d/sury.list \
     && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B188E2B695BD4743
 
@@ -29,6 +30,14 @@ RUN apt-get update \
         php${PHP_VERSION}-zip \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
+
+RUN wget -q -O - https://packages.blackfire.io/gpg.key | apt-key add - \
+    && echo "deb http://packages.blackfire.io/debian any main" | tee /etc/apt/sources.list.d/blackfire.list \
+    && apt update \
+    && apt install blackfire-php \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/* \
+    && sed -i "s#^blackfire.agent_socket.*#blackfire.agent_socket=tcp://blackfire:8707#" /etc/php/7.4/mods-available/blackfire.ini
 
 # Fake user to maps with the one on the host
 ARG USER_ID
