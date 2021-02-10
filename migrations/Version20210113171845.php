@@ -20,7 +20,7 @@ final class Version20210113171845 extends AbstractMigration
 {
     public function up(Schema $schema): void
     {
-        $this->addSql('ALTER TABLE conference ADD tags JSONB NOT NULL');
+        $this->addSql('ALTER TABLE conference ADD tags JSONB');
 
         $queryTags = 'SELECT id, name FROM tag';
         $stmt = $this->connection->prepare($queryTags);
@@ -48,6 +48,7 @@ final class Version20210113171845 extends AbstractMigration
         $this->addSql('DROP SEQUENCE tag_id_seq CASCADE');
         $this->addSql('DROP TABLE conferences_tags');
         $this->addSql('DROP TABLE tag');
+        $this->addSql('ALTER TABLE conference ALTER tags SET NOT NULL');
     }
 
     public function down(Schema $schema): void
