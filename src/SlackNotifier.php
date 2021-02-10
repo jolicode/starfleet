@@ -48,7 +48,8 @@ class SlackNotifier
         $this->env = $env;
     }
 
-    public function notify(array $payload)
+    /** @param array<string,array> $payload */
+    public function notify(array $payload): void
     {
         if ('test' !== $this->env) {
             $this->httpClient->request('POST', $this->webHookUrl, [

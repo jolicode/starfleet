@@ -35,14 +35,13 @@ class InitCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDescription('Init command that create first admin user.')
             ->addArgument('name', InputArgument::REQUIRED, 'Admin name')
             ->addArgument('email', InputArgument::REQUIRED, 'Admin email')
-            ->addArgument('password', InputArgument::REQUIRED, 'Admin password')
-        ;
+            ->addArgument('password', InputArgument::REQUIRED, 'Admin password');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

@@ -28,7 +28,8 @@ class ContinentRepository extends ServiceEntityRepository
         parent::__construct($registry, Continent::class);
     }
 
-    public function findAllAsKey()
+    /** @return array<Continent> */
+    public function findAllAsKey(): array
     {
         $qb = $this->createQueryBuilder('c', 'c.name');
 

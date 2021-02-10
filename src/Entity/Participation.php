@@ -23,42 +23,44 @@ class Participation
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Conference", inversedBy="participations", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
-    private $conference;
+    private Conference $conference;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="participations", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
-    private $participant;
+    private User $participant;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $asSpeaker;
+    private bool $asSpeaker;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $needTransport = true;
+    private bool $needTransport = true;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $needHotel = true;
+    private bool $needHotel = true;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $needTicket = true;
+    private bool $needTicket = true;
 
     /**
      * @ORM\Column(type="jsonb")
+     *
+     * @var array<string,int>
      */
     private array $marking = [];
 
@@ -144,11 +146,13 @@ class Participation
         return $this;
     }
 
+    /** @return array<string,int> */
     public function getMarking(): array
     {
         return $this->marking;
     }
 
+    /** @param array<string,int> $marking */
     public function setMarking(array $marking): self
     {
         $this->marking = $marking;

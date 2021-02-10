@@ -32,82 +32,82 @@ class Conference
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\Column(name="remote_id", type="string", length=255, nullable=true)
      */
-    private $remoteId;
+    private ?string $remoteId = null;
 
     /**
      * @ORM\Column(name="source", type="string", length=20)
      */
-    private $source = self::SOURCE_MANUAL;
+    private string $source = self::SOURCE_MANUAL;
 
     /**
      * @ORM\Column(name="slug", type="string", length=255, nullable=false, unique=true)
      * @Gedmo\Slug(fields={"name"})
      */
-    private $slug;
+    private string $slug;
 
     /**
      * @ORM\Column(name="name", type="string", length=255)
      */
-    private $name;
+    private string $name;
 
     /**
      * @ORM\Column(name="description", type="text", nullable=true)
      */
-    private $description;
+    private ?string $description = null;
 
     /**
      * @ORM\Column(name="start_at", type="datetime")
      */
-    private $startAt;
+    private \DateTimeInterface $startAt;
 
     /**
      * @ORM\Column(name="end_at", type="datetime", nullable=true)
      */
-    private $endAt;
+    private ?\DateTimeInterface $endAt = null;
 
     /**
      * @ORM\Column(name="cfp_url", type="string", length=255, nullable=true)
      */
-    private $cfpUrl;
+    private ?string $cfpUrl = null;
 
     /**
      * @ORM\Column(name="cfp_end_at", type="datetime", nullable=true)
      */
-    private $cfpEndAt;
+    private ?\DateTimeInterface $cfpEndAt = null;
 
     /**
      * @ORM\Column(name="site_url", type="string", length=255, nullable=true)
      */
-    private $siteUrl;
+    private ?string $siteUrl = null;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Submit", mappedBy="conference")
      *
      * @var Collection<Submit>
      */
-    private $submits;
+    private Collection $submits;
 
     /**
      * @ORM\Column(name="article_url", type="text", nullable=true)
      */
-    private $articleUrl;
+    private ?string $articleUrl = null;
 
     /**
      * @ORM\Column(name="excluded", type="boolean", options={"default"=0})
      */
-    private $excluded = false;
+    private bool $excluded = false;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Participation", mappedBy="conference", cascade={"persist"})
      *
      * @var Collection<Participation>
      */
-    private $participations;
+    private Collection $participations;
 
     /**
      * @ORM\Column(name="country", type="string", length=255, nullable=true)
@@ -126,6 +126,8 @@ class Conference
 
     /**
      * @ORM\Column(type="jsonb")
+     *
+     * @var array<string>
      */
     private array $tags = [];
 
@@ -384,6 +386,7 @@ class Conference
         return $this;
     }
 
+    /** @return array<string> */
     public function getTags(): array
     {
         return $this->tags;

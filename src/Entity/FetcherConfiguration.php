@@ -38,6 +38,8 @@ class FetcherConfiguration
      * All fetchers are different so there is no common configuration.
      *
      * @ORM\Column(type="jsonb")
+     *
+     * @var array<mixed>
      */
     private array $configuration = [];
 
@@ -66,11 +68,13 @@ class FetcherConfiguration
         $this->fetcherClass = $fetcherClass;
     }
 
+    /** @return array<mixed> */
     public function getConfiguration(): array
     {
         return $this->configuration;
     }
 
+    /** @param array<mixed> $configuration */
     public function setConfiguration(array $configuration): void
     {
         $this->configuration = $configuration;

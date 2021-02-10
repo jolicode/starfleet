@@ -72,7 +72,12 @@ class ConfTechFetcher implements FetcherInterface
         $this->logger = $logger ?: new NullLogger();
     }
 
-    public function fetch(array $configuration = []): ?\Generator
+    /**
+     * @param array<mixed> $configuration
+     *
+     * @return \Generator<Conference>
+     */
+    public function fetch(array $configuration = []): \Generator
     {
         if (0 === \count($configuration) || 0 === \count($configuration['tags'])) {
             $this->logger->warning(sprintf('The %s is not configured and will not fetch anything. Please add a configuration in the admin.', self::class));
@@ -120,6 +125,7 @@ class ConfTechFetcher implements FetcherInterface
             ]);
     }
 
+    /** @param array<mixed> $rawConference */
     private function denormalizeConference(array $rawConference, string $tag): ?Conference
     {
         if (!$online = $rawConference['online'] ?? false) {

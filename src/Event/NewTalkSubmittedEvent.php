@@ -29,6 +29,7 @@ class NewTalkSubmittedEvent extends Event
         return $this->submit;
     }
 
+    /** @return array<string,mixed> */
     public function buildAttachment(): array
     {
         $talkAttachment = SlackNotifier::ATTACHMENT;

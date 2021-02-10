@@ -4,12 +4,13 @@ includes:
     - vendor/phpstan/phpstan-symfony/extension.neon
 
 parameters:
-    level: 5
+    level: 6
     paths:
         - src
         
     tmpDir: var/phpstan-tmp
     inferPrivatePropertyTypeFromConstructor: true
+    checkGenericClassInNonGenericObjectType: false
 
     symfony:
         container_xml_path: var/cache/dev/App_KernelDevDebugContainer.xml

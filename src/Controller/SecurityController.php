@@ -23,7 +23,7 @@ class SecurityController extends AbstractController
     /**
      * @Route("/login", name="login", methods={"GET", "POST"})
      */
-    public function login(AuthenticationUtils $authenticationUtils)
+    public function login(AuthenticationUtils $authenticationUtils): Response
     {
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();
@@ -58,7 +58,7 @@ class SecurityController extends AbstractController
     /**
      * @Route("/connect/github", name="connect_github")
      */
-    public function connectGitHubAction(ClientRegistry $clientRegistry)
+    public function connectGitHubAction(ClientRegistry $clientRegistry): Response
     {
         return $clientRegistry->getClient('github')->redirect([], []);
     }
@@ -66,14 +66,14 @@ class SecurityController extends AbstractController
     /**
      * @Route("/connect/github/check", name="connect_github_check")
      */
-    public function connectGitHubCheckAction(Request $request)
+    public function connectGitHubCheckAction(Request $request): void
     {
     }
 
     /**
      * @Route("/logout", name="logout", methods={"GET"})
      */
-    public function logout()
+    public function logout(): void
     {
         throw new \Exception('Don\'t forget to activate logout in security.yaml');
     }

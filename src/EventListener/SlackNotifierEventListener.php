@@ -22,8 +22,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class SlackNotifierEventListener implements EventSubscriberInterface
 {
-    private $slackNotifier;
-    private $disabled;
+    private SlackNotifier $slackNotifier;
+    private bool $disabled;
 
     public function __construct(SlackNotifier $slackNotifier)
     {
@@ -34,12 +34,13 @@ class SlackNotifierEventListener implements EventSubscriberInterface
     /**
      * Disable the listener, useful while loading fixtures for example.
      */
-    public function disable()
+    public function disable(): void
     {
         $this->disabled = true;
     }
 
-    public static function getSubscribedEvents()
+    /** @return array<string,string> */
+    public static function getSubscribedEvents(): array
     {
         return [
             NewTalkSubmittedEvent::class => 'onNewTalkSubmitted',
@@ -50,7 +51,7 @@ class SlackNotifierEventListener implements EventSubscriberInterface
         ];
     }
 
-    public function onNewTalkSubmitted(NewTalkSubmittedEvent $event)
+    public function onNewTalkSubmitted(NewTalkSubmittedEvent $event): void
     {
         if ($this->disabled) {
             return;
@@ -61,7 +62,7 @@ class SlackNotifierEventListener implements EventSubscriberInterface
         $this->slackNotifier->notify($payload);
     }
 
-    public function onNewConferenceAdded(NewConferenceEvent $event)
+    public function onNewConferenceAdded(NewConferenceEvent $event): void
     {
         if ($this->disabled) {
             return;
@@ -72,7 +73,7 @@ class SlackNotifierEventListener implements EventSubscriberInterface
         $this->slackNotifier->notify($payload);
     }
 
-    public function onNewConferencesAdded(NewConferencesEvent $event)
+    public function onNewConferencesAdded(NewConferencesEvent $event): void
     {
         if ($this->disabled) {
             return;
@@ -91,7 +92,7 @@ class SlackNotifierEventListener implements EventSubscriberInterface
         $this->slackNotifier->notify($payload);
     }
 
-    public function onSubmitStatusChanged(SubmitStatusChangedEvent $event)
+    public function onSubmitStatusChanged(SubmitStatusChangedEvent $event): void
     {
         if ($this->disabled) {
             return;
@@ -106,7 +107,7 @@ class SlackNotifierEventListener implements EventSubscriberInterface
         $this->slackNotifier->notify($payload);
     }
 
-    public function onCfpEndingSoon(CfpEndingSoonEvent $event)
+    public function onCfpEndingSoon(CfpEndingSoonEvent $event): void
     {
         if ($this->disabled) {
             return;

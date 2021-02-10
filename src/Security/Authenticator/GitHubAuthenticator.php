@@ -33,8 +33,7 @@ class GitHubAuthenticator extends SocialAuthenticator
     private $allowedGitHubOrganization;
     private $httpClient;
 
-    public function __construct(ClientRegistry $clientRegistry, ManagerRegistry $registry,
-        UrlGeneratorInterface $urlGenerator, string $allowedGitHubOrganization)
+    public function __construct(ClientRegistry $clientRegistry, ManagerRegistry $registry, UrlGeneratorInterface $urlGenerator, string $allowedGitHubOrganization)
     {
         $this->clientRegistry = $clientRegistry;
         $this->em = $registry->getManager();
@@ -118,7 +117,7 @@ class GitHubAuthenticator extends SocialAuthenticator
         return new RedirectResponse($this->urlGenerator->generate('login'));
     }
 
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey)
     {
         $url = $this->getPreviousUrl($request, $providerKey);
 

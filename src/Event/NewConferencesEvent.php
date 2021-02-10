@@ -19,20 +19,24 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class NewConferencesEvent extends Event
 {
-    private $router;
-    private $newConferences;
+    /** @var array<Conference> */
+    private array $newConferences;
+    private RouterInterface $router;
 
+    /** @param array<Conference> $newConferences */
     public function __construct(array $newConferences, RouterInterface $router)
     {
         $this->newConferences = $newConferences;
         $this->router = $router;
     }
 
+    /** @return array<Conference> */
     public function getNewConferences(): array
     {
         return $this->newConferences;
     }
 
+    /** @return array<string,mixed> */
     public function buildAttachmentField(Conference $conference): array
     {
         $conferenceField = SlackNotifier::SHORT_FIELD;

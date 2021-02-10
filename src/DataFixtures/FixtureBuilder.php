@@ -23,10 +23,10 @@ class FixtureBuilder
 {
     private static ?Generator $faker = null;
 
+    /** @param array<string,mixed> $description */
     public static function createTalk(array $description = []): Talk
     {
         $description = array_replace([
-            'id' => uuid_create(),
             'title' => self::getFaker()->title,
             'intro' => self::getFaker()->text(30),
             'submits' => [],
@@ -34,7 +34,6 @@ class FixtureBuilder
 
         $talk = new Talk();
 
-        ReflectionHelper::setProperty($talk, 'id', $description['id']);
         $talk->setTitle($description['title']);
         $talk->setIntro($description['intro']);
 
@@ -45,10 +44,10 @@ class FixtureBuilder
         return $talk;
     }
 
+    /** @param array<string,mixed> $description */
     public static function createSubmit(array $description = []): Submit
     {
         $description = array_replace([
-            'id' => uuid_create(),
             'submittedAt' => self::getFaker()->dateTime,
             'status' => array_rand(Submit::STATUSES),
             'users' => [],
@@ -58,7 +57,6 @@ class FixtureBuilder
 
         $submit = new Submit();
 
-        ReflectionHelper::setProperty($submit, 'id', $description['id']);
         $submit->setSubmittedAt($description['submittedAt']);
         $submit->setStatus($description['status']);
         $submit->setConference($description['conference']);
@@ -71,10 +69,10 @@ class FixtureBuilder
         return $submit;
     }
 
+    /** @param array<string,mixed> $description */
     public static function createUser(array $description = [], ?UserPasswordEncoderInterface $passwordEncoder = null): User
     {
         $description = array_replace([
-            'id' => uuid_create(),
             'name' => self::getFaker()->name,
             'submits' => [],
             'participations' => [],
@@ -85,7 +83,6 @@ class FixtureBuilder
 
         $user = new User();
 
-        ReflectionHelper::setProperty($user, 'id', $description['id']);
         $user->setName($description['name']);
         $user->setRoles($description['roles']);
         $user->setEmail($description['email']);
@@ -106,10 +103,10 @@ class FixtureBuilder
         return $user;
     }
 
+    /** @param array<string,mixed> $description */
     public static function createConference(array $description = []): Conference
     {
         $description = array_replace([
-            'id' => uuid_create(),
             'name' => $cityName = self::getFaker()->city,
             'country' => array_rand(array_flip(['gb', 'es', 'it', 'fr', 'de'])),
             'city' => $cityName,
@@ -129,7 +126,6 @@ class FixtureBuilder
 
         $conference = new Conference();
 
-        ReflectionHelper::setProperty($conference, 'id', $description['id']);
         $conference->setName($description['name']);
         $conference->setSiteUrl($description['siteUrl']);
         $conference->setCfpUrl($description['cfpUrl']);
@@ -156,10 +152,10 @@ class FixtureBuilder
         return $conference;
     }
 
+    /** @param array<string,mixed> $description */
     public static function createParticipation(array $description = []): Participation
     {
         $description = array_replace([
-            'id' => uuid_create(),
             'conference' => self::createConference(),
             'participant' => self::createUser(),
             'asSpeaker' => self::getFaker()->boolean,
@@ -168,7 +164,6 @@ class FixtureBuilder
 
         $participation = new Participation();
 
-        ReflectionHelper::setProperty($participation, 'id', $description['id']);
         $participation->setConference($description['conference']);
         $participation->setParticipant($description['participant']);
         $participation->setAsSpeaker($description['asSpeaker']);
