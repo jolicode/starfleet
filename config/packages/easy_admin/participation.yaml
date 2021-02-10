@@ -7,6 +7,7 @@ easy_admin:
                 list: 'easy_admin/Participation/list.html.twig'
             list:
                 filters: ['conference', 'participant']
+                item_permission: ['PARTICIPATION_SHOW']
                 fields:
                     - { property: 'conference' }
                     - { property: 'participant' }
