@@ -34,3 +34,13 @@ services:
             - 5432:5432
         volumes:
             - postgres-data:/var/lib/postgresql/data
+
+    blackfire:
+        image: blackfire/blackfire
+        ports: ["8707"]
+        environment:
+            # Exposes BLACKFIRE_* environment variables from the host or create an override file 
+            BLACKFIRE_SERVER_ID: ~
+            BLACKFIRE_SERVER_TOKEN: ~
+            BLACKFIRE_CLIENT_ID: ~
+            BLACKFIRE_CLIENT_TOKEN: ~
