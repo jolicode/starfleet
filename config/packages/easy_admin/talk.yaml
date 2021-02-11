@@ -4,6 +4,7 @@ easy_admin:
             class: App\Entity\Talk
             list:
                 filters: ['title', 'intro', 'createdAt']
+                item_permission: ['TALK_SHOW']
                 fields:
                     - { property: 'title', type: 'text' }
                     - { property: 'submits' }

@@ -39,7 +39,7 @@ class TalkTest extends TestCase
             $talk->addSubmit($newSubmit);
         }
 
-        $result = $talk->getUniqueUsers();
+        $result = $talk->getUniqueUsersNames();
         self::assertCount($expectedAmount, $result);
     }
 
