@@ -391,4 +391,17 @@ class Conference
     {
         return $this->tags;
     }
+
+    public function guessConferenceType(): string
+    {
+        if ($this->excluded) {
+            return 'ExcludedConference';
+        }
+
+        if ($this->endAt < new \DateTime()) {
+            return 'PassedConference';
+        }
+
+        return 'NextConference';
+    }
 }

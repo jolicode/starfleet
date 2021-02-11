@@ -8,7 +8,7 @@ easy_admin:
         menu:
             - { entity: 'NextConference', label: 'Next Conferences', icon: 'forward', default: true }
             - { entity: 'PassedConference', label: 'Passed Conferences', icon: 'backward' }
-            - { entity: 'ExcludedConferences', label: 'Excluded Conferences', icon: 'times' }
+            - { entity: 'ExcludedConference', label: 'Excluded Conferences', icon: 'times' }
             - { entity: 'Participation', label: 'Participations', icon: 'id-badge' }
             - { entity: 'Talk', label: 'Talks', icon: 'file-text-o' }
             - { entity: 'ConferenceFilter', label: 'Ignored Subjects', icon: 'times' }

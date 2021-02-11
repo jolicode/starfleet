@@ -15,9 +15,24 @@ easy_admin:
                     - { property: 'endAt', type: 'date' }
                     - { property: 'source', type: 'text' }
                     - { property: 'tags', type: 'array' }
+            show:
+                fields: &conferenceShow
+                    1: { property: name, type: text }
+                    2: { property: city, type: text }
+                    3: { property: country, type: country }
+                    4: { property: source, type: text }
+                    5: { property: description, type: text}
+                    6: { property: startAt, type: date }
+                    7: { property: endAt, type: date }
+                    8: { property: cfpUrl, type: url }
+                    9: { property: cfpEndAt, type: date }
+                    10: { property: siteUrl, type: url }
+                    11: { property: articleUrl, type: url }
+                    12: { property: submits, label: 'Submissions', type: embedded_list, css_class: "d-block mx-auto" }
+                    13: { property: participations, type: embedded_list, css_class: "d-block mx-auto" }
         NextConference:
             class: App\Entity\Conference
-            disabled_actions: ['show', 'delete']
+            disabled_actions: ['delete']
             list:
                 filters: ['name', 'city', 'country', 'startAt', 'tags', 'source']
                 actions:
@@ -48,7 +63,10 @@ easy_admin:
                     - { property: 'cfpEndAt', type: 'date', 'type_options': { 'widget': 'single_text' } }
                     - { type: 'group', columns: 4, icon: 'cubes', label: 'Metadata' }
                     - { property: 'articleUrl', type: 'url' }
-        ExcludedConferences:
+            show:
+                fields:
+                    <<: *conferenceShow
+        ExcludedConference:
             class: App\Entity\Conference
             disabled_actions: ['delete']
             list:
@@ -64,3 +82,6 @@ easy_admin:
                     - { property: 'cfpEndAt', type: 'date' }
                     - { property: 'source', type: 'text' }
                     - { property: 'tags', type: 'array' }
+            show:
+                fields:
+                    <<: *conferenceShow
