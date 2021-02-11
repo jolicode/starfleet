@@ -9,7 +9,7 @@ easy_admin:
                 filters: ['conference', 'participant']
                 item_permission: ['PARTICIPATION_SHOW']
                 fields:
-                    - { property: 'conference' }
+                    - { property: 'conference', template: 'easy_admin/Participation/conference.html.twig' }
                     - { property: 'participant' }
                     - { property: 'asSpeaker' }
                     - { property: 'needTransport' }
