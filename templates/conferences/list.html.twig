@@ -121,6 +121,7 @@
                     {{ futureConferences|length > 0 ? macro.display_conferences(futureConferences, 'future', activeTab) }}
                     {{ pastConferences|length > 0 ? macro.display_conferences(pastConferences, 'past', activeTab) }}
                 </div>
+                {{ include('map.html.twig') }}
             </div>
         </div>
     </section>

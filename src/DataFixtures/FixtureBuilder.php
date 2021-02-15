@@ -117,6 +117,7 @@ class FixtureBuilder
             'cfpEndAt' => clone $date->modify('- 7 days'),
             'participations' => [],
             'online' => false,
+            'coordinates' => [self::getFaker()->longitude, self::getFaker()->latitude],
             'tags' => [
                 'PHP',
                 'DevOps',
@@ -139,6 +140,7 @@ class FixtureBuilder
         } else {
             $conference->setCity($description['city']);
             $conference->setCountry($description['country']);
+            $conference->setCoordinates($description['coordinates']);
         }
 
         foreach ($description['tags'] as $tag) {

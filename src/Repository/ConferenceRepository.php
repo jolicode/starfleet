@@ -85,6 +85,22 @@ class ConferenceRepository extends ServiceEntityRepository
             ;
     }
 
+    /** @return \Generator<Conference>|null */
+    public function getNullCoordinatesConferences(): ?\Generator
+    {
+        $iterator = $this->createQueryBuilder('c')
+            ->andWhere('c.online = :falseValue')
+            ->setParameter('falseValue', false)
+            ->andWhere('c.coordinates IS NULL')
+            ->getQuery()
+            ->iterate()
+            ;
+
+        foreach ($iterator as $conference) {
+            yield $conference[0];
+        }
+    }
+
     private function createAttendedQueryBuilder(): QueryBuilder
     {
         return $this->createQueryBuilder('c')

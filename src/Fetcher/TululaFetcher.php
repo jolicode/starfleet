@@ -172,9 +172,11 @@ class TululaFetcher implements FetcherInterface
     private function denormalizeConference(array $rawConference): ?Conference
     {
         $city = null;
+        $coords = null;
         if (!$rawConference['isOnline']) {
             if ($city = $rawConference['venue']['city'] ?: $rawConference['venue']['state']) {
                 $continent = $this->locationGuesser->getContinent($city);
+                $coords = $this->locationGuesser->getCoordinates($city);
 
                 if (!$continent instanceof Continent || !$continent->getEnabled()) {
                     return null;
@@ -211,6 +213,7 @@ class TululaFetcher implements FetcherInterface
         } else {
             $conference->setCity($city);
             $conference->setCountry($rawConference['venue']['countryCode']);
+            $conference->setCoordinates($coords);
         }
 
         return $conference;

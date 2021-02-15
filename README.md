@@ -61,6 +61,10 @@ If you want to add a source, you only have to implement the `FetcherInterface`.
 
 Some fetchers will use tags to fetch their data, and some of these tags may be missing. If this is the case, you should find the fetcher in `src\Fetcher` and add the missing tag to its tags list.
 
+## Map
+
+We provide you with the possibility of adding a map with a marker on every location you and your team attended a conference. If you want to enable this feature, you need to create an account at [Mapbox](https://www.mapbox.com/). You then need to retrieve your API Token and add it to your `.env` file, by replacing the default value of the `MAPBOX_TOKEN` variable.
+
 ## Changes
 
 View the [CHANGELOG](CHANGELOG.md) file attached to this project.

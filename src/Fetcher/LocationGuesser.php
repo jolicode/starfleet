@@ -51,4 +51,16 @@ class LocationGuesser
 
         return $results->first()->getCountry()->getCode();
     }
+
+    /** @return array<float> */
+    public function getCoordinates(string $queryString): ?array
+    {
+        $results = $this->geocoder->geocodeQuery(GeocodeQuery::create($queryString));
+
+        if (!$results->count()) {
+            return null;
+        }
+
+        return $results->first()->getCoordinates()->toArray();
+    }
 }

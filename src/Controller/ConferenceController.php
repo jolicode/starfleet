@@ -65,6 +65,7 @@ class ConferenceController extends AbstractController
     private function renderList(array $conferences): Response
     {
         $futureConferences = $pastConferences = $liveConferences = [];
+        $conferenceCoordinates = [];
 
         $startOfToday = (new \DateTime())->setTime(0, 0, 0);
         $endOfToday = (new \DateTime())->setTime(23, 59, 59);
@@ -77,12 +78,16 @@ class ConferenceController extends AbstractController
             } else {
                 $liveConferences[] = $conference;
             }
+            if (!$conference->isOnline() && null !== $conference->getCoordinates()) {
+                $conferenceCoordinates[] = $conference->getCoordinates();
+            }
         }
 
         return $this->render('conferences/list.html.twig', [
             'futureConferences' => $futureConferences,
             'pastConferences' => $pastConferences,
             'liveConferences' => $liveConferences,
+            'conferenceCoordinates' => $conferenceCoordinates,
         ]);
     }
 }

@@ -1,0 +1,7 @@
+{% set url = mapboxEncode(conferenceCoordinates) %}
+
+{% if url == null %}
+    <div class="alert alert-warning">It seems you forgot to provide an access token to enable the map feature.</div>
+{% else %}
+    <img src="{{ url }}" alt="Map of where we attended conferences" class="w-100 mw-100">
+{% endif %}

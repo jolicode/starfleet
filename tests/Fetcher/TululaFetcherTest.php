@@ -320,6 +320,10 @@ class TululaFetcherTest extends KernelTestCase
         $continent->setName('Europe');
         $continent->setEnabled(true);
 
+        $locationGuesser
+            ->getCoordinates(Argument::type('string'))
+            ->willReturn([666, 666]);
+
         $client = new MockHttpClient($response);
 
         $fetcher = new TululaFetcher(

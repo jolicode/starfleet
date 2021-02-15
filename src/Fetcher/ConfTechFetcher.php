@@ -131,7 +131,6 @@ class ConfTechFetcher implements FetcherInterface
         if (!$online = $rawConference['online'] ?? false) {
             $query = sprintf('%s %s', $rawConference['city'], 'U.S.A.' === $rawConference['country'] ? 'United States of America' : $rawConference['country']);
             $continent = $this->locationGuesser->getContinent($query);
-            $country = $this->locationGuesser->getCountry($query);
 
             if (!$continent instanceof Continent || !$continent->getEnabled()) {
                 return null;
@@ -156,10 +155,17 @@ class ConfTechFetcher implements FetcherInterface
         $conference->setOnline($online);
         $conference->addTag($tag);
 
-        if (!$online) {
-            /* @phpstan-ignore-next-line */
+        if ($online) {
+            $conference->setCity('Online');
+            $conference->setOnline(true);
+        } else {
+            $city = $rawConference['city'];
+            $country = $this->locationGuesser->getCountry($city);
+            $coords = $this->locationGuesser->getCoordinates($city);
+
             $conference->setCountry($country);
-            $conference->setCity($rawConference['city']);
+            $conference->setCoordinates($coords);
+            $conference->setCity($city);
         }
 
         if (\array_key_exists('endDate', $rawConference)) {

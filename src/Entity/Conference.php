@@ -131,6 +131,13 @@ class Conference
      */
     private array $tags = [];
 
+    /**
+     * @ORM\Column(type="jsonb", nullable=true)
+     *
+     * @var array<float>|null
+     */
+    private ?array $coordinates = null;
+
     public function __construct()
     {
         $this->submits = new ArrayCollection();
@@ -403,5 +410,19 @@ class Conference
         }
 
         return 'NextConference';
+    }
+
+    /** @return array<float>|null */
+    public function getCoordinates(): ?array
+    {
+        return $this->coordinates;
+    }
+
+    /** @param array<float>|null $coordinates */
+    public function setCoordinates(?array $coordinates): self
+    {
+        $this->coordinates = $coordinates;
+
+        return $this;
     }
 }
