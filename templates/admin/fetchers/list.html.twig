@@ -23,11 +23,11 @@
                             <input type="checkbox" name="active" data-name="{{ fetcher.fetcherClass }}" {% if fetcher.active %}checked{% endif %}>
                             <span>
                             </span>
-                        </label>    
+                        </label>
                     </div>
                 </td>
                 <td class="actions">
-                    <a href="{{ path('fetcher_edit', {fetcher: fetcher.fetcherClass}) }}" class="action-edit">
+                    <a href="{{ path('fetcher_edit', {fetcherShortClass: fetcher.fetcherClass}) }}" class="action-edit">
                         <i class="fa fa-pencil"></i>
                         {{ 'edit'|trans }}
                     </a>

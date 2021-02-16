@@ -151,9 +151,9 @@ class TululaFetcher implements FetcherInterface
         }
     }
 
-    public function configureForm(FormBuilderInterface $formBuilder): FormBuilderInterface
+    public function configureForm(FormBuilderInterface $formBuilder): void
     {
-        return $formBuilder
+        $formBuilder
             ->add('tags', ChoiceType::class, [
                 'label' => 'Tags',
                 'choices' => array_combine(self::SOURCE_AVAILABLE_TAGS, self::SOURCE_AVAILABLE_TAGS),

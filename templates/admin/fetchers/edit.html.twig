@@ -1,0 +1,64 @@
+{% extends '@EasyAdmin/default/layout.html.twig' %}
+
+{% form_theme form with easyadmin_config('design.form_theme')|merge([_self]) only %}
+{# Override easy admin block because there are no entity here #}
+{% block empty_collection '' %}
+{# We dont want to display a label for the whole configuration block since we "inline" all configuration items #}
+{% block _form_configuration_label '' %}
+
+{% block content_header %}
+    <div class="d-flex flex-row justify-content-between align-content-center w-100">
+        <div class="content-header-title">
+            <h1 class="title">{{ 'fetcher.edit.title'|trans }}</h1>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content_title %}
+    {{ 'edit'|trans }} {{ fetcherConfiguration.fetcherClass }}
+{% endblock %}
+
+{% block main %}
+    {{ form_start(form, { attr: {class: 'edit-form', id: 'form-edit'} }) }}
+
+    <fieldset>
+        <legend>
+            <i class="fa fa-fw fa-pencil"></i>
+            {{ fetcherConfiguration.fetcherClass|replace({"Fetcher": ""}) }}
+        </legend>
+        <div class="row">
+            {% for config in form.configuration %}
+                <div class="col-12">
+                    {{ form_row(config) }}
+                </div>
+            {% endfor %}
+
+            <div class="col-12">
+                {{ form_row(form.active) }}
+            </div>
+        </div>
+    </fieldset>
+
+    {{ form_end(form) }}
+
+{% endblock %}
+
+{% block content_footer %}
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary action-save" form="form-edit">
+        <i class="fa fa-save"></i>
+            <span class="btn-label">{{ 'fetcher.edit.save'|trans }}</span>
+        </button>
+        <a href="{{ path('fetcher_list') }}" name="list" class="btn btn-link pr-0 action-list" title target="_self">{{ 'fetcher.edit_go_to_list'|trans }}</a>
+    </div>
+{% endblock %}
+
+{% block body_javascript %}
+    <script>
+        $(document).ready(function() {
+            $('select').each((i, element) => {
+                $(element).select2();
+            })
+        });
+    </script>
+{% endblock %}

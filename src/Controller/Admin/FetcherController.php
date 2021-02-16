@@ -16,7 +16,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -56,37 +55,38 @@ class FetcherController extends AbstractController
             $fetchersConfig[] = $this->fetcherConfigurationRepository->findOneOrCreate($name);
         }
 
-        return $this->render('fetchers/list.html.twig', [
+        return $this->render('admin/fetchers/list.html.twig', [
             'fetchers' => $fetchersConfig,
         ]);
     }
 
     /**
-     * @Route(path="/admin/fetcher/edit/{fetcher}", name="fetcher_edit")
+     * @Route(path="/admin/fetcher/edit/{fetcherShortClass}", name="fetcher_edit")
      */
-    public function edit(string $fetcher, Request $request): Response
+    public function edit(string $fetcherShortClass, Request $request): Response
     {
-        $class = sprintf('App\Fetcher\%s', $fetcher);
+        $class = sprintf('App\Fetcher\%s', $fetcherShortClass);
 
         if (!$this->serviceProvider->has($class)) {
-            throw $this->createNotFoundException("Required fetcher $fetcher not found");
+            throw $this->createNotFoundException("The fetcher '$fetcherShortClass' is not found.");
         }
 
-        $fetcherConfig = $this->fetcherConfigurationRepository->findOneOrCreate($fetcher);
+        $fetcherConfiguration = $this->fetcherConfigurationRepository->findOneOrCreate($fetcherShortClass);
         $fetcher = $this->serviceProvider->get($class);
-        $configurationBuilder = $this->formFactory->createNamedBuilder('configuration', FormType::class);
+        $configurationBuilder = $this->formFactory->createNamedBuilder('configuration');
+        $fetcher->configureForm($configurationBuilder);
 
-        $form = $this->formFactory
-            ->createNamedBuilder('fetcher_form', FormType::class, $fetcherConfig)
+        $form = $this->createFormBuilder($fetcherConfiguration)
             ->add('active', CheckboxType::class, [
                 'label' => 'Active',
                 'required' => false,
             ])
-            ->add($fetcher->configureForm($configurationBuilder))
-            ->getForm();
+            ->add($configurationBuilder)
+            ->getForm()
+        ;
 
         if ($form->handleRequest($request)->isSubmitted() && $form->isValid()) {
-            $this->em->persist($fetcherConfig);
+            $this->em->persist($fetcherConfiguration);
             $this->em->flush();
 
             $successMessage = $this->translator->trans('fetcher.edit.success', [], 'admin');
@@ -95,9 +95,9 @@ class FetcherController extends AbstractController
             return $this->redirectToRoute('fetcher_list');
         }
 
-        return $this->render('fetchers/edit.html.twig', [
+        return $this->render('admin/fetchers/edit.html.twig', [
             'form' => $form->createView(),
-            'fetcher' => $fetcherConfig,
+            'fetcherConfiguration' => $fetcherConfiguration,
         ]);
     }
 
