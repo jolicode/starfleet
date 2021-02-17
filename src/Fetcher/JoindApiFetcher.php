@@ -157,16 +157,11 @@ class JoindApiFetcher implements FetcherInterface
         $country = $this->locationGuesser->getCountry($city);
         $coords = $this->locationGuesser->getCoordinates($city);
 
-        if (!$continent->getEnabled() || !$continent instanceof Continent) {
+        if (!$continent instanceof Continent || !$continent->getEnabled()) {
             return null;
         }
 
-        $startDate = \DateTimeImmutable::createFromFormat(\DateTime::ISO8601, $rawConference['start_date']);
-
-        // In case of invalid startDate, we skip the conference. It will be handled again later.
-        if (!$startDate) {
-            return null;
-        }
+        $startDate = new \DateTimeImmutable($rawConference['start_date']);
 
         $slug = $rawConference['url_friendly_name'];
 
@@ -191,25 +186,23 @@ class JoindApiFetcher implements FetcherInterface
             $conference->addTag($tag);
         }
 
-        if ($rawConference['end_date']) {
-            $endDate = \DateTimeImmutable::createFromFormat(\DateTime::ISO8601, $rawConference['end_date']);
+        if (\array_key_exists('end_date', $rawConference)) {
+            $endDate = new \DateTimeImmutable($rawConference['end_date']);
             $conference->setEndAt($endDate);
         }
 
-        if ($rawConference['description']) {
+        if (\array_key_exists('description', $rawConference)) {
             $conference->setDescription($rawConference['description']);
         }
 
-        if ($rawConference['cfp_url']) {
+        if (\array_key_exists('cfp_url', $rawConference)) {
             $conference->setCfpUrl($rawConference['cfp_url']);
         }
 
-        if ($rawConference['cfp_end_date']) {
-            $cfpEndAt = \DateTimeImmutable::createFromFormat(\DateTime::ISO8601, $rawConference['cfp_end_date']);
+        if (\array_key_exists('cfp_end_date', $rawConference)) {
+            $cfpEndAt = new \DateTimeImmutable($rawConference['cfp_end_date']);
             $conference->setCfpEndAt($cfpEndAt);
         }
-
-        $conferences[] = $conference;
 
         return $conference;
     }
