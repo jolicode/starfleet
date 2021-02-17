@@ -70,3 +70,7 @@ services:
     App\Fetcher\ConfTechFetcher:
         arguments:
             $projectDir: '%kernel.project_dir%'
+
+    App\Twig\MapboxUrlEncoder:
+        arguments:
+            $apiToken: '%env(MAPBOX_TOKEN)%'

@@ -155,6 +155,7 @@ class JoindApiFetcher implements FetcherInterface
         $city = str_ireplace('_', ' ', $rawConference['tz_place']);
         $continent = $this->locationGuesser->getContinent($city);
         $country = $this->locationGuesser->getCountry($city);
+        $coords = $this->locationGuesser->getCoordinates($city);
 
         if (!$continent->getEnabled() || !$continent instanceof Continent) {
             return null;
@@ -173,17 +174,21 @@ class JoindApiFetcher implements FetcherInterface
         $conference->setSource(self::SOURCE);
         $conference->setSlug($slug);
         $conference->setName($rawConference['name']);
-        $conference->setCity($city);
-        $conference->setCountry($country);
         $conference->setStartAt($startDate);
         $conference->setSiteUrl($rawConference['href']);
 
-        foreach ($rawConference['tags'] as $tag) {
-            $conference->addTag($tag);
+        $lowerLocation = strtolower($rawConference['location']);
+        if ('online' === $lowerLocation || 'online conference' === $lowerLocation) {
+            $conference->setOnline(true);
+            $conference->setCity('Online');
+        } else {
+            $conference->setCity($city);
+            $conference->setCountry($country);
+            $conference->setCoordinates($coords);
         }
 
-        if ('online' === $city) {
-            $conference->setOnline(true);
+        foreach ($rawConference['tags'] as $tag) {
+            $conference->addTag($tag);
         }
 
         if ($rawConference['end_date']) {

@@ -12,15 +12,18 @@
 namespace App\DataFixtures;
 
 use App\EventListener\SlackNotifierEventListener;
+use App\Fetcher\LocationGuesser;
 use Doctrine\Persistence\ObjectManager;
 
 class DevelopmentFixtures extends AbstractFixtures
 {
-    private $slackNotifierEventListener;
+    private SlackNotifierEventListener $slackNotifierEventListener;
+    private LocationGuesser $locationGuesser;
 
-    public function __construct(SlackNotifierEventListener $slackNotifierEventListener)
+    public function __construct(SlackNotifierEventListener $slackNotifierEventListener, LocationGuesser $locationGuesser)
     {
         $this->slackNotifierEventListener = $slackNotifierEventListener;
+        $this->locationGuesser = $locationGuesser;
     }
 
     public function load(ObjectManager $manager): void
@@ -70,6 +73,8 @@ class DevelopmentFixtures extends AbstractFixtures
 
         $nextConference = $this->addConference([
             'name' => 'Next Conf',
+            'city' => 'Paris',
+            'coordinates' => $this->locationGuesser->getCoordinates('Paris'),
             'siteUrl' => 'https://next-conf.test',
             'cfpUrl' => 'https://cfp.next-conf.test',
             'startAt' => new \DateTime('+ 10 days'),
@@ -90,6 +95,8 @@ class DevelopmentFixtures extends AbstractFixtures
 
         $liveConference = $this->addConference([
             'name' => 'Live Conf',
+            'city' => 'Londres',
+            'coordinates' => $this->locationGuesser->getCoordinates('Londres'),
             'siteUrl' => 'https://live-conf.test',
             'cfpUrl' => 'https://cfp.live-conf.test',
             'startAt' => new \DateTime('- 1 days'),
@@ -110,6 +117,8 @@ class DevelopmentFixtures extends AbstractFixtures
 
         $passedConference = $this->addConference([
             'name' => 'Passed Conf',
+            'city' => 'Lyon',
+            'coordinates' => $this->locationGuesser->getCoordinates('Lyon'),
             'siteUrl' => 'https://passed-conf.test',
             'cfpUrl' => 'https://cfp.passed-conf.test',
             'startAt' => new \DateTime('- 20 days'),
