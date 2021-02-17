@@ -23,5 +23,5 @@ interface FetcherInterface
      */
     public function fetch(array $configuration = []): \Generator;
 
-    public function configureForm(FormBuilderInterface $formBuilder): FormBuilderInterface;
+    public function configureForm(FormBuilderInterface $formBuilder): void;
 }

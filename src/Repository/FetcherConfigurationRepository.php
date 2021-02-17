@@ -28,12 +28,12 @@ class FetcherConfigurationRepository extends ServiceEntityRepository
         parent::__construct($registry, FetcherConfiguration::class);
     }
 
-    public function findOneOrCreate(string $className): FetcherConfiguration
+    public function findOneOrCreate(string $fetcherShortClass): FetcherConfiguration
     {
-        $config = $this->findOneBy(['fetcherClass' => $className]);
+        $config = $this->findOneBy(['fetcherClass' => $fetcherShortClass]);
 
         if (null === $config) {
-            $config = new FetcherConfiguration($className);
+            $config = new FetcherConfiguration($fetcherShortClass);
         }
 
         return $config;
