@@ -137,12 +137,7 @@ class ConfTechFetcher implements FetcherInterface
             }
         }
 
-        $startDate = \DateTimeImmutable::createFromFormat('Y-m-d h:i:s', $rawConference['startDate'].' 00:00:00');
-
-        // In case of invalid startDate, we skip the conference. It will be handled again later.
-        if (!$startDate) {
-            return null;
-        }
+        $startDate = new \DateTimeImmutable($rawConference['startDate']);
 
         $slug = Transliterator::transliterate(sprintf('%s %s %s', $rawConference['name'], $rawConference['city'] ?? 'online', $startDate->format('Y')));
 
@@ -169,7 +164,7 @@ class ConfTechFetcher implements FetcherInterface
         }
 
         if (\array_key_exists('endDate', $rawConference)) {
-            $endDate = \DateTimeImmutable::createFromFormat('Y-m-d h:i:s', $rawConference['endDate'].' 00:00:00');
+            $endDate = new \DateTimeImmutable($rawConference['endDate']);
             $conference->setEndAt($endDate);
         }
 
@@ -182,7 +177,7 @@ class ConfTechFetcher implements FetcherInterface
         }
 
         if (\array_key_exists('cfpEndDate', $rawConference)) {
-            $cfpEndAt = \DateTimeImmutable::createFromFormat('Y-m-d h:i:s', $rawConference['cfpEndDate'].' 00:00:00');
+            $cfpEndAt = new \DateTimeImmutable($rawConference['cfpEndDate']);
             $conference->setCfpEndAt($cfpEndAt);
         }
 

@@ -184,14 +184,9 @@ class TululaFetcher implements FetcherInterface
             }
         }
 
-        $startDate = \DateTimeImmutable::createFromFormat('Y-m-d', $rawConference['dateStart']);
-        $endDate = \DateTimeImmutable::createFromFormat('Y-m-d', $rawConference['dateEnd']);
-        $cfpEndDate = \DateTimeImmutable::createFromFormat('Y-m-d', $rawConference['cfpDateEnd']);
-
-        // In case of invalid startDate, we skip the conference. It will be handled again later.
-        if (!$startDate) {
-            return null;
-        }
+        $startDate = new \DateTimeImmutable($rawConference['dateStart']);
+        $endDate = new \DateTimeImmutable($rawConference['dateEnd']);
+        $cfpEndDate = new \DateTimeImmutable($rawConference['cfpDateEnd']);
 
         $conference = new Conference();
         $conference->setSource(self::SOURCE);
