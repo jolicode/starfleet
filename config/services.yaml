@@ -41,10 +41,9 @@ services:
         tags:
             - { name: twig.extension }
 
-    App\Command\FetchConferencesCommand:
+    App\Conferences\ConferencesHarvester:
         arguments:
-            - !tagged app.fetcher
-            - '@doctrine'
+            $fetchers: !tagged_iterator { tag: 'app.fetcher' }
 
     App\Security\Authenticator\GitHubAuthenticator:
         arguments:
