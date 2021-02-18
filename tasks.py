@@ -109,7 +109,7 @@ def fetch_conferences(c):
     Fetch conferences from all sources
     """
     with Builder(c):
-        docker_compose_run(c, 'php bin/console starfleet:conferences:fetch')
+        docker_compose_run(c, 'php bin/console starfleet:conferences:fetch -vv')
 
 
 @task
