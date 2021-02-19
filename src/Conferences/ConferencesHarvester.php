@@ -71,7 +71,7 @@ class ConferencesHarvester
                     continue;
                 }
 
-                $matchedConference = $this->retrieveConferenceIfExists($conference);
+                $matchedConference = $this->conferenceRepository->findExistingConference($conference);
 
                 if ($matchedConference instanceof Conference) {
                     if ($this->updateExistingConference($matchedConference, $conference)) {
@@ -88,46 +88,6 @@ class ConferencesHarvester
 
         $this->logger->notice($newConferencesCount.' newly added conference(s)');
         $this->logger->notice($updatedConferencesCount.' updated conference(s)');
-    }
-
-    private function retrieveConferenceIfExists(Conference $conference): ?Conference
-    {
-        $currentConferenceName = preg_replace('/(20)[0-9][0-9]/', '', $conference->getName());
-
-        $matchedConference = null;
-        $shortest = -1;
-
-        foreach ($this->getExistingConferences() as $existingConference) {
-            $existingConferenceName = preg_replace('/(20)[0-9][0-9]/', '', $existingConference['name']);
-
-            $distance = levenshtein(strtolower($currentConferenceName), strtolower($existingConferenceName));
-
-            if (
-                0 === $distance
-                && $existingConference['startAt']->format('Y-m-d') === $conference->getStartAt()->format('Y-m-d')
-                && $existingConference['endAt']->format('Y-m-d') === $conference->getEndAt()->format('Y-m-d')
-            ) {
-                $matchedConference = $conference;
-                $shortest = $distance;
-                break;
-            }
-
-            if ($distance <= $shortest || $shortest < 0) {
-                if (
-                    $existingConference['startAt']->format('Y-m-d') === $conference->getStartAt()->format('Y-m-d')
-                    && $existingConference['endAt']->format('Y-m-d') === $conference->getEndAt()->format('Y-m-d')
-                ) {
-                    $matchedConference = $conference;
-                }
-                $shortest = $distance;
-            }
-        }
-
-        if ($shortest > 3) {
-            $matchedConference = null;
-        }
-
-        return $matchedConference;
     }
 
     private function updateExistingConference(Conference $existingConference, Conference $conference): bool

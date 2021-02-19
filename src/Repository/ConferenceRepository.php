@@ -101,6 +101,23 @@ class ConferenceRepository extends ServiceEntityRepository
         }
     }
 
+    public function findExistingConference(Conference $conference): ?Conference
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.startAt = :startAt')
+            ->andWhere('c.endAt = :endAt')
+            ->andWhere('levenshtein(c.name, :name) < 4')
+            ->setParameters([
+                'startAt' => $conference->getStartAt(),
+                'endAt' => $conference->getEndAt(),
+                'name' => $conference->getName(),
+            ])
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
+    }
+
     private function createAttendedQueryBuilder(): QueryBuilder
     {
         return $this->createQueryBuilder('c')
