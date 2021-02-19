@@ -33,8 +33,6 @@ class ConferencesHarvester
     private iterable $fetchers;
     /** @var array<ConferenceFilter> */
     private array $conferenceFilters;
-    /** @var array<Conference> */
-    private array $existingConferences;
 
     /** @param iterable<FetcherInterface> $fetchers */
     public function __construct(iterable $fetchers, FetcherConfigurationRepository $fetcherConfigurationRepository, ConferenceFilterRepository $conferenceFilterRepository, ConferenceRepository $conferenceRepository, EntityManagerInterface $em, ?LoggerInterface $logger = null)
@@ -94,6 +92,11 @@ class ConferencesHarvester
     {
         $updated = false;
 
+        if ($conference->getName() !== $existingConference->getName()) {
+            $existingConference->setName($conference->getName());
+            $updated = true;
+        }
+
         if ($conference->getDescription() !== $existingConference->getDescription()) {
             $existingConference->setDescription($conference->getDescription());
             $updated = true;
@@ -145,6 +148,11 @@ class ConferencesHarvester
             $updated = true;
         }
 
+        if ($conference->isOnline() !== $existingConference->isOnline()) {
+            $existingConference->setOnline($conference->isOnline());
+            $updated = true;
+        }
+
         return $updated;
     }
 
@@ -165,20 +173,6 @@ class ConferencesHarvester
     /** @return array<ConferenceFilter> */
     private function getFilters(): array
     {
-        if (!isset($this->conferenceFilters)) {
-            $this->conferenceFilters = $this->conferenceFilterRepository->findAll();
-        }
-
-        return $this->conferenceFilters;
-    }
-
-    /** @return array<Conference> */
-    private function getExistingConferences(): array
-    {
-        if (!isset($this->existingConferences)) {
-            $this->existingConferences = $this->conferenceRepository->getAllConferencesAsRow();
-        }
-
-        return $this->existingConferences;
+        return $this->conferenceFilters ??= $this->conferenceFilterRepository->findAll();
     }
 }
