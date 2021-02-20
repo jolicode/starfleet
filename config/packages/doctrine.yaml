@@ -25,3 +25,5 @@ doctrine:
                 dql:
                     string_functions:
                         CONTAINS: App\Doctrine\ORM\Query\AST\Functions\Contains
+                    numeric_functions:
+                        levenshtein: App\Doctrine\ORM\Query\AST\Functions\Levenshtein
