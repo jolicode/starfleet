@@ -75,16 +75,6 @@ class ConferenceRepository extends ServiceEntityRepository
             ;
     }
 
-    /** @return array<mixed> */
-    public function getAllConferencesAsRow(): array
-    {
-        return $this->createQueryBuilder('c')
-            ->select('c.name, c.startAt, c.endAt, c.excluded')
-            ->getQuery()
-            ->getArrayResult()
-            ;
-    }
-
     /** @return \Generator<Conference>|null */
     public function getNullCoordinatesConferences(): ?\Generator
     {
