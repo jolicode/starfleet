@@ -46,7 +46,13 @@ class SymfonyFetcher implements FetcherInterface
             $endDate = new \DateTime($conference['ends_at']['date']);
 
             if (new \DateTime('now') < $endDate) {
-                yield $this->denormalizeConference($conference);
+                $denormalizedConference = $this->denormalizeConference($conference);
+
+                if (!$denormalizedConference) {
+                    continue;
+                }
+
+                yield $denormalizedConference;
             }
         }
     }

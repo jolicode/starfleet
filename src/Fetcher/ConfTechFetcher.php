@@ -106,7 +106,13 @@ class ConfTechFetcher implements FetcherInterface
 
                 foreach ($conferences as $conference) {
                     if ($conference['startDate'] > date('Y-m-d')) {
-                        yield $this->denormalizeConference($conference, $tag);
+                        $denormalizedConference = $this->denormalizeConference($conference, $tag);
+
+                        if (!$denormalizedConference) {
+                            continue;
+                        }
+
+                        yield $denormalizedConference;
                     }
                 }
             }
