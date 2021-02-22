@@ -128,7 +128,13 @@ class JoindApiFetcher implements FetcherInterface
         }
 
         foreach ($this->queryJoindIn($url) as $conference) {
-            yield $this->denormalizeConference($conference);
+            $denormalizedConference = $this->denormalizeConference($conference);
+
+            if (!$denormalizedConference) {
+                continue;
+            }
+
+            yield $denormalizedConference;
         }
     }
 

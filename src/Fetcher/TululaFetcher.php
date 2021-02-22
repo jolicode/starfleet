@@ -144,7 +144,13 @@ class TululaFetcher implements FetcherInterface
 
             foreach ($conference['tags'] as $tag) {
                 if (\in_array($tag['name'], $configuration['tags'])) {
-                    yield $this->denormalizeConference($conference);
+                    $denormalizedConference = $this->denormalizeConference($conference);
+
+                    if (!$denormalizedConference) {
+                        continue;
+                    }
+
+                    yield $denormalizedConference;
                     break;
                 }
             }
