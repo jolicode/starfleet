@@ -49,7 +49,7 @@ class LocationGuesser
             return null;
         }
 
-        return $results->first()->getCountry()->getCode();
+        return strtoupper($results->first()->getCountry()->getCode());
     }
 
     /** @return array<float> */
