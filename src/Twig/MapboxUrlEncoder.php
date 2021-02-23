@@ -37,6 +37,12 @@ class MapboxUrlEncoder extends AbstractExtension
             return null;
         }
 
+        $zoom = 'auto';
+
+        if (1 === \count($coordinates)) {
+            $zoom = "{$coordinates[0][0]}, {$coordinates[0][1]}, 5";
+        }
+
         $apiConfig = [
             'type' => 'FeatureCollection',
             'features' => [
@@ -51,6 +57,6 @@ class MapboxUrlEncoder extends AbstractExtension
         $encodeApiConfig = urlencode(json_encode($apiConfig));
         $encodeApiToken = http_build_query(['access_token' => $this->apiToken]);
 
-        return sprintf('https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/geojson(%s)/auto/1000x600?%s', $encodeApiConfig, $encodeApiToken);
+        return sprintf('https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/geojson(%s)/%s/1000x600?%s', $encodeApiConfig, $zoom, $encodeApiToken);
     }
 }
