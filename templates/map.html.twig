@@ -1,6 +1,8 @@
 {% set url = mapboxEncode(conferenceCoordinates) %}
 
-{% if url == null %}
+{% if conferenceCoordinates|length == 0 %}
+    <div class="text-muted">You don't have any conference to show on the map. This may be because they are all online.</div>
+{% elseif url == null %}
     <div class="alert alert-warning">It seems you forgot to provide an access token to enable the map feature.</div>
 {% else %}
     <img src="{{ url }}" alt="Map of where we attended conferences" class="w-100 mw-100">

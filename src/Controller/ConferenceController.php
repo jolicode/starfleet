@@ -78,7 +78,7 @@ class ConferenceController extends AbstractController
             } else {
                 $liveConferences[] = $conference;
             }
-            if (!$conference->isOnline() && null !== $conference->getCoordinates()) {
+            if (!$conference->isOnline() && null !== $conference->getCoordinates() && !\in_array($conference->getCoordinates(), $conferenceCoordinates)) {
                 $conferenceCoordinates[] = $conference->getCoordinates();
             }
         }
