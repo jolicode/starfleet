@@ -66,7 +66,7 @@ services:
         arguments:
             - !tagged_locator { tag: 'app.fetcher' }
     
-    App\Fetcher\ConfTechFetcher:
+    App\Fetcher\ConfTechCloner:
         arguments:
             $projectDir: '%kernel.project_dir%'
 

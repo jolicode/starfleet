@@ -135,7 +135,7 @@ class TululaFetcher implements FetcherInterface
         foreach ($this->queryTulula() as $conference) {
             if (0 === \count($conference['tags'])) {
                 // Sometimes, an event will have no tags. If you want to fetch them anyway, you should set the `allowEmptyTags` option to true in the admin
-                if ($configuration['allowEmptyTags']) {
+                if (\array_key_exists('allowEmptyTags', $configuration) && $configuration['allowEmptyTags']) {
                     yield $this->denormalizeConference($conference);
                     continue;
                 }

@@ -94,7 +94,7 @@ class JoindApiFetcher implements FetcherInterface
     private HttpClientInterface $client;
     private LoggerInterface $logger;
 
-    public function __construct(LocationGuesser $locationGuesser, ?HttpClientInterface $client = null, ?LoggerInterface $logger)
+    public function __construct(LocationGuesser $locationGuesser, ?HttpClientInterface $client = null, ?LoggerInterface $logger = null)
     {
         $this->locationGuesser = $locationGuesser;
         $this->client = $client ?: HttpClient::create();
@@ -117,7 +117,7 @@ class JoindApiFetcher implements FetcherInterface
         $url = self::JOINDIN_URL;
 
         // Sometimes, an event will have no tags. If you want to fetch them anyway, you should set the `allowEmptyTags` option to true in the admin
-        if ($configuration['allowEmptyTags']) {
+        if (\array_key_exists('allowEmptyTags', $configuration) && $configuration['allowEmptyTags']) {
             foreach ($this->queryJoindIn($url.'&tags[]=') as $conference) {
                 yield $this->denormalizeConference($conference);
             }
@@ -158,7 +158,7 @@ class JoindApiFetcher implements FetcherInterface
     /** @param array<mixed> $rawConference */
     public function denormalizeConference(array $rawConference): ?Conference
     {
-        $city = str_ireplace('_', ' ', $rawConference['tz_place']);
+        $city = ucwords(str_ireplace('_', ' ', $rawConference['tz_place']));
         $continent = $this->locationGuesser->getContinent($city);
         $country = $this->locationGuesser->getCountry($city);
         $coords = $this->locationGuesser->getCoordinates($city);

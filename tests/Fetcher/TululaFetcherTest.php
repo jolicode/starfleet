@@ -50,7 +50,7 @@ class TululaFetcherTest extends KernelTestCase
 
     public function provideConferences(): \Generator
     {
-        yield [
+        yield 'Test normal Conference is correctly denormalized' => [
             [
                 'name' => 'normal PHP Tour',
                 'url' => 'https://php',
@@ -80,7 +80,7 @@ class TululaFetcherTest extends KernelTestCase
             ],
         ];
 
-        yield [
+        yield 'Test online Conference is correctly denormalized' => [
             [
                 'name' => 'Symfony World Online',
                 'url' => 'https://sfworld',
@@ -109,7 +109,7 @@ class TululaFetcherTest extends KernelTestCase
             ],
         ];
 
-        yield [
+        yield 'Test state field is used if city field is empty' => [
             [
                 'name' => 'Tulula provided city in the state field',
                 'url' => 'https://weirdo',
@@ -139,7 +139,7 @@ class TululaFetcherTest extends KernelTestCase
             ],
         ];
 
-        yield [
+        yield 'Test city is empty if no city is provided' => [
             [
                 'name' => 'Tulula didn\'t provide the city name at all',
                 'url' => 'https://wedontknow',
@@ -169,7 +169,7 @@ class TululaFetcherTest extends KernelTestCase
             ],
         ];
 
-        yield [
+        yield 'Test only Conferences selected tags are fetched' => [
             [
                 'name' => 'Conf with no selected tags',
                 'url' => 'https://not-interesting.com',
@@ -202,7 +202,7 @@ class TululaFetcherTest extends KernelTestCase
             ],
         ];
 
-        yield [
+        yield 'Test allowEmptyTags set to false works as intended' => [
             [
                 'name' => 'Conf with no tags and allowEmptyTags is false',
                 'url' => 'https://it-should-return-nothing.com',
@@ -229,7 +229,7 @@ class TululaFetcherTest extends KernelTestCase
             ],
         ];
 
-        yield [
+        yield 'Test allowEmptyTags set to true works as intended' => [
             [
                 'name' => 'Conf with no tags and allowEmptyTags is true',
                 'url' => 'https://it-should-return-the-conference.com',
@@ -256,16 +256,16 @@ class TululaFetcherTest extends KernelTestCase
             ],
         ];
 
-        yield [
+        yield 'Test not configured fetcher doesn\'t fetch anything' => [
             [
                 'name' => 'The fetcher doesn\'t have any config',
-                'url' => 'https://it-should-return-the-conference.com',
+                'url' => 'https://it-should-return-nothing.com',
                 'dateStart' => '2000-01-15',
                 'dateEnd' => '2000-01-17',
                 'cfpDateEnd' => '2000-01-01',
-                'cfpUrl' => '/it-fetches-everything',
+                'cfpUrl' => '/it-fetches-nothing',
                 'isOnline' => false,
-                'slug' => 'i-am-fetched',
+                'slug' => 'i-dont-exist',
                 'venue' => [
                     'countryCode' => 'fr',
                     'state' => '',
@@ -293,10 +293,7 @@ class TululaFetcherTest extends KernelTestCase
         $realTululaData = file_get_contents(\dirname(__DIR__).'/Fixtures/tulula.json');
         $response = new MockResponse($realTululaData);
         $result = $this
-            ->createFetcher($response, [
-                'expectedTags' => 'php',
-                'expectedCity' => 'n/a',
-            ])
+            ->createFetcher($response)
             ->fetch([
                 'tags' => [
                     'PHP',

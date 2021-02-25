@@ -65,8 +65,7 @@ class SymfonyFetcher implements FetcherInterface
     private function denormalizeConference(array $rawConference): ?Conference
     {
         if (!$rawConference['is_online']) {
-            $city = $rawConference['city'];
-            $continent = $this->locationGuesser->getContinent($city);
+            $continent = $this->locationGuesser->getContinent($rawConference['city']);
 
             if (!$continent instanceof Continent || !$continent->getEnabled()) {
                 return null;
@@ -81,6 +80,10 @@ class SymfonyFetcher implements FetcherInterface
         $conference->addTag('Symfony');
         $conference->addTag('PHP');
 
+        if (\array_key_exists('registration_url', $rawConference)) {
+            $conference->setCfpUrl($rawConference['registration_url']);
+        }
+
         if (\array_key_exists('starts_at', $rawConference)) {
             $startDate = new \DateTimeImmutable($rawConference['starts_at']['date']);
             $conference->setStartAt($startDate);
@@ -93,7 +96,7 @@ class SymfonyFetcher implements FetcherInterface
 
         if (\array_key_exists('cfp_starts_at', $rawConference) && $rawConference['cfp_starts_at']) {
             $cfpStartAt = new \DateTimeImmutable($rawConference['cfp_starts_at']['date']);
-            $conference->setCfpEndAt($cfpStartAt);
+            $conference->setStartAt($cfpStartAt);
         }
 
         if (\array_key_exists('cfp_ends_at', $rawConference) && $rawConference['cfp_ends_at']) {
@@ -107,6 +110,7 @@ class SymfonyFetcher implements FetcherInterface
         } else {
             $conference->setCity($rawConference['city']);
             $conference->setCountry($rawConference['country']);
+            $conference->setCoordinates($this->locationGuesser->getCoordinates($rawConference['city']));
         }
 
         return $conference;

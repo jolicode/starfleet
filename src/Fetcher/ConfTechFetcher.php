@@ -19,7 +19,6 @@ use Psr\Log\NullLogger;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Process\Process;
 
 class ConfTechFetcher implements FetcherInterface
 {
@@ -61,14 +60,14 @@ class ConfTechFetcher implements FetcherInterface
 
     private LocationGuesser $locationGuesser;
     private Filesystem $filesystem;
-    private string $projectDir;
+    private ConfTechCloner $confTechCloner;
     private LoggerInterface $logger;
 
-    public function __construct(LocationGuesser $locationGuesser, Filesystem $filesystem, string $projectDir, ?LoggerInterface $logger = null)
+    public function __construct(LocationGuesser $locationGuesser, Filesystem $filesystem, ConfTechCloner $confTechCloner, ?LoggerInterface $logger = null)
     {
         $this->locationGuesser = $locationGuesser;
         $this->filesystem = $filesystem;
-        $this->projectDir = $projectDir;
+        $this->confTechCloner = $confTechCloner;
         $this->logger = $logger ?: new NullLogger();
     }
 
@@ -85,19 +84,12 @@ class ConfTechFetcher implements FetcherInterface
             return;
         }
 
-        if ($this->filesystem->exists($conftechFile = $this->projectDir.'/var/tmp/conftech_data/conferences')) {
-            $process = new Process(['git', 'pull'], $conftechFile);
-        } else {
-            $this->filesystem->mkdir($this->projectDir.'/var/tmp');
-            $process = new Process(['git', 'clone', '--depth', '1', 'https://github.com/tech-conferences/conference-data/', 'conftech_data/'], $this->projectDir.'/var/tmp');
-        }
+        $now = $configuration['now'] ??= new \DateTime();
+        $conftechFile = $this->confTechCloner->clone();
 
-        $process->mustRun();
-
-        foreach ([date('Y'), date('Y', strtotime('+1 year'))] as $date) {
+        foreach ([$now->format('Y'), $now->format('Y') + 1] as $date) {
             foreach ($configuration['tags'] as $tag) {
                 $path = sprintf('%s/%s/%s.json', $conftechFile, $date, $tag);
-
                 if (!$this->filesystem->exists($path)) {
                     continue;
                 }
@@ -105,7 +97,7 @@ class ConfTechFetcher implements FetcherInterface
                 $conferences = json_decode(file_get_contents($path), true);
 
                 foreach ($conferences as $conference) {
-                    if ($conference['startDate'] > date('Y-m-d')) {
+                    if ($conference['startDate'] > $now->format('Y-m-d')) {
                         $denormalizedConference = $this->denormalizeConference($conference, $tag);
 
                         if (!$denormalizedConference) {

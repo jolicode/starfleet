@@ -1,0 +1,14 @@
+[
+  {
+    "name": "ConFoo",
+    "url": "https://confoo.ca/en/yul2021",
+    "startDate": "3021-02-24",
+    "endDate": "3021-02-26",
+    "city": "Montreal",
+    "country": "Canada",
+    "cfpUrl": "https://confoo.ca/en/yul2021/call-for-papers",
+    "cfpEndDate": "2020-10-16",
+    "twitter": "@confooca",
+    "cocUrl": "https://confoo.ca/en/code-of-conduct"
+  }
+]
