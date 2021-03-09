@@ -204,19 +204,21 @@ class AdminController extends EasyAdminController
 
     protected function persistTalkEntity(Talk $talk, Form $newForm): void
     {
-        $conference = $newForm->get('conference')->getData();
+        $conferences = $newForm->get('conference')->getData();
 
-        if ($conference instanceof Conference) {
-            $submit = new Submit();
-            $submit->setCreatedAt(new \DateTime());
-            $submit->setUpdatedAt(new \DateTime());
-            $submit->setSubmittedAt(new \DateTime());
-            $submit->setConference($conference);
-            $submit->setTalk($talk);
-            $submit->setStatus(Submit::STATUS_PENDING);
-            $submit->addUser($this->getUser());
+        foreach ($conferences as $conference) {
+            if ($conference instanceof Conference) {
+                $submit = new Submit();
+                $submit->setCreatedAt(new \DateTime());
+                $submit->setUpdatedAt(new \DateTime());
+                $submit->setSubmittedAt(new \DateTime());
+                $submit->setConference($conference);
+                $submit->setTalk($talk);
+                $submit->setStatus(Submit::STATUS_PENDING);
+                $submit->addUser($this->getUser());
 
-            $this->em->persist($submit);
+                $this->em->persist($submit);
+            }
         }
 
         $this->em->persist($talk);

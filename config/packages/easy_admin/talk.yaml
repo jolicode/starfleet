@@ -23,7 +23,7 @@ easy_admin:
                     2: { property: 'title', type: 'text' }
                     3: { property: 'intro', type: 'textarea' }
                     4: { type: 'group', columns: 6, icon: 'send', label: 'Publication' }
-                    5: { property: 'conference', type: 'easyadmin_autocomplete', type_options: { mapped: false, class: App\Entity\Conference } }
+                    5: { property: 'conference', type: 'easyadmin_autocomplete', type_options: { mapped: false, class: App\Entity\Conference, multiple: true } }
             edit:
                 fields:
                     <<: *talkFields
