@@ -41,7 +41,11 @@ class CfpEndingSoonEvent extends Event
     {
         $cfpAttachment = SlackNotifier::ATTACHMENT;
         $template = '🔊  CFP for %s (%s) is closing %s';
-        $conferenceLink = sprintf('<%s|%s>', $this->conference->getCfpUrl(), $this->conference->getName());
+        if (null !== $this->conference->getSiteUrl()) {
+            $conferenceLink = sprintf('<%s|%s>', $this->conference->getSiteUrl(), $this->conference->getName());
+        } else {
+            $conferenceLink = $this->conference->getName();
+        }
         $countdown = 'in *'.$this->remainingDays.' day'.($this->remainingDays > 1 ? 's' : '').'* !';
 
         switch ($this->remainingDays) {
@@ -72,10 +76,12 @@ class CfpEndingSoonEvent extends Event
             $cfpAttachment['fields'][] = $talksField;
         }
 
-        $actionsField = SlackNotifier::SHORT_FIELD;
-        $actionsField['title'] = 'Submit a talk';
-        $actionsField['value'] = sprintf('<%s|%s>', $this->conference->getCfpUrl(), 'Go to the CFP  👉');
-        $cfpAttachment['fields'][] = $actionsField;
+        if (null !== $this->conference->getCfpUrl()) {
+            $actionsField = SlackNotifier::SHORT_FIELD;
+            $actionsField['title'] = 'Submit a talk';
+            $actionsField['value'] = sprintf('<%s|%s>', $this->conference->getCfpUrl(), 'Go to the CFP  👉');
+            $cfpAttachment['fields'][] = $actionsField;
+        }
 
         return $cfpAttachment;
     }
