@@ -45,13 +45,13 @@ class ConferencesHarvester
         $this->logger = $logger ?: new NullLogger();
     }
 
-    public function harvest(): void
+    /** @return array<string,int> */
+    public function harvest(): array
     {
         $fetchersAmount = \count($this->fetchers);
         $currentFetcher = 0;
         $updatedConferencesCount = 0;
         $newConferencesCount = 0;
-
         foreach ($this->fetchers as $fetcher) {
             $this->logger->info(sprintf('Processing %d/%d fetchers : %s', ++$currentFetcher, $fetchersAmount, \get_class($fetcher)));
 
@@ -59,11 +59,10 @@ class ConferencesHarvester
             $fetcherConfiguration = $this->fetcherConfigurationRepository->findOneOrCreate($name);
 
             if (!$fetcherConfiguration->isActive()) {
-                return;
+                continue;
             }
 
             $config = $fetcherConfiguration->getConfiguration();
-
             foreach ($fetcher->fetch($config) as $conference) {
                 if ($this->shouldBeIgnored($conference)) {
                     continue;
@@ -86,6 +85,11 @@ class ConferencesHarvester
 
         $this->logger->notice($newConferencesCount.' newly added conference(s)');
         $this->logger->notice($updatedConferencesCount.' updated conference(s)');
+
+        return [
+            'newConferencesCount' => $newConferencesCount,
+            'updatedConferencesCount' => $updatedConferencesCount,
+        ];
     }
 
     private function updateExistingConference(Conference $existingConference, Conference $conference): bool
@@ -159,8 +163,8 @@ class ConferencesHarvester
     private function shouldBeIgnored(Conference $conference): bool
     {
         foreach ($this->getFilters() as $conferenceFilter) {
-            $filterName = $conferenceFilter->getName();
-            if (fnmatch($filterName, $conference->getName(), FNM_CASEFOLD) || \in_array($filterName, $conference->getTags())) {
+            $filterName = strtolower($conferenceFilter->getName());
+            if (false !== strpos(strtolower($conference->getName()), $filterName) || \in_array($filterName, array_map('strtolower', $conference->getTags()))) {
                 $conference->setExcluded(true);
 
                 return true;
