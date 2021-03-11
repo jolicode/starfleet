@@ -30,8 +30,8 @@ class TalkController extends EasyAdminController
 
     protected function persistTalkEntity(Talk $talk, Form $newForm): void
     {
-        $conferences = $newForm->get('conference')->getData();
-
+        $conferences = $newForm->get('conferences')->getData();
+        $authors = $newForm->get('authors')->getData();
         $newSubmits = [];
 
         foreach ($conferences as $conference) {
@@ -43,7 +43,10 @@ class TalkController extends EasyAdminController
                 $submit->setConference($conference);
                 $submit->setTalk($talk);
                 $submit->setStatus(Submit::STATUS_PENDING);
-                $submit->addUser($this->getUser());
+
+                foreach ($authors['authors'] as $author) {
+                    $submit->addUser($author);
+                }
 
                 $this->em->persist($submit);
                 $newSubmits[] = $submit;
