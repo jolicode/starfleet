@@ -14,11 +14,8 @@ namespace App\Controller\Admin;
 use AlterPHP\EasyAdminExtensionBundle\Controller\EasyAdminController;
 use App\Entity\Conference;
 use App\Entity\Participation;
-use App\Entity\Submit;
-use App\Entity\Talk;
 use App\Enum\Workflow\Transition\Participation as ParticipationTransition;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Workflow\Registry as WorkflowRegistry;
@@ -200,28 +197,5 @@ class AdminController extends EasyAdminController
             'action' => 'list',
             'entity' => $this->request->query->get('entity'),
         ]);
-    }
-
-    protected function persistTalkEntity(Talk $talk, Form $newForm): void
-    {
-        $conferences = $newForm->get('conference')->getData();
-
-        foreach ($conferences as $conference) {
-            if ($conference instanceof Conference) {
-                $submit = new Submit();
-                $submit->setCreatedAt(new \DateTime());
-                $submit->setUpdatedAt(new \DateTime());
-                $submit->setSubmittedAt(new \DateTime());
-                $submit->setConference($conference);
-                $submit->setTalk($talk);
-                $submit->setStatus(Submit::STATUS_PENDING);
-                $submit->addUser($this->getUser());
-
-                $this->em->persist($submit);
-            }
-        }
-
-        $this->em->persist($talk);
-        $this->em->flush();
     }
 }

@@ -15,7 +15,6 @@ use App\Entity\Conference;
 use App\Entity\Submit;
 use App\Event\NewConferenceEvent;
 use App\Event\NewConferencesEvent;
-use App\Event\NewTalkSubmittedEvent;
 use App\Event\SubmitStatusChangedEvent;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
@@ -62,10 +61,6 @@ class DoctrineEventSubscriber implements EventSubscriber
 
     public function postPersist(LifecycleEventArgs $args): void
     {
-        if ($args->getObject() instanceof Submit) {
-            $this->eventDispatcher->dispatch(new NewTalkSubmittedEvent($args->getObject()));
-        }
-
         if ($args->getObject() instanceof Conference) {
             $this->conferencesAdded[] = $args->getObject();
         }

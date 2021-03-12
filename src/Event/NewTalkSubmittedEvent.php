@@ -12,46 +12,44 @@
 namespace App\Event;
 
 use App\Entity\Submit;
+use App\Entity\Talk;
 use App\SlackNotifier;
 use Symfony\Contracts\EventDispatcher\Event;
 
 class NewTalkSubmittedEvent extends Event
 {
-    private $submit;
+    private Talk $talk;
+    /** @var array<Submit> */
+    private array $submits;
 
-    public function __construct(Submit $submit)
+    /** @param array<Submit> $submits */
+    public function __construct(Talk $talk, array $submits)
     {
-        $this->submit = $submit;
+        $this->talk = $talk;
+        $this->submits = $submits;
     }
 
-    public function getSubmit(): Submit
-    {
-        return $this->submit;
-    }
-
-    /** @return array<string,mixed> */
+    /** @return array<array> */
     public function buildAttachment(): array
     {
         $talkAttachment = SlackNotifier::ATTACHMENT;
         $talkAttachment['pretext'] = '🗣  *New submitted talk*';
-        $talkAttachment['title'] = $this->submit->getTalk()->getTitle();
-        $talkAttachment['text'] = $this->submit->getTalk()->getIntro();
+        $talkAttachment['title'] = $this->talk->getTitle();
+        $talkAttachment['text'] = $this->talk->getIntro();
 
-        $speakersField = SlackNotifier::LONG_FIELD;
-        $speakersField['title'] = \count($this->submit->getUsers()) > 1 ? 'Speakers' : 'Speaker';
-        $speakersField['value'] = $this->submit->reduceSpeakersNames();
-        $talkAttachment['fields'][] = $speakersField;
+        $submitsAttachment = SlackNotifier::ATTACHMENT;
+        $submitsAttachment['title'] = 'Submitted at : ';
 
-        $statusField = SlackNotifier::SHORT_FIELD;
-        $statusField['title'] = 'Status';
-        $statusField['value'] = Submit::STATUS_EMOJIS[$this->submit->getStatus()];
-        $talkAttachment['fields'][] = $statusField;
+        foreach ($this->submits as $submit) {
+            $conferenceField = SlackNotifier::LONG_FIELD;
+            $conference = '<'.$submit->getConference()->getSiteUrl().'|'.$submit->getConference()->getName().'>';
+            $status = Submit::STATUS_EMOJIS[$submit->getStatus()];
+            $author = $submit->reduceSpeakersNames();
 
-        $conferenceField = SlackNotifier::SHORT_FIELD;
-        $conferenceField['title'] = 'Conference';
-        $conferenceField['value'] = '<'.$this->submit->getConference()->getSiteUrl().'|'.$this->submit->getConference()->getName().'>';
-        $talkAttachment['fields'][] = $conferenceField;
+            $conferenceField['value'] = sprintf('%s (%s) by %s', $conference, $status, $author);
+            $submitsAttachment['fields'][] = $conferenceField;
+        }
 
-        return $talkAttachment;
+        return [$talkAttachment, $submitsAttachment];
     }
 }

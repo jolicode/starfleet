@@ -1,6 +1,7 @@
 easy_admin:
     entities:
         Talk:
+            controller: App\Controller\Admin\TalkController
             class: App\Entity\Talk
             list:
                 filters: ['title', 'intro', 'createdAt']

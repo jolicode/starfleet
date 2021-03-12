@@ -58,7 +58,7 @@ class SlackNotifierEventListener implements EventSubscriberInterface
         }
 
         $payload = SlackNotifier::EMPTY_PAYLOAD;
-        $payload['attachments'][] = $event->buildAttachment();
+        $payload['attachments'] = $event->buildAttachment();
         $this->slackNotifier->notify($payload);
     }
 
