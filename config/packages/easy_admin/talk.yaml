@@ -18,15 +18,19 @@ easy_admin:
                     - { property: 'createdAt' }
                     - { property: 'updatedAt' }
                     - { property: submits, label: 'Submissions', type: embedded_list, type_options: { entity: Submit, filters: { 'entity.talk': 'form:parent.data.id' } } }
-            new:
+
+            edit:
                 fields: &talkFields
                     1: { type: 'group', columns: 6, icon: 'pencil', label: 'Talk' }
                     2: { property: 'title', type: 'text' }
                     3: { property: 'intro', type: 'textarea' }
-                    4: { type: 'group', columns: 6, icon: 'send', label: 'Publication' }
-                    5: { property: 'conference', type: 'easyadmin_autocomplete', type_options: { mapped: false, class: App\Entity\Conference, multiple: true } }
-            edit:
-                fields:
-                    <<: *talkFields
                     4: { type: 'group', columns: 6, icon: 'send', label: 'Submits' }
                     5: { property: submits, type: collection, type_options: { entry_type: App\Form\TalkSubmitType } }
+
+            new:
+                fields:
+                    <<: *talkFields
+                    4: { type: 'group', columns: 6, icon: 'send', label: 'Publication' }
+                    5: { property: 'conferences', type: 'easyadmin_autocomplete', type_options: { mapped: false, class: App\Entity\Conference, multiple: true } }
+                    6: { property: authors, type: App\Form\TalkUserType, type_options: { mapped: false, required: true } }
+
