@@ -76,12 +76,10 @@ class CfpEndingSoonEvent extends Event
             $cfpAttachment['fields'][] = $talksField;
         }
 
-        if (null !== $this->conference->getCfpUrl()) {
-            $actionsField = SlackNotifier::SHORT_FIELD;
-            $actionsField['title'] = 'Submit a talk';
-            $actionsField['value'] = sprintf('<%s|%s>', $this->conference->getCfpUrl(), 'Go to the CFP  👉');
-            $cfpAttachment['fields'][] = $actionsField;
-        }
+        $actionsField = SlackNotifier::SHORT_FIELD;
+        $actionsField['title'] = 'Submit a talk';
+        $actionsField['value'] = sprintf('<%s|%s>', $this->conference->getCfpUrl(), 'Go to the CFP  👉');
+        $cfpAttachment['fields'][] = $actionsField;
 
         return $cfpAttachment;
     }
