@@ -35,3 +35,4 @@ security:
             - ROLE_USER
             - TALK_SHOW
             - PARTICIPATION_SHOW
+            - SUBMIT_EDIT
