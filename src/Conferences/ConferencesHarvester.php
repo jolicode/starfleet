@@ -13,6 +13,8 @@ namespace App\Conferences;
 
 use App\Entity\Conference;
 use App\Entity\ConferenceFilter;
+use App\Event\NewConferenceEvent;
+use App\Event\NewConferencesEvent;
 use App\Fetcher\FetcherInterface;
 use App\Repository\ConferenceFilterRepository;
 use App\Repository\ConferenceRepository;
@@ -20,6 +22,7 @@ use App\Repository\FetcherConfigurationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ConferencesHarvester
 {
@@ -27,6 +30,7 @@ class ConferencesHarvester
     private ConferenceFilterRepository $conferenceFilterRepository;
     private ConferenceRepository $conferenceRepository;
     private EntityManagerInterface $em;
+    private EventDispatcherInterface $eventDispatcher;
     private LoggerInterface $logger;
 
     /** @var iterable<FetcherInterface> */
@@ -35,13 +39,14 @@ class ConferencesHarvester
     private array $conferenceFilters;
 
     /** @param iterable<FetcherInterface> $fetchers */
-    public function __construct(iterable $fetchers, FetcherConfigurationRepository $fetcherConfigurationRepository, ConferenceFilterRepository $conferenceFilterRepository, ConferenceRepository $conferenceRepository, EntityManagerInterface $em, ?LoggerInterface $logger = null)
+    public function __construct(iterable $fetchers, FetcherConfigurationRepository $fetcherConfigurationRepository, ConferenceFilterRepository $conferenceFilterRepository, ConferenceRepository $conferenceRepository, EntityManagerInterface $em, EventDispatcherInterface $eventDispatcher, ?LoggerInterface $logger = null)
     {
         $this->fetchers = $fetchers;
         $this->fetcherConfigurationRepository = $fetcherConfigurationRepository;
         $this->conferenceFilterRepository = $conferenceFilterRepository;
         $this->conferenceRepository = $conferenceRepository;
         $this->em = $em;
+        $this->eventDispatcher = $eventDispatcher;
         $this->logger = $logger ?: new NullLogger();
     }
 
@@ -52,6 +57,8 @@ class ConferencesHarvester
         $currentFetcher = 0;
         $updatedConferencesCount = 0;
         $newConferencesCount = 0;
+        $fetchedConferences = [];
+
         foreach ($this->fetchers as $fetcher) {
             $this->logger->info(sprintf('Processing %d/%d fetchers : %s', ++$currentFetcher, $fetchersAmount, \get_class($fetcher)));
 
@@ -78,6 +85,8 @@ class ConferencesHarvester
                     $this->em->persist($conference);
                     ++$newConferencesCount;
                 }
+
+                $fetchedConferences[] = $conference;
             }
 
             $this->em->flush();
@@ -85,6 +94,12 @@ class ConferencesHarvester
 
         $this->logger->notice($newConferencesCount.' newly added conference(s)');
         $this->logger->notice($updatedConferencesCount.' updated conference(s)');
+
+        if (1 === \count($fetchedConferences)) {
+            $this->eventDispatcher->dispatch(new NewConferenceEvent($fetchedConferences[0]));
+        } elseif (1 < \count($fetchedConferences)) {
+            $this->eventDispatcher->dispatch(new NewConferencesEvent($fetchedConferences));
+        }
 
         return [
             'newConferencesCount' => $newConferencesCount,

@@ -19,15 +19,18 @@ use App\Event\NewTalkSubmittedEvent;
 use App\Event\SubmitStatusChangedEvent;
 use App\SlackNotifier;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Routing\RouterInterface;
 
 class SlackNotifierEventListener implements EventSubscriberInterface
 {
     private SlackNotifier $slackNotifier;
+    private RouterInterface $router;
     private bool $disabled;
 
-    public function __construct(SlackNotifier $slackNotifier)
+    public function __construct(SlackNotifier $slackNotifier, RouterInterface $router)
     {
         $this->slackNotifier = $slackNotifier;
+        $this->router = $router;
         $this->disabled = false;
     }
 
@@ -69,7 +72,7 @@ class SlackNotifierEventListener implements EventSubscriberInterface
         }
 
         $payload = SlackNotifier::EMPTY_PAYLOAD;
-        $payload['attachments'][] = $event->buildAttachment();
+        $payload['attachments'][] = $event->buildAttachment($this->router);
         $this->slackNotifier->notify($payload);
     }
 
@@ -84,7 +87,7 @@ class SlackNotifierEventListener implements EventSubscriberInterface
         $conferenceAttachment['pretext'] = '✨  '.\count($newConferences).' nouvelles conférences ajoutées';
 
         foreach ($newConferences as $newConference) {
-            $conferenceField = $event->buildAttachmentField($newConference);
+            $conferenceField = $event->buildAttachmentField($newConference, $this->router);
             $conferenceAttachment['fields'][] = $conferenceField;
         }
 
@@ -98,7 +101,9 @@ class SlackNotifierEventListener implements EventSubscriberInterface
             return;
         }
 
-        if (Submit::STATUS_PENDING === $event->getSubmit()->getStatus()) {
+        $status = $event->getSubmit()->getStatus();
+
+        if (Submit::STATUS_PENDING === $status || Submit::STATUS_DONE === $status) {
             return;
         }
 

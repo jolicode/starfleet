@@ -21,13 +21,11 @@ class NewConferencesEvent extends Event
 {
     /** @var array<Conference> */
     private array $newConferences;
-    private RouterInterface $router;
 
     /** @param array<Conference> $newConferences */
-    public function __construct(array $newConferences, RouterInterface $router)
+    public function __construct(array $newConferences)
     {
         $this->newConferences = $newConferences;
-        $this->router = $router;
     }
 
     /** @return array<Conference> */
@@ -37,7 +35,7 @@ class NewConferencesEvent extends Event
     }
 
     /** @return array<string,mixed> */
-    public function buildAttachmentField(Conference $conference): array
+    public function buildAttachmentField(Conference $conference, RouterInterface $router): array
     {
         $conferenceField = SlackNotifier::SHORT_FIELD;
         $conferenceField['short'] = false;
@@ -52,7 +50,7 @@ class NewConferencesEvent extends Event
             }
         }
 
-        $starfleetLink = $this->router->generate('conferences_show', [
+        $starfleetLink = $router->generate('conferences_show', [
             'slug' => $conference->getSlug(),
         ], UrlGeneratorInterface::ABSOLUTE_URL);
         $conferenceField['value'] = '<'.$starfleetLink.'|'.$conference->getName().'>';

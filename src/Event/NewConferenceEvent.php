@@ -20,12 +20,10 @@ use Symfony\Contracts\EventDispatcher\Event;
 class NewConferenceEvent extends Event
 {
     private $conference;
-    private $router;
 
-    public function __construct(Conference $conference, RouterInterface $router)
+    public function __construct(Conference $conference)
     {
         $this->conference = $conference;
-        $this->router = $router;
     }
 
     public function getConference(): Conference
@@ -34,7 +32,7 @@ class NewConferenceEvent extends Event
     }
 
     /** @return array<string,mixed> */
-    public function buildAttachment(): array
+    public function buildAttachment(RouterInterface $router): array
     {
         $conferenceAttachment = SlackNotifier::ATTACHMENT;
         $conferenceAttachment['pretext'] = '✨  *New conference added*';
@@ -87,7 +85,7 @@ class NewConferenceEvent extends Event
         if ($this->conference->getParticipations()->count() > 0) {
             $starfleetLinkField = SlackNotifier::SHORT_FIELD;
             $starfleetLinkField['title'] = 'Starfleet link  🚀';
-            $starfleetLinkField['value'] = $this->router->generate('conferences_show', [
+            $starfleetLinkField['value'] = $router->generate('conferences_show', [
                 'slug' => $this->conference->getSlug(),
             ], UrlGeneratorInterface::ABSOLUTE_URL);
             $conferenceAttachment['fields'][] = $starfleetLinkField;
