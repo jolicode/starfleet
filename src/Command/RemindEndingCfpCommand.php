@@ -48,7 +48,7 @@ class RemindEndingCfpCommand extends Command
         foreach ($conferences as $conference) {
             $remainingDays = (int) ($conference->getCfpEndAt()->diff($today)->format('%a'));
 
-            if (\in_array($remainingDays, self::REMAINING_DAYS_STEPS, true)) {
+            if (\in_array($remainingDays, self::REMAINING_DAYS_STEPS, true) && null !== $conference->getCfpUrl()) {
                 $this->eventDispatcher->dispatch(new CfpEndingSoonEvent($conference, $remainingDays));
             }
         }
