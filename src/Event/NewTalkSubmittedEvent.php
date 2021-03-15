@@ -37,19 +37,23 @@ class NewTalkSubmittedEvent extends Event
         $talkAttachment['title'] = $this->talk->getTitle();
         $talkAttachment['text'] = $this->talk->getIntro();
 
-        $submitsAttachment = SlackNotifier::ATTACHMENT;
-        $submitsAttachment['title'] = 'Submitted at : ';
+        if (0 < \count($this->submits)) {
+            $submitsAttachment = SlackNotifier::ATTACHMENT;
+            $submitsAttachment['title'] = 'Submitted at : ';
 
-        foreach ($this->submits as $submit) {
-            $conferenceField = SlackNotifier::LONG_FIELD;
-            $conference = '<'.$submit->getConference()->getSiteUrl().'|'.$submit->getConference()->getName().'>';
-            $status = Submit::STATUS_EMOJIS[$submit->getStatus()];
-            $author = $submit->reduceSpeakersNames();
+            foreach ($this->submits as $submit) {
+                $conferenceField = SlackNotifier::LONG_FIELD;
+                $conference = '<'.$submit->getConference()->getSiteUrl().'|'.$submit->getConference()->getName().'>';
+                $status = Submit::STATUS_EMOJIS[$submit->getStatus()];
+                $author = $submit->reduceSpeakersNames();
 
-            $conferenceField['value'] = sprintf('%s (%s) by %s', $conference, $status, $author);
-            $submitsAttachment['fields'][] = $conferenceField;
+                $conferenceField['value'] = sprintf('%s (%s) by %s', $conference, $status, $author);
+                $submitsAttachment['fields'][] = $conferenceField;
+            }
+
+            return [$talkAttachment, $submitsAttachment];
         }
 
-        return [$talkAttachment, $submitsAttachment];
+        return [$talkAttachment];
     }
 }
