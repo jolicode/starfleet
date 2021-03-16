@@ -26,11 +26,6 @@ services:
         resource: '../src/Controller/'
         tags: ['controller.service_arguments']
 
-    App\EventListener\DoctrineEventSubscriber:
-        arguments:
-            $router: '@router'
-        tags: ['doctrine.event_subscriber']
-
     App\SlackNotifier:
         arguments:
             $webHookUrl: '%env(SLACK_WEB_HOOK_URL)%'

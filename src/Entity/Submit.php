@@ -78,6 +78,8 @@ class Submit
      */
     private ?Talk $talk = null;
 
+    private bool $statusChanged = false;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
@@ -100,14 +102,15 @@ class Submit
         return $this->submittedAt;
     }
 
-    public function setStatus(?string $status): self
+    public function setStatus(string $status): self
     {
         $this->status = $status;
+        $this->statusChanged = true;
 
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): string
     {
         return $this->status;
     }
@@ -170,5 +173,15 @@ class Submit
         return array_reduce($this->getUsers()->toArray(), function ($r, User $u) {
             return '' === $r ? $u->getName() : $r.', '.$u->getName();
         }, '');
+    }
+
+    public function getStatusChanged(): bool
+    {
+        return $this->statusChanged;
+    }
+
+    public function resetStatusChanged(): void
+    {
+        $this->statusChanged = false;
     }
 }

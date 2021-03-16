@@ -15,6 +15,8 @@ use App\Conferences\ConferencesHarvester;
 use App\Entity\Conference;
 use App\Entity\ConferenceFilter;
 use App\Entity\FetcherConfiguration;
+use App\Event\NewConferenceEvent;
+use App\Event\NewConferencesEvent;
 use App\Fetcher\TululaFetcher;
 use App\Repository\ConferenceFilterRepository;
 use App\Repository\ConferenceRepository;
@@ -22,6 +24,7 @@ use App\Repository\FetcherConfigurationRepository;
 use Doctrine\ORM\EntityManager;
 use Prophecy\Argument;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ConferenceHarvesterTest extends KernelTestCase
 {
@@ -119,12 +122,19 @@ class ConferenceHarvesterTest extends KernelTestCase
         $entityManager
             ->flush();
 
+        $eventDispatcher = $this->prophesize(EventDispatcherInterface::class);
+        $eventDispatcher
+            ->dispatch(Argument::type(NewConferenceEvent::class));
+        $eventDispatcher
+            ->dispatch(Argument::type(NewConferencesEvent::class));
+
         $harvester = new ConferencesHarvester(
             [$fetcherProphecy->reveal()],
             $fetcherConfigurationRepository->reveal(),
             $conferenceFilterRepository->reveal(),
             $conferenceRepository->reveal(),
-            $entityManager->reveal()
+            $entityManager->reveal(),
+            $eventDispatcher->reveal()
         );
 
         return $harvester;
