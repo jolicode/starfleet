@@ -14,6 +14,7 @@ easy_admin:
             - { entity: 'ConferenceFilter', label: 'Ignored Subjects', icon: 'times' }
             - { entity: 'User', label: 'Users', icon: 'users' }
             - { entity: 'Continent', label: 'Continents', icon: 'globe' }
+            - { entity: 'Submit', label: 'Submitted Talks', icon: 'check-circle' }
             - { label: 'Fetchers', route: 'fetcher_list', icon: 'bell' }
         assets:
             css:
