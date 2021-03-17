@@ -64,17 +64,6 @@ class ConferenceRepository extends ServiceEntityRepository
             ;
     }
 
-    public function findOneAttended(string $slug): ?Conference
-    {
-        return $this->createAttendedQueryBuilder()
-            ->andWhere('c.slug = :slug')
-            ->setParameter('slug', $slug)
-            ->setMaxResults(1)
-            ->getQuery()
-            ->getOneOrNullResult()
-            ;
-    }
-
     /** @return \Generator<Conference>|null */
     public function getNullCoordinatesConferences(): ?\Generator
     {

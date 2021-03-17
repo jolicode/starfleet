@@ -48,14 +48,8 @@ class ConferenceController extends AbstractController
     /**
      * @Route("/conferences/{slug}", name="conferences_show")
      */
-    public function showAction(string $slug, ConferenceRepository $conferenceRepository): Response
+    public function showAction(Conference $conference, ConferenceRepository $conferenceRepository): Response
     {
-        $conference = $conferenceRepository->findOneAttended($slug);
-
-        if (!$conference) {
-            throw $this->createNotFoundException("Conference with slug '$slug' not found.");
-        }
-
         return $this->render('conferences/show.html.twig', [
             'conference' => $conference,
         ]);
