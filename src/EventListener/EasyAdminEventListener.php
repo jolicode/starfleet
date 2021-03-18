@@ -41,7 +41,7 @@ class EasyAdminEventListener implements EventSubscriberInterface
     {
         $entity = $event->getSubject();
         if ($entity instanceof Submit) {
-            if ($entity->getStatusChanged()) {
+            if ($entity->hasStatusChanged()) {
                 $this->eventDispatcher->dispatch(new SubmitStatusChangedEvent($entity));
                 $entity->resetStatusChanged();
             }

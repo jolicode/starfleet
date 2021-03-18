@@ -175,7 +175,7 @@ class Submit
         }, '');
     }
 
-    public function getStatusChanged(): bool
+    public function hasStatusChanged(): bool
     {
         return $this->statusChanged;
     }
