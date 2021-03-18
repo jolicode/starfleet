@@ -13,24 +13,20 @@ namespace App\EventListener;
 
 use App\Entity\Submit;
 use App\Event\CfpEndingSoonEvent;
-use App\Event\NewConferenceEvent;
 use App\Event\NewConferencesEvent;
 use App\Event\NewTalkSubmittedEvent;
 use App\Event\SubmitStatusChangedEvent;
 use App\SlackNotifier;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Routing\RouterInterface;
 
 class SlackNotifierEventListener implements EventSubscriberInterface
 {
     private SlackNotifier $slackNotifier;
-    private RouterInterface $router;
     private bool $disabled;
 
-    public function __construct(SlackNotifier $slackNotifier, RouterInterface $router)
+    public function __construct(SlackNotifier $slackNotifier)
     {
         $this->slackNotifier = $slackNotifier;
-        $this->router = $router;
         $this->disabled = false;
     }
 
@@ -47,7 +43,6 @@ class SlackNotifierEventListener implements EventSubscriberInterface
     {
         return [
             NewTalkSubmittedEvent::class => 'onNewTalkSubmitted',
-            NewConferenceEvent::class => 'onNewConferenceAdded',
             NewConferencesEvent::class => 'onNewConferencesAdded',
             SubmitStatusChangedEvent::class => 'onSubmitStatusChanged',
             CfpEndingSoonEvent::class => 'onCfpEndingSoon',
@@ -60,20 +55,7 @@ class SlackNotifierEventListener implements EventSubscriberInterface
             return;
         }
 
-        $payload = SlackNotifier::EMPTY_PAYLOAD;
-        $payload['attachments'] = $event->buildAttachment();
-        $this->slackNotifier->notify($payload);
-    }
-
-    public function onNewConferenceAdded(NewConferenceEvent $event): void
-    {
-        if ($this->disabled) {
-            return;
-        }
-
-        $payload = SlackNotifier::EMPTY_PAYLOAD;
-        $payload['attachments'][] = $event->buildAttachment($this->router);
-        $this->slackNotifier->notify($payload);
+        $this->slackNotifier->sendNewTalkSubmittedNotification($event->getSubmits(), $event->getTalk());
     }
 
     public function onNewConferencesAdded(NewConferencesEvent $event): void
@@ -81,18 +63,8 @@ class SlackNotifierEventListener implements EventSubscriberInterface
         if ($this->disabled) {
             return;
         }
-        $payload = SlackNotifier::EMPTY_PAYLOAD;
-        $newConferences = $event->getNewConferences();
-        $conferenceAttachment = SlackNotifier::ATTACHMENT;
-        $conferenceAttachment['pretext'] = '✨  '.\count($newConferences).' nouvelles conférences ajoutées';
 
-        foreach ($newConferences as $newConference) {
-            $conferenceField = $event->buildAttachmentField($newConference, $this->router);
-            $conferenceAttachment['fields'][] = $conferenceField;
-        }
-
-        $payload['attachments'][] = $conferenceAttachment;
-        $this->slackNotifier->notify($payload);
+        $this->slackNotifier->sendNewConferencesNotification($event->getNewConferences());
     }
 
     public function onSubmitStatusChanged(SubmitStatusChangedEvent $event): void
@@ -107,9 +79,7 @@ class SlackNotifierEventListener implements EventSubscriberInterface
             return;
         }
 
-        $payload = SlackNotifier::EMPTY_PAYLOAD;
-        $payload['attachments'][] = $event->buildAttachment();
-        $this->slackNotifier->notify($payload);
+        $this->slackNotifier->sendSubmitStatusChangedNotification($event->getSubmit());
     }
 
     public function onCfpEndingSoon(CfpEndingSoonEvent $event): void
@@ -118,8 +88,6 @@ class SlackNotifierEventListener implements EventSubscriberInterface
             return;
         }
 
-        $payload = SlackNotifier::EMPTY_PAYLOAD;
-        $payload['attachments'][] = $event->buildAttachment();
-        $this->slackNotifier->notify($payload);
+        $this->slackNotifier->sendCfPEndingSoonNotification($event->getConference(), $event->getRemainingDays());
     }
 }

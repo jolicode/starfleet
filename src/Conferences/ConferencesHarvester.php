@@ -13,7 +13,6 @@ namespace App\Conferences;
 
 use App\Entity\Conference;
 use App\Entity\ConferenceFilter;
-use App\Event\NewConferenceEvent;
 use App\Event\NewConferencesEvent;
 use App\Fetcher\FetcherInterface;
 use App\Repository\ConferenceFilterRepository;
@@ -95,9 +94,7 @@ class ConferencesHarvester
         $this->logger->notice($newConferencesCount.' newly added conference(s)');
         $this->logger->notice($updatedConferencesCount.' updated conference(s)');
 
-        if (1 === \count($fetchedConferences)) {
-            $this->eventDispatcher->dispatch(new NewConferenceEvent($fetchedConferences[0]));
-        } elseif (1 < \count($fetchedConferences)) {
+        if (0 !== \count($fetchedConferences)) {
             $this->eventDispatcher->dispatch(new NewConferencesEvent($fetchedConferences));
         }
 

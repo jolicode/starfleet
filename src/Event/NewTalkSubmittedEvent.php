@@ -13,7 +13,6 @@ namespace App\Event;
 
 use App\Entity\Submit;
 use App\Entity\Talk;
-use App\SlackNotifier;
 use Symfony\Contracts\EventDispatcher\Event;
 
 class NewTalkSubmittedEvent extends Event
@@ -29,31 +28,14 @@ class NewTalkSubmittedEvent extends Event
         $this->submits = $submits;
     }
 
-    /** @return array<array> */
-    public function buildAttachment(): array
+    public function getTalk(): Talk
     {
-        $talkAttachment = SlackNotifier::ATTACHMENT;
-        $talkAttachment['pretext'] = '🗣  *New submitted talk*';
-        $talkAttachment['title'] = $this->talk->getTitle();
-        $talkAttachment['text'] = $this->talk->getIntro();
+        return $this->talk;
+    }
 
-        if (0 < \count($this->submits)) {
-            $submitsAttachment = SlackNotifier::ATTACHMENT;
-            $submitsAttachment['title'] = 'Submitted at : ';
-
-            foreach ($this->submits as $submit) {
-                $conferenceField = SlackNotifier::LONG_FIELD;
-                $conference = '<'.$submit->getConference()->getSiteUrl().'|'.$submit->getConference()->getName().'>';
-                $status = Submit::STATUS_EMOJIS[$submit->getStatus()];
-                $author = $submit->reduceSpeakersNames();
-
-                $conferenceField['value'] = sprintf('%s (%s) by %s', $conference, $status, $author);
-                $submitsAttachment['fields'][] = $conferenceField;
-            }
-
-            return [$talkAttachment, $submitsAttachment];
-        }
-
-        return [$talkAttachment];
+    /** @return array<Submit> */
+    public function getSubmits(): array
+    {
+        return $this->submits;
     }
 }
