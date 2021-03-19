@@ -17,7 +17,6 @@ easy_admin:
                     - { property: 'status', template: 'easy_admin/Submit/status.html.twig' }
                     - { property: 'users', type: 'array', label: 'Speakers' }
             form:
-                item_permission: SUBMIT_EDIT
                 fields:
                     - { type: 'group', columns: 6, icon: 'pencil', label: 'Submit' }
                     -   property: 'talk'
