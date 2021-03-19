@@ -83,9 +83,8 @@ class ConferencesHarvester
                 } else {
                     $this->em->persist($conference);
                     ++$newConferencesCount;
+                    $fetchedConferences[] = $conference;
                 }
-
-                $fetchedConferences[] = $conference;
             }
 
             $this->em->flush();

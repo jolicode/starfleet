@@ -87,6 +87,8 @@ class SymfonyFetcher implements FetcherInterface
         if (\array_key_exists('starts_at', $rawConference)) {
             $startDate = new \DateTimeImmutable($rawConference['starts_at']['date']);
             $conference->setStartAt($startDate);
+            $name = trim(str_replace($startDate->format('Y'), '', $rawConference['name']));
+            $conference->setName($name);
         }
 
         if (\array_key_exists('ends_at', $rawConference) && $rawConference['ends_at']) {
