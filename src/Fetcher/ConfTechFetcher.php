@@ -142,8 +142,9 @@ class ConfTechFetcher implements FetcherInterface
         $conference = new Conference();
         $conference->setSource(self::SOURCE);
         $conference->setSlug($slug);
-        $conference->setName($rawConference['name']);
         $conference->setStartAt($startDate);
+        $name = trim(str_replace($startDate->format('Y'), '', $rawConference['name']));
+        $conference->setName($name);
         $conference->setSiteUrl($rawConference['url']);
         $conference->setOnline($online);
         $conference->addTag($tag);

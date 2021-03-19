@@ -197,8 +197,9 @@ class TululaFetcher implements FetcherInterface
         $conference = new Conference();
         $conference->setSource(self::SOURCE);
         $conference->setSlug($rawConference['slug']);
-        $conference->setName($rawConference['name']);
         $conference->setStartAt($startDate);
+        $name = trim(str_replace($startDate->format('Y'), '', $rawConference['name']));
+        $conference->setName($name);
         $conference->setEndAt($endDate);
         $conference->setCfpEndAt($cfpEndDate);
         $conference->setSiteUrl($rawConference['url']);
