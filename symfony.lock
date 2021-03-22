@@ -295,6 +295,18 @@
     "php-translation/symfony-storage": {
         "version": "2.2.0"
     },
+    "phpdocumentor/reflection-common": {
+        "version": "2.2.0"
+    },
+    "phpdocumentor/reflection-docblock": {
+        "version": "5.2.2"
+    },
+    "phpdocumentor/type-resolver": {
+        "version": "1.4.0"
+    },
+    "phpspec/prophecy": {
+        "version": "1.13.0"
+    },
     "phpstan/phpdoc-parser": {
         "version": "0.4.9"
     },
@@ -340,8 +352,17 @@
     "sameer-shelavale/php-countries-array": {
         "version": "v1.0.5"
     },
+    "sebastian/comparator": {
+        "version": "4.0.6"
+    },
     "sebastian/diff": {
         "version": "4.0.3"
+    },
+    "sebastian/exporter": {
+        "version": "4.0.3"
+    },
+    "sebastian/recursion-context": {
+        "version": "4.0.4"
     },
     "seld/jsonlint": {
         "version": "1.8.2"
@@ -385,9 +406,6 @@
     "symfony/cache": {
         "version": "v5.2.0"
     },
-    "symfony/cache-contracts": {
-        "version": "v2.2.0"
-    },
     "symfony/config": {
         "version": "v5.2.0"
     },
@@ -427,9 +445,6 @@
     "symfony/dependency-injection": {
         "version": "v5.2.0"
     },
-    "symfony/deprecation-contracts": {
-        "version": "v2.2.0"
-    },
     "symfony/doctrine-bridge": {
         "version": "v5.2.0"
     },
@@ -444,9 +459,6 @@
     },
     "symfony/event-dispatcher": {
         "version": "v5.2.0"
-    },
-    "symfony/event-dispatcher-contracts": {
-        "version": "v2.2.0"
     },
     "symfony/expression-language": {
         "version": "v5.2.0"
@@ -494,9 +506,6 @@
     },
     "symfony/http-client": {
         "version": "v5.2.0"
-    },
-    "symfony/http-client-contracts": {
-        "version": "v2.3.1"
     },
     "symfony/http-foundation": {
         "version": "v5.2.0"
@@ -638,9 +647,6 @@
     "symfony/serializer": {
         "version": "v5.2.0"
     },
-    "symfony/service-contracts": {
-        "version": "v2.2.0"
-    },
     "symfony/stopwatch": {
         "version": "v5.2.0"
     },
@@ -676,9 +682,6 @@
             "config/packages/translation.yaml",
             "translations/.gitignore"
         ]
-    },
-    "symfony/translation-contracts": {
-        "version": "v2.3.0"
     },
     "symfony/twig-bridge": {
         "version": "v5.2.0"

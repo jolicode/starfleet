@@ -6,7 +6,7 @@ RUN apt-get update \
         gnupg \
         wget \
     && echo "deb https://packages.sury.org/php buster main" > /etc/apt/sources.list.d/sury.list \
-    && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B188E2B695BD4743
+    && apt-key adv --fetch-keys https://packages.sury.org/php/apt.gpg
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
@@ -14,7 +14,7 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
-ARG PHP_VERSION=7.4
+ARG PHP_VERSION=8.0
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         php${PHP_VERSION}-apcu \
@@ -37,7 +37,7 @@ RUN wget -q -O - https://packages.blackfire.io/gpg.key | apt-key add - \
     && apt install blackfire-php \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/* \
-    && sed -i "s#^blackfire.agent_socket.*#blackfire.agent_socket=tcp://blackfire:8707#" /etc/php/7.4/mods-available/blackfire.ini
+    && sed -i "s#^blackfire.agent_socket.*#blackfire.agent_socket=tcp://blackfire:8707#" /etc/php/8.0/mods-available/blackfire.ini
 
 # Fake user to maps with the one on the host
 ARG USER_ID

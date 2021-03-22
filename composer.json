@@ -9,8 +9,26 @@
             "email": "coucou@jolicode.com"
         }
     ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/HedicGuibert/symfony-bundle"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/HedicGuibert/extractor"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/HedicGuibert/common"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/HedicGuibert/symfony-storage"
+        }
+    ],
     "require": {
-        "php": "^7.3",
+        "php": "^8.0",
         "ext-json": "*",
         "alterphp/easyadmin-extension-bundle": "^3.0",
         "doctrine/doctrine-bundle": "^1.6.10|^2.0",
@@ -18,21 +36,25 @@
         "doctrine/orm": "^2.5.11",
         "easycorp/easy-log-handler": "^1.0.7",
         "easycorp/easyadmin-bundle": "^2.3",
-        "fzaninotto/faker": "^1.9",
+        "fzaninotto/faker": "dev-master",
         "geocoder-php/nominatim-provider": "^5.1",
-        "knpuniversity/oauth2-client-bundle": "^1.15",
+        "knpuniversity/oauth2-client-bundle": "^2.6.0",
         "league/oauth2-github": "^2.0",
         "league/oauth2-google": "^3.0",
         "myclabs/php-enum": "^1.6",
         "php-http/guzzle6-adapter": "^2.0",
         "php-http/message": "^1.8",
-        "php-translation/symfony-bundle": "^0.12",
+        "php-translation/common": "dev-support-php8 as 3.0.1",
+        "php-translation/extractor": "dev-support-php8 as 2.0.2",
+        "php-translation/symfony-bundle": "dev-support-php8",
+        "php-translation/symfony-storage": "dev-support-php8 as 2.2.0",
+        "phpspec/prophecy": "^1.13.0",
         "sameer-shelavale/php-countries-array": "^1.0",
-        "sensio/framework-extra-bundle": "^5.2",
+        "sensio/framework-extra-bundle": "^6.1.1",
         "stof/doctrine-extensions-bundle": "^1.3",
         "symfony/asset": "^5.2",
         "symfony/console": "^5.2",
-        "symfony/contracts": "^1.1",
+        "symfony/contracts": "^2.3.1",
         "symfony/debug-bundle": "^5.2",
         "symfony/dependency-injection": "^5.2",
         "symfony/dotenv": "^5.2",
