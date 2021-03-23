@@ -8,7 +8,7 @@ jobs:
             - checkout
             - run:
                   name: Install PHP CS Fixer
-                  command: wget https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/v2.16.3/php-cs-fixer.phar -O php-cs-fixer
+                  command: wget https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/v2.18.4/php-cs-fixer.phar -O php-cs-fixer
             - run:
                   name: Check PHP CS
                   command: php php-cs-fixer fix --dry-run --allow-risky yes --diff --config=.php_cs

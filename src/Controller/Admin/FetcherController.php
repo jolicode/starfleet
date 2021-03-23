@@ -82,7 +82,8 @@ class FetcherController extends AbstractController
                 'required' => false,
             ])
             ->add($configurationBuilder)
-            ->getForm();
+            ->getForm()
+        ;
 
         if ($form->handleRequest($request)->isSubmitted() && $form->isValid()) {
             $this->em->persist($fetcherConfiguration);

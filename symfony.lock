@@ -140,12 +140,12 @@
         "version": "2.1.24"
     },
     "friendsofphp/php-cs-fixer": {
-        "version": "2.2",
+        "version": "2.17",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
-            "version": "2.2",
-            "ref": "cc05ab6abf6894bddb9bbd6a252459010ebe040b"
+            "version": "2.17",
+            "ref": "f0d4b4ddb4e2bb73b227e3987b6ecc53cd8be431"
         },
         "files": [
             ".php_cs.dist"
