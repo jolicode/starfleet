@@ -25,27 +25,21 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ConferencesHarvester
 {
-    private FetcherConfigurationRepository $fetcherConfigurationRepository;
-    private ConferenceFilterRepository $conferenceFilterRepository;
-    private ConferenceRepository $conferenceRepository;
-    private EntityManagerInterface $em;
-    private EventDispatcherInterface $eventDispatcher;
     private LoggerInterface $logger;
 
-    /** @var iterable<FetcherInterface> */
-    private iterable $fetchers;
     /** @var array<ConferenceFilter> */
     private array $conferenceFilters;
 
     /** @param iterable<FetcherInterface> $fetchers */
-    public function __construct(iterable $fetchers, FetcherConfigurationRepository $fetcherConfigurationRepository, ConferenceFilterRepository $conferenceFilterRepository, ConferenceRepository $conferenceRepository, EntityManagerInterface $em, EventDispatcherInterface $eventDispatcher, ?LoggerInterface $logger = null)
-    {
-        $this->fetchers = $fetchers;
-        $this->fetcherConfigurationRepository = $fetcherConfigurationRepository;
-        $this->conferenceFilterRepository = $conferenceFilterRepository;
-        $this->conferenceRepository = $conferenceRepository;
-        $this->em = $em;
-        $this->eventDispatcher = $eventDispatcher;
+    public function __construct(
+        private iterable $fetchers,
+        private FetcherConfigurationRepository $fetcherConfigurationRepository,
+        private ConferenceFilterRepository $conferenceFilterRepository,
+        private ConferenceRepository $conferenceRepository,
+        private EntityManagerInterface $em,
+        private EventDispatcherInterface $eventDispatcher,
+        ?LoggerInterface $logger = null,
+    ) {
         $this->logger = $logger ?: new NullLogger();
     }
 
@@ -59,7 +53,7 @@ class ConferencesHarvester
         $fetchedConferences = [];
 
         foreach ($this->fetchers as $fetcher) {
-            $this->logger->info(sprintf('Processing %d/%d fetchers : %s', ++$currentFetcher, $fetchersAmount, \get_class($fetcher)));
+            $this->logger->info(sprintf('Processing %d/%d fetchers : %s', ++$currentFetcher, $fetchersAmount, $fetcher::class));
 
             $name = (new \ReflectionClass($fetcher))->getShortName();
             $fetcherConfiguration = $this->fetcherConfigurationRepository->findOneOrCreate($name);
@@ -173,7 +167,7 @@ class ConferencesHarvester
     {
         foreach ($this->getFilters() as $conferenceFilter) {
             $filterName = strtolower($conferenceFilter->getName());
-            if (false !== strpos(strtolower($conference->getName()), $filterName) || \in_array($filterName, array_map('strtolower', $conference->getTags()))) {
+            if (str_contains(strtolower($conference->getName()), $filterName) || \in_array($filterName, array_map('strtolower', $conference->getTags()))) {
                 $conference->setExcluded(true);
 
                 return true;

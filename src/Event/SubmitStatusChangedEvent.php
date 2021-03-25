@@ -16,11 +16,9 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class SubmitStatusChangedEvent extends Event
 {
-    private $submit;
-
-    public function __construct(Submit $submit)
-    {
-        $this->submit = $submit;
+    public function __construct(
+        private Submit $submit,
+    ) {
     }
 
     public function getSubmit(): Submit

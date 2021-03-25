@@ -19,11 +19,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class TalkVoter extends Voter
 {
-    private RoleHierarchyInterface $roleHierarchy;
-
-    public function __construct(RoleHierarchyInterface $roleHierarchy)
-    {
-        $this->roleHierarchy = $roleHierarchy;
+    public function __construct(
+        private RoleHierarchyInterface $roleHierarchy,
+    ) {
     }
 
     protected function supports(string $attribute, $subject): bool

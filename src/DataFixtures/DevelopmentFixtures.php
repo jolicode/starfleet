@@ -17,13 +17,10 @@ use Doctrine\Persistence\ObjectManager;
 
 class DevelopmentFixtures extends AbstractFixtures
 {
-    private SlackNotifierEventListener $slackNotifierEventListener;
-    private LocationGuesser $locationGuesser;
-
-    public function __construct(SlackNotifierEventListener $slackNotifierEventListener, LocationGuesser $locationGuesser)
-    {
-        $this->slackNotifierEventListener = $slackNotifierEventListener;
-        $this->locationGuesser = $locationGuesser;
+    public function __construct(
+        private SlackNotifierEventListener $slackNotifierEventListener,
+        private LocationGuesser $locationGuesser,
+    ) {
     }
 
     public function load(ObjectManager $manager): void

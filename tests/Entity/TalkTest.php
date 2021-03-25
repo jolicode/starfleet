@@ -46,22 +46,28 @@ class TalkTest extends TestCase
     public function provideUsers(): Generator
     {
         yield [
-            [['user1'], ['user1']], 1,
+            'submits' => [['user1'], ['user1']],
+            'expectedAmount' => 1,
         ];
         yield [
-            [['user1'], ['user2']], 2,
+            'submits' => [['user1'], ['user2']],
+            'expectedAmount' => 2,
         ];
         yield [
-            [['user1', 'user2'], ['user1', 'user2']], 1,
+            'submits' => [['user1', 'user2'], ['user1', 'user2']],
+            'expectedAmount' => 1,
         ];
         yield [
-            [['user2', 'user1'], ['user1', 'user2']], 1,
+            'submits' => [['user2', 'user1'], ['user1', 'user2']],
+            'expectedAmount' => 1,
         ];
         yield [
-            [['user2', 'user1'], ['user1']], 2,
+            'submits' => [['user2', 'user1'], ['user1']],
+            'expectedAmount' => 2,
         ];
         yield [
-            [['user1', 'user2'], ['user1'], ['user1'], ['user2'], ['user1', 'user2', 'user3']], 4,
+            'submits' => [['user1', 'user2'], ['user1'], ['user1'], ['user2'], ['user1', 'user2', 'user3']],
+            'expectedAmount' => 4,
         ];
     }
 }

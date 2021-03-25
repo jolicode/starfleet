@@ -21,19 +21,13 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class SlackNotifier
 {
-    private string $webHookUrl;
-    private HttpClientInterface $httpClient;
-    private RouterInterface $router;
-    private ConferenceRepository $conferenceRepository;
-    private SlackBlocksBuilder $slackBlocksBuilder;
-
-    public function __construct(string $webHookUrl, HttpClientInterface $httpClient, RouterInterface $router, ConferenceRepository $conferenceRepository, SlackBlocksBuilder $slackBlocksBuilder)
-    {
-        $this->webHookUrl = $webHookUrl;
-        $this->httpClient = $httpClient;
-        $this->router = $router;
-        $this->conferenceRepository = $conferenceRepository;
-        $this->slackBlocksBuilder = $slackBlocksBuilder;
+    public function __construct(
+        private string $webHookUrl,
+        private HttpClientInterface $httpClient,
+        private RouterInterface $router,
+        private ConferenceRepository $conferenceRepository,
+        private SlackBlocksBuilder $slackBlocksBuilder
+    ) {
     }
 
     /** @param array<Conference> $newConferences */
@@ -252,26 +246,15 @@ class SlackNotifier
         foreach ($conferences as $conference) {
             $remainingDays = (int) ($conference->getCfpEndAt()->diff($today)->format('%a'));
 
-            switch ($remainingDays) {
-                case 0:
-                    $daysRemaining0[] = $conference;
-                    break;
-                case 1:
-                    $daysRemaining1[] = $conference;
-                    break;
-                case 5:
-                    $daysRemaining5[] = $conference;
-                    break;
-                case 10:
-                    $daysRemaining10[] = $conference;
-                    break;
-                case 20:
-                    $daysRemaining20[] = $conference;
-                    break;
-                case 30:
-                    $daysRemaining30[] = $conference;
-                    break;
-            }
+            match ($remainingDays) {
+                0 => $daysRemaining0[] = $conference,
+                1 => $daysRemaining1[] = $conference,
+                5 => $daysRemaining5[] = $conference,
+                10 => $daysRemaining10[] = $conference,
+                20 => $daysRemaining20[] = $conference,
+                30 => $daysRemaining30[] = $conference,
+                default => null,
+            };
         }
 
         return [

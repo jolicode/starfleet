@@ -16,13 +16,10 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class DailyNotificationEvent extends Event
 {
-    /** @var array<Conference> */
-    private array $newConferences;
-
     /** @param array<Conference> $newConferences */
-    public function __construct(array $newConferences)
-    {
-        $this->newConferences = $newConferences;
+    public function __construct(
+        private array $newConferences,
+    ) {
     }
 
     /** @return array<Conference> */

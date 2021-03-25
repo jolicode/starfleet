@@ -12,34 +12,28 @@
 namespace App\Security\Authenticator;
 
 use App\Entity\User;
-use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Client\OAuth2ClientInterface;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\SocialAuthenticator;
 use League\OAuth2\Client\Provider\GithubResourceOwner;
-use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class GitHubAuthenticator extends SocialAuthenticator
 {
-    private $clientRegistry;
-    private $em;
-    private $urlGenerator;
-    private $allowedGitHubOrganization;
-    private $httpClient;
-
-    public function __construct(ClientRegistry $clientRegistry, ManagerRegistry $registry, UrlGeneratorInterface $urlGenerator, string $allowedGitHubOrganization)
-    {
-        $this->clientRegistry = $clientRegistry;
-        $this->em = $registry->getManager();
-        $this->urlGenerator = $urlGenerator;
-        $this->allowedGitHubOrganization = $allowedGitHubOrganization;
-        $this->httpClient = HttpClient::create();
+    public function __construct(
+        private ClientRegistry $clientRegistry,
+        private EntityManagerInterface $em,
+        private UrlGeneratorInterface $urlGenerator,
+        private HttpClientInterface $httpClient,
+        private string $allowedGitHubOrganization,
+    ) {
     }
 
     public function supports(Request $request): bool

@@ -48,7 +48,7 @@ class SymfonyFetcherTest extends KernelTestCase
     public function provideConferences(): \Generator
     {
         yield 'Test normal Conference is correctly denormalized' => [
-            [
+            'rawConference' => [
                 'name' => 'Symfony "We Love Rock" World Tour',
                 'home_url' => 'https://symfony-hard-rock-world-tour',
                 'starts_at' => ['date' => '3022-04-17 00:00:00.000000'],
@@ -61,13 +61,13 @@ class SymfonyFetcherTest extends KernelTestCase
                 'country' => 'AU',
                 'is_online' => false,
             ],
-            [
+            'expectedItems' => [
                 'expectedCity' => 'Sydney',
             ],
         ];
 
         yield 'Test online Conference is correctly denormalized' => [
-            [
+            'rawConference' => [
                 'name' => 'Symfony shakes your basement',
                 'home_url' => 'https://symfony-house-rock',
                 'starts_at' => ['date' => '3022-04-17 00:00:00.000000'],
@@ -80,13 +80,13 @@ class SymfonyFetcherTest extends KernelTestCase
                 'country' => 'AU',
                 'is_online' => true,
             ],
-            [
+            'expectedItems' => [
                 'expectedCity' => 'Online',
             ],
         ];
 
         yield 'Test past Conference is not fetched' => [
-            [
+            'rawConference' => [
                 'name' => 'Symfony 1 is incredible',
                 'home_url' => 'https://symfony-first-conference',
                 'starts_at' => ['date' => '1022-04-17 00:00:00.000000'],
@@ -99,7 +99,7 @@ class SymfonyFetcherTest extends KernelTestCase
                 'country' => 'FR',
                 'is_online' => false,
             ],
-            [
+            'expectedItems' => [
                 'expectedCity' => null,
             ],
         ];
