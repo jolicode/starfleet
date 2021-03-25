@@ -25,13 +25,11 @@ class SymfonyFetcher implements FetcherInterface
     private const SOURCE = 'Symfony';
     private const SYMFONY_SOURCE_URL = 'https://live.symfony.com/api/conference/all.json';
 
-    private LocationGuesser $locationGuesser;
-    private HttpClientInterface $client;
-    private LoggerInterface $logger;
-
-    public function __construct(LocationGuesser $locationGuesser, ?HttpClientInterface $client = null, ?LoggerInterface $logger = null)
-    {
-        $this->locationGuesser = $locationGuesser;
+    public function __construct(
+        private LocationGuesser $locationGuesser,
+        private ?HttpClientInterface $client = null,
+        private ?LoggerInterface $logger = null,
+    ) {
         $this->client = $client ?: HttpClient::create();
         $this->logger = $logger ?: new NullLogger();
     }

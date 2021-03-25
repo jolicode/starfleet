@@ -23,29 +23,19 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Service\ServiceProviderInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @IsGranted("ROLE_USER")
- */
+#[IsGranted('ROLE_USER')]
 class FetcherController extends AbstractController
 {
-    private ServiceProviderInterface $serviceProvider;
-    private FetcherConfigurationRepository $fetcherConfigurationRepository;
-    private EntityManagerInterface $em;
-    private FormFactoryInterface $formFactory;
-    private TranslatorInterface $translator;
-
-    public function __construct(ServiceProviderInterface $serviceProvider, FetcherConfigurationRepository $fetcherConfigurationRepository, EntityManagerInterface $em, FormFactoryInterface $formFactory, TranslatorInterface $translator)
-    {
-        $this->serviceProvider = $serviceProvider;
-        $this->fetcherConfigurationRepository = $fetcherConfigurationRepository;
-        $this->em = $em;
-        $this->formFactory = $formFactory;
-        $this->translator = $translator;
+    public function __construct(
+        private ServiceProviderInterface $serviceProvider,
+        private FetcherConfigurationRepository $fetcherConfigurationRepository,
+        private EntityManagerInterface $em,
+        private FormFactoryInterface $formFactory,
+        private TranslatorInterface $translator,
+    ) {
     }
 
-    /**
-     * @Route(path="/admin/fetcher", name="fetcher_list")
-     */
+    #[Route(path: '/admin/fetcher', name: 'fetcher_list')]
     public function list(): Response
     {
         $fetchersConfig = [];
@@ -60,9 +50,7 @@ class FetcherController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route(path="/admin/fetcher/edit/{fetcherShortClass}", name="fetcher_edit")
-     */
+    #[Route(path: '/admin/fetcher/edit/{fetcherShortClass}', name: 'fetcher_edit')]
     public function edit(string $fetcherShortClass, Request $request): Response
     {
         $class = sprintf('App\Fetcher\%s', $fetcherShortClass);
@@ -101,9 +89,7 @@ class FetcherController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route(path="/admin/fetcher/active/{fetcher}/{value}", name="fetcher_toggle_active", methods={"GET"})
-     */
+    #[Route(path: '/admin/fetcher/active/{fetcher}/{value}', name: 'fetcher_toggle_active', methods: ['GET'])]
     public function toggleActive(string $fetcher, string $value, Request $request): Response
     {
         $value = $request->attributes->getBoolean('value');

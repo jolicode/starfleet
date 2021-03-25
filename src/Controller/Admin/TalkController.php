@@ -21,11 +21,9 @@ use Symfony\Component\Form\Form;
 
 class TalkController extends EasyAdminController
 {
-    private EventDispatcherInterface $eventDispatcher;
-
-    public function __construct(EventDispatcherInterface $eventDispatcher)
-    {
-        $this->eventDispatcher = $eventDispatcher;
+    public function __construct(
+        private EventDispatcherInterface $eventDispatcher,
+    ) {
     }
 
     protected function persistTalkEntity(Talk $talk, Form $newForm): void

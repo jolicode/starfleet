@@ -19,9 +19,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class FrontController extends AbstractController
 {
-    /**
-     * @Route("/", name="conferences_list")
-     */
+    #[Route(path: '/', name: 'conferences_list')]
     public function listAction(ConferenceRepository $conferenceRepository): Response
     {
         $conferences = $conferenceRepository->findAttendedConferences();
@@ -29,9 +27,7 @@ class FrontController extends AbstractController
         return $this->renderList($conferences);
     }
 
-    /**
-     * @Route("/conferences/tagged/{tag}", name="conferences_list_by_tag")
-     */
+    #[Route(path: '/conferences/tagged/{tag}', name: 'conferences_list_by_tag')]
     public function listByTagAction(string $tag, ConferenceRepository $conferenceRepository): Response
     {
         $conferences = $conferenceRepository->findAttendedConferencesByTag($tag);
@@ -45,9 +41,7 @@ class FrontController extends AbstractController
         return $this->renderList($conferences);
     }
 
-    /**
-     * @Route("/conferences/{slug}", name="conferences_show")
-     */
+    #[Route(path: '/conferences/{slug}', name: 'conferences_show')]
     public function showAction(Conference $conference, ConferenceRepository $conferenceRepository): Response
     {
         return $this->render('conferences/show.html.twig', [

@@ -52,7 +52,7 @@ class ConfTechFetcherTest extends KernelTestCase
     public function provideConferences(): \Generator
     {
         yield 'Test normal PHP conference is correctly denormalized' => [
-            [
+            'rawConference' => [
                 'name' => 'ConFoo',
                 'url' => 'https://confoo.ca/en/yul2021',
                 'startDate' => '3021-02-24',
@@ -63,15 +63,15 @@ class ConfTechFetcherTest extends KernelTestCase
                 'cfpEndDate' => '2020-10-16',
                 'cocUrl' => 'https://confoo.ca/en/code-of-conduct',
             ],
-            [
+            'expectedItems' => [
                 'expectedCity' => 'Montreal',
                 'online' => false,
             ],
-            ['php'],
+            'tags' => ['php'],
         ];
 
         yield 'Test online CSS conference is correctly denormalized' => [
-            [
+            'rawConference' => [
                 'name' => 'cssday Digital Edition',
                 'url' => 'https://2021.cssday.it',
                 'startDate' => '3021-03-11',
@@ -83,23 +83,23 @@ class ConfTechFetcherTest extends KernelTestCase
                 'cocUrl' => 'https://2021.cssday.it/welcome/coc.html',
                 'offersSignLanguageOrCC' => false,
             ],
-            [
+            'expectedItems' => [
                 'expectedCity' => 'Online',
                 'online' => true,
             ],
-            ['css'],
+            'tags' => ['css'],
         ];
 
         yield 'Test not configured fetcher doesn\'t fetch anything' => [
-            [],
-            [
+            'rawConference' => [],
+            'expectedItems' => [
                 'expectedCity' => null,
             ],
-            [],
+            'tags' => [],
         ];
 
         yield 'Test past conference is not fetched' => [
-            [
+            'rawConference' => [
                 'name' => 'HalfStack Phoenix',
                 'url' => 'https://halfstackconf.com/phoenix',
                 'startDate' => '1000-01-15',
@@ -111,10 +111,10 @@ class ConfTechFetcherTest extends KernelTestCase
                 'twitter' => '@halfstackconf',
                 'cocUrl' => 'https://halfstackconf.com/phoenix/code-of-conduct/',
             ],
-            [
+            'expectedItems' => [
                 'expectedCity' => null,
             ],
-            ['javascript'],
+            'tags' => ['javascript'],
         ];
     }
 

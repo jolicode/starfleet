@@ -108,13 +108,11 @@ class TululaFetcher implements FetcherInterface
         'women in tech',
     ];
 
-    private LocationGuesser $locationGuesser;
-    private HttpClientInterface $client;
-    private LoggerInterface $logger;
-
-    public function __construct(LocationGuesser $locationGuesser, ?HttpClientInterface $client = null, ?LoggerInterface $logger = null)
-    {
-        $this->locationGuesser = $locationGuesser;
+    public function __construct(
+        private LocationGuesser $locationGuesser,
+        private ?HttpClientInterface $client = null,
+        private ?LoggerInterface $logger = null,
+    ) {
         $this->client = $client ?: HttpClient::create();
         $this->logger = $logger ?: new NullLogger();
     }

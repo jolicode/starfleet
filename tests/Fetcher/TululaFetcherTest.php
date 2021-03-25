@@ -51,7 +51,7 @@ class TululaFetcherTest extends KernelTestCase
     public function provideConferences(): \Generator
     {
         yield 'Test normal Conference is correctly denormalized' => [
-            [
+            'rawConference' => [
                 'name' => 'normal PHP Tour',
                 'url' => 'https://php',
                 'dateStart' => '2000-01-15',
@@ -71,17 +71,17 @@ class TululaFetcherTest extends KernelTestCase
                     ],
                 ],
             ],
-            [
+            'expectedItems' => [
                 'expectedTags' => 'php',
                 'expectedCity' => 'Maubeuge',
             ],
-            [
+            'fetcherConfig' => [
                 'tags' => ['php'],
             ],
         ];
 
         yield 'Test online Conference is correctly denormalized' => [
-            [
+            'rawConference' => [
                 'name' => 'Symfony World Online',
                 'url' => 'https://sfworld',
                 'dateStart' => '2000-01-15',
@@ -100,17 +100,17 @@ class TululaFetcherTest extends KernelTestCase
                     ],
                 ],
             ],
-            [
+            'expectedItems' => [
                 'expectedTags' => 'php',
                 'expectedCity' => 'Online',
             ],
-            [
+            'fetcherConfig' => [
                 'tags' => ['php'],
             ],
         ];
 
         yield 'Test state field is used if city field is empty' => [
-            [
+            'rawConference' => [
                 'name' => 'Tulula provided city in the state field',
                 'url' => 'https://weirdo',
                 'dateStart' => '2000-01-15',
@@ -130,17 +130,17 @@ class TululaFetcherTest extends KernelTestCase
                     ],
                 ],
             ],
-            [
+            'expectedItems' => [
                 'expectedTags' => 'php',
                 'expectedCity' => 'X-Files Land',
             ],
-            [
+            'fetcherConfig' => [
                 'tags' => ['php'],
             ],
         ];
 
         yield 'Test city is empty if no city is provided' => [
-            [
+            'rawConference' => [
                 'name' => 'Tulula didn\'t provide the city name at all',
                 'url' => 'https://wedontknow',
                 'dateStart' => '2000-01-15',
@@ -160,17 +160,17 @@ class TululaFetcherTest extends KernelTestCase
                     ],
                 ],
             ],
-            [
+            'expectedItems' => [
                 'expectedTags' => 'php',
                 'expectedCity' => '',
             ],
-            [
+            'fetcherConfig' => [
                 'tags' => ['php'],
             ],
         ];
 
         yield 'Test only Conferences selected tags are fetched' => [
-            [
+            'rawConference' => [
                 'name' => 'Conf with no selected tags',
                 'url' => 'https://not-interesting.com',
                 'dateStart' => '2000-01-15',
@@ -193,17 +193,17 @@ class TululaFetcherTest extends KernelTestCase
                     ],
                 ],
             ],
-            [
+            'expectedItems' => [
                 'expectedTags' => null,
                 'expectedCity' => 'Chaillé-sous-les-Ormeaux',
             ],
-            [
+            'fetcherConfig' => [
                 'tags' => ['php'],
             ],
         ];
 
         yield 'Test allowEmptyTags set to false works as intended' => [
-            [
+            'rawConference' => [
                 'name' => 'Conf with no tags and allowEmptyTags is false',
                 'url' => 'https://it-should-return-nothing.com',
                 'dateStart' => '2000-01-15',
@@ -219,18 +219,18 @@ class TululaFetcherTest extends KernelTestCase
                 ],
                 'tags' => [],
             ],
-            [
+            'expectedItems' => [
                 'expectedTags' => null,
                 'expectedCity' => 'no-tags-city',
             ],
-            [
+            'fetcherConfig' => [
                 'tags' => ['php'],
                 'allowEmptyTags' => false,
             ],
         ];
 
         yield 'Test allowEmptyTags set to true works as intended' => [
-            [
+            'rawConference' => [
                 'name' => 'Conf with no tags and allowEmptyTags is true',
                 'url' => 'https://it-should-return-the-conference.com',
                 'dateStart' => '2000-01-15',
@@ -246,18 +246,18 @@ class TululaFetcherTest extends KernelTestCase
                 ],
                 'tags' => [],
             ],
-            [
+            'expectedItems' => [
                 'expectedTags' => [],
                 'expectedCity' => 'no-tags-city',
             ],
-            [
+            'fetcherConfig' => [
                 'tags' => ['php'],
                 'allowEmptyTags' => true,
             ],
         ];
 
         yield 'Test not configured fetcher doesn\'t fetch anything' => [
-            [
+            'rawConference' => [
                 'name' => 'The fetcher doesn\'t have any config',
                 'url' => 'https://it-should-return-nothing.com',
                 'dateStart' => '2000-01-15',
@@ -280,11 +280,11 @@ class TululaFetcherTest extends KernelTestCase
                     ],
                 ],
             ],
-            [
+            'expectedItems' => [
                 'expectedTags' => null,
                 'expectedCity' => 'no-configuration-fetcher-city',
             ],
-            [],
+            'fetcherConfig' => [],
         ];
     }
 

@@ -20,9 +20,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
-    /**
-     * @Route("/login", name="login", methods={"GET", "POST"})
-     */
+    #[Route(path: '/login', name: 'login', methods: ['GET', 'POST'])]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
         $error = $authenticationUtils->getLastAuthenticationError();
@@ -37,17 +35,13 @@ class SecurityController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/connect/google", name="connect_google")
-     */
+    #[Route(path: '/connect/google', name: 'connect_google')]
     public function connectGoogleAction(ClientRegistry $clientRegistry): Response
     {
         return $clientRegistry->getClient('google')->redirect([], []);
     }
 
-    /**
-     * @Route("/connect/google/check", name="connect_google_check")
-     */
+    #[Route(path: '/connect/google/check', name: 'connect_google_check')]
     public function connectGoogleCheckAction(Request $request, ClientRegistry $clientRegistry): Response
     {
         $client = $clientRegistry->getClient('google');
@@ -55,24 +49,18 @@ class SecurityController extends AbstractController
         return $this->redirectToRoute('conferences_list');
     }
 
-    /**
-     * @Route("/connect/github", name="connect_github")
-     */
+    #[Route(path: '/connect/github', name: 'connect_github')]
     public function connectGitHubAction(ClientRegistry $clientRegistry): Response
     {
         return $clientRegistry->getClient('github')->redirect([], []);
     }
 
-    /**
-     * @Route("/connect/github/check", name="connect_github_check")
-     */
+    #[Route(path: '/connect/github/check', name: 'connect_github_check')]
     public function connectGitHubCheckAction(Request $request): void
     {
     }
 
-    /**
-     * @Route("/logout", name="logout", methods={"GET"})
-     */
+    #[Route(path: '/logout', name: 'logout', methods: ['GET'])]
     public function logout(): void
     {
         throw new \Exception('Don\'t forget to activate logout in security.yaml');

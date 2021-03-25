@@ -58,16 +58,12 @@ class ConfTechFetcher implements FetcherInterface
         'ux',
     ];
 
-    private LocationGuesser $locationGuesser;
-    private Filesystem $filesystem;
-    private ConfTechCloner $confTechCloner;
-    private LoggerInterface $logger;
-
-    public function __construct(LocationGuesser $locationGuesser, Filesystem $filesystem, ConfTechCloner $confTechCloner, ?LoggerInterface $logger = null)
-    {
-        $this->locationGuesser = $locationGuesser;
-        $this->filesystem = $filesystem;
-        $this->confTechCloner = $confTechCloner;
+    public function __construct(
+        private LocationGuesser $locationGuesser,
+        private Filesystem $filesystem,
+        private ConfTechCloner $confTechCloner,
+        private ?LoggerInterface $logger = null,
+    ) {
         $this->logger = $logger ?: new NullLogger();
     }
 

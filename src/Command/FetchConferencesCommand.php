@@ -19,12 +19,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class FetchConferencesCommand extends Command
 {
-    private ConferencesHarvester $conferencesHarvester;
-
-    public function __construct(ConferencesHarvester $conferencesHarvester)
-    {
-        $this->conferencesHarvester = $conferencesHarvester;
-
+    public function __construct(
+        private ConferencesHarvester $conferencesHarvester,
+    ) {
         parent::__construct();
     }
 
