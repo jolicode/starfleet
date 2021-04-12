@@ -14,7 +14,7 @@ namespace App\Event;
 use App\Entity\Conference;
 use Symfony\Contracts\EventDispatcher\Event;
 
-class NewConferencesEvent extends Event
+class DailyNotificationEvent extends Event
 {
     /** @var array<Conference> */
     private array $newConferences;

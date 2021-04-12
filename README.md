@@ -51,8 +51,6 @@ If you need to enter a shell to run specific command, run the following command:
 inv builder
 ```
 
-You'll need to configure a Slack web hook url, go to `https://[your-slack-organization].slack.com/apps/A0F7XDUAZ-incoming-webhooks`.
-
 ## Usage
 
 By default, the fetchers are not configured and won't fetch anything. You first need to head to the admin and configure them in the `fetcher` menu, then you can run `inv fetch-conferences`.
@@ -60,6 +58,13 @@ By default, the fetchers are not configured and won't fetch anything. You first 
 If you want to add a source, you only have to implement the `FetcherInterface`.
 
 Some fetchers will use tags to fetch their data, and some of these tags may be missing. If this is the case, you should find the fetcher in `src\Fetcher` and add the missing tag to its tags list.
+
+## Slack
+
+Starfleet uses strong integration with Slack as it sends daily Slack notifications. You must [create a Slack application](https://api.slack.com/apps) if you don't have any.
+You need to configure a webhook at `https://[your-slack-organization].slack.com/apps/A0F7XDUAZ-incoming-webhooks` and add it to the `SLACK_WEB_HOOK_URL` env variable.
+Since Starfleet uses user interaction, you must configure your application at to allow user interaction. You may see how to do it at `https://api.slack.com/interactivity/handling#setup`. Your Slack Signing Secret should be stored in the `SLACK_SIGNING_SECRET` env variable.
+During dev, you may use [Ngrok](https://ngrok.com/) to let Slack reach your application. We provide a command to start Ngrok : `inv ngrok`. Paste the resulting address in your Slack app `Request URL` field.
 
 ## Map
 

@@ -26,10 +26,13 @@ services:
         resource: '../src/Controller/'
         tags: ['controller.service_arguments']
 
-    App\SlackNotifier:
+    App\Notifiers\Slack\SlackNotifier:
         arguments:
             $webHookUrl: '%env(SLACK_WEB_HOOK_URL)%'
-            $env: '%env(APP_ENV)%'
+
+    App\Notifiers\Slack\SlackRequestChecker:
+        arguments:
+            $signingSecret: '%env(SLACK_SIGNING_SECRET)%'
 
     twig.date_extension:
         class: Twig_Extensions_Extension_Date

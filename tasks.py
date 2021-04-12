@@ -4,6 +4,7 @@ from colorama import Fore
 import re
 import requests
 import json
+import subprocess
 
 
 @task
@@ -160,6 +161,14 @@ def phpstan(c):
     """
     with Builder(c):
         docker_compose_run(c, 'php ./vendor/bin/phpstan analyse')
+
+
+@task
+def ngrok(c):
+    """
+    Open the local web server with Ngrok
+    """
+    subprocess.run('ngrok http -host-header=local.starfleet.app local.starfleet.app:443', shell=True)
 
 
 @task
