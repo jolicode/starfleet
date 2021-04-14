@@ -134,25 +134,26 @@ class SlackNotifier
             $conferenceLink = $conference->getName();
         }
         $countdown = sprintf('in *%d day%s* !', $remainingDays, $remainingDays > 1 ? 's' : '');
+        $location = $conference->isOnline() ? 'Online' : $conference->getCity();
 
         switch ($remainingDays) {
             case 30:
-                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, $conference->getCity(), $countdown.' 😀');
+                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, $location, $countdown.' 😀');
                 break;
             case 20:
-                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, $conference->getCity(), $countdown.' 🙂');
+                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, $location, $countdown.' 🙂');
                 break;
             case 10:
-                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, $conference->getCity(), $countdown.' 😮');
+                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, $location, $countdown.' 😮');
                 break;
             case 5:
-                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, $conference->getCity(), $countdown.' 😨');
+                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, $location, $countdown.' 😨');
                 break;
             case 1:
-                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, $conference->getCity(), $countdown.' 😰');
+                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, $location, $countdown.' 😰');
                 break;
             case 0:
-                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, $conference->getCity(), '*today* ! 😱');
+                $cfpAttachment['pretext'] = sprintf($template, $conferenceLink, $location, '*today* ! 😱');
                 break;
         }
 
