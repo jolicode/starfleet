@@ -2,7 +2,7 @@ ARG PROJECT_NAME
 
 FROM ${PROJECT_NAME}_php-base
 
-ARG PHP_VERSION=7.4
+ARG PHP_VERSION=8.0
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         nginx \

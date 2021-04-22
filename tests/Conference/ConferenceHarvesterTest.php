@@ -30,12 +30,12 @@ class ConferenceHarvesterTest extends KernelTestCase
     /**
      * @dataProvider provideFetcherResponses
      */
-    public function testFetch(int $expectedUpdated, int $expectedAdded, string $name, bool $isActive, Conference $conference, ?Conference $existingConference)
+    public function testFetch(int $expectedUpdatedConferences, int $expectedAddedConferences, string $name, bool $isActive, Conference $conference, ?Conference $existingConference)
     {
         $results = $this->createHarvester($name, $isActive, $conference, $existingConference)->harvest();
 
-        self::assertSame($expectedUpdated, $results['updatedConferencesCount']);
-        self::assertSame($expectedAdded, $results['newConferencesCount']);
+        self::assertSame($expectedUpdatedConferences, $results['updatedConferencesCount']);
+        self::assertSame($expectedAddedConferences, $results['newConferencesCount']);
     }
 
     public function provideFetcherResponses()

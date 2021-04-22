@@ -3,12 +3,12 @@ version: 2
 jobs:
     check-php-cs:
         docker:
-            - image: circleci/php:7.4-node-browsers
+            - image: circleci/php:8.0-node-browsers
         steps:
             - checkout
             - run:
                   name: Install PHP CS Fixer
-                  command: wget https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/v2.16.3/php-cs-fixer.phar -O php-cs-fixer
+                  command: wget https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/v2.18.4/php-cs-fixer.phar -O php-cs-fixer
             - run:
                   name: Check PHP CS
                   command: php php-cs-fixer fix --dry-run --allow-risky yes --diff --config=.php_cs
@@ -26,7 +26,7 @@ jobs:
 
     check-lint:
         docker:
-            - image: circleci/php:7.4-node-browsers
+            - image: circleci/php:8.0-node-browsers
         working_directory: ~/project
         steps:
             - checkout
