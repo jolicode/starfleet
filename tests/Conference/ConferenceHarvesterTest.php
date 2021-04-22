@@ -15,7 +15,7 @@ use App\Conferences\ConferencesHarvester;
 use App\Entity\Conference;
 use App\Entity\ConferenceFilter;
 use App\Entity\FetcherConfiguration;
-use App\Event\NewConferencesEvent;
+use App\Event\DailyNotificationEvent;
 use App\Fetcher\TululaFetcher;
 use App\Repository\ConferenceFilterRepository;
 use App\Repository\ConferenceRepository;
@@ -123,7 +123,7 @@ class ConferenceHarvesterTest extends KernelTestCase
 
         $eventDispatcher = $this->prophesize(EventDispatcherInterface::class);
         $eventDispatcher
-            ->dispatch(Argument::type(NewConferencesEvent::class));
+            ->dispatch(Argument::type(DailyNotificationEvent::class));
 
         $harvester = new ConferencesHarvester(
             [$fetcherProphecy->reveal()],

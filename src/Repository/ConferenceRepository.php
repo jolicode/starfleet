@@ -44,6 +44,26 @@ class ConferenceRepository extends ServiceEntityRepository
     }
 
     /** @return array<mixed> */
+    public function getDailyConferences(): array
+    {
+        $today = new \DateTime();
+        $today->setTime(0, 0, 0);
+
+        $threshold = new \DateTime();
+        $threshold->setTime(23, 59, 59);
+
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.createdAt >= :today AND c.createdAt <= :threshold')
+            ->andWhere('c.excluded = :excluded')
+            ->setParameter('excluded', false)
+            ->setParameter('today', $today)
+            ->setParameter('threshold', $threshold)
+            ->getQuery()
+            ->execute()
+            ;
+    }
+
+    /** @return array<mixed> */
     public function findAttendedConferences(): array
     {
         return $this->createAttendedQueryBuilder()

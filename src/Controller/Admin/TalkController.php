@@ -53,9 +53,9 @@ class TalkController extends EasyAdminController
             }
         }
 
-        $this->eventDispatcher->dispatch(new NewTalkSubmittedEvent($talk, $newSubmits));
-
         $this->em->persist($talk);
         $this->em->flush();
+
+        $this->eventDispatcher->dispatch(new NewTalkSubmittedEvent($talk, $newSubmits));
     }
 }

@@ -12,11 +12,10 @@
 namespace App\EventListener;
 
 use App\Entity\Submit;
-use App\Event\CfpEndingSoonEvent;
-use App\Event\NewConferencesEvent;
+use App\Event\DailyNotificationEvent;
 use App\Event\NewTalkSubmittedEvent;
 use App\Event\SubmitStatusChangedEvent;
-use App\SlackNotifier;
+use App\Notifiers\Slack\SlackNotifier;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class SlackNotifierEventListener implements EventSubscriberInterface
@@ -43,9 +42,8 @@ class SlackNotifierEventListener implements EventSubscriberInterface
     {
         return [
             NewTalkSubmittedEvent::class => 'onNewTalkSubmitted',
-            NewConferencesEvent::class => 'onNewConferencesAdded',
+            DailyNotificationEvent::class => 'dailyNotification',
             SubmitStatusChangedEvent::class => 'onSubmitStatusChanged',
-            CfpEndingSoonEvent::class => 'onCfpEndingSoon',
         ];
     }
 
@@ -58,13 +56,13 @@ class SlackNotifierEventListener implements EventSubscriberInterface
         $this->slackNotifier->sendNewTalkSubmittedNotification($event->getSubmits(), $event->getTalk());
     }
 
-    public function onNewConferencesAdded(NewConferencesEvent $event): void
+    public function dailyNotification(DailyNotificationEvent $event): void
     {
         if ($this->disabled) {
             return;
         }
 
-        $this->slackNotifier->sendNewConferencesNotification($event->getNewConferences());
+        $this->slackNotifier->sendDailyNotification($event->getNewConferences());
     }
 
     public function onSubmitStatusChanged(SubmitStatusChangedEvent $event): void
@@ -80,14 +78,5 @@ class SlackNotifierEventListener implements EventSubscriberInterface
         }
 
         $this->slackNotifier->sendSubmitStatusChangedNotification($event->getSubmit());
-    }
-
-    public function onCfpEndingSoon(CfpEndingSoonEvent $event): void
-    {
-        if ($this->disabled) {
-            return;
-        }
-
-        $this->slackNotifier->sendCfPEndingSoonNotification($event->getConference(), $event->getRemainingDays());
     }
 }
