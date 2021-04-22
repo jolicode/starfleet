@@ -49,7 +49,7 @@ easy_admin:
                     - { property: 'source', type: 'text' }
                     - { property: 'tags', type: 'array' }
             form:
-                fields:
+                fields: &conferencesEdit
                     - { type: 'group', columns: 4, icon: 'pencil', label: 'Conference' }
                     - { property: 'name', type: 'text' }
                     - { property: 'city', type: 'text' }
@@ -85,3 +85,6 @@ easy_admin:
             show:
                 fields:
                     <<: *conferenceShow
+            form:
+                fields:
+                    <<: *conferencesEdit
