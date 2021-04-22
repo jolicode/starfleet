@@ -136,31 +136,31 @@ class SlackNotifier
     {
         $header = $this->slackBlocksBuilder->buildHeader('New conferences of the day');
 
-        if (0 === \count($conferences)) {
-            $conferencesBlocks = [$this->slackBlocksBuilder->buildSimpleSection('No conferences were added today !')];
-        } else {
-            $conferencesBlocks = [];
+        $conferencesBlocks = [];
 
-            foreach ($conferences as $conference) {
-                if (null === $conference->getCfpUrl()) {
-                    continue;
-                }
-
-                if ($conference->getExcluded()) {
-                    continue;
-                }
-
-                $conferenceUrl = $this->router->generate('easyadmin', [
-                    'id' => $conference->getId(),
-                    'entity' => 'NextConference',
-                    'action' => 'show',
-                ], UrlGeneratorInterface::ABSOLUTE_URL);
-
-                $location = $conference->isOnline() ? 'Online' : sprintf(':flag-%s:', $conference->getCountry());
-
-                $conferenceText = sprintf('*<%s|%s>*, %s (<%s|Go to CFP>)', $conferenceUrl, $conference->getName(), $location, $conference->getCfpUrl());
-                $conferencesBlocks[] = $this->slackBlocksBuilder->buildSectionWithButton($conferenceText, 'Mute this conference', 'Mute Conference', $conference->getId());
+        foreach ($conferences as $conference) {
+            if (null === $conference->getCfpUrl()) {
+                continue;
             }
+
+            if ($conference->getExcluded()) {
+                continue;
+            }
+
+            $conferenceUrl = $this->router->generate('easyadmin', [
+                'id' => $conference->getId(),
+                'entity' => 'NextConference',
+                'action' => 'show',
+            ], UrlGeneratorInterface::ABSOLUTE_URL);
+
+            $location = $conference->isOnline() ? 'Online' : sprintf(':flag-%s:', $conference->getCountry());
+
+            $conferenceText = sprintf('*<%s|%s>*, %s (<%s|Go to CFP>)', $conferenceUrl, $conference->getName(), $location, $conference->getCfpUrl());
+            $conferencesBlocks[] = $this->slackBlocksBuilder->buildSectionWithButton($conferenceText, 'Mute this conference', 'Mute Conference', $conference->getId());
+        }
+
+        if (0 === \count($conferencesBlocks)) {
+            $conferencesBlocks = [$this->slackBlocksBuilder->buildSimpleSection('No conferences were added today !')];
         }
 
         return [
