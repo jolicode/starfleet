@@ -24,17 +24,12 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class TalkSubmitType extends AbstractType
 {
-    private $user;
-    private $requestStack;
-
-    public function __construct(TokenStorageInterface $tokenStorage, RequestStack $requestStack)
-    {
-        $this->user = $tokenStorage->getToken()->getUser();
-        $this->requestStack = $requestStack;
+    public function __construct(
+        private RequestStack $requestStack,
+    ) {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void

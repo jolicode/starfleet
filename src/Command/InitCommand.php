@@ -22,16 +22,12 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class InitCommand extends Command
 {
-    private UserPasswordEncoderInterface $passwordEncoder;
-    private ManagerRegistry $registry;
-
     protected static $defaultName = 'starfleet:init';
 
-    public function __construct(UserPasswordEncoderInterface $passwordEncoder, ManagerRegistry $registry)
-    {
-        $this->passwordEncoder = $passwordEncoder;
-        $this->registry = $registry;
-
+    public function __construct(
+        private UserPasswordEncoderInterface $passwordEncoder,
+        private ManagerRegistry $registry,
+    ) {
         parent::__construct();
     }
 

@@ -19,11 +19,9 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 class TalkUserType extends AbstractType
 {
-    private TokenStorageInterface $tokenStorage;
-
-    public function __construct(TokenStorageInterface $tokenStorage)
-    {
-        $this->tokenStorage = $tokenStorage;
+    public function __construct(
+        private TokenStorageInterface $tokenStorage,
+    ) {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void

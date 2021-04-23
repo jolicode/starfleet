@@ -24,22 +24,19 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class SlackController extends AbstractController
 {
-    private SlackNotifier $slackNotifier;
-    private EntityManagerInterface $em;
-    private ConferenceRepository $conferenceRepository;
     private HttpClientInterface $httpClient;
-    private SlackRequestChecker $slackRequestChecker;
 
-    public function __construct(SlackNotifier $slackNotifier, EntityManagerInterface $em, ConferenceRepository $conferenceRepository, HttpClientInterface $httpClient, SlackRequestChecker $slackRequestChecker)
-    {
-        $this->slackNotifier = $slackNotifier;
-        $this->em = $em;
-        $this->conferenceRepository = $conferenceRepository;
+    public function __construct(
+        private SlackNotifier $slackNotifier,
+        private EntityManagerInterface $em,
+        private ConferenceRepository $conferenceRepository,
+        private SlackRequestChecker $slackRequestChecker,
+        HttpClientInterface $httpClient,
+    ) {
         $this->httpClient = $httpClient ?? HttpClient::create();
-        $this->slackRequestChecker = $slackRequestChecker;
     }
 
-    /** @Route("/slack", name="slack_endpoint", methods="POST") */
+    #[Route(path: '/slack', name: 'slack_endpoint', methods: ['POST'])]
     public function slackEndPoint(Request $request): Response
     {
         if ($response = $this->slackRequestChecker->checkSlackRequestSanity($request)) {

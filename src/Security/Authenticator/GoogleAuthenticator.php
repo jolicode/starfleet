@@ -12,7 +12,7 @@
 namespace App\Security\Authenticator;
 
 use App\Entity\User;
-use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Client\OAuth2ClientInterface;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\SocialAuthenticator;
@@ -26,15 +26,11 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class GoogleAuthenticator extends SocialAuthenticator
 {
-    private $clientRegistry;
-    private $em;
-    private $urlGenerator;
-
-    public function __construct(ClientRegistry $clientRegistry, ManagerRegistry $registry, UrlGeneratorInterface $urlGenerator)
-    {
-        $this->clientRegistry = $clientRegistry;
-        $this->em = $registry->getManager();
-        $this->urlGenerator = $urlGenerator;
+    public function __construct(
+        private ClientRegistry $clientRegistry,
+        private EntityManagerInterface $em,
+        private UrlGeneratorInterface $urlGenerator,
+    ) {
     }
 
     public function supports(Request $request): bool

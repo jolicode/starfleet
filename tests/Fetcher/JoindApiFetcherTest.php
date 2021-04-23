@@ -54,7 +54,7 @@ class JoindApiFetcherTest extends KernelTestCase
     public function provideConferences(): \Generator
     {
         yield 'Test normal Conference is correctly denormalized' => [
-            [
+            'rawConference' => [
                 'name' => 'Normal Conference',
                 'href' => 'https://php',
                 'start_date' => '2000-01-15',
@@ -68,17 +68,17 @@ class JoindApiFetcherTest extends KernelTestCase
                     'name' => 'php',
                 ],
             ],
-            [
+            'expectedItems' => [
                 'expectedCity' => 'Maubeuge',
             ],
-            [
+            'fetcherConfig' => [
                 'allowEmptyTags' => false,
                 'tags' => ['php'],
             ],
         ];
 
         yield 'Test online Conference is correctly denormalized' => [
-            [
+            'rawConference' => [
                 'name' => 'Online Conference',
                 'href' => 'https://php',
                 'start_date' => '2000-01-15',
@@ -92,17 +92,17 @@ class JoindApiFetcherTest extends KernelTestCase
                     'name' => 'php',
                 ],
             ],
-            [
+            'expectedItems' => [
                 'expectedCity' => 'Online',
             ],
-            [
+            'fetcherConfig' => [
                 'allowEmptyTags' => false,
                 'tags' => ['php', 'symfony', 'devops'],
             ],
         ];
 
         yield 'Test underscore is correctly replaced by space' => [
-            [
+            'rawConference' => [
                 'name' => 'Conference with underscore in its name',
                 'href' => 'https://php',
                 'start_date' => '2000-01-15',
@@ -116,17 +116,17 @@ class JoindApiFetcherTest extends KernelTestCase
                     'name' => 'php',
                 ],
             ],
-            [
+            'expectedItems' => [
                 'expectedCity' => 'Unbelievable Maubeuge City',
             ],
-            [
+            'fetcherConfig' => [
                 'allowEmptyTags' => false,
                 'tags' => ['php'],
             ],
         ];
 
         yield 'Test not configured fetcher doesn\'t fetch anything' => [
-            [
+            'rawConference' => [
                 'name' => 'The fetcher is not configured',
                 'href' => 'https://it-should-return-nothing.com',
                 'start_date' => '2000-01-15',
@@ -138,10 +138,10 @@ class JoindApiFetcherTest extends KernelTestCase
                 'location' => 'Place de l\'église',
                 'tags' => [],
             ],
-            [
+            'expectedItems' => [
                 'expectedCity' => null,
             ],
-            [],
+            'fetcherConfig' => [],
         ];
     }
 

@@ -55,9 +55,9 @@ class SlackNotifierTest extends WebTestCase
             'expectedSections' => 2,
         ];
 
-        $pastConference = $this->createConference(new \DateTime('-1 year'), false);
-        $cfpNotMatchingConference = $this->createConference(new \DateTime('+2 days'), false);
-        $cfpMatchingConference = $this->createConference(new \DateTime('+5 days'), false);
+        $pastConference = $this->createConference(new \DateTime('-1 year'));
+        $cfpNotMatchingConference = $this->createConference(new \DateTime('+2 days'));
+        $cfpMatchingConference = $this->createConference(new \DateTime('+5 days'));
 
         // CFP milestones represent the CFP remaining days we are interested in. They should send notifications.
         yield 'Test conferences not matching CFP milestones dont send notifications' => [
@@ -67,7 +67,7 @@ class SlackNotifierTest extends WebTestCase
             'expectedSections' => 3,
         ];
 
-        $testConference = $this->createConference(new \DateTime(), false);
+        $testConference = $this->createConference(new \DateTime());
 
         yield 'Test 2 conferences and 2 ending Cfps' => [
             'newConferences' => [$testConference, $testConference],
@@ -76,12 +76,12 @@ class SlackNotifierTest extends WebTestCase
             'expectedSections' => 5,
         ];
 
-        $cfp0days = $this->createConference(new \DateTime(), false);
-        $cfp1days = $this->createConference(new \DateTime('+1 day'), false);
-        $cfp5days = $this->createConference(new \DateTime('+5 days'), false);
-        $cfp10days = $this->createConference(new \DateTime('+10 days'), false);
-        $cfp20days = $this->createConference(new \DateTime('+20 days'), false);
-        $cfp30days = $this->createConference(new \DateTime('+30 days'), false);
+        $cfp0days = $this->createConference(new \DateTime());
+        $cfp1days = $this->createConference(new \DateTime('+1 day'));
+        $cfp5days = $this->createConference(new \DateTime('+5 days'));
+        $cfp10days = $this->createConference(new \DateTime('+10 days'));
+        $cfp20days = $this->createConference(new \DateTime('+20 days'));
+        $cfp30days = $this->createConference(new \DateTime('+30 days'));
 
         yield 'Test all CFP end date milestones work' => [
             'newConferences' => [],
@@ -99,7 +99,7 @@ class SlackNotifierTest extends WebTestCase
             'expectedSections' => 2,
         ];
 
-        $noCfpUrlConference = $this->createConference(new \DateTime(), false, null);
+        $noCfpUrlConference = $this->createConference(new \DateTime(), cfpUrl: null);
 
         yield 'Test conference with no CFP URL is not sending notifications' => [
             'newConferences' => [$testConference, $noCfpUrlConference],

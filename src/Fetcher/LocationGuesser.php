@@ -21,12 +21,11 @@ class LocationGuesser
 {
     /** @var array<Continent> */
     private array $continents;
-    private StatefulGeocoder $geocoder;
 
-    public function __construct(ContinentRepository $continentRepository, StatefulGeocoder $geocoder)
-    {
-        $this->continents = $continentRepository->findAllAsKey();
-        $this->geocoder = $geocoder;
+    public function __construct(
+        private ContinentRepository $continentRepository,
+        private StatefulGeocoder $geocoder,
+    ) {
     }
 
     public function getContinent(string $queryString): ?Continent
@@ -38,7 +37,9 @@ class LocationGuesser
             return null;
         }
 
-        return $this->continents[$countriesArray[$results->first()->getCountry()->getCode()]['continent']];
+        $continents = $this->getStoredContinents();
+
+        return $continents[$countriesArray[$results->first()->getCountry()->getCode()]['continent']];
     }
 
     public function getCountry(string $queryString): ?string
@@ -62,5 +63,11 @@ class LocationGuesser
         }
 
         return $results->first()->getCoordinates()->toArray();
+    }
+
+    /** @return array<Continent> */
+    private function getStoredContinents(): array
+    {
+        return $this->continents ??= $this->continentRepository->findAllAsKey();
     }
 }

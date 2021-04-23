@@ -17,15 +17,11 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class NewTalkSubmittedEvent extends Event
 {
-    private Talk $talk;
-    /** @var array<Submit> */
-    private array $submits;
-
     /** @param array<Submit> $submits */
-    public function __construct(Talk $talk, array $submits)
-    {
-        $this->talk = $talk;
-        $this->submits = $submits;
+    public function __construct(
+        private Talk $talk,
+        private array $submits,
+    ) {
     }
 
     public function getTalk(): Talk

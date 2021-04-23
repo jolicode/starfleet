@@ -20,12 +20,11 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class SlackNotifierEventListener implements EventSubscriberInterface
 {
-    private SlackNotifier $slackNotifier;
     private bool $disabled;
 
-    public function __construct(SlackNotifier $slackNotifier)
-    {
-        $this->slackNotifier = $slackNotifier;
+    public function __construct(
+        private SlackNotifier $slackNotifier,
+    ) {
         $this->disabled = false;
     }
 

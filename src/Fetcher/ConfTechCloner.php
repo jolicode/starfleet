@@ -16,13 +16,10 @@ use Symfony\Component\Process\Process;
 
 class ConfTechCloner
 {
-    private Filesystem $filesystem;
-    private string $projectDir;
-
-    public function __construct(Filesystem $filesystem, string $projectDir)
-    {
-        $this->filesystem = $filesystem;
-        $this->projectDir = $projectDir;
+    public function __construct(
+        private Filesystem $filesystem,
+        private string $projectDir,
+    ) {
     }
 
     public function clone(): string

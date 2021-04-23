@@ -26,15 +26,11 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
 {
     use TargetPathTrait;
 
-    private $router;
-    private $passwordManager;
-    private $requestStack;
-
-    public function __construct(RouterInterface $router, PasswordManager $passwordManager, RequestStack $requestStack)
-    {
-        $this->router = $router;
-        $this->passwordManager = $passwordManager;
-        $this->requestStack = $requestStack;
+    public function __construct(
+        private RouterInterface $router,
+        private PasswordManager $passwordManager,
+        private RequestStack $requestStack,
+    ) {
     }
 
     protected function getLoginUrl()

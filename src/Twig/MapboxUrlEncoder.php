@@ -16,11 +16,9 @@ use Twig\TwigFunction;
 
 class MapboxUrlEncoder extends AbstractExtension
 {
-    private string $apiToken;
-
-    public function __construct(string $apiToken)
-    {
-        $this->apiToken = $apiToken;
+    public function __construct(
+        private string $apiToken,
+    ) {
     }
 
     public function getFunctions()

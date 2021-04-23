@@ -16,11 +16,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 class SlackRequestChecker
 {
-    private string $signingSecret;
-
-    public function __construct(string $signingSecret)
-    {
-        $this->signingSecret = $signingSecret;
+    public function __construct(
+        private string $signingSecret,
+    ) {
     }
 
     public function checkSlackRequestSanity(Request $request): ?Response

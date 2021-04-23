@@ -22,11 +22,9 @@ use Symfony\Component\Workflow\Registry as WorkflowRegistry;
 
 class AdminController extends EasyAdminController
 {
-    protected WorkflowRegistry $workflowRegistry;
-
-    public function __construct(WorkflowRegistry $workflowRegistry)
-    {
-        $this->workflowRegistry = $workflowRegistry;
+    public function __construct(
+        private WorkflowRegistry $workflowRegistry,
+    ) {
     }
 
     public function excludeConferenceAction(): Response
@@ -59,10 +57,8 @@ class AdminController extends EasyAdminController
         ]);
     }
 
-    /**
-     * @Route(path="/participation/accept", name="participation_accept")
-     * @Security("has_role('ROLE_ADMIN')")
-     */
+    #[Route(path: '/participation/accept', name: 'participation_accept')]
+    #[Security('ROLE_ADMIN')]
     public function acceptAction(): Response
     {
         /** @var Participation $participation */
@@ -79,10 +75,8 @@ class AdminController extends EasyAdminController
         ]);
     }
 
-    /**
-     * @Route(path="/participation/buy_ticket", name="participation_buy_ticket")
-     * @Security("has_role('ROLE_ADMIN')")
-     */
+    #[Route(path: '/participation/buy_ticket', name: 'participation_buy_ticket')]
+    #[Security('ROLE_ADMIN')]
     public function buy_ticketAction(): Response
     {
         /** @var Participation $participation */
@@ -99,10 +93,8 @@ class AdminController extends EasyAdminController
         ]);
     }
 
-    /**
-     * @Route(path="/participation/reserve_transport", name="participation_reserve_transport")
-     * @Security("has_role('ROLE_ADMIN')")
-     */
+    #[Route(path: '/participation/reserve_transport', name: 'participation_reserve_transport')]
+    #[Security('ROLE_ADMIN')]
     public function reserve_transportAction(): Response
     {
         /** @var Participation $participation */
@@ -119,10 +111,8 @@ class AdminController extends EasyAdminController
         ]);
     }
 
-    /**
-     * @Route(path="/participation/book_hotel", name="participation_book_hotel")
-     * @Security("has_role('ROLE_ADMIN')")
-     */
+    #[Route(path: '/participation/book_hotel', name: 'participation_book_hotel')]
+    #[Security('ROLE_ADMIN')]
     public function book_hotelAction(): Response
     {
         /** @var Participation $participation */
@@ -139,10 +129,8 @@ class AdminController extends EasyAdminController
         ]);
     }
 
-    /**
-     * @Route(path="/participation/validate", name="participation_validate")
-     * @Security("has_role('ROLE_ADMIN')")
-     */
+    #[Route(path: '/participation/validate', name: 'participation_validate')]
+    #[Security('ROLE_ADMIN')]
     public function validateAction(): Response
     {
         /** @var Participation $participation */
@@ -159,10 +147,8 @@ class AdminController extends EasyAdminController
         ]);
     }
 
-    /**
-     * @Route(path="/participation/reject", name="participation_reject")
-     * @Security("has_role('ROLE_ADMIN')")
-     */
+    #[Route(path: '/participation/reject', name: 'participation_reject')]
+    #[Security('ROLE_ADMIN')]
     public function rejectAction(): Response
     {
         /** @var Participation $participation */
@@ -179,10 +165,8 @@ class AdminController extends EasyAdminController
         ]);
     }
 
-    /**
-     * @Route(path="/participation/cancel", name="participation_cancel")
-     * @Security("has_role('ROLE_ADMIN')")
-     */
+    #[Route(path: '/participation/cancel', name: 'participation_cancel')]
+    #[Security('ROLE_ADMIN')]
     public function cancelAction(): Response
     {
         /** @var Participation $participation */

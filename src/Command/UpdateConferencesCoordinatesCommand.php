@@ -20,16 +20,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class UpdateConferencesCoordinatesCommand extends Command
 {
-    private ConferenceRepository $conferenceRepository;
-    private LocationGuesser $locationGuesser;
-    private EntityManagerInterface $em;
-
-    public function __construct(ConferenceRepository $conferenceRepository, LocationGuesser $locationGuesser, EntityManagerInterface $em)
-    {
-        $this->conferenceRepository = $conferenceRepository;
-        $this->locationGuesser = $locationGuesser;
-        $this->em = $em;
-
+    public function __construct(
+        private ConferenceRepository $conferenceRepository,
+        private LocationGuesser $locationGuesser,
+        private EntityManagerInterface $em,
+    ) {
         parent::__construct();
     }
 
