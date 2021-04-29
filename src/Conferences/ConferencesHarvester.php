@@ -150,11 +150,6 @@ class ConferencesHarvester
             $updated = true;
         }
 
-        if ($conference->getExcluded() !== $existingConference->getExcluded()) {
-            $existingConference->setExcluded($conference->getExcluded());
-            $updated = true;
-        }
-
         if ($conference->isOnline() !== $existingConference->isOnline()) {
             $existingConference->setOnline($conference->isOnline());
             $updated = true;
