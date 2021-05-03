@@ -150,10 +150,8 @@ class SlackNotifier
                     continue;
                 }
 
-                $conferenceUrl = $this->router->generate('easyadmin', [
-                    'id' => $conference->getId(),
-                    'entity' => 'NextConference',
-                    'action' => 'show',
+                $conferenceUrl = $this->router->generate('conferences_show', [
+                    'slug' => $conference->getSlug(),
                 ], UrlGeneratorInterface::ABSOLUTE_URL);
 
                 $location = $conference->isOnline() ? 'Online' : sprintf(':flag-%s:', $conference->getCountry());
@@ -209,10 +207,8 @@ class SlackNotifier
             $cfpsBlock[] = $this->slackBlocksBuilder->buildSimpleSection($cfpText);
 
             foreach ($conferences as $conference) {
-                $conferenceUrl = $this->router->generate('easyadmin', [
-                    'id' => $conference->getId(),
-                    'entity' => 'NextConference',
-                    'action' => 'show',
+                $conferenceUrl = $this->router->generate('conferences_show', [
+                    'slug' => $conference->getSlug(),
                 ], UrlGeneratorInterface::ABSOLUTE_URL);
 
                 $location = $conference->isOnline() ? 'Online' : sprintf(':flag-%s:', $conference->getCountry());

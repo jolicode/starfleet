@@ -118,11 +118,7 @@ class SlackNotifierTest extends WebTestCase
         $router
             ->generate(
                 Argument::type('string'),
-                [
-                    'id' => 1,
-                    'entity' => 'NextConference',
-                    'action' => 'show',
-                ],
+                ['slug' => 'test-slug'],
                 Argument::type('integer')
             )
             ->willReturn('Route URL');
@@ -150,6 +146,7 @@ class SlackNotifierTest extends WebTestCase
         $conference->setOnline(false);
         $conference->setExcluded($excluded);
         $conference->setCountry('Test Country');
+        $conference->setSlug('test-slug');
 
         $conferenceReflection = new \ReflectionClass(Conference::class);
         $conferenceId = $conferenceReflection->getProperty('id');

@@ -13,7 +13,7 @@ namespace App\Tests\Functional;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class ConferenceControllerTest extends WebTestCase
+class FrontControllerTest extends WebTestCase
 {
     public function testConferencesWithValidatedParticipationsAreDisplayed()
     {
