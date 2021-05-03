@@ -104,11 +104,9 @@ class ConferenceRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('c')
             ->andWhere('c.startAt = :startAt')
-            ->andWhere('c.endAt = :endAt')
             ->andWhere('levenshtein(c.name, :name) < 4')
             ->setParameters([
                 'startAt' => $conference->getStartAt(),
-                'endAt' => $conference->getEndAt(),
                 'name' => $conference->getName(),
             ])
             ->setMaxResults(1)

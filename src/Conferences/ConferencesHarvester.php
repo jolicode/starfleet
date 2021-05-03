@@ -46,7 +46,7 @@ class ConferencesHarvester
     /** @return array<string,int> */
     public function harvest(): array
     {
-        $fetchersAmount = \count($this->fetchers);
+        $fetchersAmount = iterator_count($this->fetchers);
         $currentFetcher = 0;
         $updatedConferencesCount = 0;
         $newConferencesCount = 0;

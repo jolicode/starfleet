@@ -126,7 +126,7 @@ class ConferenceHarvesterTest extends KernelTestCase
             ->dispatch(Argument::type(DailyNotificationEvent::class));
 
         $harvester = new ConferencesHarvester(
-            [$fetcherProphecy->reveal()],
+            new \ArrayIterator([$fetcherProphecy->reveal()]),
             $fetcherConfigurationRepository->reveal(),
             $conferenceFilterRepository->reveal(),
             $conferenceRepository->reveal(),
