@@ -193,20 +193,20 @@ class JoindApiFetcher implements FetcherInterface
             $conference->addTag($tag);
         }
 
-        if (\array_key_exists('end_date', $rawConference)) {
+        if (\array_key_exists('end_date', $rawConference) && $rawConference['end_date']) {
             $endDate = new \DateTimeImmutable($rawConference['end_date']);
             $conference->setEndAt($endDate);
         }
 
-        if (\array_key_exists('description', $rawConference)) {
+        if (\array_key_exists('description', $rawConference) && $rawConference['description']) {
             $conference->setDescription($rawConference['description']);
         }
 
-        if (\array_key_exists('cfp_url', $rawConference)) {
+        if (\array_key_exists('cfp_url', $rawConference) && $rawConference['cfp_url']) {
             $conference->setCfpUrl($rawConference['cfp_url']);
         }
 
-        if (\array_key_exists('cfp_end_date', $rawConference)) {
+        if (\array_key_exists('cfp_end_date', $rawConference) && $rawConference['cfp_end_date']) {
             $cfpEndAt = new \DateTimeImmutable($rawConference['cfp_end_date']);
             $conference->setCfpEndAt($cfpEndAt);
         }

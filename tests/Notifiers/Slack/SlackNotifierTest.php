@@ -98,15 +98,6 @@ class SlackNotifierTest extends WebTestCase
             // One for $testConference, one to say no ending CFP.
             'expectedSections' => 2,
         ];
-
-        $noCfpUrlConference = $this->createConference(new \DateTime(), cfpUrl: null);
-
-        yield 'Test conference with no CFP URL is not sending notifications' => [
-            'newConferences' => [$testConference, $noCfpUrlConference],
-            'endingCfps' => [],
-            // One for $testConference, one to say no ending CFP.
-            'expectedSections' => 2,
-        ];
     }
 
     private function createSlackNotifier(array $endingCfps, HttpClientInterface $client): SlackNotifier
@@ -137,12 +128,12 @@ class SlackNotifierTest extends WebTestCase
         );
     }
 
-    private function createConference(\DateTimeInterface $cfpEndAt, bool $excluded = false, ?string $cfpUrl = 'Test URL')
+    private function createConference(\DateTimeInterface $cfpEndAt, bool $excluded = false)
     {
         $conference = new Conference();
         $conference->setName('Test Conference');
         $conference->setCfpEndAt($cfpEndAt);
-        $conference->setCfpUrl($cfpUrl);
+        $conference->setCfpUrl('https://starfleet.jolicode.com');
         $conference->setOnline(false);
         $conference->setExcluded($excluded);
         $conference->setCountry('Test Country');

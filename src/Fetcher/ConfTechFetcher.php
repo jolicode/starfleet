@@ -160,20 +160,20 @@ class ConfTechFetcher implements FetcherInterface
             $conference->setCity($city);
         }
 
-        if (\array_key_exists('endDate', $rawConference)) {
+        if (\array_key_exists('endDate', $rawConference) && $rawConference['endDate']) {
             $endDate = new \DateTimeImmutable($rawConference['endDate']);
             $conference->setEndAt($endDate);
         }
 
-        if (\array_key_exists('description', $rawConference)) {
+        if (\array_key_exists('description', $rawConference) && $rawConference['description']) {
             $conference->setDescription($rawConference['description']);
         }
 
-        if (\array_key_exists('cfpUrl', $rawConference)) {
+        if (\array_key_exists('cfpUrl', $rawConference) && $rawConference['cfpUrl']) {
             $conference->setCfpUrl($rawConference['cfpUrl']);
         }
 
-        if (\array_key_exists('cfpEndDate', $rawConference)) {
+        if (\array_key_exists('cfpEndDate', $rawConference) && $rawConference['cfpEndDate']) {
             $cfpEndAt = new \DateTimeImmutable($rawConference['cfpEndDate']);
             $conference->setCfpEndAt($cfpEndAt);
         }
