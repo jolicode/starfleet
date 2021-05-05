@@ -142,21 +142,21 @@ class SlackNotifier
             $conferencesBlocks = [];
 
             foreach ($conferences as $conference) {
-                if (null === $conference->getCfpUrl()) {
-                    continue;
-                }
-
                 if ($conference->getExcluded()) {
                     continue;
                 }
 
+                $location = $conference->isOnline() ? 'Online' : sprintf(':flag-%s:', $conference->getCountry());
                 $conferenceUrl = $this->router->generate('conferences_show', [
                     'slug' => $conference->getSlug(),
                 ], UrlGeneratorInterface::ABSOLUTE_URL);
 
-                $location = $conference->isOnline() ? 'Online' : sprintf(':flag-%s:', $conference->getCountry());
+                if ($conference->getCfpUrl()) {
+                    $conferenceText = sprintf('*<%s|%s>*, %s (<%s|Go to CFP>)', $conferenceUrl, $conference->getName(), $location, $conference->getCfpUrl());
+                } else {
+                    $conferenceText = sprintf('*<%s|%s>*, %s (No CFP page)', $conferenceUrl, $conference->getName(), $location);
+                }
 
-                $conferenceText = sprintf('*<%s|%s>*, %s (<%s|Go to CFP>)', $conferenceUrl, $conference->getName(), $location, $conference->getCfpUrl());
                 $conferencesBlocks[] = $this->slackBlocksBuilder->buildSectionWithButton($conferenceText, 'Mute this conference', 'Mute Conference', $conference->getId());
             }
         }
@@ -212,7 +212,12 @@ class SlackNotifier
                 ], UrlGeneratorInterface::ABSOLUTE_URL);
 
                 $location = $conference->isOnline() ? 'Online' : sprintf(':flag-%s:', $conference->getCountry());
-                $conferenceText = sprintf('*<%s|%s>*, %s (<%s|Go to CFP>)', $conferenceUrl, $conference->getName(), $location, $conference->getCfpUrl());
+
+                if ($conference->getCfpUrl()) {
+                    $conferenceText = sprintf('*<%s|%s>*, %s (<%s|Go to CFP>)', $conferenceUrl, $conference->getName(), $location, $conference->getCfpUrl());
+                } else {
+                    $conferenceText = sprintf('*<%s|%s>*, %s (No CFP page)', $conferenceUrl, $conference->getName(), $location);
+                }
 
                 if ($conference->getSubmits()->count() > 0) {
                     $conferenceText .= sprintf("\n%d Talks were submitted by colleagues for %s !", \count($conference->getSubmits()), $conference->getName());

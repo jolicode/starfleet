@@ -191,8 +191,6 @@ class TululaFetcher implements FetcherInterface
         }
 
         $startDate = new \DateTimeImmutable($rawConference['dateStart']);
-        $endDate = new \DateTimeImmutable($rawConference['dateEnd']);
-        $cfpEndDate = new \DateTimeImmutable($rawConference['cfpDateEnd']);
 
         $conference = new Conference();
         $conference->setSource(self::SOURCE);
@@ -200,10 +198,7 @@ class TululaFetcher implements FetcherInterface
         $conference->setStartAt($startDate);
         $name = trim(str_replace($startDate->format('Y'), '', $rawConference['name']));
         $conference->setName($name);
-        $conference->setEndAt($endDate);
-        $conference->setCfpEndAt($cfpEndDate);
         $conference->setSiteUrl($rawConference['url']);
-        $conference->setCfpUrl($rawConference['cfpUrl']);
 
         foreach ($rawConference['tags'] as $tag) {
             $conference->addTag($tag['name']);
@@ -216,6 +211,20 @@ class TululaFetcher implements FetcherInterface
             $conference->setCity($city);
             $conference->setCountry($rawConference['venue']['countryCode']);
             $conference->setCoordinates($coords);
+        }
+
+        if (\array_key_exists('dateEnd', $rawConference) && $rawConference['dateEnd']) {
+            $endDate = new \DateTimeImmutable($rawConference['dateEnd']);
+            $conference->setEndAt($endDate);
+        }
+
+        if (\array_key_exists('cfpUrl', $rawConference) && $rawConference['cfpUrl']) {
+            $conference->setCfpUrl($rawConference['cfpUrl']);
+        }
+
+        if (\array_key_exists('cfpDateEnd', $rawConference) && $rawConference['cfpDateEnd']) {
+            $cfpEndAt = new \DateTimeImmutable($rawConference['cfpDateEnd']);
+            $conference->setCfpEndAt($cfpEndAt);
         }
 
         return $conference;
