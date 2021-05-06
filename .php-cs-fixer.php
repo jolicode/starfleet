@@ -15,7 +15,8 @@ $finder = PhpCsFixer\Finder::create()
     ->exclude('src/Migrations')
 ;
 
-return PhpCsFixer\Config::create()
+$config = new PhpCsFixer\Config();
+return $config
     ->setRiskyAllowed(true)
     ->setRules([
         '@Symfony' => true,
@@ -30,5 +31,4 @@ return PhpCsFixer\Config::create()
         'strict_comparison' => true,
     ])
     ->setFinder($finder)
-    ->setCacheFile(__DIR__.'/.php_cs.cache')
 ;
