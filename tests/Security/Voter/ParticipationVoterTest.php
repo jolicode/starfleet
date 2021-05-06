@@ -36,7 +36,7 @@ class ParticipationVoterTest extends TestCase
     {
         $token = $this->prophesize(TokenInterface::class);
         self::assertSame(VoterInterface::ACCESS_ABSTAIN, $this->participationVoter->vote($token->reveal(), new Participation(), ['SOMETHING_ELSE']));
-        self::assertSame(VoterInterface::ACCESS_ABSTAIN, $this->participationVoter->vote($token->reveal(), null, ['PARTICIPATION_SHOW']));
+        self::assertSame(VoterInterface::ACCESS_ABSTAIN, $this->participationVoter->vote($token->reveal(), null, ['ROLE_PARTICIPATION_SHOW']));
     }
 
     public function testDeniesIfNotLogged()
@@ -48,7 +48,7 @@ class ParticipationVoterTest extends TestCase
         $participation = new Participation();
         $participation->setParticipant($user);
 
-        self::assertSame(VoterInterface::ACCESS_DENIED, $this->participationVoter->vote($token->reveal(), $participation, ['PARTICIPATION_SHOW']));
+        self::assertSame(VoterInterface::ACCESS_DENIED, $this->participationVoter->vote($token->reveal(), $participation, ['ROLE_PARTICIPATION_SHOW']));
     }
 
     /**
@@ -58,7 +58,7 @@ class ParticipationVoterTest extends TestCase
     {
         $token = new UsernamePasswordToken($user, 'password', 'provider_key');
 
-        self::assertSame($expected, $this->participationVoter->vote($token, $participation, ['PARTICIPATION_SHOW']));
+        self::assertSame($expected, $this->participationVoter->vote($token, $participation, ['ROLE_PARTICIPATION_SHOW']));
     }
 
     public function provideVoteTests()

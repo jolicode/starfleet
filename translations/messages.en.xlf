@@ -287,6 +287,22 @@
       <segment>
         <source>PassedConference</source>
         <target>PassedConference</target>
+    <unit id="HW88WQ3" name="not_needed">
+      <segment>
+        <source>not_needed</source>
+        <target>Not needed</target>
+      </segment>
+    </unit>
+    <unit id="wM6i3Sh" name="needed">
+      <segment>
+        <source>needed</source>
+        <target>Needed</target>
+      </segment>
+    </unit>
+    <unit id="Z5aIP_z" name="booked">
+      <segment>
+        <source>booked</source>
+        <target>Booked</target>
       </segment>
     </unit>
   </file>

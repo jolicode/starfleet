@@ -92,7 +92,7 @@ class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInt
     private Collection $submits;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Participation", mappedBy="participant")
+     * @ORM\OneToMany(targetEntity="App\Entity\Participation", mappedBy="participant", cascade={"persist", "remove"})
      *
      * @var Collection<Participation>
      */
@@ -365,10 +365,6 @@ class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInt
     {
         if ($this->participations->contains($participation)) {
             $this->participations->removeElement($participation);
-            // set the owning side to null (unless already changed)
-            if ($participation->getParticipant() === $this) {
-                $participation->setParticipant(null);
-            }
         }
 
         return $this;

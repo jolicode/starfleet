@@ -4,9 +4,9 @@ easy_admin:
             class: App\Entity\Submit
             disabled_actions: ['show']
             edit:
-                role: SUBMIT_EDIT
+                role: ROLE_SUBMIT_EDIT
             delete:
-                role: SUBMIT_EDIT
+                role: ROLE_SUBMIT_EDIT
             list:
                 filters: ['talk', 'conference', 'submittedAt', 'status', 'users']
                 role: ROLE_USER

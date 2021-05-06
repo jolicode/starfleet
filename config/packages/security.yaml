@@ -26,11 +26,10 @@ security:
     access_control:
         - { path: ^/login$, role: PUBLIC_ACCESS }
         - { path: ^/admin, roles: ROLE_USER }
-        - { path: ^/admin/?entity=User, roles: ROLE_ADMIN }
 
     role_hierarchy:
-        ROLE_ADMIN: 
+        ROLE_ADMIN:
             - ROLE_USER
-            - TALK_SHOW
-            - PARTICIPATION_SHOW
-            - SUBMIT_EDIT
+            - ROLE_TALK_SHOW
+            - ROLE_PARTICIPATION_MANAGEMENT
+            - ROLE_SUBMIT_EDIT

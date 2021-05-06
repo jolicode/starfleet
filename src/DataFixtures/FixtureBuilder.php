@@ -162,7 +162,7 @@ class FixtureBuilder
             'conference' => self::createConference(),
             'participant' => self::createUser(),
             'asSpeaker' => self::getFaker()->boolean,
-            'marking' => ['validated' => random_int(0, 1)],
+            'marking' => ['accepted' => random_int(0, 1)],
         ], $description);
 
         $participation = new Participation();

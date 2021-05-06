@@ -4,11 +4,13 @@ easy_admin:
             class: App\Entity\User
             disabled_actions: ['show', 'delete']
             list:
+                item_permission: ['ROLE_ADMIN']
                 fields:
                     - { property: 'name', type: 'text' }
                     - { property: 'email', type: 'email' }
                     - { property: 'submits' }
             form:
+                item_permission: ['ROLE_ADMIN']
                 fields:
                     - { type: 'group', columns: 6, icon: 'pencil', label: 'User' }
                     - { property: 'name', type: 'text' }

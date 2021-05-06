@@ -58,7 +58,7 @@ class Talk
         return $this->id;
     }
 
-    public function setTitle(?string $title): self
+    public function setTitle(string $title): self
     {
         $this->title = $title;
 
@@ -70,7 +70,7 @@ class Talk
         return $this->title;
     }
 
-    public function setIntro(?string $intro): self
+    public function setIntro(string $intro): self
     {
         $this->intro = $intro;
 
