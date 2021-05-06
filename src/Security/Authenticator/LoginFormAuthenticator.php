@@ -68,6 +68,10 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
             return new RedirectResponse($targetPath);
         }
 
-        return new RedirectResponse($this->router->generate('easyadmin'));
+        if (\in_array('Admin', $token->getRoleNames())) {
+            return new RedirectResponse($this->router->generate('easyadmin'));
+        }
+
+        return new RedirectResponse($this->router->generate('user_account'));
     }
 }

@@ -12,6 +12,7 @@
 namespace App\Repository;
 
 use App\Entity\Conference;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -168,6 +169,17 @@ class ConferenceRepository extends ServiceEntityRepository
             20 => $daysRemaining20,
             30 => $daysRemaining30,
         ];
+    }
+
+    public function findAttentedConferencesByUser(User $user): array
+    {
+        return $this->createAttendedQueryBuilder()
+            ->select('c')
+            ->andWhere('p.participant = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->execute()
+            ;
     }
 
     private function createAttendedQueryBuilder(): QueryBuilder
