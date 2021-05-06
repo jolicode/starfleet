@@ -61,7 +61,7 @@ class SlackNotifierEventListener implements EventSubscriberInterface
             return;
         }
 
-        $this->slackNotifier->sendDailyNotification($event->getNewConferences());
+        $this->slackNotifier->sendDailyNotification($event->getNewConferences(), $event->getEndingCfps());
     }
 
     public function onSubmitStatusChanged(SubmitStatusChangedEvent $event): void

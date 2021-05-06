@@ -55,8 +55,9 @@ class SlackController extends AbstractController
         $this->em->flush();
 
         $dailyConferences = $this->conferenceRepository->getDailyConferences();
+        $endingCfps = $this->conferenceRepository->getEndingCfpsByRemainingDays();
 
-        $blocks = $this->slackNotifier->buildDailyBlocks($dailyConferences);
+        $blocks = $this->slackNotifier->buildDailyBlocks($dailyConferences, $endingCfps);
 
         $body = [
             'replace_original' => true,

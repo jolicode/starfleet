@@ -114,6 +114,9 @@ class ConferenceHarvesterTest extends KernelTestCase
         $conferenceRepository
             ->findExistingConference(Argument::type(Conference::class))
             ->willReturn($existingConference);
+        $conferenceRepository
+            ->getEndingCfpsByRemainingDays()
+            ->willReturn([]);
 
         $entityManager = $this->prophesize(EntityManager::class);
         $entityManager

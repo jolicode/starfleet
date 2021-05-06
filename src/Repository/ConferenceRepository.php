@@ -115,6 +115,48 @@ class ConferenceRepository extends ServiceEntityRepository
             ;
     }
 
+    /** @return array<mixed> */
+    public function getEndingCfpsByRemainingDays(): array
+    {
+        $daysRemaining0 = [];
+        $daysRemaining1 = [];
+        $daysRemaining5 = [];
+        $daysRemaining10 = [];
+        $daysRemaining20 = [];
+        $daysRemaining30 = [];
+
+        $today = new \DateTime();
+        $today->setTime(0, 0, 0);
+        $conferences = $this->findEndingCfps();
+
+        foreach ($conferences as $conference) {
+            $remainingDays = (int) ($conference->getCfpEndAt()->diff($today)->format('%a'));
+
+            match ($remainingDays) {
+                0 => $daysRemaining0[] = $conference,
+                1 => $daysRemaining1[] = $conference,
+                5 => $daysRemaining5[] = $conference,
+                10 => $daysRemaining10[] = $conference,
+                20 => $daysRemaining20[] = $conference,
+                30 => $daysRemaining30[] = $conference,
+                default => null,
+            };
+        }
+
+        if (!array_merge($daysRemaining0, $daysRemaining1, $daysRemaining5, $daysRemaining10, $daysRemaining20, $daysRemaining30)) {
+            return [];
+        }
+
+        return [
+            0 => $daysRemaining0,
+            1 => $daysRemaining1,
+            5 => $daysRemaining5,
+            10 => $daysRemaining10,
+            20 => $daysRemaining20,
+            30 => $daysRemaining30,
+        ];
+    }
+
     private function createAttendedQueryBuilder(): QueryBuilder
     {
         return $this->createQueryBuilder('c')
