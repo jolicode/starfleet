@@ -102,7 +102,7 @@ class User implements UserInterface, \Serializable
      *
      * @var array<mixed>
      */
-    private array $roles = [];
+    private array $roles;
 
     /**
      * @Assert\Length(max=4096)
@@ -123,6 +123,8 @@ class User implements UserInterface, \Serializable
     {
         $this->submits = new ArrayCollection();
         $this->participations = new ArrayCollection();
+        // guarantee every user at least has ROLE_USER
+        $this->roles = ['ROLE_USER'];
     }
 
     public function __toString(): string
@@ -271,8 +273,6 @@ class User implements UserInterface, \Serializable
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
     }
