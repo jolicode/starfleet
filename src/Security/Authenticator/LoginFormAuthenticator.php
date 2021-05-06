@@ -77,7 +77,11 @@ class LoginFormAuthenticator extends AbstractAuthenticator implements Authentica
             return new RedirectResponse($targetPath);
         }
 
-        return new RedirectResponse($this->router->generate('easyadmin'));
+        if (\in_array('Admin', $token->getRoleNames())) {
+            return new RedirectResponse($this->router->generate('easyadmin'));
+        }
+
+        return new RedirectResponse($this->router->generate('user_account'));
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
