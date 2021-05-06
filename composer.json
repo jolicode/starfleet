@@ -18,8 +18,6 @@
         "doctrine/orm": "^2.5.11",
         "easycorp/easy-log-handler": "^1.0.7",
         "easycorp/easyadmin-bundle": "^2.3",
-        "friendsofphp/php-cs-fixer": "^2.18",
-        "fzaninotto/faker": "dev-master",
         "geocoder-php/nominatim-provider": "^5.1",
         "knpuniversity/oauth2-client-bundle": "^2.6.0",
         "league/oauth2-github": "^2.0",
@@ -62,6 +60,7 @@
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.0",
+        "friendsofphp/php-cs-fixer": "^3.0",
         "phpspec/prophecy-phpunit": "^2.0",
         "phpstan/phpstan": "^0.12.63",
         "phpstan/phpstan-doctrine": "^0.12.26",

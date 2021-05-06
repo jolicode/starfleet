@@ -139,9 +139,9 @@ def cs_fix(c, dry_run=False):
     """
     with Builder(c):
         if dry_run:
-            docker_compose_run(c, 'php ./vendor/bin/php-cs-fixer fix --config=.php_cs --dry-run --diff')
+            docker_compose_run(c, 'php ./vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.php --dry-run --diff')
         else:
-            docker_compose_run(c, 'php ./vendor/bin/php-cs-fixer fix --config=.php_cs')
+            docker_compose_run(c, 'php ./vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.php')
 
 
 @task
