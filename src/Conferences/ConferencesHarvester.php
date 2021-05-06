@@ -87,7 +87,7 @@ class ConferencesHarvester
         $this->logger->notice($newConferencesCount.' newly added conference(s)');
         $this->logger->notice($updatedConferencesCount.' updated conference(s)');
 
-        $this->eventDispatcher->dispatch(new DailyNotificationEvent($fetchedConferences));
+        $this->eventDispatcher->dispatch(new DailyNotificationEvent($fetchedConferences, $this->conferenceRepository->getEndingCfpsByRemainingDays()));
 
         return [
             'newConferencesCount' => $newConferencesCount,

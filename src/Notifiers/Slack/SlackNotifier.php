@@ -14,39 +14,52 @@ namespace App\Notifiers\Slack;
 use App\Entity\Conference;
 use App\Entity\Submit;
 use App\Entity\Talk;
-use App\Repository\ConferenceRepository;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class SlackNotifier
 {
+    private LoggerInterface $logger;
+
     public function __construct(
         private string $webHookUrl,
         private HttpClientInterface $httpClient,
         private RouterInterface $router,
-        private ConferenceRepository $conferenceRepository,
-        private SlackBlocksBuilder $slackBlocksBuilder
+        private SlackBlocksBuilder $slackBlocksBuilder,
+        ?LoggerInterface $logger = null,
     ) {
-    }
-
-    /** @param array<Conference> $newConferences */
-    public function sendDailyNotification(array $newConferences): void
-    {
-        $this->notify(['blocks' => $this->buildDailyBlocks($newConferences)]);
+        $this->logger = $logger ?: new NullLogger();
     }
 
     /**
-     * @param array<Conference> $newConferences
+     * @param array<Conference>            $newConferences
+     * @param array<int,array<Conference>> $endingCfps
+     * */
+    public function sendDailyNotification(array $newConferences, array $endingCfps): void
+    {
+        if (0 === \count($newConferences) && 0 === \count($endingCfps)) {
+            $this->logger->info('No new conferences or ending CFPs today, not sending notification.');
+
+            return;
+        }
+
+        $this->notify(['blocks' => $this->buildDailyBlocks($newConferences, $endingCfps)]);
+    }
+
+    /**
+     * @param array<Conference>            $newConferences
+     * @param array<int,array<Conference>> $endingCfps
      *
      * @return array<array>
      */
-    public function buildDailyBlocks(array $newConferences): array
+    public function buildDailyBlocks(array $newConferences, array $endingCfps): array
     {
         return [
             ...$this->buildConferencesBlocks($newConferences),
-            ...$this->buildCfpsBlocks(),
-            $this->slackBlocksBuilder->buildDivider(),
+            ...$this->buildCfpsBlocks($endingCfps),
         ];
     }
 
@@ -134,31 +147,31 @@ class SlackNotifier
      */
     private function buildConferencesBlocks(array $conferences): array
     {
+        if (0 === \count($conferences)) {
+            return [];
+        }
+
         $header = $this->slackBlocksBuilder->buildHeader('New conferences of the day');
 
-        if (0 === \count($conferences)) {
-            $conferencesBlocks = [$this->slackBlocksBuilder->buildSimpleSection('No conferences were added today !')];
-        } else {
-            $conferencesBlocks = [];
+        $conferencesBlocks = [];
 
-            foreach ($conferences as $conference) {
-                if ($conference->getExcluded()) {
-                    continue;
-                }
-
-                $location = $conference->isOnline() ? 'Online' : sprintf(':flag-%s:', $conference->getCountry());
-                $conferenceUrl = $this->router->generate('conferences_show', [
-                    'slug' => $conference->getSlug(),
-                ], UrlGeneratorInterface::ABSOLUTE_URL);
-
-                if ($conference->getCfpUrl()) {
-                    $conferenceText = sprintf('*<%s|%s>*, %s (<%s|Go to CFP>)', $conferenceUrl, $conference->getName(), $location, $conference->getCfpUrl());
-                } else {
-                    $conferenceText = sprintf('*<%s|%s>*, %s (No CFP page)', $conferenceUrl, $conference->getName(), $location);
-                }
-
-                $conferencesBlocks[] = $this->slackBlocksBuilder->buildSectionWithButton($conferenceText, 'Mute this conference', 'Mute Conference', $conference->getId());
+        foreach ($conferences as $conference) {
+            if ($conference->getExcluded()) {
+                continue;
             }
+
+            $location = $conference->isOnline() ? 'Online' : sprintf(':flag-%s:', $conference->getCountry());
+            $conferenceUrl = $this->router->generate('conferences_show', [
+                'slug' => $conference->getSlug(),
+            ], UrlGeneratorInterface::ABSOLUTE_URL);
+
+            if ($conference->getCfpUrl()) {
+                $conferenceText = sprintf('*<%s|%s>*, %s (<%s|Go to CFP>)', $conferenceUrl, $conference->getName(), $location, $conference->getCfpUrl());
+            } else {
+                $conferenceText = sprintf('*<%s|%s>*, %s (No CFP page)', $conferenceUrl, $conference->getName(), $location);
+            }
+
+            $conferencesBlocks[] = $this->slackBlocksBuilder->buildSectionWithButton($conferenceText, 'Mute this conference', 'Mute Conference', $conference->getId());
         }
 
         return [
@@ -168,28 +181,21 @@ class SlackNotifier
         ];
     }
 
-    /** @return array<array> */
-    private function buildCfpsBlocks(): array
+    /**
+     * @param array<int,array<Conference>> $endingCfps
+     *
+     * @return array<array>
+     * */
+    private function buildCfpsBlocks(array $endingCfps): array
     {
+        if (0 === \count($endingCfps)) {
+            return [];
+        }
+
         $cfpsBlock = [
             $this->slackBlocksBuilder->buildHeader('Ending soon CFPs'),
             $this->slackBlocksBuilder->buildDivider(),
         ];
-
-        $endingCfps = $this->getEndingCfps();
-
-        if (
-            0 === \count($endingCfps[0]) &&
-            0 === \count($endingCfps[1]) &&
-            0 === \count($endingCfps[5]) &&
-            0 === \count($endingCfps[10]) &&
-            0 === \count($endingCfps[20]) &&
-            0 === \count($endingCfps[30])
-        ) {
-            $cfpsBlock[] = $this->slackBlocksBuilder->buildSimpleSection('No ending CFP to display today !');
-
-            return $cfpsBlock;
-        }
 
         foreach ($endingCfps as $remainingDays => $conferences) {
             if (0 === \count($conferences)) {
@@ -228,44 +234,6 @@ class SlackNotifier
         }
 
         return $cfpsBlock;
-    }
-
-    /** @return array<int,array> */
-    private function getEndingCfps(): array
-    {
-        $daysRemaining0 = [];
-        $daysRemaining1 = [];
-        $daysRemaining5 = [];
-        $daysRemaining10 = [];
-        $daysRemaining20 = [];
-        $daysRemaining30 = [];
-
-        $today = new \DateTime();
-        $today->setTime(0, 0, 0);
-        $conferences = $this->conferenceRepository->findEndingCfps();
-
-        foreach ($conferences as $conference) {
-            $remainingDays = (int) ($conference->getCfpEndAt()->diff($today)->format('%a'));
-
-            match ($remainingDays) {
-                0 => $daysRemaining0[] = $conference,
-                1 => $daysRemaining1[] = $conference,
-                5 => $daysRemaining5[] = $conference,
-                10 => $daysRemaining10[] = $conference,
-                20 => $daysRemaining20[] = $conference,
-                30 => $daysRemaining30[] = $conference,
-                default => null,
-            };
-        }
-
-        return [
-            0 => $daysRemaining0,
-            1 => $daysRemaining1,
-            5 => $daysRemaining5,
-            10 => $daysRemaining10,
-            20 => $daysRemaining20,
-            30 => $daysRemaining30,
-        ];
     }
 
     /** @param array<mixed> $blocks */
