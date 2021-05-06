@@ -1,286 +1,304 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="en">
   <file id="messages.en">
-    <unit id="3_vUzLP">
+    <unit id="3_vUzLP" name="index.title">
       <segment>
         <source>index.title</source>
         <target>A Slack bot for conferences CFP</target>
       </segment>
     </unit>
-    <unit id="iuZEAJP">
+    <unit id="iuZEAJP" name="index.baseline">
       <segment>
         <source>index.baseline</source>
         <target>Starfleet is a Slack bot that aggregates conferences which cover your favorite topics</target>
       </segment>
     </unit>
-    <unit id="WJR6JH7">
+    <unit id="WJR6JH7" name="index.demo_button.label">
       <segment>
         <source>index.demo_button.label</source>
         <target>Demo 🚀</target>
       </segment>
     </unit>
-    <unit id="OtHZ41v">
+    <unit id="OtHZ41v" name="index.features.title">
       <segment>
         <source>index.features.title</source>
         <target>What Starfleet can do?</target>
       </segment>
     </unit>
-    <unit id="kCklUCT">
+    <unit id="kCklUCT" name="conferences.list.title">
       <segment>
         <source>conferences.list.title</source>
         <target>Conferences we are attending</target>
       </segment>
     </unit>
-    <unit id="aiHjFk.">
+    <unit id="aiHjFk." name="conferences.list.baseline">
       <segment>
         <source>conferences.list.baseline</source>
         <target>Here is the list of conferences in which we participate, or have participated at JoliCode. You will find the list of your conferences in your own instance of Starfleet.</target>
       </segment>
     </unit>
-    <unit id="bL.Rv4d">
+    <unit id="bL.Rv4d" name="conferences.card.cfp_button_label">
       <segment>
         <source>conferences.card.cfp_button_label</source>
         <target>Go to the CFP</target>
       </segment>
     </unit>
-    <unit id="Bl0WvZ6">
+    <unit id="Bl0WvZ6" name="conference.card.site_button_label">
       <segment>
         <source>conference.card.site_button_label</source>
         <target>Website</target>
       </segment>
     </unit>
-    <unit id="zsu3ASm">
+    <unit id="zsu3ASm" name="conferences.show.sidebar.dates_title">
       <segment>
         <source>conferences.show.sidebar.dates_title</source>
         <target>Dates</target>
       </segment>
     </unit>
-    <unit id="fgrmwED">
+    <unit id="fgrmwED" name="date.from">
       <segment>
         <source>date.from</source>
         <target>From</target>
       </segment>
     </unit>
-    <unit id="jYPp9QQ">
+    <unit id="jYPp9QQ" name="date.to">
       <segment>
         <source>date.to</source>
         <target>To</target>
       </segment>
     </unit>
-    <unit id="06t9e3q">
+    <unit id="06t9e3q" name="conferences.show.sidebar.location_title">
       <segment>
         <source>conferences.show.sidebar.location_title</source>
         <target>Location</target>
       </segment>
     </unit>
-    <unit id="TCw41XN">
+    <unit id="TCw41XN" name="conferences.show.sidebar.cfp_title">
       <segment>
         <source>conferences.show.sidebar.cfp_title</source>
         <target>CFP</target>
       </segment>
     </unit>
-    <unit id="214AA4Z">
+    <unit id="214AA4Z" name="conferences.show.sidebar.cfp_end_at">
       <segment>
         <source>conferences.show.sidebar.cfp_end_at</source>
         <target>Ends on</target>
       </segment>
     </unit>
-    <unit id="cAWksFT">
+    <unit id="cAWksFT" name="conferences.show.sidebar.tags_title">
       <segment>
         <source>conferences.show.sidebar.tags_title</source>
         <target>Tags</target>
       </segment>
     </unit>
-    <unit id="mYCG0m.">
+    <unit id="mYCG0m." name="conferences.show.talks.title">
       <segment>
         <source>conferences.show.talks.title</source>
         <target>Talks we submitted</target>
       </segment>
     </unit>
-    <unit id="cJ5teTv">
+    <unit id="cJ5teTv" name="conferences.show.article_url.title">
       <segment>
         <source>conferences.show.article_url.title</source>
         <target>We wrote a blog post</target>
       </segment>
     </unit>
-    <unit id="OMiyj82">
+    <unit id="OMiyj82" name="conferences.show.article_url.content">
       <segment>
         <source>conferences.show.article_url.content</source>
         <target>Read our article about this conference.</target>
       </segment>
     </unit>
-    <unit id="NhidkBa">
+    <unit id="NhidkBa" name="conferences.show.talk_submitted_ago">
       <segment>
         <source>conferences.show.talk_submitted_ago</source>
         <target>Submitted</target>
       </segment>
     </unit>
-    <unit id="ZTUtQYa">
+    <unit id="ZTUtQYa" name="conferences.show.talk_submitted_by">
       <segment>
         <source>conferences.show.talk_submitted_by</source>
         <target>by</target>
       </segment>
     </unit>
-    <unit id="BwwWCmK">
+    <unit id="BwwWCmK" name="accepted">
       <segment>
         <source>accepted</source>
         <target>Accepted</target>
       </segment>
     </unit>
-    <unit id="IM2Tii6">
+    <unit id="IM2Tii6" name="rejected">
       <segment>
         <source>rejected</source>
         <target>Rejected</target>
       </segment>
     </unit>
-    <unit id="YqL_09b">
+    <unit id="YqL_09b" name="pending">
       <segment>
         <source>pending</source>
         <target>Pending</target>
       </segment>
     </unit>
-    <unit id="pMPtBKl">
+    <unit id="pMPtBKl" name="done">
       <segment>
         <source>done</source>
         <target>Done</target>
       </segment>
     </unit>
-    <unit id="KM3G_ft">
+    <unit id="KM3G_ft" name="conference.show.back_to_list_button_label">
       <segment>
         <source>conference.show.back_to_list_button_label</source>
         <target><![CDATA[< Back to the list]]></target>
       </segment>
     </unit>
-    <unit id="NZ6OCyn">
+    <unit id="NZ6OCyn" name="conferences.show.no_talks">
       <segment>
         <source>conferences.show.no_talks</source>
         <target>We did not submit any talk yet, but soon</target>
       </segment>
     </unit>
-    <unit id="OIJBfCC">
+    <unit id="OIJBfCC" name="conferences.list.live.title">
       <segment>
         <source>conferences.list.live.title</source>
         <target>🔴 Live conferences! Find us there!</target>
       </segment>
     </unit>
-    <unit id="mTr6ntT">
+    <unit id="mTr6ntT" name="conferences.list.future.title">
       <segment>
         <source>conferences.list.future.title</source>
         <target>Incoming conferences</target>
       </segment>
     </unit>
-    <unit id="bj979D1">
+    <unit id="bj979D1" name="conferences.list.past.title">
       <segment>
         <source>conferences.list.past.title</source>
         <target>Past conferences</target>
       </segment>
     </unit>
-    <unit id="hfgu1xQ">
+    <unit id="hfgu1xQ" name="admin.conference.cfp_url.label">
       <segment>
         <source>admin.conference.cfp_url.label</source>
         <target>Go to CFP 👉</target>
       </segment>
     </unit>
-    <unit id="58cSBN9">
+    <unit id="58cSBN9" name="action.accept">
       <segment>
         <source>action.accept</source>
         <target>Accept</target>
       </segment>
     </unit>
-    <unit id="u2e0BTR">
+    <unit id="u2e0BTR" name="action.reject">
       <segment>
         <source>action.reject</source>
         <target>Reject</target>
       </segment>
     </unit>
-    <unit id="txWMTy2">
+    <unit id="txWMTy2" name="action.ticket bought">
       <segment>
         <source>action.ticket bought</source>
         <target>Ticket</target>
       </segment>
     </unit>
-    <unit id="BiTIRhC">
+    <unit id="BiTIRhC" name="action.transport reserved">
       <segment>
         <source>action.transport reserved</source>
         <target>Transport</target>
       </segment>
     </unit>
-    <unit id="cH5Vhf1">
+    <unit id="cH5Vhf1" name="action.hotel booked">
       <segment>
         <source>action.hotel booked</source>
         <target>Hotel</target>
       </segment>
     </unit>
-    <unit id="FH1Y5_p">
+    <unit id="FH1Y5_p" name="ticket_bought">
       <segment>
         <source>ticket_bought</source>
         <target>Ticket bought</target>
       </segment>
     </unit>
-    <unit id="otuAQjX">
+    <unit id="otuAQjX" name="transport_reserved">
       <segment>
         <source>transport_reserved</source>
         <target>Transport reserved</target>
       </segment>
     </unit>
-    <unit id="ZYBLvto">
+    <unit id="ZYBLvto" name="hotel_booked">
       <segment>
         <source>hotel_booked</source>
         <target>Hotel booked</target>
       </segment>
     </unit>
-    <unit id="qQSQ0H.">
+    <unit id="qQSQ0H." name="action.validate">
       <segment>
         <source>action.validate</source>
         <target>Validate</target>
       </segment>
     </unit>
-    <unit id="4_Suw3N">
+    <unit id="4_Suw3N" name="validated">
       <segment>
         <source>validated</source>
         <target>Validated</target>
       </segment>
     </unit>
-    <unit id="knHiV5P">
+    <unit id="9vyEyfI" name="online">
       <segment>
         <source>online</source>
         <target>Online</target>
       </segment>
     </unit>
-    <unit id="5zr9nY">
+    <unit id="JiEhxTc" name="edit">
       <segment>
         <source>edit</source>
         <target>Edit</target>
       </segment>
     </unit>
-    <unit id="Q97nbW">
+    <unit id="lz9v1sX" name="fetcher.edit.title">
       <segment>
         <source>fetcher.edit.title</source>
         <target>Edit Fetcher</target>
       </segment>
     </unit>
-    <unit id="QMmT4i">
+    <unit id="9sEEyg7" name="fetcher.edit.save">
       <segment>
         <source>fetcher.edit.save</source>
         <target>save changes</target>
       </segment>
     </unit>
-    <unit id="HYNX3x">
+    <unit id="AITwt8z" name="fetcher.edit_go_to_list">
       <segment>
         <source>fetcher.edit_go_to_list</source>
         <target>Back to listing</target>
       </segment>
     </unit>
-    <unit id="5JxSux">
+    <unit id="wPKO2OT" name="fetcher.edit.success">
       <segment>
         <source>fetcher.edit.success</source>
         <target>Fetcher successfully edited</target>
       </segment>
     </unit>
-    <unit id="ZjSum3N">
+    <unit id="fzaYrw8" name="conferences.show.sidebar.number_of_participants">
       <segment>
         <source>conferences.show.sidebar.number_of_participants</source>
         <target>How many of us are going?</target>
+      </segment>
+    </unit>
+    <unit id="HW88WQ3" name="not_needed">
+      <segment>
+        <source>not_needed</source>
+        <target>Not needed</target>
+      </segment>
+    </unit>
+    <unit id="wM6i3Sh" name="needed">
+      <segment>
+        <source>needed</source>
+        <target>Needed</target>
+      </segment>
+    </unit>
+    <unit id="Z5aIP_z" name="booked">
+      <segment>
+        <source>booked</source>
+        <target>Booked</target>
       </segment>
     </unit>
   </file>

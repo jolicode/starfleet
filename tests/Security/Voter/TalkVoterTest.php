@@ -34,7 +34,7 @@ class TalkVoterTest extends TestCase
     {
         $token = $this->prophesize(TokenInterface::class);
         self::assertSame(VoterInterface::ACCESS_ABSTAIN, $this->talkVoter->vote($token->reveal(), new Talk(), ['SOMETHING_ELSE']));
-        self::assertSame(VoterInterface::ACCESS_ABSTAIN, $this->talkVoter->vote($token->reveal(), null, ['TALK_SHOW']));
+        self::assertSame(VoterInterface::ACCESS_ABSTAIN, $this->talkVoter->vote($token->reveal(), null, ['ROLE_TALK_SHOW']));
     }
 
     public function testDeniesIfNotLogged()
@@ -48,7 +48,7 @@ class TalkVoterTest extends TestCase
         $submit->addUser($user);
         $talk->addSubmit($submit);
 
-        self::assertSame(VoterInterface::ACCESS_DENIED, $this->talkVoter->vote($token->reveal(), $talk, ['TALK_SHOW']));
+        self::assertSame(VoterInterface::ACCESS_DENIED, $this->talkVoter->vote($token->reveal(), $talk, ['ROLE_TALK_SHOW']));
     }
 
     /**
@@ -58,7 +58,7 @@ class TalkVoterTest extends TestCase
     {
         $token = new UsernamePasswordToken($user, 'password', 'provider_key');
 
-        self::assertSame($expected, $this->talkVoter->vote($token, $talk, ['TALK_SHOW']));
+        self::assertSame($expected, $this->talkVoter->vote($token, $talk, ['ROLE_TALK_SHOW']));
     }
 
     public function provideVoteTests()

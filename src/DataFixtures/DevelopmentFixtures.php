@@ -60,14 +60,6 @@ class DevelopmentFixtures extends AbstractFixtures
             'online' => true,
         ]);
 
-        $onlineParticipation = $this->addParticipation([
-            'participant' => $user1,
-            'conference' => $onlineConference,
-            'asSpeaker' => true,
-            'marking' => ['validated' => 1],
-        ]);
-        $onlineConference->addParticipation($onlineParticipation);
-
         $nextConference = $this->addConference([
             'name' => 'Next Conf',
             'city' => 'Paris',
@@ -81,14 +73,6 @@ class DevelopmentFixtures extends AbstractFixtures
                 'JavaScript',
             ],
         ]);
-
-        $nextParticipation = $this->addParticipation([
-            'participant' => $user1,
-            'conference' => $nextConference,
-            'asSpeaker' => true,
-            'marking' => ['validated' => 1],
-        ]);
-        $nextConference->addParticipation($nextParticipation);
 
         $liveConference = $this->addConference([
             'name' => 'Live Conf',
@@ -104,14 +88,6 @@ class DevelopmentFixtures extends AbstractFixtures
             ],
         ]);
 
-        $liveParticipation = $this->addParticipation([
-            'participant' => $user2,
-            'conference' => $liveConference,
-            'asSpeaker' => false,
-            'marking' => ['validated' => 1],
-        ]);
-        $liveConference->addParticipation($liveParticipation);
-
         $passedConference = $this->addConference([
             'name' => 'Passed Conf',
             'city' => 'Lyon',
@@ -125,14 +101,6 @@ class DevelopmentFixtures extends AbstractFixtures
                 'PHP',
             ],
         ]);
-
-        $passedParticipation = $this->addParticipation([
-            'participant' => $admin,
-            'conference' => $passedConference,
-            'asSpeaker' => true,
-            'marking' => ['validated' => 1],
-        ]);
-        $passedConference->addParticipation($passedParticipation);
 
         $talk1 = $this->addTalk([
             'title' => 'Talk1',
