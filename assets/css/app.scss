@@ -2,6 +2,7 @@ $fa-font-path: "~font-awesome/fonts";
 
 @import '~bootstrap/scss/bootstrap';
 @import '~font-awesome/scss/font-awesome';
+@import 'shooting-stars';
 
 $purplelight: #8078EA;
 $purplesuperlight: #B0A6F4;
@@ -33,10 +34,18 @@ a {
     line-height: 1.1;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 html, body {
     height: 100%;
     overflow-x: hidden;
     background-color: #190629;
+}
+
+.bg-gradient {
+    background: radial-gradient(ellipse at bottom, #190629 0%, #090a0f 100%)
 }
 
 .navbar-content {

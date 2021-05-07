@@ -37,10 +37,10 @@ class SubmitRepository extends ServiceEntityRepository
 
         return $this->createUserQueryBuilder($user)
             ->innerJoin('s.conference', 'c')
-            ->andWhere('c.startAt > :today')
+            ->andWhere('c.startAt >= :today')
             ->setParameter('today', $today)
             ->andWhere('s.status = :accepted')
-            ->setParameter('accepted', 'accepted')
+            ->setParameter('accepted', Submit::STATUS_ACCEPTED)
             ->getQuery()
             ->execute()
             ;

@@ -22,13 +22,20 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+<<<<<<< HEAD
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\PassportInterface;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
+=======
+use Symfony\Component\Security\Core\User\UserProviderInterface;
+use Symfony\Component\Security\Http\Util\TargetPathTrait;
+>>>>>>> WIP Symfony UX
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class GitHubAuthenticator extends OAuth2Authenticator
 {
+    use TargetPathTrait;
+
     public function __construct(
         private ClientRegistry $clientRegistry,
         private EntityManagerInterface $em,
@@ -111,8 +118,14 @@ class GitHubAuthenticator extends OAuth2Authenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey): ?Response
     {
-        $url = $this->getPreviousUrl($request, $providerKey);
+        if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
+            return new RedirectResponse($targetPath);
+        }
 
-        return new RedirectResponse($url ?: $this->urlGenerator->generate('easyadmin'));
+        if (\in_array('ROLE_ADMIN', $token->getRoleNames())) {
+            return new RedirectResponse($this->urlGenerator->generate('easyadmin'));
+        }
+
+        return new RedirectResponse($this->urlGenerator->generate('user_account'));
     }
 }

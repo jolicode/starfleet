@@ -6,11 +6,16 @@
         <title>{% block title %}Starfleet - A Slack bot for conferences CFP{% endblock %}</title>
         <meta name="description" content="Starfleet is a Slack bot that aggregates conferences which cover your favorite topics" />
         {% block stylesheets %}
+<<<<<<< HEAD
             <link rel="stylesheet" type="text/css" href="{{ asset('build/css/app.css') }}" />
+=======
+            <link href="https://fonts.googleapis.com/css?family=Expletus+Sans" rel="stylesheet">
+            {{ encore_entry_link_tags('css/app') }}
+>>>>>>> WIP Symfony UX
         {% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('build/images/favicon.ico') }}" />
     </head>
-    <body>
+    <body class="{% block body_classes %}{% endblock %}">
         {% block header %}
             {{ include('_header.html.twig') }}
         {% endblock %}

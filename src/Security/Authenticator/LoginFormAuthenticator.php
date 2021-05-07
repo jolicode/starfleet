@@ -13,8 +13,13 @@ namespace App\Security\Authenticator;
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+<<<<<<< HEAD
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
+=======
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+>>>>>>> WIP Symfony UX
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
@@ -31,13 +36,23 @@ class LoginFormAuthenticator extends AbstractAuthenticator implements Authentica
     use TargetPathTrait;
 
     public function __construct(
+<<<<<<< HEAD
         private RouterInterface $router,
+=======
+        private UrlGeneratorInterface $urlGenerator,
+        private PasswordManager $passwordManager,
+        private RequestStack $requestStack,
+>>>>>>> WIP Symfony UX
     ) {
     }
 
     public function start(Request $request, ?AuthenticationException $authException = null)
     {
+<<<<<<< HEAD
         return new RedirectResponse('login');
+=======
+        return $this->urlGenerator->generate('login');
+>>>>>>> WIP Symfony UX
     }
 
     protected function getLoginUrl(): string
@@ -77,11 +92,11 @@ class LoginFormAuthenticator extends AbstractAuthenticator implements Authentica
             return new RedirectResponse($targetPath);
         }
 
-        if (\in_array('Admin', $token->getRoleNames())) {
-            return new RedirectResponse($this->router->generate('easyadmin'));
+        if (\in_array('ROLE_ADMIN', $token->getRoleNames())) {
+            return new RedirectResponse($this->urlGenerator->generate('easyadmin'));
         }
 
-        return new RedirectResponse($this->router->generate('user_account'));
+        return new RedirectResponse($this->urlGenerator->generate('user_account'));
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
