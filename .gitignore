@@ -1,13 +1,9 @@
 *.pyc
 /infrastructure/certs/*
-/infrastructure/certs/*
 !/infrastructure/certs/.gitkeep
 /infrastructure/docker/docker-compose.override.yml
-
-/public/build/
-yarn-error.log
-.php_cs.cache
-
+/infrastructure/docker/services/router/etc/ssl/certs/*.pem
+.php-cs-fixer.cache
 
 ###> symfony/framework-bundle ###
 /.env.local
@@ -19,12 +15,10 @@ yarn-error.log
 !/var/phpstan-utilities/
 /vendor/
 ###< symfony/framework-bundle ###
-
 ###> symfony/phpunit-bridge ###
 .phpunit
 /phpunit.xml
 ###< symfony/phpunit-bridge ###
-
 ###> friendsofphp/php-cs-fixer ###
 /.php_cs
 /.php_cs.cache
@@ -36,4 +30,3 @@ npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
 
-/infrastructure/docker/services/router/etc/ssl/certs/*.pem

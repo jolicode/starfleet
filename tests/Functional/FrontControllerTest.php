@@ -15,8 +15,9 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class FrontControllerTest extends WebTestCase
 {
-    public function testConferencesWithValidatedParticipationsAreDisplayed()
+    public function testConferencesWithAcceptedParticipationsAreDisplayed()
     {
+        $this->markTestIncomplete('This test needs to be rewritten.');
         $client = static::createClient();
         $crawler = $client->request('GET', '/');
 

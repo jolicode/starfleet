@@ -91,7 +91,7 @@ class User implements UserInterface, \Serializable
     private Collection $submits;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Participation", mappedBy="participant")
+     * @ORM\OneToMany(targetEntity="App\Entity\Participation", mappedBy="participant", cascade={"persist", "remove"})
      *
      * @var Collection<Participation>
      */
@@ -102,7 +102,7 @@ class User implements UserInterface, \Serializable
      *
      * @var array<mixed>
      */
-    private array $roles = [];
+    private array $roles;
 
     /**
      * @Assert\Length(max=4096)
@@ -123,6 +123,8 @@ class User implements UserInterface, \Serializable
     {
         $this->submits = new ArrayCollection();
         $this->participations = new ArrayCollection();
+        // guarantee every user at least has ROLE_USER
+        $this->roles = ['ROLE_USER'];
     }
 
     public function __toString(): string
@@ -271,8 +273,6 @@ class User implements UserInterface, \Serializable
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
     }
@@ -359,10 +359,6 @@ class User implements UserInterface, \Serializable
     {
         if ($this->participations->contains($participation)) {
             $this->participations->removeElement($participation);
-            // set the owning side to null (unless already changed)
-            if ($participation->getParticipant() === $this) {
-                $participation->setParticipant(null);
-            }
         }
 
         return $this;

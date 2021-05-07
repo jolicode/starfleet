@@ -26,7 +26,7 @@ class ParticipationVoter extends Voter
 
     protected function supports(string $attribute, $subject): bool
     {
-        return \in_array($attribute, ['PARTICIPATION_SHOW'])
+        return \in_array($attribute, ['ROLE_PARTICIPATION_SHOW'])
             && ($subject instanceof Participation);
     }
 
@@ -42,7 +42,7 @@ class ParticipationVoter extends Voter
 
         $roles = $this->roleHierarchy->getReachableRoleNames($token->getRoleNames());
 
-        if (\in_array('PARTICIPATION_SHOW', $roles)) {
+        if (\in_array('ROLE_PARTICIPATION_SHOW', $roles)) {
             return true;
         }
 
