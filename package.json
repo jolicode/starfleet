@@ -3,8 +3,16 @@
     "version": "0.0.1",
     "license": "MIT",
     "private": true,
+    "dependencies": {
+        "bootstrap": "^4.3",
+        "font-awesome": "^4.7.0",
+        "popper.js": "^1.15",
+        "jquery": "^3.6.0"
+    },
     "devDependencies": {
-        "@symfony/webpack-encore": "^0.32.0",
+        "@symfony/stimulus-bridge": "^2.1.0",
+        "@symfony/ux-chartjs": "file:vendor/symfony/ux-chartjs/Resources/assets",
+        "@symfony/webpack-encore": "^1.0.0",
         "babel-core": "^6.26.0",
         "babel-loader": "^7.1.2",
         "babel-preset-env": "^1.6.1",
@@ -14,6 +22,7 @@
         "node-sass": "^4.7.2",
         "prettier": "1.8.2",
         "sass-loader": "^9.0.1",
+        "stimulus": "^2.0.0",
         "webpack-notifier": "^1.6.0"
     },
     "scripts": {
@@ -23,12 +32,6 @@
         "build": "encore production",
         "check-prettier": "prettier \"assets/js/**/*.js\"",
         "prettier": "prettier --write \"assets/js/**/*.js\""
-    },
-    "dependencies": {
-        "bootstrap": "^4.3",
-        "font-awesome": "^4.7.0",
-        "jquery": "^3.5.0",
-        "popper.js": "^1.15"
     },
     "prettier": {
         "parser": "flow",

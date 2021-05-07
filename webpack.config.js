@@ -18,7 +18,7 @@ Encore
         config.plugins.push('@babel/plugin-proposal-class-properties');
     })
     .configureBabelPresetEnv((config) => {
-        config.useBuiltIns = 'usage';
+        // config.useBuiltIns = 'usage'; // commented to let the compilation works with symfony/ux packages
         config.corejs = 3;
     })
     .addStyleEntry('css/admin', './assets/css/admin.scss')
@@ -30,7 +30,8 @@ Encore
         from: './assets/images',
         to: 'images',
     }]))
-    .autoProvidejQuery()
+
+    .enableStimulusBridge('./assets/controllers.json')
 ;
 
 module.exports = Encore.getWebpackConfig();

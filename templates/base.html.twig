@@ -5,11 +5,11 @@
         <title>{% block title %}Starfleet - A Slack bot for conferences CFP{% endblock %}</title>
         {% block stylesheets %}
             <link href="https://fonts.googleapis.com/css?family=Expletus+Sans" rel="stylesheet">
-            <link rel="stylesheet" type="text/css" href="{{ asset('build/css/app.css') }}" />
+            {{ encore_entry_link_tags('css/app') }}
         {% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('build/images/favicon.ico') }}" />
     </head>
-    <body>
+    <body class="{% block body_classes %}{% endblock %}">
         {% block header %}
             {{ include('_header.html.twig') }}
         {% endblock %}

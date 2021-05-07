@@ -15,7 +15,7 @@ use App\Security\PasswordManager;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
@@ -27,7 +27,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
     use TargetPathTrait;
 
     public function __construct(
-        private RouterInterface $router,
+        private UrlGeneratorInterface $urlGenerator,
         private PasswordManager $passwordManager,
         private RequestStack $requestStack,
     ) {
@@ -35,7 +35,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
 
     protected function getLoginUrl()
     {
-        return $this->router->generate('login');
+        return $this->urlGenerator->generate('login');
     }
 
     public function supports(Request $request)
@@ -68,10 +68,10 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
             return new RedirectResponse($targetPath);
         }
 
-        if (\in_array('Admin', $token->getRoleNames())) {
-            return new RedirectResponse($this->router->generate('easyadmin'));
+        if (\in_array('ROLE_ADMIN', $token->getRoleNames())) {
+            return new RedirectResponse($this->urlGenerator->generate('easyadmin'));
         }
 
-        return new RedirectResponse($this->router->generate('user_account'));
+        return new RedirectResponse($this->urlGenerator->generate('user_account'));
     }
 }

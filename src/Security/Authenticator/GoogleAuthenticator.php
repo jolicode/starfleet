@@ -23,9 +23,12 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
+use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
 class GoogleAuthenticator extends SocialAuthenticator
 {
+    use TargetPathTrait;
+
     public function __construct(
         private ClientRegistry $clientRegistry,
         private EntityManagerInterface $em,
@@ -104,8 +107,14 @@ class GoogleAuthenticator extends SocialAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey)
     {
-        $url = $this->getPreviousUrl($request, $providerKey);
+        if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
+            return new RedirectResponse($targetPath);
+        }
 
-        return new RedirectResponse($url ?: $this->urlGenerator->generate('easyadmin'));
+        if (\in_array('ROLE_ADMIN', $token->getRoleNames())) {
+            return new RedirectResponse($this->urlGenerator->generate('easyadmin'));
+        }
+
+        return new RedirectResponse($this->urlGenerator->generate('user_account'));
     }
 }
