@@ -6,22 +6,32 @@ easy_admin:
             templates:
                 list: 'easy_admin/Participation/list.html.twig'
             list:
+                item_permission: ['ROLE_PARTICIPATION_MANAGEMENT']
                 filters: ['conference', 'participant']
-                item_permission: ['PARTICIPATION_SHOW']
                 fields:
                     - { property: 'conference', template: 'easy_admin/Participation/conference.html.twig' }
                     - { property: 'participant' }
                     - { property: 'asSpeaker' }
-                    - { property: 'needTransport' }
-                    - { property: 'needHotel' }
-                    - { property: 'needTicket' }
+                    - { property: 'transportStatus' }
+                    - { property: 'hotelStatus' }
+                    - { property: 'conferenceTicketStatus' }
                     - { property: 'marking', label: 'Status', template: 'easy_admin/Participation/marking.html.twig' }
             form:
+                item_permission: ['ROLE_PARTICIPATION_MANAGEMENT']
                 fields:
                     - { type: 'group', columns: 6, icon: 'id-badge', label: 'Participation' }
-                    - { property: 'conference' }
+                    - { property: 'conference', type_options: { query_builder: App\Repository\ConferenceRepository::getFutureConferences } }
                     - { property: 'participant' }
                     - { property: 'asSpeaker' }
-                    - { property: 'needTransport' }
-                    - { property: 'needHotel' }
-                    - { property: 'needTicket' }
+                    - property: 'transportStatus'
+                      type: choice
+                      type_options:
+                        choices: !php/const App\Entity\Participation::TRANSPORT_STATUSES
+                    - property: 'hotelStatus'
+                      type: choice
+                      type_options:
+                        choices: !php/const App\Entity\Participation::HOTEL_STATUSES
+                    - property: 'conferenceTicketStatus'
+                      type: choice
+                      type_options:
+                        choices: !php/const App\Entity\Participation::CONFERENCE_TICKET_STATUSES

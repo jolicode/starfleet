@@ -9,10 +9,10 @@ easy_admin:
             - { entity: 'NextConference', label: 'Next Conferences', icon: 'forward', default: true }
             - { entity: 'PassedConference', label: 'Passed Conferences', icon: 'backward' }
             - { entity: 'ExcludedConference', label: 'Excluded Conferences', icon: 'times' }
-            - { entity: 'Participation', label: 'Participations', icon: 'id-badge' }
+            - { entity: 'Participation', label: 'Participations', icon: 'id-badge', permission: 'ROLE_PARTICIPATION_MANAGEMENT' }
             - { entity: 'Talk', label: 'Talks', icon: 'file-text-o' }
             - { entity: 'ConferenceFilter', label: 'Ignored Subjects', icon: 'times' }
-            - { entity: 'User', label: 'Users', icon: 'users' }
+            - { entity: 'User', label: 'Users', icon: 'users', permission: 'ROLE_ADMIN' }
             - { entity: 'Continent', label: 'Continents', icon: 'globe' }
             - { entity: 'Submit', label: 'Submitted Talks', icon: 'check-circle' }
             - { label: 'Fetchers', route: 'fetcher_list', icon: 'bell' }

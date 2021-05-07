@@ -23,6 +23,19 @@ class ConferenceRepository extends ServiceEntityRepository
         parent::__construct($registry, Conference::class);
     }
 
+    public static function getFutureConferences(self $repository): QueryBuilder
+    {
+        $today = new \DateTime();
+        $today->setTime(0, 0, 0);
+
+        return $repository->createQueryBuilder('c')
+            ->andWhere('c.startAt >= :today')
+            ->andWhere('c.excluded = :excluded')
+            ->setParameter('excluded', false)
+            ->setParameter('today', $today)
+        ;
+    }
+
     /** @return array<mixed> */
     public function findEndingCfps(): array
     {
@@ -92,7 +105,7 @@ class ConferenceRepository extends ServiceEntityRepository
             ->setParameter('falseValue', false)
             ->andWhere('c.coordinates IS NULL')
             ->getQuery()
-            ->iterate()
+            ->toIterable()
             ;
 
         foreach ($iterator as $conference) {
@@ -162,8 +175,8 @@ class ConferenceRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('c')
             ->innerJoin('c.participations', 'p')
             ->andWhere('SIZE(c.participations) > 0')
-            ->andWhere('CONTAINS(p.marking, :marking) = true')
-            ->setParameter('marking', '{"validated": 1}')
+            ->andWhere('p.marking = :marking')
+            ->setParameter('marking', 'accepted')
             ->orderBy('c.startAt', 'ASC')
             ;
     }

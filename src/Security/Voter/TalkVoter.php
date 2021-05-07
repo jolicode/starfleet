@@ -26,7 +26,7 @@ class TalkVoter extends Voter
 
     protected function supports(string $attribute, $subject): bool
     {
-        return \in_array($attribute, ['TALK_SHOW'])
+        return \in_array($attribute, ['ROLE_TALK_SHOW'])
             && ($subject instanceof Talk);
     }
 
@@ -42,7 +42,7 @@ class TalkVoter extends Voter
 
         $roles = $this->roleHierarchy->getReachableRoleNames($token->getRoleNames());
 
-        if (\in_array('TALK_SHOW', $roles)) {
+        if (\in_array('ROLE_TALK_SHOW', $roles)) {
             return true;
         }
 

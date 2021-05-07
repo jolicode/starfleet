@@ -101,6 +101,9 @@ def fixtures(c):
     Load fixtures into database
     """
     with Builder(c):
+        docker_compose_run(c, 'php bin/console doctrine:database:drop --force')
+        docker_compose_run(c, 'php bin/console doctrine:database:create --if-not-exists')
+        migrate(c)
         docker_compose_run(c, 'php bin/console doctrine:fixtures:load -n')
 
 
@@ -139,9 +142,9 @@ def cs_fix(c, dry_run=False):
     """
     with Builder(c):
         if dry_run:
-            docker_compose_run(c, 'php ./vendor/bin/php-cs-fixer fix --config=.php_cs --dry-run --diff')
+            docker_compose_run(c, 'php ./vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.php --dry-run --diff')
         else:
-            docker_compose_run(c, 'php ./vendor/bin/php-cs-fixer fix --config=.php_cs')
+            docker_compose_run(c, 'php ./vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.php')
 
 
 @task

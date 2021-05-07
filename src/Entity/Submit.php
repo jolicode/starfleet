@@ -24,19 +24,19 @@ class Submit
 {
     use TimestampableEntity;
 
-    const STATUS_ACCEPTED = 'accepted';
-    const STATUS_REJECTED = 'rejected';
-    const STATUS_PENDING = 'pending';
-    const STATUS_DONE = 'done';
+    public const STATUS_ACCEPTED = 'accepted';
+    public const STATUS_REJECTED = 'rejected';
+    public const STATUS_PENDING = 'pending';
+    public const STATUS_DONE = 'done';
 
-    const STATUSES = [
+    public const STATUSES = [
         self::STATUS_ACCEPTED => self::STATUS_ACCEPTED,
         self::STATUS_REJECTED => self::STATUS_REJECTED,
         self::STATUS_PENDING => self::STATUS_PENDING,
         self::STATUS_DONE => self::STATUS_DONE,
     ];
 
-    const STATUS_EMOJIS = [
+    public const STATUS_EMOJIS = [
         self::STATUS_PENDING => 'En attente  🤞',
         self::STATUS_ACCEPTED => 'Accepté  🎉',
         self::STATUS_REJECTED => 'Refusé  😢',

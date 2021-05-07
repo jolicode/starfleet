@@ -42,7 +42,7 @@ class FrontController extends AbstractController
     }
 
     #[Route(path: '/conferences/{slug}', name: 'conferences_show')]
-    public function showAction(Conference $conference, ConferenceRepository $conferenceRepository): Response
+    public function show(Conference $conference): Response
     {
         return $this->render('conferences/show.html.twig', [
             'conference' => $conference,

@@ -11,13 +11,48 @@
 
 namespace App\Entity;
 
+use App\Enum\Workflow\Transition\Participation as ParticipationTransitionEnum;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ParticipationRepository")
  */
 class Participation
 {
+    use TimestampableEntity;
+
+    public const TRANSPORT_STATUS_NOT_NEEDED = 'not_needed';
+    public const TRANSPORT_STATUS_NEEDED = 'needed';
+    public const TRANSPORT_STATUS_BOOKED = 'booked';
+
+    public const HOTEL_STATUS_NOT_NEEDED = 'not_needed';
+    public const HOTEL_STATUS_NEEDED = 'needed';
+    public const HOTEL_STATUS_BOOKED = 'booked';
+
+    public const CONFERENCE_TICKET_STATUS_NOT_NEEDED = 'not_needed';
+    public const CONFERENCE_TICKET_STATUS_NEEDED = 'needed';
+    public const CONFERENCE_TICKET_STATUS_BOOKED = 'booked';
+
+    public const TRANSPORT_STATUSES = [
+        self::TRANSPORT_STATUS_NOT_NEEDED => self::TRANSPORT_STATUS_NOT_NEEDED,
+        self::TRANSPORT_STATUS_NEEDED => self::TRANSPORT_STATUS_NEEDED,
+        self::TRANSPORT_STATUS_BOOKED => self::TRANSPORT_STATUS_BOOKED,
+    ];
+
+    public const HOTEL_STATUSES = [
+        self::HOTEL_STATUS_NOT_NEEDED => self::HOTEL_STATUS_NOT_NEEDED,
+        self::HOTEL_STATUS_NEEDED => self::HOTEL_STATUS_NEEDED,
+        self::HOTEL_STATUS_BOOKED => self::HOTEL_STATUS_BOOKED,
+    ];
+
+    public const CONFERENCE_TICKET_STATUSES = [
+        self::CONFERENCE_TICKET_STATUS_NOT_NEEDED => self::CONFERENCE_TICKET_STATUS_NOT_NEEDED,
+        self::CONFERENCE_TICKET_STATUS_NEEDED => self::CONFERENCE_TICKET_STATUS_NEEDED,
+        self::CONFERENCE_TICKET_STATUS_BOOKED => self::CONFERENCE_TICKET_STATUS_BOOKED,
+    ];
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -43,30 +78,43 @@ class Participation
     private bool $asSpeaker;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="string")
      */
-    private bool $needTransport = true;
+    #[Assert\Choice(choices: [
+        self::TRANSPORT_STATUS_NOT_NEEDED,
+        self::TRANSPORT_STATUS_NEEDED,
+        self::TRANSPORT_STATUS_BOOKED,
+    ])]
+    private string $transportStatus = self::TRANSPORT_STATUS_NOT_NEEDED;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="string")
      */
-    private bool $needHotel = true;
+    #[Assert\Choice(choices: [
+        self::HOTEL_STATUS_NOT_NEEDED,
+        self::HOTEL_STATUS_NEEDED,
+        self::HOTEL_STATUS_BOOKED,
+    ])]
+    private string $hotelStatus = self::HOTEL_STATUS_NOT_NEEDED;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="string")
      */
-    private bool $needTicket = true;
+    #[Assert\Choice(choices: [
+        self::CONFERENCE_TICKET_STATUS_NOT_NEEDED,
+        self::CONFERENCE_TICKET_STATUS_NEEDED,
+        self::CONFERENCE_TICKET_STATUS_BOOKED,
+    ])]
+    private string $conferenceTicketStatus = self::CONFERENCE_TICKET_STATUS_NOT_NEEDED;
 
     /**
-     * @ORM\Column(type="jsonb")
-     *
-     * @var array<string,int>
+     * @ORM\Column(type="string")
      */
-    private array $marking = [];
+    private string $marking;
 
     public function __construct()
     {
-        $this->marking = ['pending' => 1];
+        $this->marking = ParticipationTransitionEnum::PENDING;
     }
 
     public function getId(): ?int
@@ -79,7 +127,7 @@ class Participation
         return $this->conference;
     }
 
-    public function setConference(?Conference $conference): self
+    public function setConference(Conference $conference): self
     {
         $this->conference = $conference;
 
@@ -91,7 +139,7 @@ class Participation
         return $this->participant;
     }
 
-    public function setParticipant(?User $participant): self
+    public function setParticipant(User $participant): self
     {
         $this->participant = $participant;
 
@@ -110,50 +158,48 @@ class Participation
         return $this;
     }
 
-    public function getNeedTransport(): ?bool
+    public function getTransportStatus(): string
     {
-        return $this->needTransport;
+        return $this->transportStatus;
     }
 
-    public function setNeedTransport(bool $needTransport): self
+    public function setTransportStatus(string $transportStatus): self
     {
-        $this->needTransport = $needTransport;
+        $this->transportStatus = $transportStatus;
 
         return $this;
     }
 
-    public function getNeedHotel(): ?bool
+    public function getHotelStatus(): string
     {
-        return $this->needHotel;
+        return $this->hotelStatus;
     }
 
-    public function setNeedHotel(bool $needHotel): self
+    public function setHotelStatus(string $hotelStatus): self
     {
-        $this->needHotel = $needHotel;
+        $this->hotelStatus = $hotelStatus;
 
         return $this;
     }
 
-    public function getNeedTicket(): ?bool
+    public function getConferenceTicketStatus(): string
     {
-        return $this->needTicket;
+        return $this->conferenceTicketStatus;
     }
 
-    public function setNeedTicket(bool $needTicket): self
+    public function setConferenceTicketStatus(string $conferenceTicketStatus): self
     {
-        $this->needTicket = $needTicket;
+        $this->conferenceTicketStatus = $conferenceTicketStatus;
 
         return $this;
     }
 
-    /** @return array<string,int> */
-    public function getMarking(): array
+    public function getMarking(): string
     {
         return $this->marking;
     }
 
-    /** @param array<string,int> $marking */
-    public function setMarking(array $marking): self
+    public function setMarking(string $marking): self
     {
         $this->marking = $marking;
 

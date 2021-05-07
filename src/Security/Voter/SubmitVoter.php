@@ -26,7 +26,7 @@ class SubmitVoter extends Voter
 
     protected function supports(string $attribute, $subject): bool
     {
-        return \in_array($attribute, ['SUBMIT_EDIT'])
+        return \in_array($attribute, ['ROLE_ROLE_SUBMIT_EDIT'])
             && $subject instanceof Submit;
     }
 
@@ -42,7 +42,7 @@ class SubmitVoter extends Voter
 
         $roles = $this->roleHierarchy->getReachableRoleNames($token->getRoleNames());
 
-        if (\in_array('SUBMIT_EDIT', $roles)) {
+        if (\in_array('ROLE_SUBMIT_EDIT', $roles)) {
             return true;
         }
 

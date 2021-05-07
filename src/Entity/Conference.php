@@ -25,7 +25,7 @@ class Conference
 {
     use TimestampableEntity;
 
-    const SOURCE_MANUAL = 'manual';
+    public const SOURCE_MANUAL = 'manual';
 
     /**
      * @ORM\Column(name="id", type="integer")
@@ -103,7 +103,7 @@ class Conference
     private bool $excluded = false;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Participation", mappedBy="conference", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Participation", mappedBy="conference", cascade={"persist", "remove"})
      *
      * @var Collection<Participation>
      */
@@ -329,10 +329,6 @@ class Conference
     {
         if ($this->participations->contains($participation)) {
             $this->participations->removeElement($participation);
-            // set the owning side to null (unless already changed)
-            if ($participation->getConference() === $this) {
-                $participation->setConference(null);
-            }
         }
 
         return $this;
