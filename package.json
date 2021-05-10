@@ -6,8 +6,9 @@
     "dependencies": {
         "bootstrap": "^4.3",
         "font-awesome": "^4.7.0",
+        "jquery": "^3.6.0",
         "popper.js": "^1.15",
-        "jquery": "^3.6.0"
+        "select2": "^4.1.0-rc.0"
     },
     "devDependencies": {
         "@symfony/stimulus-bridge": "^2.1.0",

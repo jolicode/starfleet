@@ -11,7 +11,6 @@
 
 namespace App\Entity;
 
-use App\Enum\Workflow\Transition\Participation as ParticipationTransitionEnum;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -23,34 +22,15 @@ class Participation
 {
     use TimestampableEntity;
 
-    public const TRANSPORT_STATUS_NOT_NEEDED = 'not_needed';
-    public const TRANSPORT_STATUS_NEEDED = 'needed';
-    public const TRANSPORT_STATUS_BOOKED = 'booked';
+    public const STATUS_NOT_NEEDED = 'not_needed';
+    public const STATUS_NEEDED = 'needed';
+    public const STATUS_BOOKED = 'booked';
+    public const STATUS_PENDING = 'pending';
 
-    public const HOTEL_STATUS_NOT_NEEDED = 'not_needed';
-    public const HOTEL_STATUS_NEEDED = 'needed';
-    public const HOTEL_STATUS_BOOKED = 'booked';
-
-    public const CONFERENCE_TICKET_STATUS_NOT_NEEDED = 'not_needed';
-    public const CONFERENCE_TICKET_STATUS_NEEDED = 'needed';
-    public const CONFERENCE_TICKET_STATUS_BOOKED = 'booked';
-
-    public const TRANSPORT_STATUSES = [
-        self::TRANSPORT_STATUS_NOT_NEEDED => self::TRANSPORT_STATUS_NOT_NEEDED,
-        self::TRANSPORT_STATUS_NEEDED => self::TRANSPORT_STATUS_NEEDED,
-        self::TRANSPORT_STATUS_BOOKED => self::TRANSPORT_STATUS_BOOKED,
-    ];
-
-    public const HOTEL_STATUSES = [
-        self::HOTEL_STATUS_NOT_NEEDED => self::HOTEL_STATUS_NOT_NEEDED,
-        self::HOTEL_STATUS_NEEDED => self::HOTEL_STATUS_NEEDED,
-        self::HOTEL_STATUS_BOOKED => self::HOTEL_STATUS_BOOKED,
-    ];
-
-    public const CONFERENCE_TICKET_STATUSES = [
-        self::CONFERENCE_TICKET_STATUS_NOT_NEEDED => self::CONFERENCE_TICKET_STATUS_NOT_NEEDED,
-        self::CONFERENCE_TICKET_STATUS_NEEDED => self::CONFERENCE_TICKET_STATUS_NEEDED,
-        self::CONFERENCE_TICKET_STATUS_BOOKED => self::CONFERENCE_TICKET_STATUS_BOOKED,
+    public const STATUSES = [
+        self::STATUS_NOT_NEEDED => self::STATUS_NOT_NEEDED,
+        self::STATUS_NEEDED => self::STATUS_NEEDED,
+        self::STATUS_BOOKED => self::STATUS_BOOKED,
     ];
 
     /**
@@ -81,40 +61,40 @@ class Participation
      * @ORM\Column(type="string")
      */
     #[Assert\Choice(choices: [
-        self::TRANSPORT_STATUS_NOT_NEEDED,
-        self::TRANSPORT_STATUS_NEEDED,
-        self::TRANSPORT_STATUS_BOOKED,
+        self::STATUS_NOT_NEEDED,
+        self::STATUS_NEEDED,
+        self::STATUS_BOOKED,
     ])]
-    private string $transportStatus = self::TRANSPORT_STATUS_NOT_NEEDED;
+    private string $transportStatus = self::STATUS_NOT_NEEDED;
 
     /**
      * @ORM\Column(type="string")
      */
     #[Assert\Choice(choices: [
-        self::HOTEL_STATUS_NOT_NEEDED,
-        self::HOTEL_STATUS_NEEDED,
-        self::HOTEL_STATUS_BOOKED,
+        self::STATUS_NOT_NEEDED,
+        self::STATUS_NEEDED,
+        self::STATUS_BOOKED,
     ])]
-    private string $hotelStatus = self::HOTEL_STATUS_NOT_NEEDED;
+    private string $hotelStatus = self::STATUS_NOT_NEEDED;
 
     /**
      * @ORM\Column(type="string")
      */
     #[Assert\Choice(choices: [
-        self::CONFERENCE_TICKET_STATUS_NOT_NEEDED,
-        self::CONFERENCE_TICKET_STATUS_NEEDED,
-        self::CONFERENCE_TICKET_STATUS_BOOKED,
+        self::STATUS_NOT_NEEDED,
+        self::STATUS_NEEDED,
+        self::STATUS_BOOKED,
     ])]
-    private string $conferenceTicketStatus = self::CONFERENCE_TICKET_STATUS_NOT_NEEDED;
+    private string $conferenceTicketStatus = self::STATUS_NOT_NEEDED;
 
     /**
      * @ORM\Column(type="string")
      */
-    private string $marking;
+    private string $marking = self::STATUS_PENDING;
 
-    public function __construct()
+    public function __construct(User $participant)
     {
-        $this->marking = ParticipationTransitionEnum::PENDING;
+        $this->participant = $participant;
     }
 
     public function getId(): ?int

@@ -23,13 +23,13 @@ class ParticipationFixtures extends Fixture implements DependentFixtureInterface
     {
         ParticipationFactory::createMany(50);
         ParticipationFactory::createMany(50, [
-            'marking' => Participation::ACCEPT,
+            'marking' => Participation::ACCEPTED,
         ]);
         ParticipationFactory::createMany(50, [
-            'marking' => Participation::REJECT,
+            'marking' => Participation::REJECTED,
         ]);
         ParticipationFactory::createMany(50, [
-            'marking' => Participation::CANCEL,
+            'marking' => Participation::CANCELLED,
         ]);
     }
 

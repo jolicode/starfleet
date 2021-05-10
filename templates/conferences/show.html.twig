@@ -116,7 +116,7 @@
                                         <p class="mb-1">{{ submit.talk.intro }}</p>
                                         <small>
                                             {{ 'conferences.show.talk_submitted_ago'|trans }} {{ submit.submittedAt|time_diff }}
-                                            {{ 'conferences.show.talk_submitted_by'|trans }} {{ submit.reduceSpeakersNames() }}
+                                            {{ 'conferences.show.talk_submitted_by'|trans }} {{ submit.getSpeakersNames() }}
                                         </small>
                                     </div>
                                 </div>

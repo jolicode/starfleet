@@ -1,0 +1,41 @@
+{% extends "base.html.twig" %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('css/user') }}
+{% endblock %}
+
+{% block body %}
+<div class="container-fluid bg-light">
+    <div class="container">
+        <div class="position-relative pt-5">
+            <div class="position-absolute lr-100">
+                {% for message in app.flashes('info') %}
+                    <div class="alert alert-info text-center">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="pt-5 mt-5">
+                {% block nav %}
+                    {% if 'user_account' != app.request.get('_route') %}
+                        <a href="{{ path('user_account') }}">
+                            <div class="btn btn-secondary">Back Home</div>
+                        </a>
+                    {% endif %}
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a href="{{ path('easyadmin') }}">
+                            <div class="btn btn-info">Admin</div>
+                        </a>
+                    {% endif %}
+                {% endblock %}
+            </div>
+        </div>
+
+        <div class="row py-5">
+            {% block content %}{% endblock %}
+        </div>
+
+    </div>
+</div>
+{% endblock %}

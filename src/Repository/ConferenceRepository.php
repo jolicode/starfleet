@@ -25,12 +25,12 @@ class ConferenceRepository extends ServiceEntityRepository
         parent::__construct($registry, Conference::class);
     }
 
-    public static function getFutureConferences(self $repository): QueryBuilder
+    public function getFutureConferencesQueryBuilder(): QueryBuilder
     {
         $today = new \DateTime();
-        $today->setTime(0, 0, 0);
+        $today->setTime(0, 0);
 
-        return $repository->createQueryBuilder('c')
+        return $this->createQueryBuilder('c')
             ->andWhere('c.startAt >= :today')
             ->andWhere('c.excluded = :excluded')
             ->setParameter('excluded', false)
@@ -42,10 +42,10 @@ class ConferenceRepository extends ServiceEntityRepository
     public function findEndingCfps(): array
     {
         $today = new \DateTime();
-        $today->setTime(0, 0, 0);
+        $today->setTime(0, 0);
 
         $threshold = new \DateTime('+31 days');
-        $threshold->setTime(0, 0, 0);
+        $threshold->setTime(0, 0);
 
         return $this->createQueryBuilder('c')
             ->andWhere('c.cfpEndAt IS NOT NULL AND c.cfpEndAt >= :today AND c.cfpEndAt < :threshold')
@@ -62,7 +62,7 @@ class ConferenceRepository extends ServiceEntityRepository
     public function getDailyConferences(): array
     {
         $today = new \DateTime();
-        $today->setTime(0, 0, 0);
+        $today->setTime(0, 0);
 
         $threshold = new \DateTime();
         $threshold->setTime(23, 59, 59);
@@ -172,15 +172,18 @@ class ConferenceRepository extends ServiceEntityRepository
         ];
     }
 
-    /**
-     * @return array<Conference>
-     */
+    /** @return array<Conference> */
     public function findAttentedConferencesByUser(User $user): array
     {
+        $today = new \DateTime();
+        $today->setTime(0, 0);
+
         return $this->createAttendedQueryBuilder()
             ->select('c')
             ->andWhere('p.participant = :user')
+            ->andWhere('c.startAt < :today')
             ->setParameter('user', $user)
+            ->setParameter('today', $today)
             ->getQuery()
             ->execute()
         ;
@@ -193,7 +196,7 @@ class ConferenceRepository extends ServiceEntityRepository
             ->andWhere('SIZE(c.participations) > 0')
             ->andWhere('p.marking = :marking')
             ->andWhere('c.excluded = :excluded')
-            ->setParameter('marking', Participation::ACCEPT)
+            ->setParameter('marking', Participation::ACCEPTED)
             ->setParameter('excluded', false)
             ->orderBy('c.startAt', 'ASC')
         ;
