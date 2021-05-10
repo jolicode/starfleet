@@ -2,14 +2,14 @@
 
 {% block item_actions %}
     {% set transition_icons = {
-        'accept' : 'check',
-        'reject' : 'times',
-        'cancel' : 'times-circle',
+        'accepted' : 'check',
+        'rejected' : 'times',
+        'cancelled' : 'times-circle',
     } %}
     {% set transition_css_classes = {
-        'accept' : 'success',
-        'reject' : 'danger',
-        'cancel' : 'warning',
+        'accepted' : 'success',
+        'rejected' : 'danger',
+        'cancelled' : 'warning',
     } %}
 
     {% set _transition_actions = {} %}

@@ -1,91 +1,40 @@
-{% extends 'base.html.twig' %}
+{% extends 'user/user_layout.html.twig' %}
 
-{% block body %}
-<div class="container-fluid bg-light py-5">
-    <div class="container">
-        <div class="row">
-            <aside class="col-4">
-                <h1>{{ app.user.name }}</h1>
-                <ul class="nav flex-column nav-pills">
-                    <li class="nav-item">
-                        <a href="#" class="nav-link active">
-                            Future Conferences
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            My Talks
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            My Participations
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            Edit my account
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ app.user ? path('user_account') : path('login') }}" class="nav-link">
-                            {{ app.user ? '➡️ Logout' }}
-                        </a>
-                    </li>
-                </ul>
-            </aside>
+{% block content %}
+    <aside class="col-4">
+        <h1>{{ app.user.name }}</h1>
+        <ul class="nav flex-column nav-pills">
+            <li class="nav-item">
+                <a href="#" class="nav-link active">
+                    Future Conferences
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ path('user_submit') }}" class="nav-link">
+                    My submits
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ path('user_participations') }}" class="nav-link">
+                    My Participations
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    Edit my account
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ app.user ? path('user_account') : path('login') }}" class="nav-link">
+                    {{ app.user ? '➡️ Logout' }}
+                </a>
+            </li>
+        </ul>
+    </aside>
 
-            <section class="col-8">
-                {% if chart %}
-                    {{ render_chart(chart) }}
-                {% endif %}
-{#                <h4>Attended Conferences</h4>#}
-{#                <p>{{ attendedConferences|length }}</p>#}
-
-{#                {% for conference in attendedConferences %}#}
-{#                    <p>{{ conference }}</p>#}
-{#                {% endfor %}#}
-
-{#                <h4>Submits</h4>#}
-
-{#                <p>You submitted a participation for a total of {{ app.user.submits|length }} conferences !</p>#}
-
-{#                <p>Submits waiting for validation : </p>#}
-
-{#                {% for submit in pendingSubmits %}#}
-{#                    <h5>{{ submit.conference.name }}</h5>#}
-{#                    Given by :#}
-{#                    {% for user in submit.users %}#}
-{#                        {{ user }} {% if not loop.last %},{% endif %}#}
-{#                    {% endfor %}#}
-
-{#                    <p>Submit with status : {{ submit.status }}</p>#}
-{#                {% endfor %}#}
-
-{#                <p>Total of accepted submits : {{ acceptedSubmits|length }}</p>#}
-
-{#                {% for submit in acceptedSubmits %}#}
-{#                    <p>{{ submit.conference.name }}</p>#}
-{#                {% endfor %}#}
-
-{#                <p>Total of rejected submits : {{ rejectedSubmits|length }}</p>#}
-
-{#                {% for submit in rejectedSubmits %}#}
-{#                    <p>{{ submit.conference.name }}</p>#}
-{#                {% endfor %}#}
-
-{#                {% if upcomingSubmits|length %}#}
-{#                    {% for submit in upcomingSubmits %}#}
-{#                        <p>{{ submit.conference.name }}</p>#}
-{#                        <p>{{ submit.talk.title }}</p>#}
-{#                        <p>{{ submit.talk.intro }}</p>#}
-{#                        {% if submit.users|length > 1 %}#}
-{#                            <p>Given with {{ 'other user' }}</p>#}
-{#                        {% endif %}#}
-{#                    {% endfor %}#}
-{#                {% endif %}#}
-            </section>
-        </div>
-    </div>
-</div>
+    <section class="col-8">
+        {% if chart %}
+            {{ render_chart(chart) }}
+        {% endif %}
+    </section>
 {% endblock %}

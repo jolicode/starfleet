@@ -12,61 +12,37 @@
 namespace App\Controller\User;
 
 use App\Entity\Submit;
-use App\Entity\User;
 use App\Repository\ConferenceRepository;
+use App\Repository\ParticipationRepository;
 use App\Repository\SubmitRepository;
+use App\UX\UserChartBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
-use Symfony\UX\Chartjs\Model\Chart;
 
 class UserController extends AbstractController
 {
     public function __construct(
         private ConferenceRepository $conferenceRepository,
+        private ParticipationRepository $participationRepository,
         private SubmitRepository $submitRepository,
+        private UserChartBuilder $userChartBuilder,
     ) {
     }
 
     #[Route(path: '/user/account', name: 'user_account')]
-    public function userAccount(ChartBuilderInterface $chartBuilder): Response
+    public function userAccount(): Response
     {
-        /** @var User $user */
-        $user = $this->getUser();
-        $attendedConferences = $this->conferenceRepository->findAttentedConferencesByUser($user);
-        $pendingSubmits = range(1, 4); //$this->submitRepository->findUserSubmitsByStatus($user, Submit::STATUS_PENDING);
-        $acceptedSubmits = range(1, 8); //$this->submitRepository->findUserSubmitsByStatus($user, Submit::STATUS_ACCEPTED);
-        $rejectedSubmits = range(1, 14); //$this->submitRepository->findUserSubmitsByStatus($user, Submit::STATUS_REJECTED);
-        $upcomingSubmits = range(1, 1); //$this->submitRepository->findUserUpcomingUserSubmits($user);
+        $pastSubmits = $this->submitRepository->findUserSubmitsByStatus($this->getUser(), Submit::STATUS_DONE);
+        $futureSubmits = $this->submitRepository->findUserSubmitsByStatus($this->getUser(), Submit::STATUS_ACCEPTED);
+        $pastConferences = $this->conferenceRepository->findAttentedConferencesByUser($this->getUser());
+        $futureParticipations = $this->participationRepository->findFutureParticipationsByUser($this->getUser());
 
-        if (0 !== \count($pendingSubmits) + \count($acceptedSubmits) + \count($rejectedSubmits) + \count($upcomingSubmits)) {
-            $chart = $chartBuilder->createChart(Chart::TYPE_DOUGHNUT);
-            $chart->setData([
-                'labels' => ['Pending Submits', 'Accepted Submits', 'Rejected Submits', 'Upcoming Talks'],
-                'datasets' => [
-                    [
-                        'label' => 'Submitted talks',
-                        'data' => [\count($pendingSubmits), \count($acceptedSubmits), \count($rejectedSubmits), \count($upcomingSubmits)],
-                        'backgroundColor' => ['#ffc107', '#28a745', '#dc3545', '#007bff'],
-                    ],
-                ],
-            ]);
-
-            $chart->setOptions([
-                'legend' => [
-                    'position' => 'left',
-                    'align' => 'start',
-                ],
-            ]);
+        if (0 !== \count($pastSubmits) + \count($futureSubmits) + \count($pastConferences) + \count($futureParticipations)) {
+            $chart = $this->userChartBuilder->buildUserChart($pastSubmits, $futureSubmits, $pastConferences, $futureParticipations);
         }
 
         return $this->render('user/account.html.twig', [
-            'attendedConferences' => $attendedConferences,
-            'pendingSubmits' => $pendingSubmits,
-            'acceptedSubmits' => $acceptedSubmits,
-            'rejectedSubmits' => $rejectedSubmits,
-            'upcomingSubmits' => $upcomingSubmits,
             'chart' => $chart ?? null,
         ]);
     }

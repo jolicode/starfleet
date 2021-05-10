@@ -1,4 +1,4 @@
 easy_admin_bundle:
-    resource: App\Controller\Admin\AdminController
+    resource: AlterPHP\EasyAdminExtensionBundle\Controller\EasyAdminController
     type:     annotation
     prefix:   /admin

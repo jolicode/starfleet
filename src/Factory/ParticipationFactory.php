@@ -38,9 +38,9 @@ final class ParticipationFactory extends ModelFactory
             'conference' => ConferenceFactory::random(),
             'participant' => UserFactory::random(),
             'asSpeaker' => $asSpeaker = self::faker()->boolean(40),
-            'transportStatus' => !$asSpeaker && self::faker()->boolean(75) ? Participation::TRANSPORT_STATUS_NEEDED : Participation::TRANSPORT_STATUS_NOT_NEEDED,
-            'hotelStatus' => !$asSpeaker && self::faker()->boolean(75) ? Participation::HOTEL_STATUS_NEEDED : Participation::HOTEL_STATUS_NOT_NEEDED,
-            'conferenceTicketStatus' => $asSpeaker ? Participation::CONFERENCE_TICKET_STATUS_NOT_NEEDED : Participation::CONFERENCE_TICKET_STATUS_NEEDED,
+            'transportStatus' => !$asSpeaker && self::faker()->boolean(75) ? Participation::STATUS_NEEDED : Participation::STATUS_NOT_NEEDED,
+            'hotelStatus' => !$asSpeaker && self::faker()->boolean(75) ? Participation::STATUS_NEEDED : Participation::STATUS_NOT_NEEDED,
+            'conferenceTicketStatus' => $asSpeaker ? Participation::STATUS_NOT_NEEDED : Participation::STATUS_NEEDED,
         ];
     }
 

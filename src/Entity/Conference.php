@@ -103,7 +103,8 @@ class Conference
     private bool $excluded = false;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Participation", mappedBy="conference", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Participation", mappedBy="conference", cascade={"persist"})
+     * @ORM\JoinColumn(onDelete="CASCADE")
      *
      * @var Collection<Participation>
      */

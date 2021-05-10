@@ -25,6 +25,11 @@ class UserFixtures extends Fixture
             'password' => 'admin',
             'roles' => ['ROLE_ADMIN'],
         ]);
+        UserFactory::createOne([
+            'name' => 'User',
+            'email' => 'user@starfleet.app',
+            'password' => 'user',
+        ]);
         UserFactory::createMany(24);
     }
 }

@@ -58,7 +58,7 @@ class Submit
     /**
      * @ORM\Column(name="status", type="string", length=255)
      */
-    private string $status;
+    private string $status = self::STATUS_PENDING;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\User", inversedBy="submits")
@@ -85,6 +85,7 @@ class Submit
     public function __construct()
     {
         $this->users = new ArrayCollection();
+        $this->submittedAt = new \DateTime();
     }
 
     public function getId(): ?int
