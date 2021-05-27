@@ -125,6 +125,6 @@ class Talk
 
     public function __toString(): string
     {
-        return $this->getTitle() ?? (string) $this->id;
+        return $this->title ?? (string) $this->id;
     }
 }
