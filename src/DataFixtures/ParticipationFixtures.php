@@ -11,14 +11,23 @@
 
 namespace App\DataFixtures;
 
-use App\Factory\ContinentFactory;
+use App\Factory\ParticipationFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class ContinentFixtures extends Fixture
+class ParticipationFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
-        ContinentFactory::createMany(6);
+        ParticipationFactory::createMany(200);
+    }
+
+    public function getDependencies(): array
+    {
+        return [
+            UserFixtures::class,
+            ConferenceFixtures::class,
+        ];
     }
 }

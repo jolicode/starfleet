@@ -35,10 +35,10 @@ class UserController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
         $attendedConferences = $this->conferenceRepository->findAttentedConferencesByUser($user);
-        $pendingSubmits = range(1,4);//$this->submitRepository->findUserSubmitsByStatus($user, Submit::STATUS_PENDING);
-        $acceptedSubmits = range(1,8);//$this->submitRepository->findUserSubmitsByStatus($user, Submit::STATUS_ACCEPTED);
-        $rejectedSubmits = range(1,14);//$this->submitRepository->findUserSubmitsByStatus($user, Submit::STATUS_REJECTED);
-        $upcomingSubmits = range(1,1);//$this->submitRepository->findUserUpcomingUserSubmits($user);
+        $pendingSubmits = range(1, 4); //$this->submitRepository->findUserSubmitsByStatus($user, Submit::STATUS_PENDING);
+        $acceptedSubmits = range(1, 8); //$this->submitRepository->findUserSubmitsByStatus($user, Submit::STATUS_ACCEPTED);
+        $rejectedSubmits = range(1, 14); //$this->submitRepository->findUserSubmitsByStatus($user, Submit::STATUS_REJECTED);
+        $upcomingSubmits = range(1, 1); //$this->submitRepository->findUserUpcomingUserSubmits($user);
 
         if (0 !== \count($pendingSubmits) + \count($acceptedSubmits) + \count($rejectedSubmits) + \count($upcomingSubmits)) {
             $chart = $chartBuilder->createChart(Chart::TYPE_DOUGHNUT);

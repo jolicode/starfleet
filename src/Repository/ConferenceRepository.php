@@ -171,6 +171,9 @@ class ConferenceRepository extends ServiceEntityRepository
         ];
     }
 
+    /**
+     * @return array<Conference>
+     */
     public function findAttentedConferencesByUser(User $user): array
     {
         return $this->createAttendedQueryBuilder()

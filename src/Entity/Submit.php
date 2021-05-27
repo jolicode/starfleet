@@ -71,12 +71,12 @@ class Submit
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Conference", inversedBy="submits", cascade={"persist"})
      */
-    private ?Conference $conference = null;
+    private ?Conference $conference;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Talk", inversedBy="submits")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Talk", inversedBy="submits", cascade={"persist", "remove"})
      */
-    private ?Talk $talk = null;
+    private ?Talk $talk;
 
     private bool $statusChanged = false;
 
@@ -90,7 +90,7 @@ class Submit
         return $this->id;
     }
 
-    public function setSubmittedAt(?\DateTime $submittedAt): self
+    public function setSubmittedAt(\DateTime $submittedAt): self
     {
         $this->submittedAt = $submittedAt;
 
@@ -137,7 +137,7 @@ class Submit
         return $this;
     }
 
-    public function setConference(?Conference $conference): self
+    public function setConference(Conference $conference): self
     {
         $this->conference = $conference;
 
@@ -149,7 +149,7 @@ class Submit
         return $this->conference;
     }
 
-    public function setTalk(?Talk $talk): self
+    public function setTalk(Talk $talk): self
     {
         $this->talk = $talk;
 
@@ -163,12 +163,12 @@ class Submit
 
     public function __toString(): string
     {
-        return $this->getTalk() && $this->getConference()
+        return ($this->getTalk() && $this->getConference())
             ? sprintf('%s - %s', $this->getTalk()->getTitle(), $this->getConference()->getName())
             : (string) $this->id;
     }
 
-    public function reduceSpeakersNames(): string
+    public function getSpeakersNames(): string
     {
         return array_reduce($this->getUsers()->toArray(), function ($r, User $u) {
             return '' === $r ? $u->getName() : $r.', '.$u->getName();
