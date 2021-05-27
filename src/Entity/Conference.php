@@ -45,15 +45,15 @@ class Conference
     private string $source = self::SOURCE_MANUAL;
 
     /**
+     * @ORM\Column(name="name", type="string", length=255)
+     */
+    private string $name;
+
+    /**
      * @ORM\Column(name="slug", type="string", length=255, nullable=false, unique=true)
      * @Gedmo\Slug(fields={"name"})
      */
     private string $slug;
-
-    /**
-     * @ORM\Column(name="name", type="string", length=255)
-     */
-    private string $name;
 
     /**
      * @ORM\Column(name="description", type="text", nullable=true)
@@ -168,7 +168,7 @@ class Conference
         return $this->remoteId;
     }
 
-    public function setSource(?string $source): self
+    public function setSource(string $source): self
     {
         $this->source = $source;
 
@@ -180,7 +180,7 @@ class Conference
         return $this->source;
     }
 
-    public function setSlug(?string $slug): self
+    public function setSlug(string $slug): self
     {
         $this->slug = $slug;
 
@@ -192,7 +192,7 @@ class Conference
         return $this->slug;
     }
 
-    public function setName(?string $name): self
+    public function setName(string $name): self
     {
         $this->name = $name;
 
@@ -216,7 +216,7 @@ class Conference
         return $this;
     }
 
-    public function setStartAt(?\DateTimeInterface $startAt): self
+    public function setStartAt(\DateTimeInterface $startAt): self
     {
         $this->startAt = $startAt;
 
@@ -380,6 +380,16 @@ class Conference
     public function isOnline(): bool
     {
         return $this->online;
+    }
+
+    /**
+     * @param array<string> $tags
+     */
+    public function setTags(array $tags): self
+    {
+        $this->tags = $tags;
+
+        return $this;
     }
 
     public function addTag(string $tag): self

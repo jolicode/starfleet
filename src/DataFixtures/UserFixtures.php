@@ -11,14 +11,22 @@
 
 namespace App\DataFixtures;
 
-use App\Factory\ContinentFactory;
+use App\Factory\UserFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use function Zenstruck\Foundry\faker;
 
-class ContinentFixtures extends Fixture
+class UserFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        ContinentFactory::createMany(6);
+        UserFactory::createOne([
+            'name' => 'Admin',
+            'email' => 'admin@starfleet.app',
+            'password' => 'admin',
+            'roles' => ['ROLE_ADMIN'],
+        ]);
+        // the callback is here to ensure the randomness at each instantiation.
+        UserFactory::createMany(24);
     }
 }

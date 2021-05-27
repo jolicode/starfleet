@@ -11,14 +11,14 @@
 
 namespace App\DataFixtures;
 
-use App\Factory\ContinentFactory;
+use App\Factory\TalkFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
-class ContinentFixtures extends Fixture
+class TalkFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        ContinentFactory::createMany(6);
+        TalkFactory::createMany(100);
     }
 }

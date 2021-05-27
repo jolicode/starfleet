@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the Starfleet Project.
+ *
+ * (c) Starfleet <msantostefano@jolicode.com>
+ *
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
+ */
+
 namespace App\Repository;
 
 use App\Entity\Submit;
@@ -21,6 +30,9 @@ class SubmitRepository extends ServiceEntityRepository
         parent::__construct($registry, Submit::class);
     }
 
+    /**
+     * @return array<Submit>
+     */
     public function findUserSubmitsByStatus(User $user, string $status): array
     {
         return $this->createUserQueryBuilder($user)
@@ -31,6 +43,9 @@ class SubmitRepository extends ServiceEntityRepository
             ;
     }
 
+    /**
+     * @return array<Submit>
+     */
     public function findUserUpcomingUserSubmits(User $user): array
     {
         $today = new \DateTime();

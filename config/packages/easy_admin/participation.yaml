@@ -12,9 +12,9 @@ easy_admin:
                     - { property: 'conference', template: 'easy_admin/Participation/conference.html.twig' }
                     - { property: 'participant' }
                     - { property: 'asSpeaker' }
-                    - { property: 'transportStatus' }
-                    - { property: 'hotelStatus' }
-                    - { property: 'conferenceTicketStatus' }
+                    - { property: 'transportStatus', template: 'easy_admin/Participation/transport_status.html.twig' }
+                    - { property: 'hotelStatus', template: 'easy_admin/Participation/hotel_status.html.twig' }
+                    - { property: 'conferenceTicketStatus', template: 'easy_admin/Participation/conference_ticket_status.html.twig' }
                     - { property: 'marking', label: 'Status', template: 'easy_admin/Participation/marking.html.twig' }
             form:
                 item_permission: ['ROLE_PARTICIPATION_MANAGEMENT']

@@ -11,14 +11,23 @@
 
 namespace App\DataFixtures;
 
-use App\Factory\ContinentFactory;
+use App\Factory\ConferenceFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
-class ContinentFixtures extends Fixture
+class ConferenceFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        ContinentFactory::createMany(6);
+        ConferenceFactory::createMany(50);
+        ConferenceFactory::createMany(10, [
+            'online' => true,
+            'country' => null,
+            'city' => null,
+            'coordinates' => [],
+        ]);
+        ConferenceFactory::createMany(10, [
+            'excluded' => true,
+        ]);
     }
 }
