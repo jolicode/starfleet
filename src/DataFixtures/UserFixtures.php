@@ -14,7 +14,6 @@ namespace App\DataFixtures;
 use App\Factory\UserFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
-use function Zenstruck\Foundry\faker;
 
 class UserFixtures extends Fixture
 {
