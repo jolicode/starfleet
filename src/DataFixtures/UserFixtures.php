@@ -25,7 +25,6 @@ class UserFixtures extends Fixture
             'password' => 'admin',
             'roles' => ['ROLE_ADMIN'],
         ]);
-        // the callback is here to ensure the randomness at each instantiation.
         UserFactory::createMany(24);
     }
 }

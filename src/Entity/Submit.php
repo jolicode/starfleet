@@ -69,14 +69,16 @@ class Submit
     private Collection $users;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Conference", inversedBy="submits", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Conference", inversedBy="submits")
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
-    private ?Conference $conference;
+    private Conference $conference;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Talk", inversedBy="submits", cascade={"persist", "remove"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Talk", inversedBy="submits", cascade={"persist"})
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
-    private ?Talk $talk;
+    private Talk $talk;
 
     private bool $statusChanged = false;
 
@@ -144,7 +146,7 @@ class Submit
         return $this;
     }
 
-    public function getConference(): ?Conference
+    public function getConference(): Conference
     {
         return $this->conference;
     }
@@ -156,14 +158,14 @@ class Submit
         return $this;
     }
 
-    public function getTalk(): ?Talk
+    public function getTalk(): Talk
     {
         return $this->talk;
     }
 
     public function __toString(): string
     {
-        return ($this->getTalk() && $this->getConference())
+        return ($this->getTalk()->getTitle() && $this->getConference()->getName())
             ? sprintf('%s - %s', $this->getTalk()->getTitle(), $this->getConference()->getName())
             : (string) $this->id;
     }

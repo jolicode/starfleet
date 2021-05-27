@@ -276,21 +276,29 @@ class Conference
         return $this;
     }
 
-    public function addSubmit(Submit $submits): self
+    public function addSubmit(Submit $submit): self
     {
-        $this->submits[] = $submits;
+        if (!$this->submits->contains($submit)) {
+            $this->submits[] = $submit;
+            $submit->setConference($this);
+        }
 
         return $this;
     }
 
-    public function removeSubmit(Submit $submits): self
+    public function removeSubmit(Submit $submit): self
     {
-        $this->submits->removeElement($submits);
+        if ($this->submits->contains($submit)) {
+            $this->submits->removeElement($submit);
+        }
 
         return $this;
     }
 
-    public function getSubmits(): ?Collection
+    /**
+     * @return Collection|Submit[]
+     */
+    public function getSubmits(): Collection
     {
         return $this->submits;
     }
