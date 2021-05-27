@@ -17,7 +17,7 @@
                             </h3>
                             <h4 class="h6 card-subtitle mb-2 text-muted font-weight-normal">
                             {% if conference.online %}
-                                Online <img class="country-flag" alt="Online Icon" src="{{ asset('build/images/online.svg') }}">
+                                Online <img class="country-flag" alt="" src="{{ asset('build/images/online.svg') }}">
                             {% elseif conference.country %}
                                 {{ conference.city }} <img width="24" height="16" class="country-flag" alt="Country Flag" src="/bundles/easyadmin/images/flags/{{ conference.country|upper }}.png">
                             {% endif %}

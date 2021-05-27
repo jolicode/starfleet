@@ -11,6 +11,7 @@
 
 namespace App\DataFixtures;
 
+use App\Enum\Workflow\Transition\Participation;
 use App\Factory\ParticipationFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -20,7 +21,16 @@ class ParticipationFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
-        ParticipationFactory::createMany(200);
+        ParticipationFactory::createMany(50);
+        ParticipationFactory::createMany(50, [
+            'marking' => Participation::ACCEPT,
+        ]);
+        ParticipationFactory::createMany(50, [
+            'marking' => Participation::REJECT,
+        ]);
+        ParticipationFactory::createMany(50, [
+            'marking' => Participation::CANCEL,
+        ]);
     }
 
     public function getDependencies(): array

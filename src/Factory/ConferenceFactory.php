@@ -60,7 +60,7 @@ final class ConferenceFactory extends ModelFactory
             'articleUrl' => self::faker()->url(),
             'country' => strtoupper(self::faker()->countryCode()),
             'city' => self::faker()->city(),
-            'coordinates' => [self::faker()->latitude(), self::faker()->longitude()],
+            'coordinates' => [self::faker()->longitude(), self::faker()->latitude()],
             'tags' => self::faker()->randomElements(self::faker()->words(10), self::faker()->numberBetween(1, 3)),
         ];
     }
