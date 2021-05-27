@@ -1,0 +1,12 @@
+<ul style="padding-left: 0">
+    {%- for submit in item.uniqueUsersNames -%}
+        {%- for author in submit -%}
+            <a href="{{ path('easyadmin', {
+                entity: 'User',
+                action: 'edit',
+                id: item.id,
+            }) }}">{{ author }}</a>{%- if not loop.last -%}, {%- endif -%}
+        {%- endfor -%}
+        {%- if not loop.last -%}, {% endif %}
+    {%- endfor -%}
+</ul>

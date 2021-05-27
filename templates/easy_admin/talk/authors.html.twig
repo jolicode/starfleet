@@ -1,9 +1,0 @@
-<ul>
-    {% for submit in item.uniqueUsersNames %}
-        <li>
-            {% for user in submit %}
-                {{ user }}{% if not loop.last %}, {% endif %}
-            {% endfor %}
-        </li>
-    {% endfor %}
-</ul>

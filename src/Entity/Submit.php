@@ -69,14 +69,16 @@ class Submit
     private Collection $users;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Conference", inversedBy="submits", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Conference", inversedBy="submits")
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
-    private ?Conference $conference = null;
+    private Conference $conference;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Talk", inversedBy="submits")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Talk", inversedBy="submits", cascade={"persist"})
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
-    private ?Talk $talk = null;
+    private Talk $talk;
 
     private bool $statusChanged = false;
 
@@ -90,7 +92,7 @@ class Submit
         return $this->id;
     }
 
-    public function setSubmittedAt(?\DateTime $submittedAt): self
+    public function setSubmittedAt(\DateTime $submittedAt): self
     {
         $this->submittedAt = $submittedAt;
 
@@ -137,38 +139,38 @@ class Submit
         return $this;
     }
 
-    public function setConference(?Conference $conference): self
+    public function setConference(Conference $conference): self
     {
         $this->conference = $conference;
 
         return $this;
     }
 
-    public function getConference(): ?Conference
+    public function getConference(): Conference
     {
         return $this->conference;
     }
 
-    public function setTalk(?Talk $talk): self
+    public function setTalk(Talk $talk): self
     {
         $this->talk = $talk;
 
         return $this;
     }
 
-    public function getTalk(): ?Talk
+    public function getTalk(): Talk
     {
         return $this->talk;
     }
 
     public function __toString(): string
     {
-        return $this->getTalk() && $this->getConference()
+        return ($this->getTalk()->getTitle() && $this->getConference()->getName())
             ? sprintf('%s - %s', $this->getTalk()->getTitle(), $this->getConference()->getName())
             : (string) $this->id;
     }
 
-    public function reduceSpeakersNames(): string
+    public function getSpeakersNames(): string
     {
         return array_reduce($this->getUsers()->toArray(), function ($r, User $u) {
             return '' === $r ? $u->getName() : $r.', '.$u->getName();

@@ -57,7 +57,6 @@
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.0",
         "friendsofphp/php-cs-fixer": "^3.0",
-        "fzaninotto/faker": "dev-master",
         "phpstan/phpstan": "^0.12.63",
         "phpstan/phpstan-doctrine": "^0.12.26",
         "phpstan/phpstan-symfony": "^0.12.12",
@@ -68,7 +67,8 @@
         "symfony/phpunit-bridge": "^5.2",
         "symfony/thanks": "^1.0",
         "symfony/var-dumper": "^5.2",
-        "symfony/web-profiler-bundle": "^5.2"
+        "symfony/web-profiler-bundle": "^5.2",
+        "zenstruck/foundry": "^1.10"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,

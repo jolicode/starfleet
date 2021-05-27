@@ -4,19 +4,23 @@ easy_admin:
             class: App\Entity\Conference
             disabled_actions: ['edit', 'delete']
             list:
+                title: 'Passed Conferences'
                 filters: ['name', 'city', 'country', 'startAt', 'tags', 'source']
                 actions:
                     - { name: 'excludeConference', label: 'Exclude', icon: 'times' }
                 sort: ['endAt', 'DESC']
                 dql_filter: 'entity.endAt < CURRENT_DATE() AND entity.excluded = false'
-                fields:
+                fields: &conferenceListFields
                     - { property: 'name', type: 'text' }
+                    - { property: 'city', type: 'text' }
+                    - { property: 'country', type: 'country', template: 'easy_admin/Conference/country.html.twig'}
                     - { property: 'startAt', type: 'date' }
-                    - { property: 'endAt', type: 'date' }
+                    - { property: 'cfpUrl', type: 'url', template: 'easy_admin/Conference/cfpUrl.html.twig' }
+                    - { property: 'cfpEndAt', type: 'date' }
                     - { property: 'source', type: 'text' }
                     - { property: 'tags', type: 'array' }
             show:
-                fields: &conferenceShow
+                fields: &conferenceShowFields
                     1: { property: name, type: text }
                     2: { property: city, type: text }
                     3: { property: country, type: country }
@@ -34,22 +38,16 @@ easy_admin:
             class: App\Entity\Conference
             disabled_actions: ['delete']
             list:
+                title: 'Next Conferences'
                 filters: ['name', 'city', 'country', 'startAt', 'tags', 'source']
                 actions:
                     - { name: 'excludeConference', label: 'Exclude', icon: 'times' }
                 sort: ['startAt', 'ASC']
                 dql_filter: 'entity.endAt >= CURRENT_DATE() AND entity.excluded = false'
                 fields:
-                    - { property: 'name', type: 'text' }
-                    - { property: 'city', type: 'text' }
-                    - { property: 'country', type: 'country', template: 'easy_admin/Conference/country.html.twig'}
-                    - { property: 'startAt', type: 'date' }
-                    - { property: 'cfpUrl', type: 'url', template: 'easy_admin/Conference/cfpUrl.html.twig' }
-                    - { property: 'cfpEndAt', type: 'date' }
-                    - { property: 'source', type: 'text' }
-                    - { property: 'tags', type: 'array' }
+                    <<: *conferenceListFields
             form:
-                fields: &conferencesEdit
+                fields: &conferencesEditFields
                     - { type: 'group', columns: 4, icon: 'pencil', label: 'Conference' }
                     - { property: 'name', type: 'text' }
                     - { property: 'city', type: 'text' }
@@ -65,26 +63,22 @@ easy_admin:
                     - { property: 'articleUrl', type: 'url' }
             show:
                 fields:
-                    <<: *conferenceShow
+                    <<: *conferenceShowFields
         ExcludedConference:
             class: App\Entity\Conference
             disabled_actions: ['delete']
             list:
+                title: 'Excluded Conferences'
                 filters: ['name', 'city', 'country', 'startAt', 'tags', 'source']
                 actions:
                     - { name: 'includeConference', label: 'Re-include', icon: 'arrow-left' }
                 sort: ['endAt', 'DESC']
                 dql_filter: 'entity.excluded = true'
                 fields:
-                    - { property: 'name', type: 'text' }
-                    - { property: 'startAt', type: 'date' }
-                    - { property: 'cfpUrl', type: 'url', template: 'easy_admin/Conference/cfpUrl.html.twig' }
-                    - { property: 'cfpEndAt', type: 'date' }
-                    - { property: 'source', type: 'text' }
-                    - { property: 'tags', type: 'array' }
+                    <<: *conferenceListFields
             show:
                 fields:
-                    <<: *conferenceShow
+                    <<: *conferenceShowFields
             form:
                 fields:
-                    <<: *conferencesEdit
+                    <<: *conferencesEditFields

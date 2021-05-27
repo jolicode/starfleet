@@ -13,6 +13,7 @@ namespace App\Repository;
 
 use App\Entity\Conference;
 use App\Entity\User;
+use App\Enum\Workflow\Transition\Participation;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -54,7 +55,7 @@ class ConferenceRepository extends ServiceEntityRepository
             ->setParameter('threshold', $threshold)
             ->getQuery()
             ->execute()
-            ;
+        ;
     }
 
     /** @return array<mixed> */
@@ -74,7 +75,7 @@ class ConferenceRepository extends ServiceEntityRepository
             ->setParameter('threshold', $threshold)
             ->getQuery()
             ->execute()
-            ;
+        ;
     }
 
     /** @return array<mixed> */
@@ -83,7 +84,7 @@ class ConferenceRepository extends ServiceEntityRepository
         return $this->createAttendedQueryBuilder()
             ->getQuery()
             ->execute()
-            ;
+        ;
     }
 
     /** @return array<mixed> */
@@ -95,7 +96,7 @@ class ConferenceRepository extends ServiceEntityRepository
             ->setParameter('tagName', json_encode($tag))
             ->getQuery()
             ->execute()
-            ;
+        ;
     }
 
     /** @return \Generator<Conference>|null */
@@ -107,7 +108,7 @@ class ConferenceRepository extends ServiceEntityRepository
             ->andWhere('c.coordinates IS NULL')
             ->getQuery()
             ->toIterable()
-            ;
+        ;
 
         foreach ($iterator as $conference) {
             yield $conference[0];
@@ -126,7 +127,7 @@ class ConferenceRepository extends ServiceEntityRepository
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult()
-            ;
+        ;
     }
 
     /** @return array<mixed> */
@@ -171,6 +172,9 @@ class ConferenceRepository extends ServiceEntityRepository
         ];
     }
 
+    /**
+     * @return array<Conference>
+     */
     public function findAttentedConferencesByUser(User $user): array
     {
         return $this->createAttendedQueryBuilder()
@@ -179,7 +183,7 @@ class ConferenceRepository extends ServiceEntityRepository
             ->setParameter('user', $user)
             ->getQuery()
             ->execute()
-            ;
+        ;
     }
 
     private function createAttendedQueryBuilder(): QueryBuilder
@@ -188,8 +192,10 @@ class ConferenceRepository extends ServiceEntityRepository
             ->innerJoin('c.participations', 'p')
             ->andWhere('SIZE(c.participations) > 0')
             ->andWhere('p.marking = :marking')
-            ->setParameter('marking', 'accepted')
+            ->andWhere('c.excluded = :excluded')
+            ->setParameter('marking', Participation::ACCEPT)
+            ->setParameter('excluded', false)
             ->orderBy('c.startAt', 'ASC')
-            ;
+        ;
     }
 }
