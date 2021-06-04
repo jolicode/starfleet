@@ -17,10 +17,10 @@ use App\Repository\ConferenceRepository;
 use App\Repository\SubmitRepository;
 use App\UX\UserChartBuilder;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class UserSubmitController extends AbstractController
@@ -33,7 +33,7 @@ class UserSubmitController extends AbstractController
     ) {
     }
 
-    #[Route(path: '/user/submit', name: 'user_submit')]
+    #[Route(path: '/user/submits', name: 'user_submits')]
     public function userSubmits(Request $request): Response
     {
         $submit = new Submit();
@@ -46,13 +46,13 @@ class UserSubmitController extends AbstractController
 
             $this->addFlash('info', 'The submit has been saved.');
 
-            return $this->redirectToRoute('user_submit');
+            return $this->redirectToRoute('user_submits');
         }
 
         $pendingSubmits = $this->submitRepository->findUserSubmitsByStatus($this->getUser(), Submit::STATUS_PENDING);
         $doneSubmits = $this->submitRepository->findUserSubmitsByStatus($this->getUser(), Submit::STATUS_DONE);
         $rejectedSubmits = $this->submitRepository->findUserSubmitsByStatus($this->getUser(), Submit::STATUS_REJECTED);
-        $futureSubmits = $this->submitRepository->findFutureUserSubmits($this->getUser());
+        $futureSubmits = $this->submitRepository->findUserSubmitsByStatus($this->getUser(), Submit::STATUS_ACCEPTED);
 
         if (0 !== \count($pendingSubmits) + \count($doneSubmits) + \count($rejectedSubmits) + \count($futureSubmits)) {
             $chart = $this->userChartBuilder->buildSubmitsChart($pendingSubmits, $doneSubmits, $rejectedSubmits, $futureSubmits);
@@ -68,75 +68,63 @@ class UserSubmitController extends AbstractController
         ]);
     }
 
+    #[IsGranted('SUBMIT_ACTION', 'submit')]
     #[Route(path: '/user/submit-accepted/{id}', name: 'user_submit_accepted')]
-    public function acceptSubmit(Submit $submit, Request $request): Response
+    public function acceptSubmit(Submit $submit): Response
     {
-        if (!$submit->getUsers()->contains($this->getUser())) {
-            throw new AccessDeniedHttpException('You are not allowed to modify the status of a submit you don\'t own.');
-        }
-
         $submit->setStatus(Submit::STATUS_ACCEPTED);
 
         $this->em->flush();
         $this->addFlash('info', sprintf('Submit for %s tagged as accepted.', $submit->getConference()->getName()));
 
-        return $this->redirectToRoute('user_submit');
+        return $this->redirectToRoute('user_submits');
     }
 
+    #[IsGranted('SUBMIT_ACTION', 'submit')]
     #[Route(path: '/user/submit-done/{id}', name: 'user_submit_done')]
-    public function doneSubmit(Submit $submit, Request $request): Response
+    public function doneSubmit(Submit $submit): Response
     {
-        if (!$submit->getUsers()->contains($this->getUser())) {
-            throw new AccessDeniedHttpException('You are not allowed to modify the status of a submit you don\'t own.');
-        }
-
         $submit->setStatus(Submit::STATUS_DONE);
 
         $this->em->flush();
         $this->addFlash('info', sprintf('Submit for %s tagged as done.', $submit->getConference()->getName()));
 
-        return $this->redirectToRoute('user_submit');
+        return $this->redirectToRoute('user_submits');
     }
 
+    #[IsGranted('SUBMIT_ACTION', 'submit')]
     #[Route(path: '/user/submit-rejected/{id}', name: 'user_submit_rejected')]
-    public function rejectSubmit(Submit $submit, Request $request): Response
+    public function rejectSubmit(Submit $submit): Response
     {
-        if (!$submit->getUsers()->contains($this->getUser())) {
-            throw new AccessDeniedHttpException('You are not allowed to modify the status of a submit you don\'t own.');
-        }
-
         $submit->setStatus(Submit::STATUS_REJECTED);
 
         $this->em->flush();
         $this->addFlash('info', sprintf('Submit for %s tagged as rejected.', $submit->getConference()->getName()));
 
-        return $this->redirectToRoute('user_submit');
+        return $this->redirectToRoute('user_submits');
     }
 
+    #[IsGranted('SUBMIT_ACTION', 'submit')]
     #[Route(path: '/user/submit-pending/{id}', name: 'user_submit_pending')]
-    public function pendingSubmit(Submit $submit, Request $request): Response
+    public function pendingSubmit(Submit $submit): Response
     {
-        if (!$submit->getUsers()->contains($this->getUser())) {
-            throw new AccessDeniedHttpException('You are not allowed to modify the status of a submit you don\'t own.');
-        }
-
         $submit->setStatus(Submit::STATUS_PENDING);
 
         $this->em->flush();
         $this->addFlash('info', sprintf('Submit for %s tagged as pending.', $submit->getConference()->getName()));
 
-        return $this->redirectToRoute('user_submit');
+        return $this->redirectToRoute('user_submits');
     }
 
-    #[Route(path: '/user/future_submits', name: 'future_submits')]
+    #[Route(path: '/user/future-submits', name: 'future_submits')]
     public function futureSubmits(): Response
     {
         return $this->render('user/submit/future_submits.html.twig', [
-            'submits' => $this->submitRepository->findFutureUserSubmits($this->getUser()),
+            'submits' => $this->submitRepository->findUserSubmitsByStatus($this->getUser(), Submit::STATUS_ACCEPTED),
         ]);
     }
 
-    #[Route(path: '/user/pending_submits', name: 'pending_submits')]
+    #[Route(path: '/user/pending-submits', name: 'pending_submits')]
     public function pendingSubmits(): Response
     {
         return $this->render('user/submit/pending_submits.html.twig', [
@@ -144,7 +132,7 @@ class UserSubmitController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/user/done_submits', name: 'done_submits')]
+    #[Route(path: '/user/done-submits', name: 'done_submits')]
     public function doneSubmits(): Response
     {
         return $this->render('user/submit/done_submits.html.twig', [
@@ -152,7 +140,7 @@ class UserSubmitController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/user/rejected_submits', name: 'rejected_submits')]
+    #[Route(path: '/user/rejected-submits', name: 'rejected_submits')]
     public function rejectedSubmits(): Response
     {
         return $this->render('user/submit/rejected_submits.html.twig', [

@@ -15,7 +15,7 @@
 {% block content %}
     <aside class="col-6">
         {% if futureParticipations|length %}
-            <div class="row mb-5">
+            <div class="row mb-5" id="future-participations-block">
                 <h2 class="mx-0 mb-5">Conferences you will attend soon</h2>
                 {% for participation in futureParticipations|slice(0, 3) %}
                     <div class="user-items-list">
@@ -25,12 +25,12 @@
                             </a>, starts on {{ participation.conference.startAt|date('m/d/Y') }}
                         </div>
 
-                        <div class="row">
-                            <a href="{{ path('edit_participation', { id: participation.id }) }}" class="pr-5">
-                                <div class="btn text-info p-0"><i class="fa fa-edit"></i> Edit Participation</div>
+                        <div class="row w-100 mt-2">
+                            <a href="{{ path('edit_participation', { id: participation.id }) }}" class="pr-5 action-edit">
+                                <div class="btn color-edit p-0"><i class="fa fa-edit"></i> Edit Participation</div>
                             </a>
-                            <a href="{{ path('user_participations_cancel', { id: participation.id }) }}">
-                                <div class="btn participation-cancel p-0"><i class="fa fa-times-circle"></i> Cancel Participation</div>
+                            <a href="{{ path('user_participations_cancel', { id: participation.id }) }}" class="action-cancel">
+                                <div class="btn color-cancel p-0"><i class="fa fa-times-circle"></i> Cancel Participation</div>
                             </a>
                         </div>
                     </div>
@@ -42,7 +42,7 @@
         {% endif %}
 
         {% if pendingParticipations|length %}
-            <div class="row mb-5">
+            <div class="row mb-5" id="pending-participations-block">
                 <h2 class="mx-0 mb-5">Pending participations</h2>
                 {% for participation in pendingParticipations|slice(0, 3) %}
                     <div class="user-items-list">
@@ -52,12 +52,12 @@
                             </a>, starts on {{ participation.conference.startAt|date('m/d/Y') }}
                         </div>
 
-                        <div class="row w-100">
-                            <a href="{{ path('edit_participation', { id: participation.id }) }}" class="pr-5">
-                                <div class="btn text-info p-0"><i class="fa fa-edit"></i> Edit Participation</div>
+                        <div class="row w-100 mt-2">
+                            <a href="{{ path('edit_participation', { id: participation.id }) }}" class="pr-5 action-edit">
+                                <div class="btn color-edit p-0"><i class="fa fa-edit"></i> Edit Participation</div>
                             </a>
-                            <a href="{{ path('user_participations_cancel', { id: participation.id }) }}">
-                                <div class="btn participation-cancel p-0"><i class="fa fa-times-circle"></i> Cancel Participation</div>
+                            <a href="{{ path('user_participations_cancel', { id: participation.id }) }}" class="action-cancel">
+                                <div class="btn color-cancel p-0"><i class="fa fa-times-circle"></i> Cancel Participation</div>
                             </a>
                         </div>
                     </div>
@@ -69,7 +69,7 @@
         {% endif %}
 
         {% if rejectedParticipations|length %}
-            <div class="row mb-5">
+            <div class="row mb-5" id="rejected-participations-block">
                 <h2 class="mx-0 mb-5">Rejected participations</h2>
                 {% for participation in rejectedParticipations|slice(0, 3) %}
                     <div class="user-items-list">
@@ -87,7 +87,7 @@
         {% endif %}
 
         {% if pastParticipations|length %}
-            <div class="row mb-5">
+            <div class="row mb-5" id="past-participations-block">
                 <h2 class="mx-0 mb-5">Conferences you went to</h2>
                 {% for participation in pastParticipations|slice(0, 3) %}
                     <div class="user-items-list">
@@ -128,7 +128,7 @@
                     row_attr: {class: 'align-self-center'}
                 }) }}
 
-                <button type="submit" class="btn btn-primary align-self-center" id="submit_conference">Submit</button>
+                <button type="submit" class="btn btn-primary align-self-center" id="submit_participation">Submit</button>
 
             {{ form_end(form) }}
         </div>

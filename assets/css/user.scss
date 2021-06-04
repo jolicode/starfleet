@@ -3,23 +3,32 @@
     right: 0;
 }
 
-.participation-cancel {
+.color-cancel {
     color: #d97817;
 }
 
-.submit-validate {
+.color-accepted {
     color: #28A745;
 }
 
-.submit-done {
+.color-done {
+    color: #09bdb4;
+}
+
+.color-rejected {
+    color: #e20b21;
+}
+
+.color-pending {
+    color: #ebb001;
+}
+
+.color-edit {
     color: #007bff;
 }
 
-.submit-rejected {
-    color: #dc3545;
-}
-.submit-pending {
-    color: #ebb001;
+.color-remove {
+    color: #a03944;
 }
 
 .user-items-list {
@@ -38,4 +47,8 @@
 .user-items-list .row {
     margin-right: 0;
     margin-left: 0;
+}
+
+.w-33 {
+    width: 33%;
 }

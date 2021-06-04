@@ -69,12 +69,11 @@ class ParticipationController extends EasyAdminController
 
     #[Route(path: '/participation/cancel', name: 'participation_cancel')]
     #[IsGranted('ROLE_ADMIN')]
-    public function canceledAction(): Response
+    public function cancelledAction(): Response
     {
         /** @var Participation $participation */
         $participation = $this->request->attributes->get('easyadmin')['item'];
         $workflow = $this->workflowRegistry->get($participation, 'participation_request');
-
         $workflow->apply($participation, ParticipationTransition::CANCELLED);
 
         $this->em->flush();

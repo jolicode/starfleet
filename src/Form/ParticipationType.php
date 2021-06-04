@@ -11,7 +11,6 @@
 
 namespace App\Form;
 
-use App\DataTransformer\ConferenceNameTransformer;
 use App\Entity\Participation;
 use App\Repository\ConferenceRepository;
 use Symfony\Component\Form\AbstractType;
@@ -23,7 +22,6 @@ class ParticipationType extends AbstractType
 {
     public function __construct(
         private ConferenceRepository $conferenceRepository,
-        private ConferenceNameTransformer $transformer,
     ) {
     }
 
@@ -31,7 +29,9 @@ class ParticipationType extends AbstractType
     {
         $builder
             ->add('conference', ConferenceDatalistType::class)
-            ->add('asSpeaker', CheckboxType::class)
+            ->add('asSpeaker', CheckboxType::class, [
+                'required' => false,
+            ])
             ->add('transportStatus', ChoiceType::class, [
                 'choices' => Participation::STATUSES,
             ])
@@ -41,11 +41,6 @@ class ParticipationType extends AbstractType
             ->add('conferenceTicketStatus', ChoiceType::class, [
                 'choices' => Participation::STATUSES,
             ])
-        ;
-
-        $builder
-            ->get('conference')
-            ->addModelTransformer($this->transformer)
         ;
     }
 }

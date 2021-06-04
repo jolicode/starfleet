@@ -4,7 +4,7 @@
 {% form_theme form.conference _self %}
 
 {% block _participation_conference_widget %}
-    <input list="{{ id }}" class="form-control" name="{{ full_name }}" required autocomplete="off">
+    <input list="{{ id }}" id="{{ id }}_input" class="form-control" name="{{ full_name }}" autocomplete="off" placeholder="{{ value }}">
     <datalist id="{{ id }}">
         {% for choice in choices %}
             <option value="{{ choice.name }}"></option>
@@ -36,8 +36,21 @@
                 {{ form_row(form.asSpeaker, {
                     row_attr: {class: 'align-self-center'}
                 }) }}
-                <button type="submit" class="btn btn-primary align-self-center" id="submit_conference">Submit</button>
+                <button type="submit" class="btn btn-primary align-self-center" id="edit_participation">Submit</button>
             {{ form_end(form) }}
         </div>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        const form = document.getElementById('participation');
+        const datalist = document.getElementById('participation_conference_input');
+        form.addEventListener('submit', function (e) {
+            if (!datalist.value) {
+                datalist.value = datalist.getAttribute('placeholder');
+            }
+        })
+    </script>
 {% endblock %}
