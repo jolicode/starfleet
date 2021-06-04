@@ -43,23 +43,6 @@ class SubmitRepository extends ServiceEntityRepository
         ;
     }
 
-    /** @return array<Submit> */
-    public function findFutureUserSubmits(User $user): array
-    {
-        $today = new \DateTime();
-
-        return $this->createUserQueryBuilder($user)
-            ->innerJoin('s.conference', 'c')
-            ->andWhere('c.startAt >= :today')
-            ->setParameter('today', $today)
-            ->andWhere('s.status = :accepted')
-            ->setParameter('accepted', Submit::STATUS_ACCEPTED)
-            ->orderBy('c.createdAt', 'ASC')
-            ->getQuery()
-            ->execute()
-        ;
-    }
-
     /**
      * @return array<Submit>
      */

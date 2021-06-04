@@ -16,11 +16,14 @@ use App\Fetcher\ConfTechCloner;
 use App\Fetcher\ConfTechFetcher;
 use App\Fetcher\LocationGuesser;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
 class ConfTechFetcherTest extends KernelTestCase
 {
+    use ProphecyTrait;
+
     /**
      * @dataProvider provideConferences
      */

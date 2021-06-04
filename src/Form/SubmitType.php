@@ -11,7 +11,6 @@
 
 namespace App\Form;
 
-use App\DataTransformer\ConferenceNameTransformer;
 use App\Entity\Talk;
 use App\Entity\User;
 use App\Repository\ConferenceRepository;
@@ -23,7 +22,6 @@ class SubmitType extends AbstractType
 {
     public function __construct(
         private ConferenceRepository $conferenceRepository,
-        private ConferenceNameTransformer $transformer,
     ) {
     }
 
@@ -38,11 +36,6 @@ class SubmitType extends AbstractType
             ->add('talk', EntityType::class, [
                 'class' => Talk::class,
             ])
-        ;
-
-        $builder
-            ->get('conference')
-            ->addModelTransformer($this->transformer)
         ;
     }
 }

@@ -15,6 +15,11 @@
                         {{ message }}
                     </div>
                 {% endfor %}
+                {% for message in app.flashes('error') %}
+                    <div class="alert alert-danger text-center">
+                        {{ message }}
+                    </div>
+                {% endfor %}
             </div>
             <div class="pt-5 mt-5">
                 {% block nav %}
@@ -25,7 +30,7 @@
                     {% endif %}
                     {% if is_granted('ROLE_ADMIN') %}
                         <a href="{{ path('easyadmin') }}">
-                            <div class="btn btn-info">Admin</div>
+                            <div class="btn btn-info" id ="admin-button">Admin</div>
                         </a>
                     {% endif %}
                 {% endblock %}

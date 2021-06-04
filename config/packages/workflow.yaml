@@ -17,21 +17,18 @@ framework:
 
             transitions:
                 -   name: !php/const App\Enum\Workflow\Transition\Participation::ACCEPTED
-                    guard: "is_granted('ROLE_ADMIN')"
                     from: [pending, rejected, cancelled]
                     to: accepted
                     metadata:
                         title: 'Accept'
 
                 -   name: !php/const App\Enum\Workflow\Transition\Participation::REJECTED
-                    guard: "is_granted('ROLE_ADMIN')"
                     from: [pending, accepted]
                     to: rejected
                     metadata:
                         title: 'Reject'
 
                 -   name: !php/const App\Enum\Workflow\Transition\Participation::CANCELLED
-                    guard: "is_granted('ROLE_ADMIN')"
                     from: [pending, accepted]
                     to: cancelled
                     metadata:

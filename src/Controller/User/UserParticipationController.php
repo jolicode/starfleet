@@ -18,13 +18,13 @@ use App\Repository\ConferenceRepository;
 use App\Repository\ParticipationRepository;
 use App\UX\UserChartBuilder;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Symfony\Component\Workflow\WorkflowInterface;
+use Symfony\Component\Workflow\Exception\TransitionException;
+use Symfony\Component\Workflow\StateMachine;
 
 class UserParticipationController extends AbstractController
 {
@@ -33,7 +33,7 @@ class UserParticipationController extends AbstractController
         private ConferenceRepository $conferenceRepository,
         private UserChartBuilder $userChartBuilder,
         private EntityManagerInterface $em,
-        private WorkflowInterface $participationRequestStateMachine,
+        private StateMachine $workflow,
     ) {
     }
 
@@ -71,20 +71,19 @@ class UserParticipationController extends AbstractController
         ]);
     }
 
+    #[IsGranted(data : 'PARTICIPATION_ACTION', subject: 'participation')]
     #[Route(path: '/user/participation-cancel/{id}', name: 'user_participations_cancel')]
-    public function cancelParticipation(Participation $participation, Request $request): Response
+    public function cancelParticipation(Participation $participation): Response
     {
-        if ($this->getUser() !== $participation->getParticipant()) {
-            throw new AccessDeniedException('You are not allowed to cancel someone else\'s participation.');
-        }
-
         try {
-            $this->participationRequestStateMachine->apply($participation, ParticipationTransition::CANCELLED);
-        } catch (Exception $exception) {
+            $this->workflow->apply($participation, ParticipationTransition::CANCELLED);
+        } catch (TransitionException $exception) {
             $this->addFlash(
                 'error',
-                sprintf('Participation cancel has failed : %s.', $exception->getMessage())
+                sprintf('Participation cancel has failed : %s', $exception->getMessage())
             );
+
+            return $this->redirectToRoute('user_participations');
         }
 
         $this->em->flush();
@@ -125,13 +124,10 @@ class UserParticipationController extends AbstractController
         ]);
     }
 
+    #[IsGranted(data: 'PARTICIPATION_ACTION', subject: 'participation')]
     #[Route(path: '/user/participation-edit/{id}', name: 'edit_participation')]
     public function editParticipation(Participation $participation, Request $request): Response
     {
-        if ($this->getUser() !== $participation->getParticipant()) {
-            throw new AccessDeniedException('You are not allowed to edit someone else\'s participation.');
-        }
-
         $form = $this->createForm(ParticipationType::class, $participation);
 
         if ($form->handleRequest($request)->isSubmitted() && $form->isValid()) {

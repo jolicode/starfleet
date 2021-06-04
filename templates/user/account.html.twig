@@ -10,13 +10,13 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ path('user_submit') }}" class="nav-link">
+                <a href="{{ path('user_submits') }}" class="nav-link">
                     My submits
                 </a>
             </li>
             <li class="nav-item">
                 <a href="{{ path('user_participations') }}" class="nav-link">
-                    My Participations
+                    My participations
                 </a>
             </li>
             <li class="nav-item">
@@ -25,8 +25,8 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ app.user ? path('user_account') : path('login') }}" class="nav-link">
-                    {{ app.user ? '➡️ Logout' }}
+                <a href="{{ path('logout') }}" class="nav-link">
+                    {{ '➡️ Logout' }}
                 </a>
             </li>
         </ul>

@@ -18,12 +18,12 @@
                     </a>, starts on {{ participation.conference.startAt|date('m/d/Y') }}
                 </div>
 
-                <div class="row w-100">
-                    <a href="{{ path('user_participations') }}" class="pr-5">
-                        <div class="btn text-info p-0"><i class="fa fa-edit"></i> Edit Participation</div>
+                <div class="row w-100 mt-2">
+                    <a href="{{ path('edit_participation', { id: participation.id }) }}" class="pr-5 action-edit">
+                        <div class="btn color-edit p-0"><i class="fa fa-edit"></i> Edit Participation</div>
                     </a>
-                    <a href="{{ path('user_participations_cancel', { id: participation.id }) }}">
-                        <div class="btn participation-cancel p-0"><i class="fa fa-times-circle"></i> Cancel Participation</div>
+                    <a href="{{ path('user_participations_cancel', { id: participation.id }) }}" class="action-cancel">
+                        <div class="btn color-cancel p-0"><i class="fa fa-times-circle"></i> Cancel Participation</div>
                     </a>
                 </div>
             </div>
