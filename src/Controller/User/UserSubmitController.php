@@ -147,4 +147,36 @@ class UserSubmitController extends AbstractController
             'submits' => $this->submitRepository->findUserSubmitsByStatus($this->getUser(), Submit::STATUS_REJECTED),
         ]);
     }
+
+    #[IsGranted('SUBMIT_ACTION', 'submit')]
+    #[Route(path: '/user/submit-edit/{id}', name: 'edit_submit')]
+    public function editSubmit(Submit $submit, Request $request): Response
+    {
+        $form = $this->createForm(SubmitType::class, $submit);
+
+        if ($form->handleRequest($request)->isSubmitted() && $form->isValid()) {
+            $this->em->persist($submit);
+            $this->em->flush();
+
+            $this->addFlash('info', 'Your submit has been submitted.');
+
+            return $this->redirectToRoute('user_submits');
+        }
+
+        return $this->render('/user/submit/submit_edit.html.twig', [
+            'submit' => $submit,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    #[IsGranted('SUBMIT_ACTION', 'submit')]
+    #[Route(path: '/user/submit-remove/{id}', name: 'remove_submit')]
+    public function removeSubmit(Submit $submit): Response
+    {
+        $this->em->remove($submit);
+        $this->em->flush();
+        $this->addFlash('info', 'Submit removed from the database.');
+
+        return $this->redirectToRoute('user_submits');
+    }
 }
