@@ -59,10 +59,16 @@ class SlackController extends AbstractController
 
         $blocks = $this->slackNotifier->buildDailyBlocks($dailyConferences, $endingCfps);
 
-        $body = [
-            'replace_original' => true,
-            'blocks' => $blocks,
-        ];
+        if ($blocks) {
+            $body = [
+                'replace_original' => true,
+                'blocks' => $blocks,
+            ];
+        } else {
+            $body = [
+                'delete_original' => true,
+            ];
+        }
 
         $this->httpClient->request('POST', $payload['response_url'], [
             'headers' => ['Content-type' => 'application/json'],
