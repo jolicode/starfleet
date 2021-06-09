@@ -15,6 +15,7 @@ use App\Entity\Participation;
 use App\Entity\User;
 use App\Security\Voter\ParticipationVoter;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
@@ -22,9 +23,11 @@ use Symfony\Component\Security\Core\Role\RoleHierarchy;
 
 class ParticipationVoterTest extends TestCase
 {
+    use ProphecyTrait;
+
     private ParticipationVoter $participationVoter;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->participationVoter = new ParticipationVoter(new RoleHierarchy([]));
     }

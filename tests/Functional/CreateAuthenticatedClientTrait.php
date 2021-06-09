@@ -23,7 +23,7 @@ trait CreateAuthenticatedClientTrait
         $container = static::$kernel->getContainer();
 
         if (!$user) {
-            $email = ($isAdmin ? 'admin' : 'user').'@starfleet.app';
+            $email = ($isAdmin ? 'admin' : 'user1').'@starfleet.app';
             $user = $container->get('doctrine')->getRepository(User::class)
                 ->findOneBy(['email' => $email]);
         }

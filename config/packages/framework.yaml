@@ -2,7 +2,6 @@ framework:
     secret: '%env(APP_SECRET)%'
     default_locale: en
     session:
-        handler_id: session.handler.native_file
         save_path: '%kernel.project_dir%/var/sessions/%kernel.environment%'
         cookie_secure: auto
         cookie_samesite: lax

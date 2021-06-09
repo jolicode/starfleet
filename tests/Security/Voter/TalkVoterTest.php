@@ -16,6 +16,7 @@ use App\Entity\Talk;
 use App\Entity\User;
 use App\Security\Voter\TalkVoter;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
@@ -23,9 +24,11 @@ use Symfony\Component\Security\Core\Role\RoleHierarchy;
 
 class TalkVoterTest extends TestCase
 {
+    use ProphecyTrait;
+
     private TalkVoter $talkVoter;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->talkVoter = new TalkVoter(new RoleHierarchy([]));
     }

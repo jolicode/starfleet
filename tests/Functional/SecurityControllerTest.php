@@ -21,7 +21,7 @@ class SecurityControllerTest extends WebTestCase
     {
         $client = static::createAuthenticatedClient(null, true);
         $client->followRedirects();
-        $crawler = $client->request('GET', '/admin/');
+        $crawler = $client->request('GET', '/admin');
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('.user-name', 'Admin');
@@ -31,7 +31,7 @@ class SecurityControllerTest extends WebTestCase
     {
         $client = static::createClient();
         $client->followRedirects();
-        $crawler = $client->request('GET', '/admin/');
+        $crawler = $client->request('GET', '/admin');
 
         $this->assertResponseIsSuccessful();
         $this->assertRouteSame('login');

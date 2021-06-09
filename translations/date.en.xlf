@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en" trgLang="en">
   <file id="date.en">
-    <unit id="QlOaaz7">
+    <unit id="QlOaaz7" name="diff.ago.month">
       <segment>
         <source>diff.ago.month</source>
         <target>{1} %count% month ago|]1,Inf[ %count% months ago</target>
       </segment>
     </unit>
-    <unit id="0icjxey">
+    <unit id="0icjxey" name="diff.ago.day">
       <segment>
         <source>diff.ago.day</source>
         <target>{1} %count% day ago|]1,Inf[ %count% days ago</target>
       </segment>
     </unit>
-    <unit id="BJMjkzc">
+    <unit id="BJMjkzc" name="diff.ago.year">
       <segment>
         <source>diff.ago.year</source>
         <target>{1} %count% year ago|]1,Inf[ %count% years ago</target>
