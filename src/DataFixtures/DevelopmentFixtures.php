@@ -14,12 +14,14 @@ namespace App\DataFixtures;
 use App\EventListener\SlackNotifierEventListener;
 use App\Fetcher\LocationGuesser;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class DevelopmentFixtures extends AbstractFixtures
 {
     public function __construct(
         private SlackNotifierEventListener $slackNotifierEventListener,
         private LocationGuesser $locationGuesser,
+        private UserPasswordHasherInterface $passwordHasher,
     ) {
     }
 
@@ -29,26 +31,35 @@ class DevelopmentFixtures extends AbstractFixtures
 
         $this->slackNotifierEventListener->disable();
 
-        $admin = $this->addUser([
-            'name' => 'Admin',
-            'email' => 'admin@starfleet.app',
-            'roles' => ['ROLE_ADMIN'],
-            'password' => 'password',
-        ]);
+        $admin = $this->addUser(
+            $this->passwordHasher,
+            [
+                'name' => 'Admin',
+                'email' => 'admin@starfleet.app',
+                'roles' => ['ROLE_ADMIN'],
+                'password' => 'password',
+            ]
+        );
 
-        $user1 = $this->addUser([
-            'name' => 'User1',
-            'email' => 'user1@starfleet.app',
-            'roles' => ['ROLE_USER'],
-            'password' => 'password',
-        ]);
+        $user1 = $this->addUser(
+            $this->passwordHasher,
+            [
+                'name' => 'User1',
+                'email' => 'user1@starfleet.app',
+                'roles' => ['ROLE_USER'],
+                'password' => 'password',
+            ]
+        );
 
-        $user2 = $this->addUser([
-            'name' => 'User2',
-            'email' => 'user2@starfleet.app',
-            'roles' => ['ROLE_USER'],
-            'password' => 'password',
-        ]);
+        $user2 = $this->addUser(
+            $this->passwordHasher,
+            [
+                'name' => 'User2',
+                'email' => 'user2@starfleet.app',
+                'roles' => ['ROLE_USER'],
+                'password' => 'password',
+            ]
+        );
 
         $onlineConference = $this->addConference([
             'name' => 'Online Conf',

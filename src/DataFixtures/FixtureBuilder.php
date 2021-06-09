@@ -17,7 +17,7 @@ use App\Entity\Submit;
 use App\Entity\Talk;
 use App\Entity\User;
 use Faker\Generator;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class FixtureBuilder
 {
@@ -70,7 +70,7 @@ class FixtureBuilder
     }
 
     /** @param array<string,mixed> $description */
-    public static function createUser(array $description = [], ?UserPasswordEncoderInterface $passwordEncoder = null): User
+    public static function createUser(array $description = [], ?UserPasswordHasherInterface $passwordHasher = null): User
     {
         $description = array_replace([
             'name' => self::getFaker()->name,
@@ -86,8 +86,8 @@ class FixtureBuilder
         $user->setName($description['name']);
         $user->setRoles($description['roles']);
         $user->setEmail($description['email']);
-        if ($passwordEncoder) {
-            $user->setPassword($passwordEncoder->encodePassword($user, $description['password']));
+        if ($passwordHasher) {
+            $user->setPassword($passwordHasher->hashPassword($user, $description['password']));
         } else {
             $user->setPassword($description['password']);
         }

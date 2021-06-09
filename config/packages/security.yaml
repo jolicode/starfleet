@@ -1,5 +1,5 @@
 security:
-    encoders:
+    password_hashers:
         App\Entity\User:
             algorithm: native
     providers:
@@ -12,21 +12,19 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
-            anonymous: true
             provider: user
             user_checker: App\Security\LoginableChecker
             entry_point: App\Security\Authenticator\LoginFormAuthenticator
-            guard:
-                authenticators:
+            custom_authenticators:
                     - App\Security\Authenticator\LoginFormAuthenticator
                     - App\Security\Authenticator\GoogleAuthenticator
                     - App\Security\Authenticator\GitHubAuthenticator
             logout:
                 path: logout
                 target: conferences_list
-
+    enable_authenticator_manager: true
     access_control:
-        - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/login$, role: PUBLIC_ACCESS }
         - { path: ^/admin, roles: ROLE_USER }
         - { path: ^/admin/?entity=User, roles: ROLE_ADMIN }
 

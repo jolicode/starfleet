@@ -20,6 +20,7 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 abstract class AbstractFixtures extends Fixture implements ContainerAwareInterface
 {
@@ -51,9 +52,9 @@ abstract class AbstractFixtures extends Fixture implements ContainerAwareInterfa
     }
 
     /** @param array<string,mixed> $description */
-    protected function addUser(array $description = []): User
+    protected function addUser(UserPasswordHasherInterface $passwordHasher, array $description = []): User
     {
-        $user = FixtureBuilder::createUser($description, $this->container->get('security.password_encoder'));
+        $user = FixtureBuilder::createUser($description, $passwordHasher);
         $this->manager->persist($user);
 
         return $user;

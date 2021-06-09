@@ -18,14 +18,14 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class InitCommand extends Command
 {
     protected static $defaultName = 'starfleet:init';
 
     public function __construct(
-        private UserPasswordEncoderInterface $passwordEncoder,
+        private UserPasswordHasherInterface $passwordHasher,
         private ManagerRegistry $registry,
     ) {
         parent::__construct();
@@ -47,7 +47,7 @@ class InitCommand extends Command
         $admin = new User();
         $admin->setName($input->getArgument('name'));
         $admin->setEmail($input->getArgument('email'));
-        $admin->setPassword($this->passwordEncoder->encodePassword($admin, $input->getArgument('password')));
+        $admin->setPassword($this->passwordHasher->hashPassword($admin, $input->getArgument('password')));
         $admin->addRole('ROLE_ADMIN');
 
         $this->registry->getManager()->persist($admin);

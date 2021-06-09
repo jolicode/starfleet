@@ -15,6 +15,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -22,7 +23,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="users")
  * @ORM\Entity()
  */
-class User implements UserInterface, \Serializable
+class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInterface
 {
     use TimestampableEntity;
 
@@ -265,6 +266,11 @@ class User implements UserInterface, \Serializable
         return (string) $this->email;
     }
 
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
+    }
+
     /**
      * @see UserInterface
      */
@@ -389,7 +395,7 @@ class User implements UserInterface, \Serializable
     {
         return serialize([
             $this->getId(),
-            $this->getUsername(),
+            $this->getUserIdentifier(),
             $this->getPassword(),
             $this->getSalt(),
             $this->getGoogleId(),

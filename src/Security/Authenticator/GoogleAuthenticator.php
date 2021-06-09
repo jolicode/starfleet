@@ -14,17 +14,19 @@ namespace App\Security\Authenticator;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
-use KnpU\OAuth2ClientBundle\Client\OAuth2ClientInterface;
-use KnpU\OAuth2ClientBundle\Security\Authenticator\SocialAuthenticator;
+use KnpU\OAuth2ClientBundle\Security\Authenticator\OAuth2Authenticator;
 use League\OAuth2\Client\Provider\GoogleUser;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Core\User\UserProviderInterface;
+use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
+use Symfony\Component\Security\Http\Authenticator\Passport\PassportInterface;
+use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 
-class GoogleAuthenticator extends SocialAuthenticator
+class GoogleAuthenticator extends OAuth2Authenticator
 {
     public function __construct(
         private ClientRegistry $clientRegistry,
@@ -38,71 +40,67 @@ class GoogleAuthenticator extends SocialAuthenticator
         return 'connect_google_check' === $request->attributes->get('_route');
     }
 
-    public function getCredentials(Request $request)
+    public function authenticate(Request $request): PassportInterface
     {
-        return $this->fetchAccessToken($this->getGoogleClient());
+        $client = $this->clientRegistry->getClient('google');
+        $accessToken = $this->fetchAccessToken($client);
+
+        return new SelfValidatingPassport(
+            new UserBadge($accessToken, function () use ($accessToken, $client) {
+                /** @var GoogleUser $googleUser */
+                $googleUser = $client->fetchUserFromToken($accessToken);
+
+                $existingUser = $this->em->getRepository(User::class)
+                ->findOneBy(['googleId' => $googleUser->getId()]);
+
+                if ($existingUser) {
+                    return $existingUser;
+                }
+
+                /** @var User|null $user */
+                $user = $this->em->getRepository(User::class)
+                ->findOneBy(['email' => $googleUser->getEmail()]);
+
+                if ($user instanceof User) {
+                    $user->setGoogleId($googleUser->getId());
+
+                    $this->em->flush();
+
+                    return $user;
+                }
+
+                $explodedEmail = explode('@', $googleUser->getEmail());
+                $domain = array_pop($explodedEmail);
+                $allowedDomains = explode(',', getenv('APP_ALLOWED_EMAIL_DOMAINS') ?: '');
+
+                if (!\in_array($domain, $allowedDomains)) {
+                    throw new AuthenticationException('You are not allowed to create an account.');
+                }
+
+                $user = new User();
+                $user->setName($googleUser->getFirstName().' '.$googleUser->getLastName());
+                $user->setEmail($googleUser->getEmail());
+                $user->setGoogleId($googleUser->getId());
+
+                $this->em->persist($user);
+                $this->em->flush();
+
+                return $user;
+            })
+        );
     }
 
-    public function getUser($credentials, UserProviderInterface $userProvider): User
-    {
-        /** @var GoogleUser $googleUser */
-        $googleUser = $this->getGoogleClient()
-            ->fetchUserFromToken($credentials);
-
-        $existingUser = $this->em->getRepository(User::class)
-            ->findOneBy(['googleId' => $googleUser->getId()]);
-
-        if ($existingUser) {
-            return $existingUser;
-        }
-
-        /** @var User|null $user */
-        $user = $this->em->getRepository(User::class)
-            ->findOneBy(['email' => $googleUser->getEmail()]);
-
-        if ($user instanceof User) {
-            $user->setGoogleId($googleUser->getId());
-
-            $this->em->flush();
-
-            return $user;
-        }
-
-        $explodedEmail = explode('@', $googleUser->getEmail());
-        $domain = array_pop($explodedEmail);
-        $allowedDomains = explode(',', getenv('APP_ALLOWED_EMAIL_DOMAINS') ?: '');
-
-        if (!\in_array($domain, $allowedDomains)) {
-            throw new AuthenticationException('You are not allowed to create an account.');
-        }
-
-        $user = new User();
-        $user->setName($googleUser->getFirstName().' '.$googleUser->getLastName());
-        $user->setEmail($googleUser->getEmail());
-        $user->setGoogleId($googleUser->getId());
-
-        $this->em->persist($user);
-        $this->em->flush();
-
-        return $user;
-    }
-
-    private function getGoogleClient(): OAuth2ClientInterface
-    {
-        return $this->clientRegistry->getClient('google');
-    }
-
-    public function start(Request $request, AuthenticationException $authException = null)
+    public function start(Request $request, AuthenticationException $authException = null): Response
     {
         return new RedirectResponse($this->urlGenerator->generate('connect_google'));
     }
 
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
         return new RedirectResponse($this->urlGenerator->generate('conferences_list'));
     }
 
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey)
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey): ?Response
     {
         $url = $this->getPreviousUrl($request, $providerKey);
 

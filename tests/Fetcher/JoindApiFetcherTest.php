@@ -15,12 +15,15 @@ use App\Entity\Continent;
 use App\Fetcher\JoindApiFetcher;
 use App\Fetcher\LocationGuesser;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\MockResponse;
 
 class JoindApiFetcherTest extends KernelTestCase
 {
+    use ProphecyTrait;
+
     /**
      * @dataProvider provideConferences
      */

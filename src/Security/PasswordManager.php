@@ -12,31 +12,20 @@
 namespace App\Security;
 
 use App\Entity\User;
-use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
+use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
+use Symfony\Component\PasswordHasher\PasswordHasherInterface;
 
 class PasswordManager
 {
-    private $encoder;
+    private PasswordHasherInterface $hasher;
 
-    public function __construct(EncoderFactoryInterface $factory)
+    public function __construct(PasswordHasherFactoryInterface $hasherFactory)
     {
-        // We will probably always use the same encoder for both User and Client classes
-        $this->encoder = $factory->getEncoder(User::class);
+        $this->hasher = $hasherFactory->getPasswordHasher(User::class);
     }
 
-    public function encodePassword(string $plainPassword, ?string $salt = null): string
+    public function isPasswordValid(string $hashedPassword, string $plainPassword): bool
     {
-        return $this->encoder->encodePassword($plainPassword, $salt);
-    }
-
-    public function isPasswordValid(string $encodedPassword, string $plainPassword, ?string $salt = null): bool
-    {
-        return $this->encoder->isPasswordValid($encodedPassword, $plainPassword, $salt);
-    }
-
-    public function updateLoginablePassword(User $user): void
-    {
-        $user->setPassword($this->encodePassword($user->getPlainPassword(), $user->getSalt()));
-        $user->eraseCredentials();
+        return $this->hasher->verify($hashedPassword, $plainPassword);
     }
 }
