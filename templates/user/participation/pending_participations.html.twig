@@ -1,0 +1,32 @@
+{% extends "user/user_layout.html.twig" %}
+
+{% block nav %}
+    <a href="{{ path('user_participations') }}">
+        <div class="btn btn-secondary">Back to participations</div>
+    </a>
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <div class="row mb-5">
+        <h2 class="mx-0 mb-5">Participations still waiting for approval</h2>
+        {% for participation in participations %}
+            <div class="user-items-list">
+                <div class="row w-100">
+                    <a href="{{ path('conferences_show', {slug: participation.conference.slug}) }}">
+                        {{ participation.conference.name }}
+                    </a>, starts on {{ participation.conference.startAt|date('m/d/Y') }}
+                </div>
+
+                <div class="row w-100 mt-2">
+                    <a href="{{ path('edit_participation', { id: participation.id }) }}" class="pr-5 action-edit">
+                        <div class="btn color-edit p-0"><i class="fa fa-edit"></i> Edit Participation</div>
+                    </a>
+                    <a href="{{ path('user_participations_cancel', { id: participation.id }) }}" class="action-cancel">
+                        <div class="btn color-cancel p-0"><i class="fa fa-times-circle"></i> Cancel Participation</div>
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

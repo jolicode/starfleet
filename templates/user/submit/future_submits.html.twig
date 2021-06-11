@@ -1,0 +1,61 @@
+{% extends "user/user_layout.html.twig" %}
+
+{% block nav %}
+    <a href="{{ path('user_submits') }}">
+        <div class="btn btn-secondary">Back to submits</div>
+    </a>
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+    <div class="row mb-5">
+        <h2 class="mx-0 mb-5">Accepted submits</h2>
+        {% for submit in submits %}
+            <div class="user-items-list">
+                <div class="row lead mb-2">
+                    Talk submitted :&nbsp;
+                    <a href="#">
+                        {{ submit.talk.title }}
+                    </a>
+                </div>
+
+                <div class="row mb-2">
+                    {{ submit.talk.intro }}
+                </div>
+
+                {% if submit.users|length > 1 %}
+                    <div class="row">
+                        Given with :
+                        {% for user in submit.users %}
+                            {% if app.user != user %}
+                                {{ user.name }}{% if not loop.last %}, {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <div class="row">
+                    At :&nbsp;
+                    <a href="{{ path('conferences_show', {slug: submit.conference.slug}) }}">
+                        {{ submit.conference.name }}
+                    </a>, starts on {{ submit.conference.startAt|date('m/d/Y') }}
+                </div>
+
+                <div class="row justify-content-center mt-2">
+                    <a href="{{ path('user_submit_accepted', { id: submit.id }) }}" class="action-accepted w-50">
+                        <div class="btn color-accepted p-0"><i class="fa fa-check"></i> Accepted !</div>
+                    </a>
+                    <a href="{{ path('user_submit_done', { id: submit.id }) }}" class="action-done w-50">
+                        <div class="btn color-done p-0"><i class="fa fa-clipboard"></i> Done</div>
+                    </a>
+                    <a href="{{ path('user_submit_rejected', { id: submit.id }) }}" class="action-rejected w-50">
+                        <div class="btn color-rejected p-0"><i class="fa fa-times"></i> Rejected</div>
+                    </a>
+                    <a href="{{ path('user_submit_pending', { id: submit.id }) }}" class="action-pending w-50">
+                        <div class="btn color-pending p-0"><i class="fa fa-hourglass-half"></i> Pending</div>
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

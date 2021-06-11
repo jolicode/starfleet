@@ -2,6 +2,7 @@ easy_admin:
     entities:
         Participation:
             class: App\Entity\Participation
+            controller: App\Controller\Admin\ParticipationController
             disabled_actions: ['show']
             templates:
                 list: 'easy_admin/Participation/list.html.twig'
@@ -20,18 +21,18 @@ easy_admin:
                 item_permission: ['ROLE_PARTICIPATION_MANAGEMENT']
                 fields:
                     - { type: 'group', columns: 6, icon: 'id-badge', label: 'Participation' }
-                    - { property: 'conference', type_options: { query_builder: App\Repository\ConferenceRepository::getFutureConferences } }
+                    - { property: 'conference', type: 'App\Form\EasyAdmin\ParticipationConferencesType', type_options: { attr: { data-widget: 'select2' } } }
                     - { property: 'participant' }
                     - { property: 'asSpeaker' }
                     - property: 'transportStatus'
                       type: choice
                       type_options:
-                        choices: !php/const App\Entity\Participation::TRANSPORT_STATUSES
+                        choices: !php/const App\Entity\Participation::STATUSES
                     - property: 'hotelStatus'
                       type: choice
                       type_options:
-                        choices: !php/const App\Entity\Participation::HOTEL_STATUSES
+                        choices: !php/const App\Entity\Participation::STATUSES
                     - property: 'conferenceTicketStatus'
                       type: choice
                       type_options:
-                        choices: !php/const App\Entity\Participation::CONFERENCE_TICKET_STATUSES
+                        choices: !php/const App\Entity\Participation::STATUSES

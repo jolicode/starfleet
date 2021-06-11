@@ -30,43 +30,36 @@ class SubmitRepository extends ServiceEntityRepository
         parent::__construct($registry, Submit::class);
     }
 
-    /**
-     * @return array<Submit>
-     */
+    /** @return array<Submit> */
     public function findUserSubmitsByStatus(User $user, string $status): array
     {
         return $this->createUserQueryBuilder($user)
             ->andWhere('s.status = :status')
             ->setParameter('status', $status)
+            ->innerJoin('s.conference', 'c')
+            ->orderBy('c.createdAt', 'ASC')
             ->getQuery()
             ->execute()
-            ;
+        ;
     }
 
     /**
      * @return array<Submit>
      */
-    public function findUserUpcomingUserSubmits(User $user): array
+    public function findUserSubmits(User $user): array
     {
-        $today = new \DateTime();
-
         return $this->createUserQueryBuilder($user)
-            ->innerJoin('s.conference', 'c')
-            ->andWhere('c.startAt >= :today')
-            ->setParameter('today', $today)
-            ->andWhere('s.status = :accepted')
-            ->setParameter('accepted', Submit::STATUS_ACCEPTED)
             ->getQuery()
             ->execute()
-            ;
+        ;
     }
 
     private function createUserQueryBuilder(User $user): QueryBuilder
     {
         return $this->createQueryBuilder('s')
-        ->innerJoin('s.users', 'u')
-        ->andWhere('u.id = :userId')
-        ->setParameter('userId', $user->getId())
+            ->innerJoin('s.users', 'u')
+            ->andWhere('u.id = :userId')
+            ->setParameter('userId', $user->getId())
         ;
     }
 }

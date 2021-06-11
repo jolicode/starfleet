@@ -1,0 +1,238 @@
+{% extends "user/user_layout.html.twig" %}
+
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+{% form_theme form.conference _self %}
+{% form_theme form.users _self %}
+
+{% block _submit_conference_widget %}
+    <input list="{{ id }}" class="form-control" name="{{ full_name }}" required autocomplete="off">
+    <datalist id="{{ id }}">
+        {% for choice in choices %}
+            <option value="{{ choice.name }}"></option>
+        {% endfor %}
+    </datalist>
+{% endblock %}
+
+{% block _submit_users_label %}
+    <label for="submits_users" class="d-block">Users</label>
+{% endblock %}
+
+{% block content %}
+    <aside class="col-6">
+        {% if pendingSubmits|length %}
+            <div class="row mb-5" id="pending-submits-block">
+                <h2 class="mx-0 mb-5">Submits still waiting for approval</h2>
+                {% for submit in pendingSubmits|slice(0, 3) %}
+                    <div class="user-items-list">
+                        <div class="row lead mb-2">
+                            Talk submitted :&nbsp;
+                            <a href="#">
+                                {{ submit.talk.title }}
+                            </a>
+                        </div>
+
+                        {% if submit.users|length > 1 %}
+                            <div class="row">
+                                Given with :
+                                {% for user in submit.users %}
+                                    {% if app.user != user %}
+                                        {{ user.name }}{% if not loop.last %}, {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="row">
+                            At :&nbsp;
+                            <a href="{{ path('conferences_show', { slug: submit.conference.slug }) }}">
+                                {{ submit.conference.name }}
+                            </a>, starts on {{ submit.conference.startAt|date('m/d/Y') }}
+                        </div>
+
+                        <div class="row justify-content-center mt-2">
+                            <a href="{{ path('user_submit_accepted', { id: submit.id }) }}" class="action-accepted w-50">
+                                <div class="btn color-accepted p-0"><i class="fa fa-check"></i> Accepted !</div>
+                            </a>
+                            <a href="{{ path('user_submit_done', { id: submit.id }) }}" class="action-done w-50">
+                                <div class="btn color-done p-0"><i class="fa fa-clipboard"></i> Done</div>
+                            </a>
+                            <a href="{{ path('user_submit_rejected', { id: submit.id }) }}" class="action-rejected w-50">
+                                <div class="btn color-rejected p-0"><i class="fa fa-times"></i> Rejected</div>
+                            </a>
+                            <a href="{{ path('user_submit_pending', { id: submit.id }) }}" class="action-pending w-50">
+                                <div class="btn color-pending p-0"><i class="fa fa-hourglass-half"></i> Pending</div>
+                            </a>
+                        </div>
+                    </div>
+                    {% if loop.last and pendingSubmits|length > 3 %}
+                        <a href="{{ path('pending_submits') }}">...Show more</a>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if futureSubmits|length %}
+            <div class="row mb-5" id="future-submits-block">
+                <h2 class="mx-0 mb-5">Accepted submits</h2>
+                {% for submit in futureSubmits|slice(0, 3) %}
+                    <div class="user-items-list">
+                        <div class="row lead mb-2">
+                            Talk submitted :&nbsp;
+                            <a href="#">
+                                {{ submit.talk.title }}
+                            </a>
+                        </div>
+
+                        {% if submit.users|length > 1 %}
+                            <div class="row">
+                                Given with :
+                                {% for user in submit.users %}
+                                    {% if app.user != user %}
+                                        {{ user.name }}{% if not loop.last %}, {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="row">
+                            At :&nbsp;
+                            <a href="{{ path('conferences_show', { slug: submit.conference.slug }) }}">
+                                {{ submit.conference.name }}
+                            </a>, starts on {{ submit.conference.startAt|date('m/d/Y') }}
+                        </div>
+
+                        <div class="row w-75">
+                            <a href="{{ path('user_submit_accepted', { id: submit.id }) }}" class="w-50 action-accepted">
+                                <div class="btn color-accepted p-0"><i class="fa fa-check"></i> Accepted !</div>
+                            </a>
+                            <a href="{{ path('user_submit_done', { id: submit.id }) }}" class="w-50 action-done">
+                                <div class="btn color-accepted p-0"><i class="fa fa-clipboard"></i> Done</div>
+                            </a>
+                            <a href="{{ path('user_submit_rejected', { id: submit.id }) }}" class="w-50 action-rejected">
+                                <div class="btn color-rejected p-0"><i class="fa fa-times"></i> Rejected</div>
+                            </a>
+                            <a href="{{ path('user_submit_pending', { id: submit.id }) }}" class="w-50 action-pending">
+                                <div class="btn color-pending p-0"><i class="fa fa-hourglass-half"></i> Pending</div>
+                            </a>
+                        </div>
+                    </div>
+                    {% if loop.last and futureSubmits|length > 3 %}
+                        <a href="{{ path('future_submits') }}">...Show more</a>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if doneSubmits|length %}
+            <div class="row mb-5" id="done-submits-block">
+                <h2 class="mx-0 mb-5">Done submits</h2>
+                {% for submit in doneSubmits|slice(0, 3) %}
+                    <div class="user-items-list">
+                        <div class="row lead mb-2">
+                            Talk submitted :&nbsp;
+                            <a href="#">
+                                {{ submit.talk.title }}
+                            </a>
+                        </div>
+
+                        {% if submit.users|length > 1 %}
+                            <div class="row">
+                                Given with :
+                                {% for user in submit.users %}
+                                    {% if app.user != user %}
+                                        {{ user.name }}{% if not loop.last %}, {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="row">
+                            At :&nbsp;
+                            <a href="{{ path('conferences_show', { slug: submit.conference.slug }) }}">
+                                {{ submit.conference.name }}
+                            </a>, starts on {{ submit.conference.startAt|date('m/d/Y') }}
+                        </div>
+                    </div>
+                    {% if loop.last and doneSubmits|length > 3 %}
+                        <a href="{{ path('done_submits') }}">...Show more</a>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if rejectedSubmits|length %}
+            <div class="row mb-5" id="rejected-submits-block">
+                <h2 class="mx-0 mb-5">Rejected submits</h2>
+                {% for submit in rejectedSubmits|slice(0, 3) %}
+                    <div class="user-items-list">
+                        <div class="row lead mb-2">
+                            Talk submitted :&nbsp;
+                            <a href="#">
+                                {{ submit.talk.title }}
+                            </a>
+                        </div>
+
+                        {% if submit.users|length > 1 %}
+                            <div class="row">
+                                Given with :
+                                {% for user in submit.users %}
+                                    {% if app.user != user %}
+                                        {{ user.name }}{% if not loop.last %}, {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="row">
+                            At :&nbsp;
+                            <a href="{{ path('conferences_show', { slug: submit.conference.slug }) }}">
+                                {{ submit.conference.name }}
+                            </a>, starts on {{ submit.conference.startAt|date('m/d/Y') }}
+                        </div>
+                    </div>
+                    {% if loop.last and rejectedSubmits|length > 3 %}
+                        <a href="{{ path('rejected_submits') }}">...Show more</a>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </aside>
+
+    <section class="col-6 pl-5">
+        <div class="mb-5">
+            {% if chart %}
+                {{ render_chart(chart) }}
+            {% endif %}
+        </div>
+
+        <div class="pt-5">
+            <h2>Submit a talk</h2>
+            {{ form_start(form, {
+                attr: {
+                    class: 'row flex-column',
+                }
+            }) }}
+                {{ form_row(form.conference) }}
+                {{ form_row(form.talk) }}
+                {{ form_row(form.users, {
+                    attr: {
+                        class: 'select2 d-block form-control',
+                    }
+                }) }}
+
+                <button type="submit" class="btn btn-primary align-self-center" id="submit_submit">Submit</button>
+
+            {{ form_end(form) }}
+        </div>
+    </section>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('js/select2') }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('css/select2') }}
+{% endblock %}

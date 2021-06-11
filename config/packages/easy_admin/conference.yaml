@@ -2,6 +2,7 @@ easy_admin:
     entities:
         PassedConference:
             class: App\Entity\Conference
+            controller: App\Controller\Admin\ConferenceController
             disabled_actions: ['edit', 'delete']
             list:
                 title: 'Passed Conferences'
@@ -36,6 +37,7 @@ easy_admin:
                     13: { property: participations, type: embedded_list, css_class: "d-block mx-auto" }
         NextConference:
             class: App\Entity\Conference
+            controller: App\Controller\Admin\ConferenceController
             disabled_actions: ['delete']
             list:
                 title: 'Next Conferences'
@@ -66,6 +68,7 @@ easy_admin:
                     <<: *conferenceShowFields
         ExcludedConference:
             class: App\Entity\Conference
+            controller: App\Controller\Admin\ConferenceController
             disabled_actions: ['delete']
             list:
                 title: 'Excluded Conferences'

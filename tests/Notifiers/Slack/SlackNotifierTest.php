@@ -15,6 +15,7 @@ use App\Entity\Conference;
 use App\Notifiers\Slack\SlackBlocksBuilder;
 use App\Notifiers\Slack\SlackNotifier;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\Routing\Router;
@@ -22,6 +23,8 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class SlackNotifierTest extends WebTestCase
 {
+    use ProphecyTrait;
+
     /**
      * @dataProvider provideDailyData
      */

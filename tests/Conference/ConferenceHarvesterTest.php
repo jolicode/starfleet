@@ -22,11 +22,14 @@ use App\Repository\ConferenceRepository;
 use App\Repository\FetcherConfigurationRepository;
 use Doctrine\ORM\EntityManager;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ConferenceHarvesterTest extends KernelTestCase
 {
+    use ProphecyTrait;
+
     /**
      * @dataProvider provideFetcherResponses
      */

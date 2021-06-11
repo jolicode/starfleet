@@ -12,60 +12,34 @@
 namespace App\Controller\Admin;
 
 use AlterPHP\EasyAdminExtensionBundle\Controller\EasyAdminController;
-use App\Entity\Conference;
 use App\Entity\Participation;
 use App\Enum\Workflow\Transition\Participation as ParticipationTransition;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Workflow\Registry as WorkflowRegistry;
 
-class AdminController extends EasyAdminController
+class ParticipationController extends EasyAdminController
 {
     public function __construct(
         private WorkflowRegistry $workflowRegistry,
     ) {
     }
 
-    public function excludeConferenceAction(): Response
+    protected function createNewParticipationEntity(): Participation
     {
-        /** @var Conference $conference */
-        $conference = $this->request->attributes->get('easyadmin')['item'];
-        $conference->setExcluded(true);
-
-        $this->em->flush();
-
-        return $this->redirectToRoute('easyadmin', [
-            'action' => 'list',
-            'entity' => $this->request->query->get('entity'),
-            'page' => $this->request->query->get('page'),
-        ]);
-    }
-
-    public function includeConferenceAction(): Response
-    {
-        /** @var Conference $conference */
-        $conference = $this->request->attributes->get('easyadmin')['item'];
-        $conference->setExcluded(false);
-
-        $this->em->flush();
-
-        return $this->redirectToRoute('easyadmin', [
-            'action' => 'list',
-            'entity' => $this->request->query->get('entity'),
-            'page' => $this->request->query->get('page'),
-        ]);
+        return new Participation($this->getUser());
     }
 
     #[Route(path: '/participation/accept', name: 'participation_accept')]
-    #[Security('ROLE_ADMIN')]
-    public function acceptAction(): Response
+    #[IsGranted('ROLE_ADMIN')]
+    public function acceptedAction(): Response
     {
         /** @var Participation $participation */
         $participation = $this->request->attributes->get('easyadmin')['item'];
         $workflow = $this->workflowRegistry->get($participation, 'participation_request');
 
-        $workflow->apply($participation, ParticipationTransition::ACCEPT);
+        $workflow->apply($participation, ParticipationTransition::ACCEPTED);
 
         $this->em->flush();
 
@@ -76,14 +50,14 @@ class AdminController extends EasyAdminController
     }
 
     #[Route(path: '/participation/reject', name: 'participation_reject')]
-    #[Security('ROLE_ADMIN')]
-    public function rejectAction(): Response
+    #[IsGranted('ROLE_ADMIN')]
+    public function rejectedAction(): Response
     {
         /** @var Participation $participation */
         $participation = $this->request->attributes->get('easyadmin')['item'];
         $workflow = $this->workflowRegistry->get($participation, 'participation_request');
 
-        $workflow->apply($participation, ParticipationTransition::REJECT);
+        $workflow->apply($participation, ParticipationTransition::REJECTED);
 
         $this->em->flush();
 
@@ -94,14 +68,13 @@ class AdminController extends EasyAdminController
     }
 
     #[Route(path: '/participation/cancel', name: 'participation_cancel')]
-    #[Security('ROLE_ADMIN')]
-    public function cancelAction(): Response
+    #[IsGranted('ROLE_ADMIN')]
+    public function cancelledAction(): Response
     {
         /** @var Participation $participation */
         $participation = $this->request->attributes->get('easyadmin')['item'];
         $workflow = $this->workflowRegistry->get($participation, 'participation_request');
-
-        $workflow->apply($participation, ParticipationTransition::CANCEL);
+        $workflow->apply($participation, ParticipationTransition::CANCELLED);
 
         $this->em->flush();
 

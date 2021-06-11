@@ -14,6 +14,7 @@ Encore
     .enableSourceMaps(!Encore.isProduction())
     .enableVersioning(Encore.isProduction())
     .addEntry('js/app', './assets/js/app.js')
+    .addEntry('js/select2', './assets/js/select2.js')
     .configureBabel((config) => {
         config.plugins.push('@babel/plugin-proposal-class-properties');
     })
@@ -22,7 +23,9 @@ Encore
         config.corejs = 3;
     })
     .addStyleEntry('css/admin', './assets/css/admin.scss')
+    .addStyleEntry('css/user', './assets/css/user.scss')
     .addStyleEntry('css/app', './assets/css/app.scss')
+    .addStyleEntry('css/select2', './assets/css/select2.scss')
     .enableSassLoader(function(sassOptions) {}, {
         resolveUrlLoader: false,
     })

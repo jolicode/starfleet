@@ -16,7 +16,7 @@ use MyCLabs\Enum\Enum;
 class Participation extends Enum
 {
     public const PENDING = 'pending';
-    public const ACCEPT = 'accept';
-    public const REJECT = 'reject';
-    public const CANCEL = 'cancel';
+    public const ACCEPTED = 'accepted';
+    public const REJECTED = 'rejected';
+    public const CANCELLED = 'cancelled';
 }
