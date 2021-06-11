@@ -34,11 +34,11 @@ class ParticipationRepository extends ServiceEntityRepository
     public function findFutureParticipationsByUser(User $user): array
     {
         $today = new \DateTime();
-        $today->setTime(0, 0);
+        $today->setTime(23, 59, 59);
 
         return $this->createStatusAndUserQueryBuilder($user, 'accepted')
             ->innerJoin('p.conference', 'c')
-            ->andWhere('c.startAt >= :today')
+            ->andWhere('c.startAt > :today')
             ->setParameter('today', $today)
             ->orderBy('c.createdAt', 'DESC')
             ->getQuery()
@@ -54,7 +54,7 @@ class ParticipationRepository extends ServiceEntityRepository
 
         return $this->createStatusAndUserQueryBuilder($user, 'accepted')
             ->innerJoin('p.conference', 'c')
-            ->andWhere('c.startAt < :today')
+            ->andWhere('c.endAt < :today')
             ->setParameter('today', $today)
             ->orderBy('c.createdAt', 'DESC')
             ->getQuery()
