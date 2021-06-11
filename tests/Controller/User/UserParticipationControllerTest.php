@@ -24,6 +24,16 @@ class UserParticipationControllerTest extends WebTestCase
 {
     private ?User $user = null;
 
+    /** @dataProvider provideRoutes */
+    public function testAllPagesLoad(string $route)
+    {
+        $client = $this->createClient();
+        $client->loginUser($this->getUser());
+        $client->request('GET', $route);
+
+        self::assertResponseIsSuccessful();
+    }
+
     public function testParticipationsPageWork()
     {
         $client = $this->createClient();
@@ -31,7 +41,6 @@ class UserParticipationControllerTest extends WebTestCase
 
         $client->loginUser($this->getUser());
         $crawler = $client->request('GET', '/user/participations');
-        self::assertResponseIsSuccessful();
 
         $participationsArray = [
             'pending' => $participationRepository->findPendingParticipationsByUser($this->getUser()),
@@ -61,70 +70,16 @@ class UserParticipationControllerTest extends WebTestCase
         $pendingParticipations = $participationRepository->findPendingParticipationsByUser($this->getUser());
         $preFormParticipationCount = \count($pendingParticipations);
 
-        $this->createNewParticipation($client);
+        $conferenceRepository = static::$container->get(ConferenceRepository::class);
+
+        $client->submitForm('submit_participation', [
+            'participation[conference]' => $conferenceRepository->find(1)->getName(),
+            'participation[transportStatus]' => Participation::STATUS_NOT_NEEDED,
+            'participation[hotelStatus]' => Participation::STATUS_NOT_NEEDED,
+            'participation[conferenceTicketStatus]' => Participation::STATUS_NOT_NEEDED,
+        ]);
 
         self::assertCount(++$preFormParticipationCount, $participationRepository->findPendingParticipationsByUser($this->getUser()));
-    }
-
-    public function testCancelParticipation()
-    {
-        $client = $this->createClient();
-        $client->loginUser($this->getUser());
-        $client->followRedirects();
-        $crawler = $client->request('GET', '/user/participations');
-
-        $participationRepository = static::$container->get(ParticipationRepository::class);
-        $pendingParticipations = $participationRepository->findPendingParticipationsByUser($this->getUser());
-        $preCancelCount = \count($pendingParticipations);
-
-        if (0 === \count($crawler->filter('#pending-participations-block'))) {
-            $crawler = $this->createNewParticipation($client);
-        }
-
-        $link = $crawler
-            ->filter('#pending-participations-block a.action-cancel')
-            ->first()
-            ->link()
-        ;
-        $client->click($link);
-
-        self::assertCount(--$preCancelCount, $participationRepository->findPendingParticipationsByUser($this->getUser()));
-    }
-
-    public function testPendingParticipationsMorePageLoad()
-    {
-        $client = $this->createClient();
-        $client->loginUser($this->getUser());
-        $client->request('GET', '/user/pending-participations');
-
-        self::assertResponseIsSuccessful();
-    }
-
-    public function testAcceptedParticipationsMorePageLoad()
-    {
-        $client = $this->createClient();
-        $client->loginUser($this->getUser());
-        $client->request('GET', '/user/future-participations');
-
-        self::assertResponseIsSuccessful();
-    }
-
-    public function testRejectedParticipationsMorePageLoad()
-    {
-        $client = $this->createClient();
-        $client->loginUser($this->getUser());
-        $client->request('GET', '/user/rejected-participations');
-
-        self::assertResponseIsSuccessful();
-    }
-
-    public function testPastParticipationsMorePageLoad()
-    {
-        $client = $this->createClient();
-        $client->loginUser($this->getUser());
-        $client->request('GET', '/user/past-participations');
-
-        self::assertResponseIsSuccessful();
     }
 
     public function testEditParticipationPageWork()
@@ -160,16 +115,13 @@ class UserParticipationControllerTest extends WebTestCase
         self::assertSame(Participation::STATUS_BOOKED, $participation->getConferenceTicketStatus());
     }
 
-    public function testEditParticipationLinkWork()
+    /** @dataProvider provideActionRoutes */
+    public function testAllEditParticipationLinksWork(string $route)
     {
         $client = $this->createClient();
         $client->followRedirects();
         $client->loginUser($this->getUser());
-        $crawler = $client->request('GET', '/user/participations');
-
-        if (!$crawler->filter('a.action-edit')->count()) {
-            $this->createNewParticipation($client);
-        }
+        $crawler = $client->request('GET', $route);
 
         $link = $crawler
             ->filter('a.action-edit')
@@ -181,18 +133,63 @@ class UserParticipationControllerTest extends WebTestCase
         self::assertResponseIsSuccessful();
     }
 
-    private function createNewParticipation(KernelBrowser $client): Crawler
+    /** @dataProvider provideActionRoutes */
+    public function testAllCancelParticipationLinksWork(string $route)
     {
-        $conferenceRepository = static::$container->get(ConferenceRepository::class);
+        $client = $this->createClient();
+        $client->loginUser($this->getUser());
+        $client->followRedirects();
+        $crawler = $client->request('GET', $route);
 
-        $client->submitForm('submit_participation', [
-            'participation[conference]' => $conferenceRepository->find(1)->getName(),
-            'participation[transportStatus]' => Participation::STATUS_NOT_NEEDED,
-            'participation[hotelStatus]' => Participation::STATUS_NOT_NEEDED,
-            'participation[conferenceTicketStatus]' => Participation::STATUS_NOT_NEEDED,
-        ]);
+        if ('/user/participations' === $route) {
+            $this->mainPageCancelLink($client, $crawler);
 
-        return $client->request('GET', '/user/participations');
+            return;
+        }
+
+        $preCancelCount = \count($crawler->filter('a.action-cancel'));
+
+        $link = $crawler
+            ->filter('a.action-cancel')
+            ->first()
+            ->link()
+        ;
+        $client->click($link);
+        $crawler = $client->request('GET', $route);
+
+        self::assertCount(--$preCancelCount, $crawler->filter('a.action-cancel'));
+    }
+
+    public function provideRoutes(): iterable
+    {
+        yield ['/user/participations'];
+        yield ['/user/pending-participations'];
+        yield ['/user/rejected-participations'];
+        yield ['/user/past-participations'];
+        yield ['/user/future-participations'];
+    }
+
+    public function provideActionRoutes(): iterable
+    {
+        yield ['/user/participations'];
+        yield ['/user/pending-participations'];
+        yield ['/user/future-participations'];
+    }
+
+    private function mainPageCancelLink(KernelBrowser $client, Crawler $crawler)
+    {
+        $participationRepository = static::$container->get(ParticipationRepository::class);
+        $participations = $participationRepository->findPendingParticipationsByUser($this->getUser());
+        $preCancelCount = \count($participations);
+
+        $link = $crawler
+            ->filter('#pending-participations-block a.action-cancel')
+            ->first()
+            ->link()
+        ;
+        $client->click($link);
+
+        self::assertCount(--$preCancelCount, $participationRepository->findPendingParticipationsByUser($this->getUser()));
     }
 
     private function getUser(): User

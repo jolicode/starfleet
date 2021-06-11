@@ -12,7 +12,7 @@
         <h2 class="mx-0 mb-5">Rejected participations</h2>
         {% for participation in participations %}
             <div class="row w-100">
-                <a href="{{ path('conferences_show', {slug: participation.conference.slug}) }}">
+                <a href="{{ path('conferences_show', { slug: participation.conference.slug }) }}">
                     {{ participation.conference.name }}
                 </a>, starts on {{ participation.conference.startAt|date('m/d/Y') }}
             </div>

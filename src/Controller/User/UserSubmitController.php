@@ -116,10 +116,10 @@ class UserSubmitController extends AbstractController
         return $this->redirectToRoute('user_submits');
     }
 
-    #[Route(path: '/user/future-submits', name: 'future_submits')]
+    #[Route(path: '/user/accepted-submits', name: 'accepted_submits')]
     public function futureSubmits(): Response
     {
-        return $this->render('user/submit/future_submits.html.twig', [
+        return $this->render('user/submit/accepted_submits.html.twig', [
             'submits' => $this->submitRepository->findUserSubmitsByStatus($this->getUser(), Submit::STATUS_ACCEPTED),
         ]);
     }
@@ -158,7 +158,7 @@ class UserSubmitController extends AbstractController
             $this->em->persist($submit);
             $this->em->flush();
 
-            $this->addFlash('info', 'Your submit has been submitted.');
+            $this->addFlash('info', 'Your talk has been submitted.');
 
             return $this->redirectToRoute('user_submits');
         }
@@ -175,7 +175,7 @@ class UserSubmitController extends AbstractController
     {
         $this->em->remove($submit);
         $this->em->flush();
-        $this->addFlash('info', 'Submit removed from the database.');
+        $this->addFlash('info', 'Submit has been removed.');
 
         return $this->redirectToRoute('user_submits');
     }

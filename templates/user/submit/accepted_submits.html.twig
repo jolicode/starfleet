@@ -19,7 +19,7 @@
                     </a>
                 </div>
 
-                <div class="row mb-2">
+                <div class="row mb-2 w-75">
                     {{ submit.talk.intro }}
                 </div>
 
@@ -36,12 +36,12 @@
 
                 <div class="row">
                     At :&nbsp;
-                    <a href="{{ path('conferences_show', {slug: submit.conference.slug}) }}">
+                    <a href="{{ path('conferences_show', { slug: submit.conference.slug }) }}">
                         {{ submit.conference.name }}
                     </a>, starts on {{ submit.conference.startAt|date('m/d/Y') }}
                 </div>
 
-                <div class="row justify-content-center mt-2">
+                <div class="row justify-content-start mt-2">
                     <a href="{{ path('user_submit_accepted', { id: submit.id }) }}" class="action-accepted w-33">
                         <div class="btn color-accepted p-0"><i class="fa fa-check"></i> Accepted !</div>
                     </a>
