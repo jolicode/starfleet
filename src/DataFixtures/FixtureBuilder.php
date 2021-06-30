@@ -59,6 +59,7 @@ class FixtureBuilder
 
         $submit->setSubmittedAt($description['submittedAt']);
         $submit->setStatus($description['status']);
+        $submit->resetStatusChanged();
         $submit->setConference($description['conference']);
         $submit->setTalk($description['talk']);
 

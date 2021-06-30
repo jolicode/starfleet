@@ -16,6 +16,7 @@ use App\Entity\Conference;
 use App\Entity\Submit;
 use App\Entity\Talk;
 use App\Event\NewTalkSubmittedEvent;
+use App\Event\SubmitStatusChangedEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\Form;
 
@@ -41,6 +42,7 @@ class TalkController extends EasyAdminController
                 $submit->setConference($conference);
                 $submit->setTalk($talk);
                 $submit->setStatus(Submit::STATUS_PENDING);
+                $submit->resetStatusChanged();
 
                 foreach ($authors['authors'] as $author) {
                     $submit->addUser($author);
@@ -55,5 +57,17 @@ class TalkController extends EasyAdminController
         $this->em->flush();
 
         $this->eventDispatcher->dispatch(new NewTalkSubmittedEvent($talk, $newSubmits));
+    }
+
+    protected function updateTalkEntity(Talk $talk): void
+    {
+        foreach ($talk->getSubmits() as $submit) {
+            if ($submit->hasStatusChanged()) {
+                $this->eventDispatcher->dispatch(new SubmitStatusChangedEvent($submit));
+                $submit->resetStatusChanged();
+            }
+        }
+
+        parent::updateEntity($talk);
     }
 }
