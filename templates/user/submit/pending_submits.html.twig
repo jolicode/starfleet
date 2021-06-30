@@ -19,7 +19,7 @@
                     </a>
                 </div>
 
-                <div class="row mb-2">
+                <div class="row mb-2 w-75">
                     {{ submit.talk.intro }}
                 </div>
 
@@ -36,23 +36,29 @@
 
                 <div class="row">
                     At :&nbsp;
-                    <a href="{{ path('conferences_show', {slug: submit.conference.slug}) }}">
+                    <a href="{{ path('conferences_show', { slug: submit.conference.slug }) }}">
                         {{ submit.conference.name }}
                     </a>, starts on {{ submit.conference.startAt|date('m/d/Y') }}
                 </div>
 
-                <div class="row justify-content-center mt-2">
-                    <a href="{{ path('user_submit_accepted', { id: submit.id }) }}" class="action-accepted w-50">
+                <div class="row justify-content-start mt-2">
+                    <a href="{{ path('user_submit_accepted', { id: submit.id }) }}" class="action-accepted w-33">
                         <div class="btn color-accepted p-0"><i class="fa fa-check"></i> Accepted !</div>
                     </a>
-                    <a href="{{ path('user_submit_done', { id: submit.id }) }}" class="action-done w-50">
+                    <a href="{{ path('user_submit_done', { id: submit.id }) }}" class="action-done w-33">
                         <div class="btn color-done p-0"><i class="fa fa-clipboard"></i> Done</div>
                     </a>
-                    <a href="{{ path('user_submit_rejected', { id: submit.id }) }}" class="action-rejected w-50">
+                    <a href="{{ path('user_submit_rejected', { id: submit.id }) }}" class="action-rejected w-33">
                         <div class="btn color-rejected p-0"><i class="fa fa-times"></i> Rejected</div>
                     </a>
-                    <a href="{{ path('user_submit_pending', { id: submit.id }) }}" class="action-pending w-50">
+                    <a href="{{ path('user_submit_pending', { id: submit.id }) }}" class="action-pending w-33">
                         <div class="btn color-pending p-0"><i class="fa fa-hourglass-half"></i> Pending</div>
+                    </a>
+                    <a href="{{ path('edit_submit', { id: submit.id }) }}" class="action-edit w-33">
+                        <div class="btn color-edit p-0"><i class="fa fa-edit"></i> Edit</div>
+                    </a>
+                    <a href="{{ path('remove_submit', { id: submit.id }) }}" class="action-remove w-33">
+                        <div class="btn color-remove p-0"><i class="fa fa-trash"></i> Remove</div>
                     </a>
                 </div>
             </div>
