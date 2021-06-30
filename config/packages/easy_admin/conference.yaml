@@ -4,7 +4,7 @@ easy_admin:
             class: App\Entity\Conference
             disabled_actions: ['edit', 'delete']
             list:
-                filters: ['name', 'city', 'country', 'startAt', 'tags', 'source']
+                filters: ['name', 'city', 'country', 'startAt', 'source']
                 actions:
                     - { name: 'excludeConference', label: 'Exclude', icon: 'times' }
                 sort: ['endAt', 'DESC']
@@ -34,7 +34,7 @@ easy_admin:
             class: App\Entity\Conference
             disabled_actions: ['delete']
             list:
-                filters: ['name', 'city', 'country', 'startAt', 'tags', 'source']
+                filters: ['name', 'city', 'country', 'startAt', 'source']
                 actions:
                     - { name: 'excludeConference', label: 'Exclude', icon: 'times' }
                 sort: ['startAt', 'ASC']
@@ -70,7 +70,7 @@ easy_admin:
             class: App\Entity\Conference
             disabled_actions: ['delete']
             list:
-                filters: ['name', 'city', 'country', 'startAt', 'tags', 'source']
+                filters: ['name', 'city', 'country', 'startAt', 'source']
                 actions:
                     - { name: 'includeConference', label: 'Re-include', icon: 'arrow-left' }
                 sort: ['endAt', 'DESC']
