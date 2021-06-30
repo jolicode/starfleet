@@ -34,8 +34,8 @@ final class Version20210506150419 extends AbstractMigration
         $this->addSql('ALTER TABLE participation ADD transport_status VARCHAR(255) NOT NULL DEFAULT \'not_needed\'');
         $this->addSql('ALTER TABLE participation ADD hotel_status VARCHAR(255) NOT NULL DEFAULT \'not_needed\'');
         $this->addSql('ALTER TABLE participation ADD conference_ticket_status VARCHAR(255) NOT NULL DEFAULT \'not_needed\'');
-        $this->addSql('ALTER TABLE participation ADD created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL');
-        $this->addSql('ALTER TABLE participation ADD updated_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL');
+        $this->addSql('ALTER TABLE participation ADD created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP');
+        $this->addSql('ALTER TABLE participation ADD updated_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP');
         $this->addSql('ALTER TABLE participation DROP need_transport');
         $this->addSql('ALTER TABLE participation DROP need_hotel');
         $this->addSql('ALTER TABLE participation DROP need_ticket');

@@ -45,15 +45,15 @@ class Conference
     private string $source = self::SOURCE_MANUAL;
 
     /**
+     * @ORM\Column(name="name", type="string", length=255)
+     */
+    private string $name;
+
+    /**
      * @ORM\Column(name="slug", type="string", length=255, nullable=false, unique=true)
      * @Gedmo\Slug(fields={"name"})
      */
     private string $slug;
-
-    /**
-     * @ORM\Column(name="name", type="string", length=255)
-     */
-    private string $name;
 
     /**
      * @ORM\Column(name="description", type="text", nullable=true)
@@ -103,7 +103,8 @@ class Conference
     private bool $excluded = false;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Participation", mappedBy="conference", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Participation", mappedBy="conference", cascade={"persist"})
+     * @ORM\JoinColumn(onDelete="CASCADE")
      *
      * @var Collection<Participation>
      */
@@ -168,7 +169,7 @@ class Conference
         return $this->remoteId;
     }
 
-    public function setSource(?string $source): self
+    public function setSource(string $source): self
     {
         $this->source = $source;
 
@@ -180,7 +181,7 @@ class Conference
         return $this->source;
     }
 
-    public function setSlug(?string $slug): self
+    public function setSlug(string $slug): self
     {
         $this->slug = $slug;
 
@@ -192,7 +193,7 @@ class Conference
         return $this->slug;
     }
 
-    public function setName(?string $name): self
+    public function setName(string $name): self
     {
         $this->name = $name;
 
@@ -216,7 +217,7 @@ class Conference
         return $this;
     }
 
-    public function setStartAt(?\DateTimeInterface $startAt): self
+    public function setStartAt(\DateTimeInterface $startAt): self
     {
         $this->startAt = $startAt;
 
@@ -276,21 +277,29 @@ class Conference
         return $this;
     }
 
-    public function addSubmit(Submit $submits): self
+    public function addSubmit(Submit $submit): self
     {
-        $this->submits[] = $submits;
+        if (!$this->submits->contains($submit)) {
+            $this->submits[] = $submit;
+            $submit->setConference($this);
+        }
 
         return $this;
     }
 
-    public function removeSubmit(Submit $submits): self
+    public function removeSubmit(Submit $submit): self
     {
-        $this->submits->removeElement($submits);
+        if ($this->submits->contains($submit)) {
+            $this->submits->removeElement($submit);
+        }
 
         return $this;
     }
 
-    public function getSubmits(): ?Collection
+    /**
+     * @return Collection|Submit[]
+     */
+    public function getSubmits(): Collection
     {
         return $this->submits;
     }
@@ -380,6 +389,16 @@ class Conference
     public function isOnline(): bool
     {
         return $this->online;
+    }
+
+    /**
+     * @param array<string> $tags
+     */
+    public function setTags(array $tags): self
+    {
+        $this->tags = $tags;
+
+        return $this;
     }
 
     public function addTag(string $tag): self

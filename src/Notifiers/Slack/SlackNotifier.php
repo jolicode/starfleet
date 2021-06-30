@@ -81,7 +81,7 @@ class SlackNotifier
             foreach ($submits as $k => $submit) {
                 $conference = sprintf('<%s|%s>', $submit->getConference()->getSiteUrl(), $submit->getConference()->getName());
                 $status = Submit::STATUS_EMOJIS[$submit->getStatus()];
-                $author = $submit->reduceSpeakersNames();
+                $author = $submit->getSpeakersNames();
 
                 if (0 === $k) {
                     $submittedText .= sprintf(' %s (%s) by %s', $conference, $status, $author);
@@ -116,7 +116,7 @@ class SlackNotifier
         }
 
         $text = \count($submit->getUsers()) > 1 ? '*Speakers*' : '*Speaker*';
-        $text .= ' : '.$submit->reduceSpeakersNames();
+        $text .= ' : '.$submit->getSpeakersNames();
         $text .= ' *Conference* : ';
         $text .= sprintf('<%s|%s>', $submit->getConference()->getSiteUrl(), $submit->getConference()->getName());
 

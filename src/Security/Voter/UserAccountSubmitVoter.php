@@ -14,39 +14,25 @@ namespace App\Security\Voter;
 use App\Entity\Submit;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
-use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class SubmitVoter extends Voter
+class UserAccountSubmitVoter extends Voter
 {
-    public function __construct(
-        private RoleHierarchyInterface $roleHierarchy,
-    ) {
-    }
-
     protected function supports(string $attribute, $subject): bool
     {
-        return \in_array($attribute, ['ROLE_ROLE_SUBMIT_EDIT'])
+        return \in_array($attribute, ['SUBMIT_ACTION'])
             && $subject instanceof Submit;
     }
 
-    /**
-     * @param Submit $submit
-     */
-    protected function voteOnAttribute(string $attribute, $submit, TokenInterface $token): bool
+    /** @param Submit $subject */
+    protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool
     {
         $user = $token->getUser();
         if (!$user instanceof UserInterface) {
             return false;
         }
 
-        $roles = $this->roleHierarchy->getReachableRoleNames($token->getRoleNames());
-
-        if (\in_array('ROLE_SUBMIT_EDIT', $roles)) {
-            return true;
-        }
-
-        if ($submit->getUsers()->contains($user)) {
+        if ($subject->getUsers()->contains($user)) {
             return true;
         }
 

@@ -100,7 +100,7 @@ class User implements UserInterface, \Serializable
     /**
      * @ORM\Column(type="json")
      *
-     * @var array<mixed>
+     * @var array<string>
      */
     private array $roles;
 
@@ -129,7 +129,7 @@ class User implements UserInterface, \Serializable
 
     public function __toString(): string
     {
-        return $this->getName() ?? (string) $this->id;
+        return $this->name ?? (string) $this->id;
     }
 
     public function getId(): ?int
@@ -173,7 +173,7 @@ class User implements UserInterface, \Serializable
         return $this->name;
     }
 
-    public function setEmail(?string $email): self
+    public function setEmail(string $email): self
     {
         $this->email = $email;
 
@@ -299,7 +299,7 @@ class User implements UserInterface, \Serializable
         return $this->plainPassword;
     }
 
-    public function setPlainPassword(?string $plainPassword): self
+    public function setPlainPassword(string $plainPassword): self
     {
         $this->plainPassword = $plainPassword;
 
@@ -367,7 +367,7 @@ class User implements UserInterface, \Serializable
     /**
      * @see UserInterface
      */
-    public function getSalt()
+    public function getSalt(): ?string
     {
         return $this->salt;
     }
@@ -393,7 +393,7 @@ class User implements UserInterface, \Serializable
         ]);
     }
 
-    /** @return array<mixed> */
+    /** @return array<string> */
     public function unserialize($serialized): ?array
     {
         return list(

@@ -1,5 +1,5 @@
 <header class="container">
-    <nav class="navbar bg-purple navbar-dark justify-content-between">
+    <nav class="navbar navbar-expand-lg bg-purple navbar-dark justify-content-between">
         <a class="navbar-brand" href="{{ path('conferences_list') }}">
             <img src="{{ asset('build/images/logo.svg') }}"
                  width="100"
@@ -9,13 +9,27 @@
             <h2 class="d-inline-block ml-3">Starfleet</h2>
             <sup class="badge badge-light ml-3">beta</sup>
         </a>
-        <p class="text-light">
-            <a href="https://jolicode.com" target="_blank">
-                <img src="{{ asset('build/images/logo-jolicode.svg') }}"
-                     width="180"
-                     class="d-inline-block"
-                     alt="Logo JoliCode">
-            </a>
-        </p>
+        <div>
+            <button class="navbar-toggler"
+                    type="button"
+                    data-toggle="collapse"
+                    data-target="#navbar"
+                    aria-controls="navbar"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbar">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item mr-2">
+                        <a class="nav-link btn btn-outline-secondary btn-sm text-light"
+                           href="{{ app.user ? path('user_account') : path('login') }}">
+                            {{ app.user ? '👤 Account' : '🔒 Login' }}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </nav>
 </header>

@@ -1,0 +1,40 @@
+{% extends 'user/user_layout.html.twig' %}
+
+{% block content %}
+    <aside class="col-4">
+        <h1>{{ app.user.name }}</h1>
+        <ul class="nav flex-column nav-pills">
+            <li class="nav-item">
+                <a href="#" class="nav-link active">
+                    Future Conferences
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ path('user_submits') }}" class="nav-link">
+                    My submits
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ path('user_participations') }}" class="nav-link">
+                    My participations
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    Edit my account
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ path('logout') }}" class="nav-link">
+                    {{ '➡️ Logout' }}
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <section class="col-8">
+        {% if chart %}
+            {{ render_chart(chart) }}
+        {% endif %}
+    </section>
+{% endblock %}

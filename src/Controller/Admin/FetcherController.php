@@ -13,7 +13,6 @@ namespace App\Controller\Admin;
 
 use App\Repository\FetcherConfigurationRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -23,7 +22,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Service\ServiceProviderInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[IsGranted('ROLE_USER')]
 class FetcherController extends AbstractController
 {
     public function __construct(
