@@ -57,6 +57,10 @@
                             </a>, starts on {{ submit.conference.startAt|date('m/d/Y') }}
                         </div>
 
+                        {% if submit.conference.endAt|date("m/d/Y") < "now"|date("m/d/Y") %}
+                            <div class="alert alert-info my-2">The conference related to this submit is finished. You should mark this submit as done or rejected.</div>
+                        {% endif %}
+
                         <div class="row justify-content-start mt-2">
                             <a href="{{ path('user_submit_accepted', { id: submit.id }) }}" class="action-accepted w-33">
                                 <div class="btn color-accepted p-0"><i class="fa fa-check"></i> Accepted !</div>

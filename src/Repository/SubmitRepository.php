@@ -37,7 +37,7 @@ class SubmitRepository extends ServiceEntityRepository
             ->andWhere('s.status = :status')
             ->setParameter('status', $status)
             ->innerJoin('s.conference', 'c')
-            ->orderBy('c.createdAt', 'ASC')
+            ->orderBy('s.createdAt', 'DESC')
             ->getQuery()
             ->execute()
         ;
@@ -49,6 +49,56 @@ class SubmitRepository extends ServiceEntityRepository
     public function findUserSubmits(User $user): array
     {
         return $this->createUserQueryBuilder($user)
+            ->getQuery()
+            ->execute()
+        ;
+    }
+
+    public function updateDoneSubmits(): void
+    {
+        $em = $this->getEntityManager();
+
+        foreach ($this->getDoneSubmits() as $submit) {
+            $submit->setStatus(Submit::STATUS_DONE);
+            $submit->resetStatusChanged();
+        }
+
+        $em->flush();
+    }
+
+    /** @return array<Submit> */
+    public function getDoneSubmits(): array
+    {
+        $today = new \DateTime();
+        $today->setTime(0, 0);
+
+        return $this->createQueryBuilder('s')
+            ->innerJoin('s.conference', 'c')
+            ->andWhere('s.status = :status_accepted')
+            ->andWhere('c.endAt < :today')
+            ->setParameters([
+                'status_accepted' => Submit::STATUS_ACCEPTED,
+                'today' => $today,
+            ])
+            ->getQuery()
+            ->execute()
+        ;
+    }
+
+    /** @return array<Submit> */
+    public function getOldPendingSubmits(): array
+    {
+        $oneMonth = new \DateTime('-1 month');
+        $oneMonth->setTime(0, 0);
+
+        return $this->createQueryBuilder('s')
+            ->innerJoin('s.conference', 'c')
+            ->andWhere('s.status = :status_pending')
+            ->andWhere('c.endAt < :one_month')
+            ->setParameters([
+                'status_pending' => Submit::STATUS_PENDING,
+                'one_month' => $oneMonth,
+            ])
             ->getQuery()
             ->execute()
         ;
