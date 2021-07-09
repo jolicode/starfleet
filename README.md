@@ -36,7 +36,7 @@ pipenv shell
 
 Generate your SSL certificates with:
 ```bash
-inv generate_certificates
+inv generate-certificates
 ```
 
 If it's your first install of Starfleet, run:

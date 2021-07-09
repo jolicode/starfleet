@@ -7,6 +7,15 @@ $purplelight: #8078EA;
 $purplesuperlight: #B0A6F4;
 $purpleultralight: #D0CCFF;
 
+@font-face {
+    font-weight: 500;
+    font-family: 'Expletus Sans';
+    font-style: normal;
+    font-display: swap;
+    src: url('../fonts/expletus-sans-500.woff2') format('woff2'),
+    url('../fonts/expletus-sans-500.woff') format('woff');
+}
+
 a {
     color: #8078EA;
     text-decoration: none;
@@ -37,10 +46,7 @@ html, body {
 
 header nav {
     height: 170px;
-    .navbar-brand {
-        text-transform: uppercase;
-        font-family: 'Expletus Sans', cursive;
-    }
+
     .navbar-collapse .navbar-nav .nav-item.active {
         border-bottom: 1px #FFF solid;
     }
@@ -162,6 +168,40 @@ header nav {
 
 .country-flag {
     width: 1.5rem;
+}
+
+.c-logo {
+    position: relative;
+    display: flex;
+    align-items: center;
+    font-family: 'Expletus Sans', cursive;
+    text-transform: uppercase;
+    color: #fff;
+}
+
+.c-logo__link {
+    color: inherit;
+
+    &:focus,
+    &:hover,
+    &:active {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 10;
+    }
+}
+
+.c-logo__badge {
+    font-size: 0.95rem;
 }
 
 @keyframes floating {

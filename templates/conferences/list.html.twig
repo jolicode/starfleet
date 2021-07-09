@@ -5,23 +5,23 @@
          id="{{ id }}"
          role="tabpanel"
          aria-labelledby="{{ id }}-tab">
-        <div class="row text-center mt-5 mb-5">
+        <div class="row text-center my-3 my-md-5">
             {% for conference in conferences %}
-                <div class="col-4 mb-3">
+                <div class="col-12 col-sm-6 col-md-4 mb-3">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title font-weight-normal">
+                            <h3 class="h5 card-title font-weight-normal">
                                 <a href="{{ path('conferences_show', {slug: conference.slug}) }}">
                                     {{ conference.name }}
                                 </a>
-                            </h5>
-                            <h6 class="card-subtitle mb-2 text-muted font-weight-normal">
+                            </h3>
+                            <h4 class="h6 card-subtitle mb-2 text-muted font-weight-normal">
                             {% if conference.online %}
                                 Online <img class="country-flag" alt="Online Icon" src="{{ asset('build/images/online.svg') }}">
                             {% elseif conference.country %}
-                                {{ conference.city }} <img class="country-flag" alt="Country Flag" src="/bundles/easyadmin/images/flags/{{ conference.country|upper }}.png">
+                                {{ conference.city }} <img width="24" height="16" class="country-flag" alt="Country Flag" src="/bundles/easyadmin/images/flags/{{ conference.country|upper }}.png">
                             {% endif %}
-                            </h6>
+                            </h4>
                             <p class="card-text">
                                 <small>
                                     {{ conference.startAt|date('d F Y') }} - {{ conference.endAt|date('d F Y') }}
@@ -74,41 +74,41 @@
 
                 {% set activeTab = activeTab|default(liveConferences|length > 0 ? 'live' : futureConferences|length > 0 ? 'future' : 'past') %}
 
-                <ul class="nav nav-tabs" id="conferencesTabs" role="tablist">
+                <ul class="nav nav-tabs" id="conferencesTabs" role="tablist" aria-label="Conferences">
                     {% if liveConferences|length > 0 %}
-                        <li class="nav-item">
+                        <li class="nav-item" role="none">
                             <a class="nav-link{{ activeTab == 'live' ? ' active' }}"
                                id="live-tab"
                                data-toggle="tab"
                                href="#live"
                                role="tab"
-                               aria-controls="Live"
+                               aria-controls="live"
                                aria-selected="{{ activeTab == 'live' ? 'true' : 'false' }}">
                                 {{ 'conferences.list.live.title'|trans }}
                             </a>
                         </li>
                     {% endif %}
                     {% if futureConferences|length > 0 %}
-                        <li class="nav-item">
+                        <li class="nav-item" role="none">
                             <a class="nav-link{{ activeTab == 'future' ? ' active' }}"
                                id="future-tab"
                                data-toggle="tab"
                                href="#future"
                                role="tab"
-                               aria-controls="Future"
+                               aria-controls="future"
                                aria-selected="{{ activeTab == 'future' ? 'true' : 'false' }}">
                                 {{ 'conferences.list.future.title'|trans }}
                             </a>
                         </li>
                     {% endif %}
                     {% if pastConferences|length > 0 %}
-                        <li class="nav-item">
+                        <li class="nav-item" role="none">
                             <a class="nav-link{{ activeTab == 'past' ? ' active' }}"
                                id="past-tab"
                                data-toggle="tab"
                                href="#past"
                                role="tab"
-                               aria-controls="Past"
+                               aria-controls="past"
                                aria-selected="{{ activeTab == 'past' ? 'true' : 'false' }}">
                                 {{ 'conferences.list.past.title'|trans }}
                             </a>

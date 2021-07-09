@@ -33,15 +33,21 @@
                     </div>
                 </div>
                 <div class="row pb-5">
-                    <aside class="col-3">
+                    <aside class="col-12 col-md-3">
                         <p class="h5 font-weight-normal">
                             <i class="fa fa-calendar-o"></i>&nbsp;
                             {{ 'conferences.show.sidebar.dates_title'|trans }}
                         </p>
                         <p>
-                            {{ 'date.from'|trans }} <strong>{{ conference.startAt|date('d F Y') }}</strong>
+                            {{ 'date.from'|trans }}
+                            <time datetime="{{ conference.startAt|date('Y-m-d') }}" class='font-weight-bold'>
+                                {{ conference.startAt|date('d F Y') }}
+                            </time>
                             <br>
-                            {{ 'date.to'|trans }} <strong>{{ conference.endAt|date('d F Y') }}</strong>
+                            {{ 'date.to'|trans }}
+                            <time datetime="{{ conference.endAt|date('Y-m-d') }}" class='font-weight-bold'>
+                                {{ conference.endAt|date('d F Y') }}
+                            </time>
                         </p>
                         <hr>
 
@@ -69,7 +75,9 @@
                         </p>
                         <p>
                             {{ 'conferences.show.sidebar.cfp_end_at'|trans }}&nbsp;
-                            <strong>{{ conference.cfpEndAt|date('d F Y') }}</strong>
+                            <time datetime="{{ conference.cfpEndAt|date('Y-m-d') }}" class='font-weight-bold'>
+                                {{ conference.cfpEndAt|date('d F Y') }}
+                            </time>
                         </p>
                         <hr>
 
@@ -85,8 +93,8 @@
                             </a>
                         {% endfor %}
                     </aside>
-                    <article class="col-9">
-                        <h4 class="font-weight-normal">{{ 'conferences.show.talks.title'|trans }}</h4>
+                    <article class="col-12 col-md-9 mt-4 mt-md-0">
+                        <h3 class="h4 font-weight-normal">{{ 'conferences.show.talks.title'|trans }}</h3>
                         <div class="list-group" id="submits_accordion" data-children=".list-group-item">
                             {% for submit in conference.submits %}
                                 <div class="list-group-item list-group-item-action flex-column align-items-start">
