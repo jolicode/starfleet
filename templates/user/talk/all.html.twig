@@ -1,10 +1,8 @@
 {% extends "user/user_layout.html.twig" %}
 
 {% block nav %}
+    {% set section = 'talks' %}
     {{ parent() }}
-    <a href="{{ path('user_talks') }}" class="ml-auto">
-        <div class="btn btn-primary">Back to talks</div>
-    </a>
 {% endblock %}
 
 {% block content %}

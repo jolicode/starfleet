@@ -51,6 +51,9 @@ class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInt
 
     /**
      * @ORM\Column(name="email", type="string", length=255, unique=true)
+     *
+     * @Assert\NotBlank()
+     * @Assert\Email()
      */
     private string $email;
 

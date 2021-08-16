@@ -184,10 +184,6 @@ class UserParticipationControllerTest extends WebTestCase
         $client->loginUser($this->getUser());
 
         foreach ($this->provideRoutes() as $route) {
-            if ('/user/participations' === $route[0] && 'Back to participations' === $buttonText) {
-                continue;
-            }
-
             $crawler = $client->request('GET', $route[0]);
             $client->click($crawler->selectLink($buttonText)->link());
 
@@ -200,8 +196,7 @@ class UserParticipationControllerTest extends WebTestCase
         yield ['Back Home'];
         yield ['Submits'];
         yield ['Talks'];
-        yield ['Edit Account'];
-        yield ['Back to participations'];
+        yield ['Edit Profile'];
     }
 
     public function testCancelCsrfProtection()

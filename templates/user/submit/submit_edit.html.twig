@@ -1,5 +1,10 @@
 {% extends 'user/user_layout.html.twig' %}
 
+{% block nav %}
+    {% set section = 'submits' %}
+    {{ parent() }}
+{% endblock %}
+
 {% form_theme form 'bootstrap_4_layout.html.twig'%}
 {% form_theme form.conference _self %}
 {% form_theme form.users _self %}
@@ -28,13 +33,6 @@
             </option>
         {% endfor %}
     </select>
-{% endblock %}
-
-{% block nav %}
-    {{ parent() }}
-    <a href="{{ path('user_submits') }}" class="ml-auto">
-        <div class="btn btn-primary">Back to submits</div>
-    </a>
 {% endblock %}
 
 {% block content %}
