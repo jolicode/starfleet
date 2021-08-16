@@ -22,6 +22,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class UserSubmitController extends AbstractController
 {
@@ -66,54 +67,6 @@ class UserSubmitController extends AbstractController
             'chart' => $chart ?? null,
             'form' => $form->createView(),
         ]);
-    }
-
-    #[IsGranted('SUBMIT_ACTION', 'submit')]
-    #[Route(path: '/user/submit-accepted/{id}', name: 'user_submit_accepted')]
-    public function acceptSubmit(Submit $submit): Response
-    {
-        $submit->setStatus(Submit::STATUS_ACCEPTED);
-
-        $this->em->flush();
-        $this->addFlash('info', sprintf('Submit for %s tagged as accepted.', $submit->getConference()->getName()));
-
-        return $this->redirectToRoute('user_submits');
-    }
-
-    #[IsGranted('SUBMIT_ACTION', 'submit')]
-    #[Route(path: '/user/submit-done/{id}', name: 'user_submit_done')]
-    public function doneSubmit(Submit $submit): Response
-    {
-        $submit->setStatus(Submit::STATUS_DONE);
-
-        $this->em->flush();
-        $this->addFlash('info', sprintf('Submit for %s tagged as done.', $submit->getConference()->getName()));
-
-        return $this->redirectToRoute('user_submits');
-    }
-
-    #[IsGranted('SUBMIT_ACTION', 'submit')]
-    #[Route(path: '/user/submit-rejected/{id}', name: 'user_submit_rejected')]
-    public function rejectSubmit(Submit $submit): Response
-    {
-        $submit->setStatus(Submit::STATUS_REJECTED);
-
-        $this->em->flush();
-        $this->addFlash('info', sprintf('Submit for %s tagged as rejected.', $submit->getConference()->getName()));
-
-        return $this->redirectToRoute('user_submits');
-    }
-
-    #[IsGranted('SUBMIT_ACTION', 'submit')]
-    #[Route(path: '/user/submit-pending/{id}', name: 'user_submit_pending')]
-    public function pendingSubmit(Submit $submit): Response
-    {
-        $submit->setStatus(Submit::STATUS_PENDING);
-
-        $this->em->flush();
-        $this->addFlash('info', sprintf('Submit for %s tagged as pending.', $submit->getConference()->getName()));
-
-        return $this->redirectToRoute('user_submits');
     }
 
     #[Route(path: '/user/accepted-submits', name: 'accepted_submits')]
@@ -170,12 +123,80 @@ class UserSubmitController extends AbstractController
     }
 
     #[IsGranted('SUBMIT_ACTION', 'submit')]
-    #[Route(path: '/user/submit-remove/{id}', name: 'remove_submit')]
-    public function removeSubmit(Submit $submit): Response
+    #[Route(path: '/user/submit-accept/{id}', name: 'user_submit_accept', methods: ['POST'])]
+    public function acceptSubmit(Submit $submit, Request $request): Response
     {
+        if (!$this->isCsrfTokenValid('', $request->request->get('token'))) {
+            throw new AccessDeniedException();
+        }
+
+        $submit->setStatus(Submit::STATUS_ACCEPTED);
+
+        $this->em->flush();
+        $this->addFlash('info', sprintf('Submit for %s tagged as accepted.', $submit->getConference()->getName()));
+
+        return $this->redirectToRoute('user_submits');
+    }
+
+    #[IsGranted('SUBMIT_ACTION', 'submit')]
+    #[Route(path: '/user/submit-done/{id}', name: 'user_submit_done', methods: ['POST'])]
+    public function doneSubmit(Submit $submit, Request $request): Response
+    {
+        if (!$this->isCsrfTokenValid('', $request->request->get('token'))) {
+            throw new AccessDeniedException();
+        }
+
+        $submit->setStatus(Submit::STATUS_DONE);
+
+        $this->em->flush();
+        $this->addFlash('info', sprintf('Submit for %s tagged as done.', $submit->getConference()->getName()));
+
+        return $this->redirectToRoute('user_submits');
+    }
+
+    #[IsGranted('SUBMIT_ACTION', 'submit')]
+    #[Route(path: '/user/submit-reject/{id}', name: 'user_submit_reject', methods: ['POST'])]
+    public function rejectSubmit(Submit $submit, Request $request): Response
+    {
+        if (!$this->isCsrfTokenValid('', $request->request->get('token'))) {
+            throw new AccessDeniedException();
+        }
+
+        $submit->setStatus(Submit::STATUS_REJECTED);
+
+        $this->em->flush();
+        $this->addFlash('info', sprintf('Submit for %s tagged as rejected.', $submit->getConference()->getName()));
+
+        return $this->redirectToRoute('user_submits');
+    }
+
+    #[IsGranted('SUBMIT_ACTION', 'submit')]
+    #[Route(path: '/user/submit-pending/{id}', name: 'user_submit_pending', methods: ['POST'])]
+    public function pendingSubmit(Submit $submit, Request $request): Response
+    {
+        if (!$this->isCsrfTokenValid('', $request->request->get('token'))) {
+            throw new AccessDeniedException();
+        }
+
+        $submit->setStatus(Submit::STATUS_PENDING);
+
+        $this->em->flush();
+        $this->addFlash('info', sprintf('Submit for %s tagged as pending.', $submit->getConference()->getName()));
+
+        return $this->redirectToRoute('user_submits');
+    }
+
+    #[IsGranted('SUBMIT_ACTION', 'submit')]
+    #[Route(path: '/user/submit-cancel/{id}', name: 'user_submit_cancel', methods: ['POST'])]
+    public function cancelSubmit(Submit $submit, Request $request): Response
+    {
+        if (!$this->isCsrfTokenValid('', $request->request->get('token'))) {
+            throw new AccessDeniedException();
+        }
+
         $this->em->remove($submit);
         $this->em->flush();
-        $this->addFlash('info', 'Submit has been removed.');
+        $this->addFlash('info', 'Submit has been cancelled.');
 
         return $this->redirectToRoute('user_submits');
     }

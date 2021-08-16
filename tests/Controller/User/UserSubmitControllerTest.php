@@ -33,7 +33,7 @@ class UserSubmitControllerTest extends WebTestCase
         self::assertResponseIsSuccessful();
     }
 
-    public function provideRoutes()
+    public function provideRoutes(): iterable
     {
         yield ['/user/submits'];
         yield ['/user/pending-submits'];
@@ -59,10 +59,10 @@ class UserSubmitControllerTest extends WebTestCase
 
         foreach ($submitsArray as $state => $submits) {
             if (\count($submits) < 4) {
-                self::assertCount(\count($submits), $crawler->filter("#{$state}-submits-block .user-items-list"));
+                self::assertCount(\count($submits), $crawler->filter("#{$state}-submits-block .card"));
             } else {
                 self::assertSelectorExists("#{$state}-submits-block a", '...Show more');
-                self::assertCount(3, $crawler->filter("#{$state}-submits-block .user-items-list"));
+                self::assertCount(3, $crawler->filter("#{$state}-submits-block .card"));
             }
         }
     }
@@ -99,20 +99,20 @@ class UserSubmitControllerTest extends WebTestCase
         $client->followRedirects();
 
         foreach (['accepted', 'pending'] as $pageName) {
-            if ($pageName === $action) {
+            if ($pageName === $action || ('accept' === $action && 'accepted' === $pageName)) {
                 continue;
             }
 
             $crawler = $client->request('GET', sprintf('/user/%s-submits', $pageName));
 
-            $preCancelCount = \count($crawler->filter(sprintf('a.action-%s', $action)));
+            $preActionCount = \count($crawler->filter(sprintf('form.action-%s', $action)));
 
-            $link = $crawler
-                ->filter(sprintf('a.action-%s', $action))
+            $form = $crawler
+                ->filter(sprintf('form.action-%s', $action))
                 ->first()
-                ->link()
+                ->form()
             ;
-            $client->click($link);
+            $client->submit($form);
 
             if ('edit' === $action) {
                 self::assertResponseIsSuccessful();
@@ -122,7 +122,7 @@ class UserSubmitControllerTest extends WebTestCase
 
             $crawler = $client->request('GET', sprintf('/user/%s-submits', $pageName));
 
-            self::assertCount(--$preCancelCount, $crawler->filter(sprintf('a.action-%s', $action)));
+            self::assertCount(--$preActionCount, $crawler->filter(sprintf('form.action-%s', $action)));
         }
     }
 
@@ -136,7 +136,7 @@ class UserSubmitControllerTest extends WebTestCase
 
         $submitRepository = static::$container->get(SubmitRepository::class);
 
-        if ('remove' === $action) {
+        if ('cancel' === $action) {
             $submits = $submitRepository->findUserSubmitsByStatus($this->getUser(), Submit::STATUS_DONE);
         } else {
             $submits = $submitRepository->findUserSubmitsByStatus($this->getUser(), $action);
@@ -144,28 +144,79 @@ class UserSubmitControllerTest extends WebTestCase
 
         $preActionSubmitCount = \count($submits);
 
-        $link = $crawler
-            ->filter(sprintf('a.action-%s', $action))
+        $form = $crawler
+            ->filter(sprintf('form.action-%s', $action))
             ->first()
-            ->link()
+            ->form()
         ;
-        $client->click($link);
+        $client->submit($form);
 
         match ($action) {
             'edit' => self::assertResponseIsSuccessful(),
-            'remove' => self::assertCount(--$preActionSubmitCount, $submitRepository->findUserSubmitsByStatus($this->getUser(), Submit::STATUS_DONE)),
+            'cancel' => self::assertCount(--$preActionSubmitCount, $submitRepository->findUserSubmitsByStatus($this->getUser(), Submit::STATUS_DONE)),
             default => self::assertCount(++$preActionSubmitCount, $submitRepository->findUserSubmitsByStatus($this->getUser(), $action))
         };
     }
 
+    /** @dataProvider provideActions */
+    public function testCsrfProtection(string $action)
+    {
+        if ('edit' === $action) {
+            return $this->expectNotToPerformAssertions();
+        }
+
+        $client = $this->createClient();
+        $client->followRedirects();
+        $client->loginUser($this->getUser());
+
+        $submitRepository = static::$container->get(SubmitRepository::class);
+        $submit = $submitRepository->findUserSubmits($this->getUser())[0];
+
+        $client->request('POST', sprintf(
+            '/user/submit-%s/%d',
+            $action,
+            $submit->getId(),
+        ));
+
+        self::assertResponseStatusCodeSame(403);
+    }
+
     public function provideActions()
     {
-        yield ['accepted'];
+        yield ['accept'];
         yield ['done'];
         yield ['pending'];
-        yield ['rejected'];
-        yield ['remove'];
+        yield ['reject'];
+        yield ['cancel'];
         yield ['edit'];
+    }
+
+    /** @dataProvider provideButtonsText */
+    public function testNavLinksWork(string $buttonText)
+    {
+        $client = $this->createClient();
+        $client->followRedirects();
+        $client->loginUser($this->getUser());
+
+        foreach ($this->provideRoutes() as $route) {
+            if ('/user/submits' === $route[0] && 'Back to submits' === $buttonText) {
+                continue;
+            }
+
+            $crawler = $client->request('GET', $route[0]);
+            $client->click($crawler->selectLink($buttonText)->link());
+
+            self::assertResponseIsSuccessful();
+        }
+    }
+
+    public function provideButtonsText()
+    {
+        yield ['Back Home'];
+        yield ['Talks'];
+        yield ['Participations'];
+        yield ['Edit Account'];
+        yield ['Back to submits'];
     }
 
     private function getUser(): User

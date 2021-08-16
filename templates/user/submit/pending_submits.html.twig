@@ -1,65 +1,60 @@
 {% extends "user/user_layout.html.twig" %}
 
 {% block nav %}
-    <a href="{{ path('user_submits') }}">
-        <div class="btn btn-secondary">Back to submits</div>
-    </a>
     {{ parent() }}
+    <a href="{{ path('user_submits') }}" class="ml-auto">
+        <div class="btn btn-primary">Back to submits</div>
+    </a>
 {% endblock %}
 
 {% block content %}
-    <div class="row mb-5">
-        <h2 class="mx-0 mb-5">Submits waiting for validation</h2>
+    <div class="mb-5 w-100">
+        <h2 class="ml-5 mb-5">Submits still waiting for approval</h2>
         {% for submit in submits %}
-            <div class="user-items-list">
-                <div class="row lead mb-2">
-                    Talk submitted :&nbsp;
-                    <a href="#">
-                        {{ submit.talk.title }}
+            <div class="card w-75 mx-auto my-2">
+                <div class="card-header">
+                    <a href="{{ path('show_talk', { id: submit.talk.id }) }}">
+                        <h5 class="card-title text-primary my-0">{{ submit.talk.title }}</h5>
                     </a>
                 </div>
 
-                <div class="row mb-2 w-75">
-                    {{ submit.talk.intro }}
-                </div>
+                <div class="card-body">
+                    {% if submit.users|length > 1 %}
+                        <div>
+                            Given with :
+                            {% for user in submit.users|filter(v => v != app.user) %}
+                                {%- if not loop.first %}, {% endif %}{{ user.name -}}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
 
-                {% if submit.users|length > 1 %}
-                    <div class="row">
-                        Given with :
-                        {% for user in submit.users %}
-                            {% if app.user != user %}
-                                {{ user.name }}{% if not loop.last %}, {% endif %}
-                            {% endif %}
-                        {% endfor %}
+                    <div>
+                        <a href="{{ path('conferences_show', { slug: submit.conference.slug }) }}">
+                            {{ submit.conference.name -}}
+                        </a> - starting on {{ submit.conference.startAt|date('m/d/Y') }}
                     </div>
-                {% endif %}
 
-                <div class="row">
-                    At :&nbsp;
-                    <a href="{{ path('conferences_show', { slug: submit.conference.slug }) }}">
-                        {{ submit.conference.name }}
-                    </a>, starts on {{ submit.conference.startAt|date('m/d/Y') }}
-                </div>
-
-                <div class="row justify-content-start mt-2">
-                    <a href="{{ path('user_submit_accepted', { id: submit.id }) }}" class="action-accepted w-33">
-                        <div class="btn color-accepted p-0"><i class="fa fa-check"></i> Accepted !</div>
-                    </a>
-                    <a href="{{ path('user_submit_done', { id: submit.id }) }}" class="action-done w-33">
-                        <div class="btn color-done p-0"><i class="fa fa-clipboard"></i> Done</div>
-                    </a>
-                    <a href="{{ path('user_submit_rejected', { id: submit.id }) }}" class="action-rejected w-33">
-                        <div class="btn color-rejected p-0"><i class="fa fa-times"></i> Rejected</div>
-                    </a>
-                    <a href="{{ path('user_submit_pending', { id: submit.id }) }}" class="action-pending w-33">
-                        <div class="btn color-pending p-0"><i class="fa fa-hourglass-half"></i> Pending</div>
-                    </a>
-                    <a href="{{ path('edit_submit', { id: submit.id }) }}" class="action-edit w-33">
-                        <div class="btn color-edit p-0"><i class="fa fa-edit"></i> Edit</div>
-                    </a>
-                    <a href="{{ path('remove_submit', { id: submit.id }) }}" class="action-remove w-33">
-                        <div class="btn color-remove p-0"><i class="fa fa-trash"></i> Remove</div>
-                    </a>
+                    <div class="d-flex justify-content-around mt-2">
+                        <form action="{{ path('user_submit_accept', { id: submit.id }) }}" method="POST" class="action-accept">
+                            <button type="submit" class="btn color-accept p-0"><i class="fa fa-check"></i> Accept</button>
+                            <input type="hidden" name="token" value="{{ csrf_token('') }}">
+                        </form>
+                        <form action="{{ path('user_submit_done', { id: submit.id }) }}" method="POST" class="action-done">
+                            <button type="submit" class="btn color-done p-0"><i class="fa fa-clipboard"></i> Done</button>
+                            <input type="hidden" name="token" value="{{ csrf_token('') }}">
+                        </form>
+                        <form action="{{ path('user_submit_reject', { id: submit.id }) }}" method="POST" class="action-reject">
+                            <button type="submit" class="btn color-reject p-0"><i class="fa fa-times"></i> Reject</button>
+                            <input type="hidden" name="token" value="{{ csrf_token('') }}">
+                        </form>
+                        <form action="{{ path('edit_submit', { id: submit.id }) }}" method="GET" class="action-edit">
+                            <button type="submit" class="btn color-edit p-0"><i class="fa fa-edit"></i> Edit</button>
+                        </form>
+                        <form action="{{ path('user_submit_cancel', { id: submit.id }) }}" method="POST" class="action-cancel">
+                            <button type="submit" class="btn color-cancel p-0"><i class="fa fa-times-circle"></i> Cancel</button>
+                            <input type="hidden" name="token" value="{{ csrf_token('') }}">
+                        </form>
+                    </div>
                 </div>
             </div>
         {% endfor %}

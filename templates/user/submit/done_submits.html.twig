@@ -1,44 +1,38 @@
 {% extends "user/user_layout.html.twig" %}
 
 {% block nav %}
-    <a href="{{ path('user_submits') }}">
-        <div class="btn btn-secondary">Back to submits</div>
-    </a>
     {{ parent() }}
+    <a href="{{ path('user_submits') }}" class="ml-auto">
+        <div class="btn btn-primary">Back to submits</div>
+    </a>
 {% endblock %}
 
 {% block content %}
-    <div class="row mb-5">
-        <h2 class="mx-0 mb-5">Done submits</h2>
+    <div class="mb-5 w-100">
+        <h2 class="ml-5 mb-5">Done Submits</h2>
         {% for submit in submits %}
-            <div class="user-items-list">
-                <div class="row lead mb-2">
-                    Talk submitted :&nbsp;
-                    <a href="#">
-                        {{ submit.talk.title }}
+            <div class="card w-75 mx-auto my-2">
+                <div class="card-header">
+                    <a href="{{ path('show_talk', { id: submit.talk.id }) }}">
+                        <h5 class="card-title text-primary my-0">{{ submit.talk.title }}</h5>
                     </a>
                 </div>
 
-                <div class="row mb-2">
-                    {{ submit.talk.intro }}
-                </div>
+                <div class="card-body">
+                    {% if submit.users|length > 1 %}
+                        <div>
+                            Given with :
+                            {% for user in submit.users|filter(v => v != app.user) %}
+                                {%- if not loop.first %}, {% endif %}{{ user.name -}}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
 
-                {% if submit.users|length > 1 %}
-                    <div class="row">
-                        Given with :
-                        {% for user in submit.users %}
-                            {% if app.user != user %}
-                                {{ user.name }}{% if not loop.last %}, {% endif %}
-                            {% endif %}
-                        {% endfor %}
+                    <div>
+                        <a href="{{ path('conferences_show', { slug: submit.conference.slug }) }}">
+                            {{ submit.conference.name -}}
+                        </a> - ended on {{ submit.conference.endAt|date('m/d/Y') }}
                     </div>
-                {% endif %}
-
-                <div class="row">
-                    At :&nbsp;
-                    <a href="{{ path('conferences_show', { slug: submit.conference.slug }) }}">
-                        {{ submit.conference.name }}
-                    </a>, starts on {{ submit.conference.startAt|date('m/d/Y') }}
                 </div>
             </div>
         {% endfor %}

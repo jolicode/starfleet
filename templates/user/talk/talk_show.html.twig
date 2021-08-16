@@ -1,0 +1,62 @@
+{% extends "user/user_layout.html.twig" %}
+
+{% block nav %}
+    {{ parent() }}
+    <a href="{{ path('user_talks') }}" class="ml-auto">
+        <div class="btn btn-primary">Back to talks</div>
+    </a>
+{% endblock %}
+
+{% block content %}
+        <div class="card w-75 mx-auto">
+            <h3 class="card-header text-primary">
+                {{ talk.title }}
+            </h3>
+            <div class="lead card-body">
+                <div class="card-text indent-50">{{ talk.intro }}</div>
+                <div class="text-center mt-4">
+                    <a href="{{ path('edit_talk', { id: talk.id }) }}">
+                        <div class="btn bg-edit text-white">
+                            <i class="fa fa-edit"></i> Edit this talk
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    <div class="flex-column w-75 mt-5 mx-auto">
+        {% if talk.submits|length %}
+            <h4 class="row mb-4 indent-50">
+                Submits you made for this talk :
+            </h4>
+        {% endif %}
+
+        {% for submit in talk.submits %}
+            {% if app.user in submit.users %}
+                <div class="d-flex user-list align-items-center">
+                    <div class="submit-status color-{{ submit.status }}">{{ submit.status }}</div>
+                    <div>
+                        <a href="{{ path('conferences_show', { slug: submit.conference.slug }) }}">
+                            {{ submit.conference.name -}}
+                        </a> - starting on {{ submit.conference.startAt|date('m/d/Y') }}
+                        {% if submit.users|length > 1 %}
+                            <div>
+                                Given with :
+                                {% for user in submit.users|filter(v => v != app.user) %}
+                                    {%- if not loop.first %}, {% endif %}{{ user.name -}}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    {% if submit.status == 'accepted' or submit.status == 'pending' %}
+                        <div class="mr-5 ml-auto">
+                            <a href="{{ path('edit_submit', { id: submit.id }) }}" class="action-edit">
+                                <div class="btn color-edit p-0"><i class="fa fa-edit"></i> Edit this submit</div>
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endblock %}
