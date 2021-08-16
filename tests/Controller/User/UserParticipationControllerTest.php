@@ -51,10 +51,10 @@ class UserParticipationControllerTest extends WebTestCase
 
         foreach ($participationsArray as $state => $participations) {
             if (\count($participations) < 4) {
-                self::assertCount(\count($participations), $crawler->filter("#{$state}-participations-block .user-items-list"));
+                self::assertCount(\count($participations), $crawler->filter("#{$state}-participations-block .card"));
             } else {
                 self::assertSelectorExists("#{$state}-participations-block a", '...Show more');
-                self::assertCount(3, $crawler->filter("#{$state}-participations-block .user-items-list"));
+                self::assertCount(3, $crawler->filter("#{$state}-participations-block .card"));
             }
         }
     }
@@ -123,12 +123,12 @@ class UserParticipationControllerTest extends WebTestCase
         $client->loginUser($this->getUser());
         $crawler = $client->request('GET', $route);
 
-        $link = $crawler
-            ->filter('a.action-edit')
+        $form = $crawler
+            ->filter('form.action-edit')
             ->first()
-            ->link()
+            ->form()
         ;
-        $client->click($link);
+        $client->submit($form);
 
         self::assertResponseIsSuccessful();
     }
@@ -147,17 +147,17 @@ class UserParticipationControllerTest extends WebTestCase
             return;
         }
 
-        $preCancelCount = \count($crawler->filter('a.action-cancel'));
+        $preCancelCount = \count($crawler->filter('form.action-cancel'));
 
-        $link = $crawler
-            ->filter('a.action-cancel')
+        $form = $crawler
+            ->filter('form.action-cancel')
             ->first()
-            ->link()
+            ->form()
         ;
-        $client->click($link);
+        $client->submit($form);
         $crawler = $client->request('GET', $route);
 
-        self::assertCount(--$preCancelCount, $crawler->filter('a.action-cancel'));
+        self::assertCount(--$preCancelCount, $crawler->filter('form.action-cancel'));
     }
 
     public function provideRoutes(): iterable
@@ -176,18 +176,63 @@ class UserParticipationControllerTest extends WebTestCase
         yield ['/user/future-participations'];
     }
 
+    /** @dataProvider provideButtonsText */
+    public function testNavLinksWork(string $buttonText)
+    {
+        $client = $this->createClient();
+        $client->followRedirects();
+        $client->loginUser($this->getUser());
+
+        foreach ($this->provideRoutes() as $route) {
+            if ('/user/participations' === $route[0] && 'Back to participations' === $buttonText) {
+                continue;
+            }
+
+            $crawler = $client->request('GET', $route[0]);
+            $client->click($crawler->selectLink($buttonText)->link());
+
+            self::assertResponseIsSuccessful();
+        }
+    }
+
+    public function provideButtonsText()
+    {
+        yield ['Back Home'];
+        yield ['Submits'];
+        yield ['Talks'];
+        yield ['Edit Account'];
+        yield ['Back to participations'];
+    }
+
+    public function testCancelCsrfProtection()
+    {
+        $client = $this->createClient();
+        $client->followRedirects();
+        $client->loginUser($this->getUser());
+
+        $submitRepository = static::$container->get(ParticipationRepository::class);
+        $submit = $submitRepository->findOneBy(['participant' => $this->getUser()]);
+
+        $client->request('POST', sprintf(
+            '/user/participation-cancel/%d',
+            $submit->getId(),
+        ));
+
+        self::assertResponseStatusCodeSame(403);
+    }
+
     private function mainPageCancelLink(KernelBrowser $client, Crawler $crawler)
     {
         $participationRepository = static::$container->get(ParticipationRepository::class);
         $participations = $participationRepository->findPendingParticipationsByUser($this->getUser());
         $preCancelCount = \count($participations);
 
-        $link = $crawler
-            ->filter('#pending-participations-block a.action-cancel')
+        $form = $crawler
+            ->filter('#pending-participations-block form.action-cancel')
             ->first()
-            ->link()
+            ->form()
         ;
-        $client->click($link);
+        $client->click($form);
 
         self::assertCount(--$preCancelCount, $participationRepository->findPendingParticipationsByUser($this->getUser()));
     }

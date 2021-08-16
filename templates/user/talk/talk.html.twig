@@ -1,0 +1,95 @@
+{% extends "user/user_layout.html.twig" %}
+
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+{% form_theme form.conference _self %}
+{% form_theme form.intro _self %}
+{% form_theme form.users _self %}
+
+{% block _new_talk_conference_widget %}
+    <input list="{{ id }}" class="form-control" name="{{ full_name }}" autocomplete="off" required>
+    <datalist id="{{ id }}">
+        {% for choice in choices %}
+            <option value="{{ choice.name }}"></option>
+        {% endfor %}
+    </datalist>
+{% endblock %}
+
+{% block _new_talk_intro_widget %}
+    <textarea class="form-control" name="{{ full_name }}" rows="6"></textarea>
+{% endblock %}
+
+{% block _new_talk_users_widget %}
+    <select name="{{ full_name }}" class="tom-select" multiple required>
+        {% for choice in choices %}
+            <option
+                value="{{ choice.value }}"
+                {% if choice.data in value %}selected{% endif %}
+            >
+                {{ choice.label }}
+            </option>
+        {% endfor %}
+    </select>
+{% endblock %}
+
+{% block content %}
+    <aside class="col-6">
+        {% if talks|length %}
+            <div class="mb-5" id="all-talks-block">
+                <h2 class="mx-0 mb-5">Most recent talks</h2>
+                {% for talk in talks|slice(0, 3) %}
+                    <div class="card w-100 mx-auto my-2">
+                        <div class="card-header">
+                            <a href="{{ path('show_talk', { id: talk.id }) }}">
+                                <h5 class="card-title text-primary my-0">{{ talk.title }}</h5>
+                            </a>
+                        </div>
+
+                        <div class="card-body">
+                            {{ talk.intro|u.truncate(50, '...', false) }}
+
+                            <div class="justify-content-center mt-2">
+                                <form action="{{ path('edit_talk', { id: talk.id }) }}" method="POST" class="action-edit text-center">
+                                    <button type="submit" class="btn color-edit p-0"><i class="fa fa-edit"></i> Edit</button>
+                                    <input type="hidden" name="token" value="{{ csrf_token('') }}">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                {% if talks|length > 3 %}
+                    <a href="{{ path('user_talks_all') }}">...Show more</a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </aside>
+
+    <section class="col-6 pl-5">
+        <h2>Create a talk</h2>
+
+        {{ form_start(form, {
+            attr: {
+                class: 'row flex-column',
+            }
+        }) }}
+            {{ form_row(form.title) }}
+            {{ form_row(form.intro) }}
+            {{ form_row(form.conference) }}
+            {{ form_row(form.users, {
+                value: [app.user]
+            }) }}
+
+            <button type="submit" class="btn btn-primary align-self-center" id="submit_talk">Submit</button>
+
+        {{ form_end(form) }}
+    </section>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('js/tomSelect') }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('css/tomSelect') }}
+{% endblock %}

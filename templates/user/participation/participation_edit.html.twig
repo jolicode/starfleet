@@ -1,5 +1,12 @@
 {% extends "user/user_layout.html.twig" %}
 
+{% block nav %}
+    {{ parent() }}
+    <a href="{{ path('user_participations') }}" class="ml-auto">
+        <div class="btn btn-primary">Back to participations</div>
+    </a>
+{% endblock %}
+
 {% form_theme form 'bootstrap_4_layout.html.twig'%}
 {% form_theme form.conference _self %}
 
@@ -10,13 +17,6 @@
             <option value="{{ choice.name }}"></option>
         {% endfor %}
     </datalist>
-{% endblock %}
-
-{% block nav %}
-    <a href="{{ path('user_participations') }}">
-        <div class="btn btn-secondary">Back to participations</div>
-    </a>
-    {{ parent() }}
 {% endblock %}
 
 {% block content %}

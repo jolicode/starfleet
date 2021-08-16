@@ -58,6 +58,8 @@
         "symfony/workflow": "^5.3",
         "symfony/yaml": "^5.3",
         "twig/extensions": "^1.5"
+        "twig/extra-bundle": "^3.3",
+        "twig/string-extra": "^3.3"
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.0",

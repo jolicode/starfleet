@@ -20,16 +20,21 @@
 {% block _submit_users_widget %}
     <select name="{{ full_name }}" class="tom-select" multiple>
         {% for choice in choices %}
-            <option value="{{ choice.value }}">{{ choice.label }}</option>
+            <option
+                value="{{ choice.value }}"
+                {% if choice.value in value %} selected {% endif %}
+            >
+                {{ choice.label }}
+            </option>
         {% endfor %}
     </select>
 {% endblock %}
 
 {% block nav %}
-    <a href="{{ path('user_submits') }}">
-        <div class="btn btn-secondary">Back to submits</div>
-    </a>
     {{ parent() }}
+    <a href="{{ path('user_submits') }}" class="ml-auto">
+        <div class="btn btn-primary">Back to submits</div>
+    </a>
 {% endblock %}
 
 {% block content %}

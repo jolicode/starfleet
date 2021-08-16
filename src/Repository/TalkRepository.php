@@ -12,6 +12,7 @@
 namespace App\Repository;
 
 use App\Entity\Talk;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -26,5 +27,19 @@ class TalkRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Talk::class);
+    }
+
+    /** @return array<Talk> */
+    public function findUserTalks(User $user): array
+    {
+        return $this->createQueryBuilder('t')
+            ->innerJoin('t.submits', 's')
+            ->innerJoin('s.users', 'u')
+            ->andWhere('u.id = :userId')
+            ->setParameter('userId', $user->getId())
+            ->orderBy('t.id', 'DESC')
+            ->getQuery()
+            ->execute()
+        ;
     }
 }
