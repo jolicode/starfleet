@@ -133,9 +133,6 @@ class UserTalkControllerTest extends WebTestCase
         $client->loginUser($this->getUser());
 
         foreach ($this->provideRoutes() as $route) {
-            if ('/user/talks' === $route[0] && 'Back to talks' === $buttonText) {
-                continue;
-            }
             $crawler = $client->request('GET', $route[0]);
             $client->click($crawler->selectLink($buttonText)->link());
 
@@ -148,8 +145,7 @@ class UserTalkControllerTest extends WebTestCase
         yield ['Back Home'];
         yield ['Submits'];
         yield ['Participations'];
-        yield ['Edit Account'];
-        yield ['Back to talks'];
+        yield ['Edit Profile'];
     }
 
     private function getUser(): User

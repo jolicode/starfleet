@@ -62,3 +62,29 @@
     width: 12%;
     text-align: center;
 }
+
+.indent-50 {
+    text-indent: 50px;
+}
+
+.justify-self-end {
+    justify-self: end;
+}
+
+.submit-status {
+    padding-right: 1rem;
+    padding-left: 1rem;
+    margin-right: 1rem;
+    border-right: 1px solid rgb(180, 177, 177);
+    width: 12%;
+    text-align: center;
+}
+
+.profile-form-block {
+    margin: .5rem;
+    padding: 1rem;
+    border-radius: .35rem;
+    background-color: #fbfbfb;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    flex-grow: 1;
+}

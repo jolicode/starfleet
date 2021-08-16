@@ -1,5 +1,10 @@
 {% extends "user/user_layout.html.twig" %}
 
+{% block nav %}
+    {% set section = 'submits' %}
+    {{ parent() }}
+{% endblock %}
+
 {% form_theme form 'bootstrap_4_layout.html.twig' %}
 {% form_theme form.conference _self %}
 {% form_theme form.users _self %}
@@ -55,7 +60,7 @@
 
                             <div>
                                 <a href="{{ path('conferences_show', { slug: submit.conference.slug }) }}">
-                                    {{ submit.conference.name -}}
+                                    <span class="text-primary">{{ submit.conference.name -}}</span>
                                 </a> - starting on {{ submit.conference.startAt|date('m/d/Y') }}
                             </div>
 
@@ -84,7 +89,7 @@
                     </div>
                 {% endfor %}
                 {% if pendingSubmits|length > 3 %}
-                    <a href="{{ path('pending_submits') }}">...Show more</a>
+                    <a href="{{ path('pending_submits') }}"><span class="text-primary">...Show more</span></a>
                 {% endif %}
             </div>
         {% endif %}
@@ -112,7 +117,7 @@
 
                             <div>
                                 <a href="{{ path('conferences_show', { slug: submit.conference.slug }) }}">
-                                    {{ submit.conference.name -}}
+                                    <span class="text-primary">{{ submit.conference.name -}}</span>
                                 </a> - starting on {{ submit.conference.startAt|date('m/d/Y') }}
                             </div>
 
@@ -141,7 +146,7 @@
                     </div>
                 {% endfor %}
                 {% if futureSubmits|length > 3 %}
-                    <a href="{{ path('accepted_submits') }}">...Show more</a>
+                    <a href="{{ path('accepted_submits') }}"><span class="text-primary">...Show more</span></a>
                 {% endif %}
             </div>
         {% endif %}
@@ -169,14 +174,14 @@
 
                             <div>
                                 <a href="{{ path('conferences_show', { slug: submit.conference.slug }) }}">
-                                    {{ submit.conference.name -}}
+                                    <span class="text-primary">{{ submit.conference.name -}}</span>
                                 </a> - ended on {{ submit.conference.endAt|date('m/d/Y') }}
                             </div>
                         </div>
                     </div>
                 {% endfor %}
                 {% if doneSubmits|length > 3 %}
-                    <a href="{{ path('done_submits') }}">...Show more</a>
+                    <a href="{{ path('done_submits') }}"><span class="text-primary">...Show more</span></a>
                 {% endif %}
             </div>
         {% endif %}
@@ -204,14 +209,14 @@
 
                             <div>
                                 <a href="{{ path('conferences_show', { slug: submit.conference.slug }) }}">
-                                    {{ submit.conference.name -}}
+                                    <span class="text-primary">{{ submit.conference.name -}}</span>
                                 </a> - starting on {{ submit.conference.startAt|date('m/d/Y') }}
                             </div>
                         </div>
                     </div>
                 {% endfor %}
                 {% if rejectedSubmits|length > 3 %}
-                    <a href="{{ path('rejected_submits') }}">...Show more</a>
+                    <a href="{{ path('rejected_submits') }}"><span class="text-primary">...Show more</span></a>
                 {% endif %}
             </div>
         {% endif %}
