@@ -42,19 +42,20 @@ class MapboxUrlEncoder extends AbstractExtension
         }
 
         $apiConfig = [
-            'type' => 'FeatureCollection',
-            'features' => [
-                [
-                    'type' => 'Feature',
-                    'properties' => ['marker-color' => 'f7d325'],
-                    'geometry' => ['type' => 'MultiPoint', 'coordinates' => $coordinates],
-                ],
+            'type' => 'Feature',
+            'properties' => [
+                'marker-color' => 'f7d325',
+                'marker-size' => 's',
+            ],
+            'geometry' => [
+                'type' => 'MultiPoint',
+                'coordinates' => $coordinates,
             ],
         ];
 
         $encodeApiConfig = urlencode(json_encode($apiConfig));
         $encodeApiToken = http_build_query(['access_token' => $this->apiToken]);
 
-        return sprintf('https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/geojson(%s)/%s/1000x600?%s', $encodeApiConfig, $zoom, $encodeApiToken);
+        return sprintf('https://api.mapbox.com/styles/v1/mapbox/light-v10/static/geojson(%s)/%s/1000x400?%s', $encodeApiConfig, $zoom, $encodeApiToken);
     }
 }
