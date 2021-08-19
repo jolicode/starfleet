@@ -139,6 +139,11 @@ class Conference
      */
     private ?array $coordinates = null;
 
+    /**
+     * @ORM\Column(type="boolean", nullable=false)
+     */
+    private bool $featured = false;
+
     public function __construct()
     {
         $this->submits = new ArrayCollection();
@@ -437,6 +442,18 @@ class Conference
     public function setCoordinates(?array $coordinates): self
     {
         $this->coordinates = $coordinates;
+
+        return $this;
+    }
+
+    public function getFeatured(): bool
+    {
+        return $this->featured;
+    }
+
+    public function setFeatured(bool $featured): self
+    {
+        $this->featured = $featured;
 
         return $this;
     }

@@ -11,9 +11,10 @@
 
 namespace App\Controller\User;
 
+use App\Entity\Conference;
 use App\Entity\Participation;
 use App\Enum\Workflow\Transition\Participation as ParticipationTransition;
-use App\Form\ParticipationType;
+use App\Form\UserAccount\ParticipationType;
 use App\Repository\ConferenceRepository;
 use App\Repository\ParticipationRepository;
 use App\UX\UserChartBuilder;
@@ -104,10 +105,11 @@ class UserParticipationController extends AbstractController
         ]);
     }
 
-    #[IsGranted(data: 'PARTICIPATION_ACTION', subject: 'participation')]
-    #[Route(path: '/user/participation-edit/{id}', name: 'edit_participation')]
-    public function editParticipation(Participation $participation, Request $request): Response
+    #[Route(path: '/user/participation-new/{id}', name: 'new_participation')]
+    public function newParticipation(Conference $conference, Request $request): Response
     {
+        $participation = new Participation($this->getUser());
+        $participation->setConference($conference);
         $form = $this->createForm(ParticipationType::class, $participation);
 
         if ($form->handleRequest($request)->isSubmitted() && $form->isValid()) {
@@ -119,9 +121,29 @@ class UserParticipationController extends AbstractController
             return $this->redirectToRoute('user_participations');
         }
 
-        return $this->render('/user/participation/participation_edit.html.twig', [
-            'participation' => $participation,
+        return $this->render('user/participation/participation_form.html.twig', [
             'form' => $form->createView(),
+            'action' => 'new',
+        ]);
+    }
+
+    #[IsGranted(data: 'PARTICIPATION_ACTION', subject: 'participation')]
+    #[Route(path: '/user/participation-edit/{id}', name: 'edit_participation')]
+    public function editParticipation(Participation $participation, Request $request): Response
+    {
+        $form = $this->createForm(ParticipationType::class, $participation);
+
+        if ($form->handleRequest($request)->isSubmitted() && $form->isValid()) {
+            $this->em->flush();
+
+            $this->addFlash('info', 'Your participation has been submitted.');
+
+            return $this->redirectToRoute('user_participations');
+        }
+
+        return $this->render('/user/participation/participation_form.html.twig', [
+            'form' => $form->createView(),
+            'action' => 'edit',
         ]);
     }
 

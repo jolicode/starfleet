@@ -18,7 +18,7 @@
                                target="_blank"
                                class="btn btn-outline-secondary btn-lg">
                                 {{ 'conference.card.site_button_label'|trans }}&nbsp;
-                                <i class="fa fa-external-link"></i>
+                                <i class="fas fa-external-link-alt"></i>
                             </a>
 
                             {% if conference.cfpUrl is not null %}
@@ -26,7 +26,7 @@
                                    target="_blank"
                                    class="btn btn-outline-success btn-lg">
                                     {{ 'conferences.card.cfp_button_label'|trans }}&nbsp;
-                                    <i class="fa fa-external-link"></i>
+                                    <i class="fas fa-external-link-alt"></i>
                                 </a>
                             {% endif %}
                         </p>
@@ -35,7 +35,7 @@
                 <div class="row pb-5">
                     <aside class="col-12 col-md-3">
                         <p class="h5 font-weight-normal">
-                            <i class="fa fa-calendar-o"></i>&nbsp;
+                            <i class="fa fa-calendar"></i>&nbsp;
                             {{ 'conferences.show.sidebar.dates_title'|trans }}
                         </p>
                         <p>
@@ -131,7 +131,7 @@
                             <div>
                                 <a href="{{ conference.articleUrl }}" target="_blank" class="btn btn-link">
                                     {{ 'conferences.show.article_url.content'|trans }}
-                                    <i class="fa fa-external-link"></i>
+                                    <i class="fas fa-external-link-alt"></i>
                                 </a>
                             </div>
                         {% endif %}
