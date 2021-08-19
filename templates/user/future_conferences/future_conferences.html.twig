@@ -2,7 +2,9 @@
 
 {% block content %}
     <div class="mb-5 w-100">
-        <h2 class="ml-5 my-5 indent-50">Featured Conferences</h2>
+        <h1 class="text-center mt-3">All upcoming Conferences</h1>
+
+        <h3 class="ml-5 my-5 text-secondary indent-50">Featured Conferences</h3>
         <div class="d-flex flex-row flex-wrap justify-content-center">
             {% for conference in featuredConferences %}
                 <div class="card w-30 m-2 border-warning">
@@ -43,7 +45,7 @@
                 </div>
             {% endfor %}
         </div>
-        <h2 class="ml-5 my-5 indent-50">Regular Conferences</h2>
+        <h3 class="ml-5 my-5 text-secondary indent-50">Regular Conferences</h3>
         <div class="d-flex flex-row flex-wrap justify-content-center">
             {% for conference in conferences %}
                 <div class="card w-30 m-2 border-secondary">

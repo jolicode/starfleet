@@ -9,12 +9,16 @@
 {% form_theme form.conference _self %}
 
 {% block _participation_conference_widget %}
-    <input list="{{ id }}" id="{{ id }}_input" class="form-control" name="{{ full_name }}" autocomplete="off" placeholder="{{ value }}">
-    <datalist id="{{ id }}">
-        {% for choice in choices %}
-            <option value="{{ choice.name }}"></option>
-        {% endfor %}
-    </datalist>
+    {% if not form.vars.disabled %}
+        <input list="{{ id }}" id="{{ id }}_input" class="form-control" name="{{ full_name }}" autocomplete="off" placeholder="{{ value }}">
+        <datalist id="{{ id }}">
+            {% for choice in choices %}
+                <option value="{{ choice.name }}"></option>
+            {% endfor %}
+        </datalist>
+    {% else %}
+        <input list="{{ id }}" id="{{ id }}_input" class="form-control" name="{{ full_name }}" autocomplete="off" value="{{ value }}" disabled>
+    {% endif %}
 {% endblock %}
 
 {% block content %}

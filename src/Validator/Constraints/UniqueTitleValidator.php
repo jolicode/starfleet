@@ -11,27 +11,33 @@
 
 namespace App\Validator\Constraints;
 
-use App\Entity\Conference;
-use DateTime;
+use App\Repository\TalkRepository;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
-class NotEndedConferenceValidator extends ConstraintValidator
+class UniqueTitleValidator extends ConstraintValidator
 {
+    public function __construct(
+        private TalkRepository $talkRepository,
+    ) {
+    }
+
     /**
-     * @param Conference|null    $conference
-     * @param NotEndedConference $constraint
+     * @param string      $formTitle
+     * @param UniqueTitle $constraint
      */
-    public function validate($conference, Constraint $constraint): void
+    public function validate($formTitle, Constraint $constraint): void
     {
-        if (!$conference) {
+        if (!$formTitle) {
             return;
         }
 
-        if ($conference->getStartAt() < new DateTime()) {
+        $contextTalk = $this->context->getObject();
+        $existingTalk = $this->talkRepository->findOneBy(['title' => $contextTalk->getTitle()]);
+
+        if ($existingTalk && $existingTalk !== $contextTalk) {
             $this->context
                 ->buildViolation($constraint->message)
-                ->setParameter('{{ conference_name }}', $conference->getName())
                 ->addViolation()
             ;
         }

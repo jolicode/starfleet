@@ -28,7 +28,7 @@
         {% for choice in choices %}
             <option
                 value="{{ choice.value }}"
-                {% if choice.data in value %}selected{% endif %}
+                {% if choice.data in data %}selected{% endif %}
             >
                 {{ choice.label }}
             </option>
@@ -79,9 +79,7 @@
             {{ form_row(form.title) }}
             {{ form_row(form.intro) }}
             {{ form_row(form.conference) }}
-            {{ form_row(form.users, {
-                value: [app.user]
-            }) }}
+            {{ form_row(form.users) }}
 
             <button type="submit" class="btn btn-primary align-self-center" id="submit_talk">Submit</button>
 

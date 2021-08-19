@@ -40,7 +40,9 @@ class UserSubmitController extends AbstractController
     {
         $submit = new Submit();
         $submit->addUser($this->getUser());
-        $form = $this->createForm(SubmitType::class, $submit);
+        $form = $this->createForm(SubmitType::class, $submit, [
+            'validation_groups' => ['Default', 'user_account'],
+        ]);
 
         if ($form->handleRequest($request)->isSubmitted() && $form->isValid()) {
             $this->em->persist($submit);
@@ -106,7 +108,9 @@ class UserSubmitController extends AbstractController
     #[Route(path: '/user/submit-edit/{id}', name: 'edit_submit')]
     public function editSubmit(Submit $submit, Request $request): Response
     {
-        $form = $this->createForm(SubmitType::class, $submit);
+        $form = $this->createForm(SubmitType::class, $submit, [
+            'validation_groups' => ['Default', 'user_account'],
+        ]);
 
         if ($form->handleRequest($request)->isSubmitted() && $form->isValid()) {
             $this->em->flush();
@@ -128,7 +132,9 @@ class UserSubmitController extends AbstractController
         $submit = new Submit();
         $submit->addUser($this->getUser());
         $submit->setConference($conference);
-        $form = $this->createForm(SubmitType::class, $submit);
+        $form = $this->createForm(SubmitType::class, $submit, [
+            'validation_groups' => ['Default', 'user_account'],
+        ]);
 
         if ($form->handleRequest($request)->isSubmitted() && $form->isValid()) {
             $this->em->persist($submit);

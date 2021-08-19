@@ -16,19 +16,23 @@ use DateTime;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
-class NotEndedConferenceValidator extends ConstraintValidator
+class NotEndedCfpValidator extends ConstraintValidator
 {
     /**
-     * @param Conference|null    $conference
-     * @param NotEndedConference $constraint
+     * @param Conference  $conference
+     * @param NotEndedCfp $constraint
      */
     public function validate($conference, Constraint $constraint): void
     {
-        if (!$conference) {
+        if (!$conference instanceof Conference) {
             return;
         }
 
-        if ($conference->getStartAt() < new DateTime()) {
+        if (!$conference->getCfpEndAt()) {
+            return;
+        }
+
+        if ($conference->getCfpEndAt() < new DateTime()) {
             $this->context
                 ->buildViolation($constraint->message)
                 ->setParameter('{{ conference_name }}', $conference->getName())
