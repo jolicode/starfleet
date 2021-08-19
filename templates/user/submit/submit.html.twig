@@ -20,10 +20,11 @@
 
 {% block _submit_users_label %}
     <label for="{{ full_name }}" class="d-block">Users</label>
+    {{ form_errors(form) }}
 {% endblock %}
 
 {% block _submit_users_widget %}
-    <select name="{{ full_name }}" class="tom-select" multiple>
+    <select name="{{ full_name }}" class="tom-select" multiple required>
         {% for choice in choices %}
             <option
                 value="{{ choice.value }}"
@@ -96,7 +97,7 @@
 
         {% if futureSubmits|length %}
             <div class="mb-5" id="future-submits-block">
-                <h2 class="mx-0 mb-5">Future submits</h2>
+                <h2 class="mx-0 mb-5">Future Submits</h2>
                 {% for submit in futureSubmits|slice(0, 3) %}
                     <div class="card w-100 mx-auto my-2">
                         <div class="card-header">

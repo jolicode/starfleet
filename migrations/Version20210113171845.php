@@ -24,21 +24,18 @@ final class Version20210113171845 extends AbstractMigration
 
         $queryTags = 'SELECT id, name FROM tag';
         $stmt = $this->connection->prepare($queryTags);
-        $stmt->execute();
-        $allTags = $stmt->fetchAllKeyValue();
+        $allTags = $stmt->executeQuery()->fetchAllKeyValue();
 
         $queryConferenceIds = 'SELECT id FROM conference';
         $stmt = $this->connection->prepare($queryConferenceIds);
-        $stmt->execute();
-        $allConferenceIds = $stmt->fetchFirstColumn();
+        $allConferenceIds = $stmt->executeQuery()->fetchFirstColumn();
 
         $queryConferenceTagIds = 'SELECT tag_id FROM conferences_tags WHERE conference_id = :id';
         $tagIdsStatement = $this->connection->prepare($queryConferenceTagIds);
 
         foreach ($allConferenceIds as $conferenceId) {
             $tagIdsStatement->bindValue('id', $conferenceId);
-            $tagIdsStatement->execute();
-            $tagIds = array_flip($tagIdsStatement->fetchFirstColumn());
+            $tagIds = array_flip($tagIdsStatement->executeQuery()->fetchFirstColumn());
             $tagsArray = array_values(array_intersect_key($allTags, $tagIds));
 
             $this->addSql('UPDATE conference SET tags = :tags WHERE id = :id', ['tags' => json_encode($tagsArray), 'id' => $conferenceId]);

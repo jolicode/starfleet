@@ -97,7 +97,7 @@ class UserTalkController extends AbstractController
 
             $this->addFlash('info', $message);
 
-            return $this->redirectToRoute('user_participations');
+            return $this->redirectToRoute('user_talks');
         }
 
         return $this->render('/user/talk/talk_edit.html.twig', [

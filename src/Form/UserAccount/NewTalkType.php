@@ -20,20 +20,31 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class NewTalkType extends AbstractType
 {
+    public function __construct(
+        private Security $security
+    ) {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('title', TextType::class)
-            ->add('intro', TextareaType::class)
-            ->add('conference', ConferenceDatalistType::class, [
-                'mapped' => false,
+            ->add('title', TextType::class, [
                 'constraints' => [
                     new NotBlank(),
                 ],
+            ])
+            ->add('intro', TextareaType::class, [
+                'constraints' => [
+                    new NotBlank(),
+                ],
+            ])
+            ->add('conference', ConferenceDatalistType::class, [
+                'mapped' => false,
             ])
             ->add('users', EntityType::class, [
                 'class' => User::class,
@@ -42,6 +53,7 @@ class NewTalkType extends AbstractType
                 'constraints' => [
                     new NotBlank(),
                 ],
+                'invalid_message' => 'User could not be found.',
             ])
             ->addEventListener(
                 FormEvents::POST_SUBMIT,
@@ -52,11 +64,14 @@ class NewTalkType extends AbstractType
                         return;
                     }
 
+                    /** @var User $user */
+                    $user = $this->security->getUser();
                     $talk = $event->getData();
                     $submit = new Submit();
                     $submit
                         ->setTalk($talk)
                         ->setConference($form->get('conference')->getData())
+                        ->setSubmittedBy($user)
                     ;
 
                     foreach ($form->get('users')->getData() as $user) {

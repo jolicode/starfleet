@@ -131,7 +131,9 @@ class UserParticipationController extends AbstractController
     #[Route(path: '/user/participation-edit/{id}', name: 'edit_participation')]
     public function editParticipation(Participation $participation, Request $request): Response
     {
-        $form = $this->createForm(ParticipationType::class, $participation);
+        $form = $this->createForm(ParticipationType::class, $participation, [
+            'validation_groups' => ['edition'],
+        ]);
 
         if ($form->handleRequest($request)->isSubmitted() && $form->isValid()) {
             $this->em->flush();
