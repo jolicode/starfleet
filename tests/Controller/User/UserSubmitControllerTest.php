@@ -81,8 +81,12 @@ class UserSubmitControllerTest extends WebTestCase
         $conferenceRepository = static::$container->get(ConferenceRepository::class);
         $talkRepository = static::$container->get(TalkRepository::class);
 
+        $date = new \DateTime('+10 days');
+        $date->setTime(0, 0);
+        $conference = $conferenceRepository->findOneBy(['startAt' => $date]);
+
         $client->submitForm('submit_submit', [
-            'submit[conference]' => $conferenceRepository->find(1)->getName(),
+            'submit[conference]' => $conference->getName(),
             'submit[talk]' => $talkRepository->find(1)->getId(),
             'submit[users]' => $this->getUser()->getId(),
         ]);

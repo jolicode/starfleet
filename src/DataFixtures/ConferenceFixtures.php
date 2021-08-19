@@ -29,5 +29,17 @@ class ConferenceFixtures extends Fixture
         ConferenceFactory::createMany(10, [
             'excluded' => true,
         ]);
+        ConferenceFactory::createMany(5, [
+            'featured' => true,
+        ]);
+
+        $date = new \DateTime('+10 days');
+        $date->setTime(0, 0);
+        ConferenceFactory::createOne([
+            'featured' => true,
+            'description' => '',
+            'startAt' => $date,
+            'endAt' => new \DateTime('+12 days'),
+        ]);
     }
 }

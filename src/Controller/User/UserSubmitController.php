@@ -11,8 +11,9 @@
 
 namespace App\Controller\User;
 
+use App\Entity\Conference;
 use App\Entity\Submit;
-use App\Form\SubmitType;
+use App\Form\UserAccount\SubmitType;
 use App\Repository\ConferenceRepository;
 use App\Repository\SubmitRepository;
 use App\UX\UserChartBuilder;
@@ -108,6 +109,28 @@ class UserSubmitController extends AbstractController
         $form = $this->createForm(SubmitType::class, $submit);
 
         if ($form->handleRequest($request)->isSubmitted() && $form->isValid()) {
+            $this->em->flush();
+
+            $this->addFlash('info', 'Your talk has been submitted.');
+
+            return $this->redirectToRoute('user_submits');
+        }
+
+        return $this->render('/user/submit/submit_form.html.twig', [
+            'form' => $form->createView(),
+            'action' => 'edit',
+        ]);
+    }
+
+    #[Route(path: '/user/submit-new/{id}', name: 'new_submit')]
+    public function newSubmit(Conference $conference, Request $request): Response
+    {
+        $submit = new Submit();
+        $submit->addUser($this->getUser());
+        $submit->setConference($conference);
+        $form = $this->createForm(SubmitType::class, $submit);
+
+        if ($form->handleRequest($request)->isSubmitted() && $form->isValid()) {
             $this->em->persist($submit);
             $this->em->flush();
 
@@ -116,9 +139,9 @@ class UserSubmitController extends AbstractController
             return $this->redirectToRoute('user_submits');
         }
 
-        return $this->render('/user/submit/submit_edit.html.twig', [
-            'submit' => $submit,
+        return $this->render('/user/submit/submit_form.html.twig', [
             'form' => $form->createView(),
+            'action' => 'new',
         ]);
     }
 

@@ -37,7 +37,7 @@
 
 {% block content %}
     <div class="row flex-column align-items-center w-100">
-        <h2>Edit a submit</h2>
+        <h2>{{ action|capitalize }} submit</h2>
         {{ form_start(form, {
             attr: {
                 class: 'row flex-column',

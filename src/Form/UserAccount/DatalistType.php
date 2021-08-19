@@ -9,7 +9,7 @@
  * please view the LICENSE file that was distributed with this source code.
  */
 
-namespace App\Form;
+namespace App\Form\UserAccount;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;

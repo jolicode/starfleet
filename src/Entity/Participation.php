@@ -11,6 +11,7 @@
 
 namespace App\Entity;
 
+use App\Validator\Constraints as CustomAssert;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -43,6 +44,9 @@ class Participation
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Conference", inversedBy="participations", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
+     *
+     * @CustomAssert\NoParticipationDuplicate()
+     * @CustomAssert\NotEndedConference()
      */
     private Conference $conference;
 

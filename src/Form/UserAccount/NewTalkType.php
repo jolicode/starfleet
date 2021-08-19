@@ -9,7 +9,7 @@
  * please view the LICENSE file that was distributed with this source code.
  */
 
-namespace App\Form;
+namespace App\Form\UserAccount;
 
 use App\Entity\Submit;
 use App\Entity\User;
@@ -46,9 +46,13 @@ class NewTalkType extends AbstractType
             ->addEventListener(
                 FormEvents::POST_SUBMIT,
                 function (FormEvent $event) {
-                    $talk = $event->getData();
                     $form = $event->getForm();
 
+                    if (!$form->isValid()) {
+                        return;
+                    }
+
+                    $talk = $event->getData();
                     $submit = new Submit();
                     $submit
                         ->setTalk($talk)

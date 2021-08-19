@@ -13,15 +13,19 @@ namespace App\Tests\Controller\User;
 
 use App\Entity\Participation;
 use App\Entity\User;
-use App\Repository\ConferenceRepository;
+use App\Factory\ConferenceFactory;
+use App\Factory\ParticipationFactory;
 use App\Repository\ParticipationRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DomCrawler\Crawler;
+use Zenstruck\Foundry\Test\Factories;
 
 class UserParticipationControllerTest extends WebTestCase
 {
+    use Factories;
+
     private ?User $user = null;
 
     /** @dataProvider provideRoutes */
@@ -62,24 +66,29 @@ class UserParticipationControllerTest extends WebTestCase
     public function testParticipationsFormWork()
     {
         $client = $this->createClient();
-        $participationRepository = static::$container->get(ParticipationRepository::class);
-
         $client->loginUser($this->getUser());
         $client->request('GET', '/user/participations');
 
-        $pendingParticipations = $participationRepository->findPendingParticipationsByUser($this->getUser());
+        $pendingParticipations = ParticipationFactory::findBy(['participant' => $this->getUser()]);
         $preFormParticipationCount = \count($pendingParticipations);
 
-        $conferenceRepository = static::$container->get(ConferenceRepository::class);
+        $conference = ConferenceFactory::new()
+            ->create([
+                'name' => 'Future Conference',
+                'participations' => [],
+                'startAt' => new \DateTime('+10 days'),
+                'endAt' => new \DateTime('+12 days'),
+            ])
+        ;
 
         $client->submitForm('submit_participation', [
-            'participation[conference]' => $conferenceRepository->find(1)->getName(),
+            'participation[conference]' => $conference->getName(),
             'participation[transportStatus]' => Participation::STATUS_NOT_NEEDED,
             'participation[hotelStatus]' => Participation::STATUS_NOT_NEEDED,
             'participation[conferenceTicketStatus]' => Participation::STATUS_NOT_NEEDED,
         ]);
 
-        self::assertCount(++$preFormParticipationCount, $participationRepository->findPendingParticipationsByUser($this->getUser()));
+        self::assertCount(++$preFormParticipationCount, ParticipationFactory::findBy(['participant' => $this->getUser()]));
     }
 
     public function testEditParticipationPageWork()
@@ -88,31 +97,35 @@ class UserParticipationControllerTest extends WebTestCase
         $client->followRedirects();
         $client->loginUser($this->getUser());
 
-        $participationRepository = static::$container->get(ParticipationRepository::class);
-        $participation = $participationRepository->findOneBy(['participant' => $this->getUser()]);
+        $conference = ConferenceFactory::new()
+            ->create(['name' => 'My Test Conference'])
+        ;
+        $participation = ParticipationFactory::new()
+            ->create([
+                'conference' => $conference,
+                'participant' => $this->getUser(),
+                'transportStatus' => Participation::STATUS_NOT_NEEDED,
+                'hotelStatus' => Participation::STATUS_NOT_NEEDED,
+                'conferenceTicketStatus' => Participation::STATUS_NOT_NEEDED,
+            ])
+        ;
+        $conference->addParticipation($participation->object());
 
         $client->request('GET', sprintf('/user/participation-edit/%d', $participation->getId()));
         self::assertResponseIsSuccessful();
 
-        $conferenceRepository = static::$container->get(ConferenceRepository::class);
-        $participation->setConference($conferenceRepository->find(2));
-        $participation->setTransportStatus(Participation::STATUS_NOT_NEEDED);
-        $participation->setHotelStatus(Participation::STATUS_NEEDED);
-        $participation->setConferenceTicketStatus(Participation::STATUS_NOT_NEEDED);
-
         $client->submitForm('edit_participation', [
-            'participation[conference]' => $conferenceRepository->find(1)->getName(),
+            'participation[conference]' => $conference->getName(),
             'participation[transportStatus]' => Participation::STATUS_NEEDED,
             'participation[hotelStatus]' => Participation::STATUS_NOT_NEEDED,
             'participation[conferenceTicketStatus]' => Participation::STATUS_BOOKED,
         ]);
 
-        $participation = $participationRepository->find($participation->getId());
+        $participation->refresh()->save();
 
-        self::assertSame($conferenceRepository->find(1), $participation->getConference());
-        self::assertSame(Participation::STATUS_NEEDED, $participation->getTransportStatus());
-        self::assertSame(Participation::STATUS_NOT_NEEDED, $participation->getHotelStatus());
-        self::assertSame(Participation::STATUS_BOOKED, $participation->getConferenceTicketStatus());
+        self::assertSame(Participation::STATUS_NEEDED, $participation->object()->getTransportStatus());
+        self::assertSame(Participation::STATUS_NOT_NEEDED, $participation->object()->getHotelStatus());
+        self::assertSame(Participation::STATUS_BOOKED, $participation->object()->getConferenceTicketStatus());
     }
 
     /** @dataProvider provideActionRoutes */

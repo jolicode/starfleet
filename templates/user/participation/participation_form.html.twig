@@ -5,7 +5,7 @@
     {{ parent() }}
 {% endblock %}
 
-{% form_theme form 'bootstrap_4_layout.html.twig'%}
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
 {% form_theme form.conference _self %}
 
 {% block _participation_conference_widget %}
@@ -19,7 +19,7 @@
 
 {% block content %}
     <div class="row flex-column align-items-center w-100">
-        <h2>Edit participation</h2>
+        <h2>{{ action|capitalize }} participation</h2>
         <div class="row flex-column align-items-center w-50">
             {{ form_start(form, {
                 attr: {
