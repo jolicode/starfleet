@@ -20,7 +20,12 @@
 {% block _submit_users_widget %}
     <select name="{{ full_name }}" class="tom-select" multiple>
         {% for choice in choices %}
-            <option value="{{ choice.value }}">{{ choice.label }}</option>
+            <option
+                value="{{ choice.value }}"
+                {% if choice.value in value %} selected {% endif %}
+            >
+                {{ choice.label }}
+            </option>
         {% endfor %}
     </select>
 {% endblock %}
@@ -28,186 +33,186 @@
 {% block content %}
     <aside class="col-6">
         {% if pendingSubmits|length %}
-            <div class="row mb-5" id="pending-submits-block">
+            <div class="mb-5" id="pending-submits-block">
                 <h2 class="mx-0 mb-5">Submits still waiting for approval</h2>
                 {% for submit in pendingSubmits|slice(0, 3) %}
-                    <div class="user-items-list">
-                        <div class="row lead mb-2">
-                            Talk submitted :&nbsp;
-                            <a href="#">
-                                {{ submit.talk.title }}
+                    <div class="card w-100 mx-auto my-2">
+                        <div class="card-header">
+                            <a href="{{ path('show_talk', { id: submit.talk.id }) }}">
+                                <h5 class="card-title text-primary my-0">{{ submit.talk.title }}</h5>
                             </a>
                         </div>
 
-                        {% if submit.users|length > 1 %}
-                            <div class="row">
-                                Given with :
-                                {% for user in submit.users %}
-                                    {% if app.user != user %}
-                                        {{ user.name }}{% if not loop.last %}, {% endif %}
-                                    {% endif %}
-                                {% endfor %}
+                        <div class="card-body">
+                            {% if submit.users|length > 1 %}
+                                <div>
+                                    Given with :
+                                    {% for user in submit.users|filter(v => v != app.user) %}
+                                        {%- if not loop.first %}, {% endif %}{{ user.name -}}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+                            <div>
+                                <a href="{{ path('conferences_show', { slug: submit.conference.slug }) }}">
+                                    {{ submit.conference.name -}}
+                                </a> - starting on {{ submit.conference.startAt|date('m/d/Y') }}
                             </div>
-                        {% endif %}
 
-                        <div class="row">
-                            At :&nbsp;
-                            <a href="{{ path('conferences_show', { slug: submit.conference.slug }) }}">
-                                {{ submit.conference.name }}
-                            </a>, starts on {{ submit.conference.startAt|date('m/d/Y') }}
-                        </div>
-
-                        <div class="row justify-content-start mt-2">
-                            <a href="{{ path('user_submit_accepted', { id: submit.id }) }}" class="action-accepted w-33">
-                                <div class="btn color-accepted p-0"><i class="fa fa-check"></i> Accepted !</div>
-                            </a>
-                            <a href="{{ path('user_submit_done', { id: submit.id }) }}" class="action-done w-33">
-                                <div class="btn color-done p-0"><i class="fa fa-clipboard"></i> Done</div>
-                            </a>
-                            <a href="{{ path('user_submit_rejected', { id: submit.id }) }}" class="action-rejected w-33">
-                                <div class="btn color-rejected p-0"><i class="fa fa-times"></i> Rejected</div>
-                            </a>
-                            <a href="{{ path('edit_submit', { id: submit.id }) }}" class="action-edit w-33">
-                                <div class="btn color-edit p-0"><i class="fa fa-edit"></i> Edit</div>
-                            </a>
-                            <a href="{{ path('remove_submit', { id: submit.id }) }}" class="action-remove w-33">
-                                <div class="btn color-remove p-0"><i class="fa fa-trash"></i> Remove</div>
-                            </a>
+                            <div class="d-flex justify-content-around mt-2">
+                                <form action="{{ path('user_submit_accept', { id: submit.id }) }}" method="POST" class="action-accept">
+                                    <button type="submit" class="btn color-accept p-0"><i class="fa fa-check"></i> Accept</button>
+                                    <input type="hidden" name="token" value="{{ csrf_token('') }}">
+                                </form>
+                                <form action="{{ path('user_submit_done', { id: submit.id }) }}" method="POST" class="action-done">
+                                    <button type="submit" class="btn color-done p-0"><i class="fa fa-clipboard"></i> Done</button>
+                                    <input type="hidden" name="token" value="{{ csrf_token('') }}">
+                                </form>
+                                <form action="{{ path('user_submit_reject', { id: submit.id }) }}" method="POST" class="action-reject">
+                                    <button type="submit" class="btn color-reject p-0"><i class="fa fa-times"></i> Reject</button>
+                                    <input type="hidden" name="token" value="{{ csrf_token('') }}">
+                                </form>
+                                <form action="{{ path('edit_submit', { id: submit.id }) }}" method="GET" class="action-edit">
+                                    <button type="submit" class="btn color-edit p-0"><i class="fa fa-edit"></i> Edit</button>
+                                </form>
+                                <form action="{{ path('user_submit_cancel', { id: submit.id }) }}" method="POST" class="action-cancel">
+                                    <button type="submit" class="btn color-cancel p-0"><i class="fa fa-times-circle"></i> Cancel</button>
+                                    <input type="hidden" name="token" value="{{ csrf_token('') }}">
+                                </form>
+                            </div>
                         </div>
                     </div>
-                    {% if loop.last and pendingSubmits|length > 3 %}
-                        <a href="{{ path('pending_submits') }}">...Show more</a>
-                    {% endif %}
                 {% endfor %}
+                {% if pendingSubmits|length > 3 %}
+                    <a href="{{ path('pending_submits') }}">...Show more</a>
+                {% endif %}
             </div>
         {% endif %}
 
         {% if futureSubmits|length %}
-            <div class="row mb-5" id="future-submits-block">
-                <h2 class="mx-0 mb-5">Accepted submits</h2>
+            <div class="mb-5" id="future-submits-block">
+                <h2 class="mx-0 mb-5">Future submits</h2>
                 {% for submit in futureSubmits|slice(0, 3) %}
-                    <div class="user-items-list">
-                        <div class="row lead mb-2">
-                            Talk submitted :&nbsp;
-                            <a href="#">
-                                {{ submit.talk.title }}
+                    <div class="card w-100 mx-auto my-2">
+                        <div class="card-header">
+                            <a href="{{ path('show_talk', { id: submit.talk.id }) }}">
+                                <h5 class="card-title text-primary my-0">{{ submit.talk.title }}</h5>
                             </a>
                         </div>
 
-                        {% if submit.users|length > 1 %}
-                            <div class="row">
-                                Given with :
-                                {% for user in submit.users %}
-                                    {% if app.user != user %}
-                                        {{ user.name }}{% if not loop.last %}, {% endif %}
-                                    {% endif %}
-                                {% endfor %}
+                        <div class="card-body">
+                            {% if submit.users|length > 1 %}
+                                <div>
+                                    Given with :
+                                    {% for user in submit.users|filter(v => v != app.user) %}
+                                        {%- if not loop.first %}, {% endif %}{{ user.name -}}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+                            <div>
+                                <a href="{{ path('conferences_show', { slug: submit.conference.slug }) }}">
+                                    {{ submit.conference.name -}}
+                                </a> - starting on {{ submit.conference.startAt|date('m/d/Y') }}
                             </div>
-                        {% endif %}
 
-                        <div class="row">
-                            At :&nbsp;
-                            <a href="{{ path('conferences_show', { slug: submit.conference.slug }) }}">
-                                {{ submit.conference.name }}
-                            </a>, starts on {{ submit.conference.startAt|date('m/d/Y') }}
-                        </div>
-
-                        <div class="row justify-content-start mt-2">
-                            <a href="{{ path('user_submit_done', { id: submit.id }) }}" class="w-33 action-done">
-                                <div class="btn color-accepted p-0"><i class="fa fa-clipboard"></i> Done</div>
-                            </a>
-                            <a href="{{ path('user_submit_rejected', { id: submit.id }) }}" class="w-33 action-rejected">
-                                <div class="btn color-rejected p-0"><i class="fa fa-times"></i> Rejected</div>
-                            </a>
-                            <a href="{{ path('user_submit_pending', { id: submit.id }) }}" class="w-33 action-pending">
-                                <div class="btn color-pending p-0"><i class="fa fa-hourglass-half"></i> Pending</div>
-                            </a>
-                            <a href="{{ path('edit_submit', { id: submit.id }) }}" class="action-edit w-33">
-                                <div class="btn color-edit p-0"><i class="fa fa-edit"></i> Edit</div>
-                            </a>
-                            <a href="{{ path('remove_submit', { id: submit.id }) }}" class="action-remove w-33">
-                                <div class="btn color-remove p-0"><i class="fa fa-trash"></i> Remove</div>
-                            </a>
+                            <div class="d-flex justify-content-around mt-2">
+                                <form action="{{ path('user_submit_pending', { id: submit.id }) }}" method="POST" class="action-pending">
+                                    <button type="submit" class="btn color-pending p-0"><i class="fa fa-hourglas-half"></i> Pending</button>
+                                    <input type="hidden" name="token" value="{{ csrf_token('') }}">
+                                </form>
+                                <form action="{{ path('user_submit_done', { id: submit.id }) }}" method="POST" class="action-done">
+                                    <button type="submit" class="btn color-done p-0"><i class="fa fa-clipboard"></i> Done</button>
+                                    <input type="hidden" name="token" value="{{ csrf_token('') }}">
+                                </form>
+                                <form action="{{ path('user_submit_reject', { id: submit.id }) }}" method="POST" class="action-reject">
+                                    <button type="submit" class="btn color-reject p-0"><i class="fa fa-times"></i> Reject</button>
+                                    <input type="hidden" name="token" value="{{ csrf_token('') }}">
+                                </form>
+                                <form action="{{ path('edit_submit', { id: submit.id }) }}" method="GET" class="action-edit">
+                                    <button type="submit" class="btn color-edit p-0"><i class="fa fa-edit"></i> Edit</button>
+                                </form>
+                                <form action="{{ path('user_submit_cancel', { id: submit.id }) }}" method="POST" class="action-cancel">
+                                    <button type="submit" class="btn color-cancel p-0"><i class="fa fa-times-circle"></i> Cancel</button>
+                                    <input type="hidden" name="token" value="{{ csrf_token('') }}">
+                                </form>
+                            </div>
                         </div>
                     </div>
-                    {% if loop.last and futureSubmits|length > 3 %}
-                        <a href="{{ path('accepted_submits') }}">...Show more</a>
-                    {% endif %}
                 {% endfor %}
+                {% if futureSubmits|length > 3 %}
+                    <a href="{{ path('accepted_submits') }}">...Show more</a>
+                {% endif %}
             </div>
         {% endif %}
 
         {% if doneSubmits|length %}
-            <div class="row mb-5" id="done-submits-block">
-                <h2 class="mx-0 mb-5">Done submits</h2>
+            <div class="mb-5" id="done-submits-block">
+                <h2 class="mx-0 mb-5">Done Submits</h2>
                 {% for submit in doneSubmits|slice(0, 3) %}
-                    <div class="user-items-list">
-                        <div class="row lead mb-2">
-                            Talk submitted :&nbsp;
-                            <a href="#">
-                                {{ submit.talk.title }}
+                    <div class="card w-100 mx-auto my-2">
+                        <div class="card-header">
+                            <a href="{{ path('show_talk', { id: submit.talk.id }) }}">
+                                <h5 class="card-title text-primary my-0">{{ submit.talk.title }}</h5>
                             </a>
                         </div>
 
-                        {% if submit.users|length > 1 %}
-                            <div class="row">
-                                Given with :
-                                {% for user in submit.users %}
-                                    {% if app.user != user %}
-                                        {{ user.name }}{% if not loop.last %}, {% endif %}
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
-                        {% endif %}
+                        <div class="card-body">
+                            {% if submit.users|length > 1 %}
+                                <div>
+                                    Given with :
+                                    {% for user in submit.users|filter(v => v != app.user) %}
+                                        {%- if not loop.first %}, {% endif %}{{ user.name -}}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
 
-                        <div class="row">
-                            At :&nbsp;
-                            <a href="{{ path('conferences_show', { slug: submit.conference.slug }) }}">
-                                {{ submit.conference.name }}
-                            </a>, starts on {{ submit.conference.startAt|date('m/d/Y') }}
+                            <div>
+                                <a href="{{ path('conferences_show', { slug: submit.conference.slug }) }}">
+                                    {{ submit.conference.name -}}
+                                </a> - ended on {{ submit.conference.endAt|date('m/d/Y') }}
+                            </div>
                         </div>
                     </div>
-                    {% if loop.last and doneSubmits|length > 3 %}
-                        <a href="{{ path('done_submits') }}">...Show more</a>
-                    {% endif %}
                 {% endfor %}
+                {% if doneSubmits|length > 3 %}
+                    <a href="{{ path('done_submits') }}">...Show more</a>
+                {% endif %}
             </div>
         {% endif %}
 
         {% if rejectedSubmits|length %}
-            <div class="row mb-5" id="rejected-submits-block">
-                <h2 class="mx-0 mb-5">Rejected submits</h2>
+            <div class="mb-5" id="rejected-submits-block">
+                <h2 class="mx-0 mb-5">Rejected Submits</h2>
                 {% for submit in rejectedSubmits|slice(0, 3) %}
-                    <div class="user-items-list">
-                        <div class="row lead mb-2">
-                            Talk submitted :&nbsp;
-                            <a href="#">
-                                {{ submit.talk.title }}
+                    <div class="card w-100 mx-auto my-2">
+                        <div class="card-header">
+                            <a href="{{ path('show_talk', { id: submit.talk.id }) }}">
+                                <h5 class="card-title text-primary my-0">{{ submit.talk.title }}</h5>
                             </a>
                         </div>
 
-                        {% if submit.users|length > 1 %}
-                            <div class="row">
-                                Given with :
-                                {% for user in submit.users %}
-                                    {% if app.user != user %}
-                                        {{ user.name }}{% if not loop.last %}, {% endif %}
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
-                        {% endif %}
+                        <div class="card-body">
+                            {% if submit.users|length > 1 %}
+                                <div>
+                                    Given with :
+                                    {% for user in submit.users|filter(v => v != app.user) %}
+                                        {%- if not loop.first %}, {% endif %}{{ user.name -}}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
 
-                        <div class="row">
-                            At :&nbsp;
-                            <a href="{{ path('conferences_show', { slug: submit.conference.slug }) }}">
-                                {{ submit.conference.name }}
-                            </a>, starts on {{ submit.conference.startAt|date('m/d/Y') }}
+                            <div>
+                                <a href="{{ path('conferences_show', { slug: submit.conference.slug }) }}">
+                                    {{ submit.conference.name -}}
+                                </a> - starting on {{ submit.conference.startAt|date('m/d/Y') }}
+                            </div>
                         </div>
                     </div>
-                    {% if loop.last and rejectedSubmits|length > 3 %}
-                        <a href="{{ path('rejected_submits') }}">...Show more</a>
-                    {% endif %}
                 {% endfor %}
+                {% if rejectedSubmits|length > 3 %}
+                    <a href="{{ path('rejected_submits') }}">...Show more</a>
+                {% endif %}
             </div>
         {% endif %}
     </aside>

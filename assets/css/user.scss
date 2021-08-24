@@ -7,7 +7,7 @@
     color: #d97817;
 }
 
-.color-accepted {
+.color-accept, .color-accepted {
     color: #28A745;
 }
 
@@ -15,7 +15,7 @@
     color: #09bdb4;
 }
 
-.color-rejected {
+.color-reject, .color-rejected {
     color: #e20b21;
 }
 
@@ -27,28 +27,38 @@
     color: #007bff;
 }
 
-.color-remove {
-    color: #a03944;
+.bg-edit {
+    background-color: #007bff;
 }
 
-.user-items-list {
-    margin-right: -15px;
-    margin-left: -15px;
+.user_menu a div.btn {
+    margin-right: .3rem;
+}
+
+.user-list {
     margin-bottom: .5rem;
     width: 100%;
     padding: .5rem;
+    border: rgba(0, 0, 0, 0.125) 1px solid;
     border-radius: .35rem;
-}
-
-.user-items-list:nth-child(even) {
-    background-color: #f5f5f5;
-}
-
-.user-items-list .row {
-    margin-right: 0;
-    margin-left: 0;
+    background-color: #FFFFFF;
 }
 
 .w-33 {
     width: 33%;
+}
+
+.indent-50 {
+    text-indent: 50px;
+}
+
+.justify-self-end {
+    justify-self: end;
+}
+
+.submit-status {
+    margin-right: 1rem;
+    border-right: 1px solid rgb(180, 177, 177);
+    width: 12%;
+    text-align: center;
 }

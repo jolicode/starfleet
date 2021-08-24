@@ -23,6 +23,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Workflow\Exception\TransitionException;
 use Symfony\Component\Workflow\StateMachine;
 
@@ -47,7 +48,7 @@ class UserParticipationController extends AbstractController
             $this->em->persist($participation);
             $this->em->flush();
 
-            $this->addFlash('info', 'Participation Submitted');
+            $this->addFlash('info', 'Participation Submitted.');
 
             return $this->redirectToRoute('user_participations');
         }
@@ -69,27 +70,6 @@ class UserParticipationController extends AbstractController
             'pastParticipations' => $pastParticipations,
             'chart' => $chart ?? null,
         ]);
-    }
-
-    #[IsGranted(data : 'PARTICIPATION_ACTION', subject: 'participation')]
-    #[Route(path: '/user/participation-cancel/{id}', name: 'user_participations_cancel')]
-    public function cancelParticipation(Participation $participation): Response
-    {
-        try {
-            $this->workflow->apply($participation, ParticipationTransition::CANCELLED);
-        } catch (TransitionException $exception) {
-            $this->addFlash(
-                'error',
-                sprintf('Participation cancel has failed : %s', $exception->getMessage())
-            );
-
-            return $this->redirectToRoute('user_participations');
-        }
-
-        $this->em->flush();
-        $this->addFlash('info', 'Your participation has been cancelled.');
-
-        return $this->redirectToRoute('user_participations');
     }
 
     #[Route(path: '/user/future-participations', name: 'future_participations')]
@@ -143,5 +123,30 @@ class UserParticipationController extends AbstractController
             'participation' => $participation,
             'form' => $form->createView(),
         ]);
+    }
+
+    #[IsGranted(data : 'PARTICIPATION_ACTION', subject: 'participation')]
+    #[Route(path: '/user/participation-cancel/{id}', name: 'user_participation_cancel', methods: ['POST'])]
+    public function cancelParticipation(Participation $participation, Request $request): Response
+    {
+        if (!$this->isCsrfTokenValid('', $request->request->get('token'))) {
+            throw new AccessDeniedException();
+        }
+
+        try {
+            $this->workflow->apply($participation, ParticipationTransition::CANCELLED);
+        } catch (TransitionException $exception) {
+            $this->addFlash(
+                'error',
+                sprintf('Participation cancel has failed : %s', $exception->getMessage())
+            );
+
+            return $this->redirectToRoute('user_participations');
+        }
+
+        $this->em->flush();
+        $this->addFlash('info', 'Your participation has been cancelled.');
+
+        return $this->redirectToRoute('user_participations');
     }
 }
