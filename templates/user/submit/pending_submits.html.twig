@@ -1,10 +1,8 @@
 {% extends "user/user_layout.html.twig" %}
 
 {% block nav %}
+    {% set section = 'submits' %}
     {{ parent() }}
-    <a href="{{ path('user_submits') }}" class="ml-auto">
-        <div class="btn btn-primary">Back to submits</div>
-    </a>
 {% endblock %}
 
 {% block content %}
@@ -30,7 +28,7 @@
 
                     <div>
                         <a href="{{ path('conferences_show', { slug: submit.conference.slug }) }}">
-                            {{ submit.conference.name -}}
+                            <span class="text-primary">{{ submit.conference.name -}}</span>
                         </a> - starting on {{ submit.conference.startAt|date('m/d/Y') }}
                     </div>
 

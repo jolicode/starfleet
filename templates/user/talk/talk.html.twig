@@ -1,5 +1,10 @@
 {% extends "user/user_layout.html.twig" %}
 
+{% block nav %}
+    {% set section = 'talks' %}
+    {{ parent() }}
+{% endblock %}
+
 {% form_theme form 'bootstrap_4_layout.html.twig' %}
 {% form_theme form.conference _self %}
 {% form_theme form.intro _self %}
@@ -57,7 +62,7 @@
                     </div>
                 {% endfor %}
                 {% if talks|length > 3 %}
-                    <a href="{{ path('user_talks_all') }}">...Show more</a>
+                    <a href="{{ path('user_talks_all') }}"><span class="text-primary">...Show more</span></a>
                 {% endif %}
             </div>
         {% endif %}

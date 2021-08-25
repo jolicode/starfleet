@@ -1,5 +1,7 @@
 {% extends "base.html.twig" %}
 
+{% set section = 'home' %}
+
 {% block stylesheets %}
     {{ parent() }}
     {{ encore_entry_link_tags('css/user') }}
@@ -23,32 +25,26 @@
             </div>
             <div class="pt-5 mt-5 d-flex align-items-stretch user_menu">
                 {% block nav %}
-                    {% if is_granted('ROLE_ADMIN') %}
-                        <a href="{{ path('easyadmin') }}">
-                            <div class="btn btn-info" id ="admin-button">Admin</div>
-                        </a>
-                    {% endif %}
                     {% if 'user_account' != app.request.get('_route') %}
                         <a href="{{ path('user_account') }}">
                             <div class="btn btn-secondary">Back Home</div>
                         </a>
-                        {% if 'submit' not in app.request.get('_route') %}
-                            <a href="{{ path('user_submits') }}">
-                                <div class="btn btn-secondary">Submits</div>
-                            </a>
-                        {% endif %}
-                        {% if 'talk' not in app.request.get('_route') %}
-                            <a href="{{ path('user_talks') }}">
-                                <div class="btn btn-secondary">Talks</div>
-                            </a>
-                        {% endif %}
-                        {% if 'participation' not in app.request.get('_route') %}
-                            <a href="{{ path('user_participations') }}">
-                                <div class="btn btn-secondary">Participations</div>
-                            </a>
-                        {% endif %}
-                        <a href="{{ path('user_account') }}">
-                            <div class="btn btn-secondary">Edit Account</div>
+                        <a href="{{ path('user_submits') }}">
+                            <div class="btn btn-{{ section == 'submits' ? 'primary' : 'secondary' }}">Submits</div>
+                        </a>
+                        <a href="{{ path('user_talks') }}">
+                            <div class="btn btn-{{ section == 'talks' ? 'primary' : 'secondary' }}">Talks</div>
+                        </a>
+                        <a href="{{ path('user_participations') }}">
+                            <div class="btn btn-{{ section ==  'participations' ? 'primary' : 'secondary' }}">Participations</div>
+                        </a>
+                        <a href="{{ path('user_profile') }}">
+                            <div class="btn btn-{{ section ==  'profile' ? 'primary' : 'secondary' }}">Edit Profile</div>
+                        </a>
+                    {% endif %}
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a href="{{ path('easyadmin') }}">
+                            <div class="btn btn-info" id ="admin-button">Admin</div>
                         </a>
                     {% endif %}
                 {% endblock %}

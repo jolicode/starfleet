@@ -199,10 +199,6 @@ class UserSubmitControllerTest extends WebTestCase
         $client->loginUser($this->getUser());
 
         foreach ($this->provideRoutes() as $route) {
-            if ('/user/submits' === $route[0] && 'Back to submits' === $buttonText) {
-                continue;
-            }
-
             $crawler = $client->request('GET', $route[0]);
             $client->click($crawler->selectLink($buttonText)->link());
 
@@ -215,8 +211,7 @@ class UserSubmitControllerTest extends WebTestCase
         yield ['Back Home'];
         yield ['Talks'];
         yield ['Participations'];
-        yield ['Edit Account'];
-        yield ['Back to submits'];
+        yield ['Edit Profile'];
     }
 
     private function getUser(): User

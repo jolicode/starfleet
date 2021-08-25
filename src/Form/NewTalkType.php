@@ -20,6 +20,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class NewTalkType extends AbstractType
 {
@@ -30,11 +31,17 @@ class NewTalkType extends AbstractType
             ->add('intro', TextareaType::class)
             ->add('conference', ConferenceDatalistType::class, [
                 'mapped' => false,
+                'constraints' => [
+                    new NotBlank(),
+                ],
             ])
             ->add('users', EntityType::class, [
                 'class' => User::class,
                 'multiple' => true,
                 'mapped' => false,
+                'constraints' => [
+                    new NotBlank(),
+                ],
             ])
             ->addEventListener(
                 FormEvents::POST_SUBMIT,
