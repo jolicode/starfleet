@@ -37,7 +37,7 @@ class SubmitRepository extends ServiceEntityRepository
             ->andWhere('s.status = :status')
             ->setParameter('status', $status)
             ->innerJoin('s.conference', 'c')
-            ->orderBy('c.createdAt', 'ASC')
+            ->orderBy('s.createdAt', 'DESC')
             ->getQuery()
             ->execute()
         ;
@@ -49,6 +49,27 @@ class SubmitRepository extends ServiceEntityRepository
     public function findUserSubmits(User $user): array
     {
         return $this->createUserQueryBuilder($user)
+            ->getQuery()
+            ->execute()
+        ;
+    }
+
+    public function updateDoneSubmits(): void
+    {
+        $today = new \DateTime();
+        $today->setTime(0, 0);
+
+        $this
+            ->createQueryBuilder('s')
+            ->update()
+            ->set('s.status', ':status_done')
+            ->andWhere('s.conference IN (SELECT c.id FROM App\Entity\Conference c WHERE c.id = s.conference AND c.endAt < :today)')
+            ->andWhere('s.status = :status_accepted')
+            ->setParameters([
+                'status_done' => Submit::STATUS_DONE,
+                'status_accepted' => Submit::STATUS_ACCEPTED,
+                'today' => $today,
+            ])
             ->getQuery()
             ->execute()
         ;
