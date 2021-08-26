@@ -12,23 +12,17 @@
 namespace App\Tests\Controller\User;
 
 use App\Entity\Submit;
-use App\Entity\User;
-use App\Repository\ConferenceRepository;
-use App\Repository\SubmitRepository;
-use App\Repository\TalkRepository;
-use App\Repository\UserRepository;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use App\Factory\ConferenceFactory;
+use App\Factory\SubmitFactory;
+use App\Factory\TalkFactory;
+use App\Factory\UserFactory;
 
-class UserSubmitControllerTest extends WebTestCase
+class UserSubmitControllerTest extends BaseFactories
 {
-    private ?User $user = null;
-
     /** @dataProvider provideRoutes */
     public function testAllPagesLoad(string $route)
     {
-        $client = $this->createClient();
-        $client->loginUser($this->getUser());
-        $client->request('GET', $route);
+        $this->getClient()->request('GET', $route);
 
         self::assertResponseIsSuccessful();
     }
@@ -44,79 +38,52 @@ class UserSubmitControllerTest extends WebTestCase
 
     public function testSubmitsPageWork()
     {
-        $client = $this->createClient();
-        $submitRepository = static::$container->get(SubmitRepository::class);
+        $this->createTestData();
+        $crawler = $this->getClient()->request('GET', '/user/submits');
 
-        $client->loginUser($this->getUser());
-        $crawler = $client->request('GET', '/user/submits');
+        self::assertCount(1, $crawler->filter('#pending-submits-block .card'));
+        self::assertCount(2, $crawler->filter('#rejected-submits-block .card'));
+        self::assertCount(2, $crawler->filter('#future-submits-block .card'));
 
-        $submitsArray = [
-            'pending' => $submitRepository->findUserSubmitsByStatus($this->getUser(), Submit::STATUS_PENDING),
-            'done' => $submitRepository->findUserSubmitsByStatus($this->getUser(), Submit::STATUS_DONE),
-            'rejected' => $submitRepository->findUserSubmitsByStatus($this->getUser(), Submit::STATUS_REJECTED),
-            'future' => $submitRepository->findUserSubmitsByStatus($this->getUser(), Submit::STATUS_ACCEPTED),
-        ];
-
-        foreach ($submitsArray as $state => $submits) {
-            if (\count($submits) < 4) {
-                self::assertCount(\count($submits), $crawler->filter("#{$state}-submits-block .card"));
-            } else {
-                self::assertSelectorExists("#{$state}-submits-block a", '...Show more');
-                self::assertCount(3, $crawler->filter("#{$state}-submits-block .card"));
-            }
-        }
+        self::assertSelectorExists('#done-submits-block a', '...Show more');
+        self::assertCount(3, $crawler->filter('#done-submits-block .card'));
     }
 
     public function testSubmitsFormWork()
     {
-        $client = $this->createClient();
-        $submitRepository = static::$container->get(SubmitRepository::class);
-
-        $client->loginUser($this->getUser());
-        $client->request('GET', '/user/submits');
-
-        $pendingSubmits = $submitRepository->findUserSubmitsByStatus($this->getUser(), Submit::STATUS_PENDING);
-        $preFormSubmitCount = \count($pendingSubmits);
-
-        $conferenceRepository = static::$container->get(ConferenceRepository::class);
-        $talkRepository = static::$container->get(TalkRepository::class);
-
-        $date = new \DateTime('+10 days');
-        $date->setTime(0, 0);
-        $conference = $conferenceRepository->findOneBy(['startAt' => $date]);
-
-        $client->submitForm('submit_submit', [
-            'submit[conference]' => $conference->getName(),
-            'submit[talk]' => $talkRepository->find(1)->getId(),
-            'submit[users]' => $this->getUser()->getId(),
+        $conference = ConferenceFactory::createOne([
+            'name' => 'Future Conference',
+            'startAt' => new \DateTime('+10 days'),
+            'endAt' => new \DateTime('+12 days'),
         ]);
-        $client->request('GET', '/user/submits');
+        $talk = TalkFactory::createOne()->object();
 
-        self::assertCount(++$preFormSubmitCount, $submitRepository->findUserSubmitsByStatus($this->getUser(), Submit::STATUS_PENDING));
+        $this->getClient()->request('GET', '/user/submits');
+        $this->getClient()->submitForm('submit_submit', [
+            'submit[conference]' => $conference->getName(),
+            'submit[talk]' => $talk->getId(),
+            'submit[users]' => $this->getTestUser()->getId(),
+        ]);
+
+        self::assertCount(1, SubmitFactory::all());
+        self::assertSame($this->getTestUser(), SubmitFactory::find(1)->getUsers()[0]);
     }
 
     /** @dataProvider provideActions */
-    public function testActions(string $action)
+    public function testSubmitActions(string $action)
     {
-        $client = $this->createClient();
-        $client->loginUser($this->getUser());
-        $client->followRedirects();
+        $this->createTestData();
 
         foreach (['accepted', 'pending'] as $pageName) {
             if ($pageName === $action || ('accept' === $action && 'accepted' === $pageName)) {
                 continue;
             }
 
-            $crawler = $client->request('GET', sprintf('/user/%s-submits', $pageName));
+            $crawler = $this->getClient()->request('GET', sprintf('/user/%s-submits', $pageName));
 
             $preActionCount = \count($crawler->filter(sprintf('form.action-%s', $action)));
 
-            $form = $crawler
-                ->filter(sprintf('form.action-%s', $action))
-                ->first()
-                ->form()
-            ;
-            $client->submit($form);
+            $this->getClient()->submitForm(ucfirst($action));
 
             if ('edit' === $action) {
                 self::assertResponseIsSuccessful();
@@ -124,7 +91,7 @@ class UserSubmitControllerTest extends WebTestCase
                 return;
             }
 
-            $crawler = $client->request('GET', sprintf('/user/%s-submits', $pageName));
+            $crawler = $this->getClient()->request('GET', sprintf('/user/%s-submits', $pageName));
 
             self::assertCount(--$preActionCount, $crawler->filter(sprintf('form.action-%s', $action)));
         }
@@ -133,50 +100,38 @@ class UserSubmitControllerTest extends WebTestCase
     /** @dataProvider provideActions */
     public function mainPageActions(string $action): void
     {
-        $client = $this->createClient();
-        $client->loginUser($this->getUser());
-        $client->followRedirects();
-        $crawler = $client->request('GET', '/user/submits');
-
-        $submitRepository = static::$container->get(SubmitRepository::class);
+        $this->createTestData();
 
         if ('cancel' === $action) {
-            $submits = $submitRepository->findUserSubmitsByStatus($this->getUser(), Submit::STATUS_DONE);
+            $submits = SubmitFactory::repository()->findUserSubmitsByStatus($this->getTestUser(), Submit::STATUS_DONE);
         } else {
-            $submits = $submitRepository->findUserSubmitsByStatus($this->getUser(), $action);
+            $submits = SubmitFactory::repository()->findUserSubmitsByStatus($this->getTestUser(), $action);
         }
 
         $preActionSubmitCount = \count($submits);
-
-        $form = $crawler
-            ->filter(sprintf('form.action-%s', $action))
-            ->first()
-            ->form()
-        ;
-        $client->submit($form);
+        $this->getClient()->request('GET', '/user/submits');
+        $this->getClient()->submitForm(ucfirst($action));
 
         match ($action) {
             'edit' => self::assertResponseIsSuccessful(),
-            'cancel' => self::assertCount(--$preActionSubmitCount, $submitRepository->findUserSubmitsByStatus($this->getUser(), Submit::STATUS_DONE)),
-            default => self::assertCount(++$preActionSubmitCount, $submitRepository->findUserSubmitsByStatus($this->getUser(), $action))
+            'cancel' => self::assertCount(--$preActionSubmitCount, SubmitFactory::repository()->findUserSubmitsByStatus($this->getTestUser(), Submit::STATUS_DONE)),
+            default => self::assertCount(++$preActionSubmitCount, SubmitFactory::repository()->findUserSubmitsByStatus($this->getTestUser(), $action))
         };
     }
 
     /** @dataProvider provideActions */
-    public function testCsrfProtection(string $action)
+    public function testSubmitCsrfProtection(string $action)
     {
         if ('edit' === $action) {
             return $this->expectNotToPerformAssertions();
         }
 
-        $client = $this->createClient();
-        $client->followRedirects();
-        $client->loginUser($this->getUser());
+        UserFactory::createOne();
+        TalkFactory::createOne();
+        ConferenceFactory::createOne();
+        $submit = SubmitFactory::createOne(['users' => [$this->getTestUser()]]);
 
-        $submitRepository = static::$container->get(SubmitRepository::class);
-        $submit = $submitRepository->findUserSubmits($this->getUser())[0];
-
-        $client->request('POST', sprintf(
+        $this->getClient()->request('POST', sprintf(
             '/user/submit-%s/%d',
             $action,
             $submit->getId(),
@@ -198,13 +153,9 @@ class UserSubmitControllerTest extends WebTestCase
     /** @dataProvider provideButtonsText */
     public function testNavLinksWork(string $buttonText)
     {
-        $client = $this->createClient();
-        $client->followRedirects();
-        $client->loginUser($this->getUser());
-
         foreach ($this->provideRoutes() as $route) {
-            $crawler = $client->request('GET', $route[0]);
-            $client->click($crawler->selectLink($buttonText)->link());
+            $crawler = $this->getClient()->request('GET', $route[0]);
+            $this->getClient()->click($crawler->selectLink($buttonText)->link());
 
             self::assertResponseIsSuccessful();
         }
@@ -218,13 +169,26 @@ class UserSubmitControllerTest extends WebTestCase
         yield ['Edit Profile'];
     }
 
-    private function getUser(): User
+    private function createTestData()
     {
-        if (null === $this->user) {
-            $userRepository = static::$container->get(UserRepository::class);
-            $this->user = $userRepository->findOneBy(['name' => 'User']);
-        }
-
-        return $this->user;
+        UserFactory::createMany(2);
+        ConferenceFactory::createMany(5);
+        TalkFactory::createMany(5);
+        SubmitFactory::createMany(2, [
+            'status' => Submit::STATUS_ACCEPTED,
+            'users' => [$this->getTestUser()],
+        ]);
+        SubmitFactory::createMany(1, [
+            'status' => Submit::STATUS_PENDING,
+            'users' => [$this->getTestUser()],
+        ]);
+        SubmitFactory::createMany(5, [
+            'status' => Submit::STATUS_DONE,
+            'users' => [$this->getTestUser()],
+        ]);
+        SubmitFactory::createMany(2, [
+            'status' => Submit::STATUS_REJECTED,
+            'users' => [$this->getTestUser()],
+        ]);
     }
 }

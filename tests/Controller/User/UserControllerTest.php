@@ -11,35 +11,21 @@
 
 namespace App\Tests\Controller\User;
 
-use App\Repository\UserRepository;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-
-class UserControllerTest extends WebTestCase
+class UserControllerTest extends BaseFactories
 {
     public function testUserPageForUsers()
     {
-        $client = static::createClient();
-        $userRepository = static::$container->get(UserRepository::class);
-
-        $user = $userRepository->findOneBy(['name' => 'User']);
-
-        $client->loginUser($user);
-        $crawler = $client->request('GET', '/user/account');
+        $crawler = $this->getClient()->request('GET', '/user/account');
 
         self::assertResponseIsSuccessful();
-        self::assertSelectorTextContains('h1', $user->getName());
+        self::assertSelectorTextContains('h1', $this->getTestUser()->getName());
         self::assertCount(0, $crawler->filter('#admin-button'));
     }
 
     public function testUserPageForAdmins()
     {
-        $client = static::createClient();
-        $userRepository = static::$container->get(UserRepository::class);
-
-        $user = $userRepository->findOneBy(['name' => 'Admin']);
-
-        $client->loginUser($user);
-        $crawler = $client->request('GET', '/user/account');
+        $user = $this->getAdminUser();
+        $crawler = $this->getClient()->request('GET', '/user/account');
 
         self::assertResponseIsSuccessful();
         self::assertSelectorTextContains('h1', $user->getName());
