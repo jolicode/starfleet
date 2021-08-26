@@ -5,9 +5,9 @@
         <h1 class="text-center mt-3">All upcoming Conferences</h1>
 
         <h3 class="ml-5 my-5 text-secondary indent-50">Featured Conferences</h3>
-        <div class="d-flex flex-row flex-wrap justify-content-center">
+        <div class="d-flex flex-row flex-wrap justify-content-center" id="featured-conferences-block">
             {% for conference in featuredConferences %}
-                <div class="card w-30 m-2 border-warning">
+                <div class="card w-30 m-2 border-warning conference-card">
                     <div class="card-header d-flex justify-content-between">
                         <a href="{{ path('conferences_show', { slug: conference.slug }) }}">
                             <h5 class="card-title text-primary my-0"><i class="far fa-star text-warning mr-3"></i>{{ conference.name }}</h5>
@@ -46,9 +46,9 @@
             {% endfor %}
         </div>
         <h3 class="ml-5 my-5 text-secondary indent-50">Regular Conferences</h3>
-        <div class="d-flex flex-row flex-wrap justify-content-center">
+        <div class="d-flex flex-row flex-wrap justify-content-center" id="regular-conferences-block">
             {% for conference in conferences %}
-                <div class="card w-30 m-2 border-secondary">
+                <div class="card w-30 m-2 border-secondary conference-card">
                     <div class="card-header d-flex justify-content-between">
                         <a href="{{ path('conferences_show', { slug: conference.slug }) }}">
                             <h5 class="card-title text-primary my-0">{{ conference.name }}</h5>

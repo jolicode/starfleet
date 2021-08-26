@@ -12,34 +12,42 @@
 namespace App\Tests\Repository;
 
 use App\Entity\Submit;
+use App\Factory\ConferenceFactory;
+use App\Factory\SubmitFactory;
+use App\Factory\TalkFactory;
+use App\Factory\UserFactory;
 use App\Repository\SubmitRepository;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Zenstruck\Foundry\Test\Factories;
+use Zenstruck\Foundry\Test\ResetDatabase;
 
 class SubmitRepositoryTest extends KernelTestCase
 {
+    use Factories;
+    use ResetDatabase;
+
     public function testUpdateDoneSubmitsWork()
     {
-        static::bootKernel();
+        UserFactory::createMany(2);
+        ConferenceFactory::createMany(2, [
+            'startAt' => new \DateTime('-1 years'),
+            'endAt' => new \DateTime('-1 years'),
+        ]);
+        TalkFactory::createMany(2);
+        SubmitFactory::createOne([
+            'conference' => ConferenceFactory::find(1),
+            'talk' => TalkFactory::find(1),
+            'status' => Submit::STATUS_ACCEPTED,
+        ]);
+        SubmitFactory::createOne([
+            'conference' => ConferenceFactory::find(2),
+            'talk' => TalkFactory::find(2),
+            'status' => Submit::STATUS_ACCEPTED,
+        ]);
 
-        $submitRepository = static::$container->get(SubmitRepository::class);
-        $submitRepository->updateDoneSubmits();
+        static::$container->get(SubmitRepository::class)->updateDoneSubmits();
 
-        $today = new \DateTime();
-        $today->setTime(0, 0);
-
-        $pastAcceptedSubmitsCount = $submitRepository->createQueryBuilder('s')
-            ->select('count(s)')
-            ->innerJoin('s.conference', 'c')
-            ->andWhere('s.status = :status_accepted')
-            ->andWhere('c.endAt < :today')
-            ->setParameters([
-                'status_accepted' => Submit::STATUS_ACCEPTED,
-                'today' => $today,
-            ])
-            ->getQuery()
-            ->getSingleScalarResult()
-        ;
-
-        self::assertSame(0, $pastAcceptedSubmitsCount);
+        self::assertCount(0, SubmitFactory::findBy(['status' => Submit::STATUS_ACCEPTED]));
+        self::assertCount(2, SubmitFactory::findBy(['status' => Submit::STATUS_DONE]));
     }
 }

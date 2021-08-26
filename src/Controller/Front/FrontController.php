@@ -9,7 +9,7 @@
  * please view the LICENSE file that was distributed with this source code.
  */
 
-namespace App\Controller;
+namespace App\Controller\Front;
 
 use App\Entity\Conference;
 use App\Repository\ConferenceRepository;
