@@ -38,6 +38,17 @@ class ConferenceRepository extends ServiceEntityRepository
         ;
     }
 
+    /** @return array<Conference> */
+    public function getUserFutureConferences(): array
+    {
+        return $this->getFutureConferencesQueryBuilder()
+            ->andWhere('c.featured = :false')
+            ->setParameter('false', false)
+            ->getQuery()
+            ->execute()
+        ;
+    }
+
     /** @return array<mixed> */
     public function findEndingCfps(): array
     {
@@ -183,6 +194,22 @@ class ConferenceRepository extends ServiceEntityRepository
             ->andWhere('p.participant = :user')
             ->andWhere('c.startAt < :today')
             ->setParameter('user', $user)
+            ->setParameter('today', $today)
+            ->getQuery()
+            ->execute()
+        ;
+    }
+
+    /** @return array<Conference> */
+    public function findFeaturedConferences(): array
+    {
+        $today = new \DateTime();
+        $today->setTime(0, 0);
+
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.featured = :true')
+            ->setParameter('true', true)
+            ->andWhere('c.startAt > :today')
             ->setParameter('today', $today)
             ->getQuery()
             ->execute()

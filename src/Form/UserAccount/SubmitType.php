@@ -9,16 +9,16 @@
  * please view the LICENSE file that was distributed with this source code.
  */
 
-namespace App\Form;
+namespace App\Form\UserAccount;
 
-use App\Entity\Participation;
+use App\Entity\Talk;
+use App\Entity\User;
 use App\Repository\ConferenceRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 
-class ParticipationType extends AbstractType
+class SubmitType extends AbstractType
 {
     public function __construct(
         private ConferenceRepository $conferenceRepository,
@@ -29,17 +29,12 @@ class ParticipationType extends AbstractType
     {
         $builder
             ->add('conference', ConferenceDatalistType::class)
-            ->add('asSpeaker', CheckboxType::class, [
-                'required' => false,
+            ->add('users', EntityType::class, [
+                'class' => User::class,
+                'multiple' => true,
             ])
-            ->add('transportStatus', ChoiceType::class, [
-                'choices' => Participation::STATUSES,
-            ])
-            ->add('hotelStatus', ChoiceType::class, [
-                'choices' => Participation::STATUSES,
-            ])
-            ->add('conferenceTicketStatus', ChoiceType::class, [
-                'choices' => Participation::STATUSES,
+            ->add('talk', EntityType::class, [
+                'class' => Talk::class,
             ])
         ;
     }

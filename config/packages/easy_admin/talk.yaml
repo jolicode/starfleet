@@ -25,12 +25,12 @@ easy_admin:
                     2: { property: 'title', type: 'text' }
                     3: { property: 'intro', type: 'textarea' }
                     4: { type: 'group', columns: 6, icon: 'send', label: 'Submits' }
-                    5: { property: submits, type: collection, type_options: { entry_type: App\Form\TalkSubmitType } }
+                    5: { property: submits, type: collection, type_options: { entry_type: App\Form\EasyAdmin\TalkSubmitType } }
 
             new:
                 fields:
                     <<: *talkFields
                     4: { type: 'group', columns: 6, icon: 'send', label: 'Publication' }
                     5: { property: 'conferences', type: 'easyadmin_autocomplete', type_options: { mapped: false, class: App\Entity\Conference, multiple: true } }
-                    6: { property: authors, type: App\Form\TalkUserType, type_options: { mapped: false, required: true } }
+                    6: { property: authors, type: App\Form\EasyAdmin\TalkUserType, type_options: { mapped: false, required: true } }
 

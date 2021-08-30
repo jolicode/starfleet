@@ -12,8 +12,8 @@
 namespace App\Controller\User;
 
 use App\Entity\Talk;
-use App\Form\EditTalkType;
-use App\Form\NewTalkType;
+use App\Form\UserAccount\EditTalkType;
+use App\Form\UserAccount\NewTalkType;
 use App\Repository\TalkRepository;
 use App\UX\UserChartBuilder;
 use Doctrine\ORM\EntityManagerInterface;

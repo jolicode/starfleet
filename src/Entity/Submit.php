@@ -11,6 +11,7 @@
 
 namespace App\Entity;
 
+use App\Validator\Constraints as CustomAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -71,6 +72,8 @@ class Submit
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Conference", inversedBy="submits")
      * @ORM\JoinColumn(onDelete="CASCADE")
+     *
+     * @CustomAssert\NotEndedConference()
      */
     private Conference $conference;
 
