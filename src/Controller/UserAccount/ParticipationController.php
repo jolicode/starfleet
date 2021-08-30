@@ -9,7 +9,7 @@
  * please view the LICENSE file that was distributed with this source code.
  */
 
-namespace App\Controller\User;
+namespace App\Controller\UserAccount;
 
 use App\Entity\Conference;
 use App\Entity\Participation;
@@ -28,7 +28,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Workflow\Exception\TransitionException;
 use Symfony\Component\Workflow\StateMachine;
 
-class UserParticipationController extends AbstractController
+class ParticipationController extends AbstractController
 {
     public function __construct(
         private ParticipationRepository $participationRepository,

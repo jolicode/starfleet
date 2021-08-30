@@ -9,7 +9,7 @@
  * please view the LICENSE file that was distributed with this source code.
  */
 
-namespace App\Controller;
+namespace App\Controller\Slack;
 
 use App\Notifiers\Slack\SlackNotifier;
 use App\Notifiers\Slack\SlackRequestChecker;
