@@ -9,7 +9,7 @@
  * please view the LICENSE file that was distributed with this source code.
  */
 
-namespace App\Tests\Controller\User;
+namespace App\Tests\Controller\UserAccount;
 
 use App\Entity\Submit;
 use App\Factory\ConferenceFactory;
@@ -17,7 +17,7 @@ use App\Factory\SubmitFactory;
 use App\Factory\TalkFactory;
 use App\Factory\UserFactory;
 
-class UserSubmitControllerTest extends BaseFactories
+class SubmitControllerTest extends BaseFactories
 {
     /** @dataProvider provideRoutes */
     public function testAllPagesLoad(string $route)

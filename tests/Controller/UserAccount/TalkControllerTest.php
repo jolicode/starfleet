@@ -9,14 +9,14 @@
  * please view the LICENSE file that was distributed with this source code.
  */
 
-namespace App\Tests\Controller\User;
+namespace App\Tests\Controller\UserAccount;
 
 use App\Factory\ConferenceFactory;
 use App\Factory\SubmitFactory;
 use App\Factory\TalkFactory;
 use App\Factory\UserFactory;
 
-class UserTalkControllerTest extends BaseFactories
+class TalkControllerTest extends BaseFactories
 {
     /** @dataProvider provideRoutes */
     public function testPagesLoad(string $route)

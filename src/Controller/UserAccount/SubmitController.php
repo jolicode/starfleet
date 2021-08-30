@@ -9,7 +9,7 @@
  * please view the LICENSE file that was distributed with this source code.
  */
 
-namespace App\Controller\User;
+namespace App\Controller\UserAccount;
 
 use App\Entity\Conference;
 use App\Entity\Submit;
@@ -25,7 +25,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
-class UserSubmitController extends AbstractController
+class SubmitController extends AbstractController
 {
     public function __construct(
         private SubmitRepository $submitRepository,

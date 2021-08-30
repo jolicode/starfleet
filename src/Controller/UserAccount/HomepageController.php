@@ -9,7 +9,7 @@
  * please view the LICENSE file that was distributed with this source code.
  */
 
-namespace App\Controller\User;
+namespace App\Controller\UserAccount;
 
 use App\Entity\Submit;
 use App\Repository\ConferenceRepository;
@@ -20,7 +20,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class UserController extends AbstractController
+class HomepageController extends AbstractController
 {
     public function __construct(
         private ConferenceRepository $conferenceRepository,

@@ -9,9 +9,9 @@
  * please view the LICENSE file that was distributed with this source code.
  */
 
-namespace App\Tests\Controller\User;
+namespace App\Tests\Controller\UserAccount;
 
-class UserControllerTest extends BaseFactories
+class HomepageControllerTest extends BaseFactories
 {
     public function testUserPageForUsers()
     {
