@@ -11,24 +11,17 @@
 
 namespace App\Tests\Controller\User;
 
-use App\Entity\User;
-use App\Repository\ConferenceRepository;
-use App\Repository\SubmitRepository;
-use App\Repository\TalkRepository;
-use App\Repository\UserRepository;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use App\Factory\ConferenceFactory;
+use App\Factory\SubmitFactory;
+use App\Factory\TalkFactory;
+use App\Factory\UserFactory;
 
-class UserTalkControllerTest extends WebTestCase
+class UserTalkControllerTest extends BaseFactories
 {
-    private ?User $user = null;
-
     /** @dataProvider provideRoutes */
     public function testPagesLoad(string $route)
     {
-        $client = $this->createClient();
-        $client->loginUser($this->getUser());
-        $client->request('GET', $route);
-
+        $this->getClient()->request('GET', $route);
         self::assertResponseIsSuccessful();
     }
 
@@ -40,68 +33,50 @@ class UserTalkControllerTest extends WebTestCase
 
     public function testTalksPageWork()
     {
-        $client = $this->createClient();
-        $talkRepository = static::$container->get(TalkRepository::class);
+        $this->createTestData();
+        $crawler = $this->getClient()->request('GET', '/user/talks');
 
-        $client->loginUser($this->getUser());
-        $crawler = $client->request('GET', '/user/talks');
-
-        $talks = $talkRepository->findUserTalks($this->getUser());
-
-        if (\count($talks) < 4) {
-            self::assertCount(\count($talks), $crawler->filter('#all-talks-block .card'));
-        } else {
-            self::assertSelectorExists('#all-talks-block a', '...Show more');
-            self::assertCount(3, $crawler->filter('#all-talks-block .card'));
-        }
+        self::assertSelectorExists('#all-talks-block a', '...Show more');
+        self::assertCount(3, $crawler->filter('#all-talks-block .card'));
     }
 
     public function testTalksFormWork()
     {
-        $client = $this->createClient();
-        $talkRepository = static::$container->get(TalkRepository::class);
-
-        $client->loginUser($this->getUser());
-        $client->request('GET', '/user/talks');
-
-        $talks = $talkRepository->findUserTalks($this->getUser());
-        $preFormTalksCount = \count($talks);
-
-        $conferenceRepository = static::$container->get(ConferenceRepository::class);
-
-        $client->submitForm('submit_talk', [
-            'new_talk[title]' => 'My Amazing Test Title',
-            'new_talk[intro]' => 'Bewildering intro',
-            'new_talk[conference]' => $conferenceRepository->find(1)->getName(),
-            'new_talk[users]' => [$this->getUser()->getId()],
+        $conference = ConferenceFactory::createOne([
+            'name' => 'Future Conference',
+            'startAt' => new \DateTime('+10 days'),
+            'endAt' => new \DateTime('+12 days'),
         ]);
 
-        self::assertCount(++$preFormTalksCount, $talkRepository->findUserTalks($this->getUser()));
+        $this->getClient()->request('GET', '/user/talks');
+        $this->getClient()->submitForm('submit_talk', [
+            'new_talk[title]' => 'My Amazing Test Title',
+            'new_talk[intro]' => 'Bewildering intro',
+            'new_talk[conference]' => $conference->getName(),
+            'new_talk[users]' => $this->getTestUser()->getId(),
+        ]);
+
+        self::assertCount(1, ConferenceFactory::all());
     }
 
     public function testEditTalkPageWork()
     {
-        $client = $this->createClient();
-        $client->followRedirects();
-        $client->loginUser($this->getUser());
+        $talk = TalkFactory::createOne([
+            'title' => 'Old Title',
+            'intro' => 'Old Intro',
+        ]);
+        UserFactory::createOne();
+        SubmitFactory::createOne([
+            'users' => [$this->getTestUser()],
+            'talk' => $talk,
+            'conference' => ConferenceFactory::createOne(),
+        ]);
 
-        $submitRepository = static::$container->get(SubmitRepository::class);
-        $submit = $submitRepository->findUserSubmits($this->getUser())[0];
-        $talk = $submit->getTalk();
-
-        $client->request('GET', sprintf('/user/talk-edit/%d', $talk->getId()));
-        self::assertResponseIsSuccessful();
-
-        $talk->setTitle('My old boring title');
-        $talk->setIntro('My old inaccurate intro');
-
-        $client->submitForm('edit_talk', [
+        $this->getClient()->request('GET', sprintf('/user/talk-edit/%d', $talk->getId()));
+        $this->getClient()->submitForm('edit_talk', [
             'edit_talk[title]' => 'My new incredible title',
             'edit_talk[intro]' => 'My new stunning intro',
         ]);
-
-        $talkRepository = static::$container->get(TalkRepository::class);
-        $talk = $talkRepository->find($talk->getId());
 
         self::assertSame('My new incredible title', $talk->getTitle());
         self::assertSame('My new stunning intro', $talk->getIntro());
@@ -110,17 +85,9 @@ class UserTalkControllerTest extends WebTestCase
     /** @dataProvider provideRoutes */
     public function testAllEditTalkLinksWork(string $route)
     {
-        $client = $this->createClient();
-        $client->followRedirects();
-        $client->loginUser($this->getUser());
-        $crawler = $client->request('GET', $route);
-
-        $form = $crawler
-            ->filter('form.action-edit')
-            ->first()
-            ->form()
-        ;
-        $client->submit($form);
+        $this->createTestData();
+        $this->getClient()->request('GET', $route);
+        $this->getClient()->submitForm('Edit');
 
         self::assertResponseIsSuccessful();
     }
@@ -128,13 +95,9 @@ class UserTalkControllerTest extends WebTestCase
     /** @dataProvider provideButtonsText */
     public function testNavLinksWork(string $buttonText)
     {
-        $client = $this->createClient();
-        $client->followRedirects();
-        $client->loginUser($this->getUser());
-
         foreach ($this->provideRoutes() as $route) {
-            $crawler = $client->request('GET', $route[0]);
-            $client->click($crawler->selectLink($buttonText)->link());
+            $crawler = $this->getClient()->request('GET', $route[0]);
+            $this->getClient()->click($crawler->selectLink($buttonText)->link());
 
             self::assertResponseIsSuccessful();
         }
@@ -148,13 +111,17 @@ class UserTalkControllerTest extends WebTestCase
         yield ['Edit Profile'];
     }
 
-    private function getUser(): User
+    private function createTestData()
     {
-        if (null === $this->user) {
-            $userRepository = static::$container->get(UserRepository::class);
-            $this->user = $userRepository->findOneBy(['name' => 'User']);
-        }
+        UserFactory::createMany(2);
+        ConferenceFactory::createMany(5);
+        TalkFactory::createMany(10);
 
-        return $this->user;
+        foreach (range(1, 4) as $id) {
+            SubmitFactory::createOne([
+                'users' => [$this->getTestUser()],
+                'talk' => TalkFactory::find($id),
+            ]);
+        }
     }
 }

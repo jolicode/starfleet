@@ -12,98 +12,63 @@
 namespace App\Tests\Controller\User;
 
 use App\Entity\Participation;
-use App\Entity\User;
+use App\Enum\Workflow\Transition\Participation as TransitionParticipation;
 use App\Factory\ConferenceFactory;
 use App\Factory\ParticipationFactory;
 use App\Repository\ParticipationRepository;
-use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DomCrawler\Crawler;
-use Zenstruck\Foundry\Test\Factories;
 
-class UserParticipationControllerTest extends WebTestCase
+class UserParticipationControllerTest extends BaseFactories
 {
-    use Factories;
-
-    private ?User $user = null;
-
     /** @dataProvider provideRoutes */
     public function testAllPagesLoad(string $route)
     {
-        $client = $this->createClient();
-        $client->loginUser($this->getUser());
-        $client->request('GET', $route);
+        $this->getClient()->request('GET', $route);
 
         self::assertResponseIsSuccessful();
     }
 
     public function testParticipationsPageWork()
     {
-        $client = $this->createClient();
-        $participationRepository = static::$container->get(ParticipationRepository::class);
+        $this->createTestData();
 
-        $client->loginUser($this->getUser());
-        $crawler = $client->request('GET', '/user/participations');
+        $crawler = $this->getClient()->request('GET', '/user/participations');
 
-        $participationsArray = [
-            'pending' => $participationRepository->findPendingParticipationsByUser($this->getUser()),
-            'past' => $participationRepository->findPastParticipationsByUser($this->getUser()),
-            'rejected' => $participationRepository->findRejectedParticipationsByUser($this->getUser()),
-            'future' => $participationRepository->findFutureParticipationsByUser($this->getUser()),
-        ];
+        self::assertCount(2, $crawler->filter('#pending-participations-block .card'));
+        self::assertCount(1, $crawler->filter('#rejected-participations-block .card'));
+        self::assertCount(2, $crawler->filter('#future-participations-block .card'));
 
-        foreach ($participationsArray as $state => $participations) {
-            if (\count($participations) < 4) {
-                self::assertCount(\count($participations), $crawler->filter("#{$state}-participations-block .card"));
-            } else {
-                self::assertSelectorExists("#{$state}-participations-block a", '...Show more');
-                self::assertCount(3, $crawler->filter("#{$state}-participations-block .card"));
-            }
-        }
+        self::assertSelectorExists('#past-participations-block a', '...Show more');
+        self::assertCount(3, $crawler->filter('#past-participations-block .card'));
     }
 
     public function testParticipationsFormWork()
     {
-        $client = $this->createClient();
-        $client->loginUser($this->getUser());
-        $client->request('GET', '/user/participations');
+        $conference = ConferenceFactory::createOne([
+            'name' => 'Future Conference',
+            'startAt' => new \DateTime('+10 days'),
+            'endAt' => new \DateTime('+12 days'),
+        ]);
 
-        $pendingParticipations = ParticipationFactory::findBy(['participant' => $this->getUser()]);
-        $preFormParticipationCount = \count($pendingParticipations);
-
-        $conference = ConferenceFactory::new()
-            ->create([
-                'name' => 'Future Conference',
-                'participations' => [],
-                'startAt' => new \DateTime('+10 days'),
-                'endAt' => new \DateTime('+12 days'),
-            ])
-        ;
-
-        $client->submitForm('submit_participation', [
+        $this->getClient()->request('GET', '/user/participations');
+        $this->getClient()->submitForm('submit_participation', [
             'participation[conference]' => $conference->getName(),
             'participation[transportStatus]' => Participation::STATUS_NOT_NEEDED,
             'participation[hotelStatus]' => Participation::STATUS_NOT_NEEDED,
             'participation[conferenceTicketStatus]' => Participation::STATUS_NOT_NEEDED,
         ]);
 
-        self::assertCount(++$preFormParticipationCount, ParticipationFactory::findBy(['participant' => $this->getUser()]));
+        self::assertCount(1, ParticipationFactory::all());
+        self::assertSame($this->getTestUser(), ParticipationFactory::find(1)->getParticipant());
     }
 
     public function testEditParticipationPageWork()
     {
-        $client = $this->createClient();
-        $client->followRedirects();
-        $client->loginUser($this->getUser());
-
-        $conference = ConferenceFactory::new()
-            ->create(['name' => 'My Test Conference'])
-        ;
-        $participation = ParticipationFactory::new()
-            ->create([
+        $conference = ConferenceFactory::createOne(['name' => 'My Test Conference']);
+        $participation = ParticipationFactory::createOne([
                 'conference' => $conference,
-                'participant' => $this->getUser(),
+                'participant' => $this->getTestUser(),
                 'transportStatus' => Participation::STATUS_NOT_NEEDED,
                 'hotelStatus' => Participation::STATUS_NOT_NEEDED,
                 'conferenceTicketStatus' => Participation::STATUS_NOT_NEEDED,
@@ -111,17 +76,15 @@ class UserParticipationControllerTest extends WebTestCase
         ;
         $conference->addParticipation($participation->object());
 
-        $client->request('GET', sprintf('/user/participation-edit/%d', $participation->getId()));
+        $this->getClient()->request('GET', sprintf('/user/participation-edit/%d', $participation->getId()));
         self::assertResponseIsSuccessful();
 
-        $client->submitForm('edit_participation', [
+        $this->getClient()->submitForm('edit_participation', [
             'participation[conference]' => $conference->getName(),
             'participation[transportStatus]' => Participation::STATUS_NEEDED,
             'participation[hotelStatus]' => Participation::STATUS_NOT_NEEDED,
             'participation[conferenceTicketStatus]' => Participation::STATUS_BOOKED,
         ]);
-
-        $participation->refresh()->save();
 
         self::assertSame(Participation::STATUS_NEEDED, $participation->object()->getTransportStatus());
         self::assertSame(Participation::STATUS_NOT_NEEDED, $participation->object()->getHotelStatus());
@@ -131,17 +94,10 @@ class UserParticipationControllerTest extends WebTestCase
     /** @dataProvider provideActionRoutes */
     public function testAllEditParticipationLinksWork(string $route)
     {
-        $client = $this->createClient();
-        $client->followRedirects();
-        $client->loginUser($this->getUser());
-        $crawler = $client->request('GET', $route);
+        $this->createTestData();
 
-        $form = $crawler
-            ->filter('form.action-edit')
-            ->first()
-            ->form()
-        ;
-        $client->submit($form);
+        $this->getClient()->request('GET', $route);
+        $this->getClient()->submitForm('Edit Participation');
 
         self::assertResponseIsSuccessful();
     }
@@ -149,26 +105,18 @@ class UserParticipationControllerTest extends WebTestCase
     /** @dataProvider provideActionRoutes */
     public function testAllCancelParticipationLinksWork(string $route)
     {
-        $client = $this->createClient();
-        $client->loginUser($this->getUser());
-        $client->followRedirects();
-        $crawler = $client->request('GET', $route);
+        $this->createTestData();
+        $crawler = $this->getClient()->request('GET', $route);
 
         if ('/user/participations' === $route) {
-            $this->mainPageCancelLink($client, $crawler);
+            $this->mainPageCancelLink($this->getClient(), $crawler);
 
             return;
         }
 
         $preCancelCount = \count($crawler->filter('form.action-cancel'));
-
-        $form = $crawler
-            ->filter('form.action-cancel')
-            ->first()
-            ->form()
-        ;
-        $client->submit($form);
-        $crawler = $client->request('GET', $route);
+        $this->getClient()->submitForm('Cancel Participation');
+        $crawler = $this->getClient()->request('GET', $route);
 
         self::assertCount(--$preCancelCount, $crawler->filter('form.action-cancel'));
     }
@@ -192,13 +140,9 @@ class UserParticipationControllerTest extends WebTestCase
     /** @dataProvider provideButtonsText */
     public function testNavLinksWork(string $buttonText)
     {
-        $client = $this->createClient();
-        $client->followRedirects();
-        $client->loginUser($this->getUser());
-
         foreach ($this->provideRoutes() as $route) {
-            $crawler = $client->request('GET', $route[0]);
-            $client->click($crawler->selectLink($buttonText)->link());
+            $crawler = $this->getClient()->request('GET', $route[0]);
+            $this->getClient()->click($crawler->selectLink($buttonText)->link());
 
             self::assertResponseIsSuccessful();
         }
@@ -212,18 +156,16 @@ class UserParticipationControllerTest extends WebTestCase
         yield ['Edit Profile'];
     }
 
-    public function testCancelCsrfProtection()
+    public function testParticipationCancelCsrfProtection()
     {
-        $client = $this->createClient();
-        $client->followRedirects();
-        $client->loginUser($this->getUser());
+        $participation = ParticipationFactory::createOne([
+            'participant' => $this->getTestUser(),
+            'conference' => ConferenceFactory::createOne(),
+        ]);
 
-        $submitRepository = static::$container->get(ParticipationRepository::class);
-        $submit = $submitRepository->findOneBy(['participant' => $this->getUser()]);
-
-        $client->request('POST', sprintf(
+        $this->getClient()->request('POST', sprintf(
             '/user/participation-cancel/%d',
-            $submit->getId(),
+            $participation->getId(),
         ));
 
         self::assertResponseStatusCodeSame(403);
@@ -232,7 +174,7 @@ class UserParticipationControllerTest extends WebTestCase
     private function mainPageCancelLink(KernelBrowser $client, Crawler $crawler)
     {
         $participationRepository = static::$container->get(ParticipationRepository::class);
-        $participations = $participationRepository->findPendingParticipationsByUser($this->getUser());
+        $participations = $participationRepository->findPendingParticipationsByUser($this->getTestUser());
         $preCancelCount = \count($participations);
 
         $form = $crawler
@@ -242,16 +184,42 @@ class UserParticipationControllerTest extends WebTestCase
         ;
         $client->click($form);
 
-        self::assertCount(--$preCancelCount, $participationRepository->findPendingParticipationsByUser($this->getUser()));
+        self::assertCount(--$preCancelCount, $participationRepository->findPendingParticipationsByUser($this->getTestUser()));
     }
 
-    private function getUser(): User
+    private function createTestData()
     {
-        if (null === $this->user) {
-            $userRepository = static::$container->get(UserRepository::class);
-            $this->user = $userRepository->findOneBy(['name' => 'User']);
-        }
-
-        return $this->user;
+        ParticipationFactory::createMany(2, [
+            'participant' => $this->getTestUser(),
+            'marking' => TransitionParticipation::PENDING,
+            'conference' => ConferenceFactory::createOne([
+                'startAt' => new \DateTime('+1 years'),
+                'endAt' => new \DateTime('+1 years'),
+            ]),
+        ]);
+        ParticipationFactory::createMany(1, [
+            'participant' => $this->getTestUser(),
+            'marking' => TransitionParticipation::REJECTED,
+            'conference' => ConferenceFactory::createOne([
+                'startAt' => new \DateTime('+1 years'),
+                'endAt' => new \DateTime('+1 years'),
+            ]),
+        ]);
+        ParticipationFactory::createMany(5, [
+            'participant' => $this->getTestUser(),
+            'marking' => TransitionParticipation::ACCEPTED,
+            'conference' => ConferenceFactory::createOne([
+                'startAt' => new \DateTime('-1 years'),
+                'endAt' => new \DateTime('-1 years'),
+            ]),
+        ]);
+        ParticipationFactory::createMany(2, [
+            'participant' => $this->getTestUser(),
+            'marking' => TransitionParticipation::ACCEPTED,
+            'conference' => ConferenceFactory::createOne([
+                'startAt' => new \DateTime('+1 years'),
+                'endAt' => new \DateTime('+1 years'),
+            ]),
+        ]);
     }
 }
