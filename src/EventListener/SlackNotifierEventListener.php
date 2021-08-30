@@ -12,10 +12,10 @@
 namespace App\EventListener;
 
 use App\Entity\Submit;
-use App\Event\DailyNotificationEvent;
 use App\Event\NewTalkSubmittedEvent;
-use App\Event\SubmitStatusChangedEvent;
+use App\Event\DailyNotificationEvent;
 use App\Notifiers\Slack\SlackNotifier;
+use App\Event\SubmitStatusChangedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class SlackNotifierEventListener implements EventSubscriberInterface

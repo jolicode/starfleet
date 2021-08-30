@@ -11,12 +11,13 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Notifications\Notification;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Table(name="users")
@@ -122,12 +123,20 @@ class User implements UserInterface, \Serializable
      */
     private ?string $password = null;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Notification::class, mappedBy="targetUser")
+     *
+     * @var Collection<Notification> $notifications
+     */
+    private Collection $notifications;
+
     public function __construct()
     {
         $this->submits = new ArrayCollection();
         $this->participations = new ArrayCollection();
         // guarantee every user at least has ROLE_USER
         $this->roles = ['ROLE_USER'];
+        $this->notifications = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -407,5 +416,30 @@ class User implements UserInterface, \Serializable
             $this->googleId,
             $this->githubId
         ) = unserialize($serialized);
+    }
+
+    /**
+     * @return Collection|Notification[]
+     */
+    public function getNotifications(): Collection
+    {
+        return $this->notifications;
+    }
+
+    public function addNotification(Notification $notification): self
+    {
+        if (!$this->notifications->contains($notification)) {
+            $this->notifications[] = $notification;
+            $notification->setTargetUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNotification(Notification $notification): self
+    {
+        $this->notifications->removeElement($notification);
+
+        return $this;
     }
 }

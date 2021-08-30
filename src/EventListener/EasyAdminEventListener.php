@@ -11,14 +11,14 @@
 
 namespace App\EventListener;
 
-use App\Entity\Submit;
 use App\Entity\User;
+use App\Entity\Submit;
 use App\Event\SubmitStatusChangedEvent;
+use Symfony\Component\Security\Core\Security;
+use Symfony\Component\EventDispatcher\GenericEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\EasyAdminEvents;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\EventDispatcher\GenericEvent;
-use Symfony\Component\Security\Core\Security;
 
 class EasyAdminEventListener implements EventSubscriberInterface
 {

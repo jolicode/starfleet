@@ -13,6 +13,7 @@ namespace App\Controller\UserAccount;
 
 use App\Entity\Conference;
 use App\Entity\Submit;
+use App\Event\Notification\NewSubmitWithAnotherUserEvent;
 use App\Form\UserAccount\SubmitType;
 use App\Repository\ConferenceRepository;
 use App\Repository\SubmitRepository;
@@ -20,6 +21,7 @@ use App\UX\UserChartBuilder;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -32,6 +34,7 @@ class SubmitController extends AbstractController
         private ConferenceRepository $conferenceRepository,
         private UserChartBuilder $userChartBuilder,
         private EntityManagerInterface $em,
+        private EventDispatcherInterface $eventDispatcher,
     ) {
     }
 
@@ -49,6 +52,15 @@ class SubmitController extends AbstractController
             $this->em->flush();
 
             $this->addFlash('info', 'The submit has been saved.');
+
+            if (\count($submit->getUsers()) > 1) {
+                foreach ($submit->getUsers() as $user) {
+                    if ($user === $this->getUser()) {
+                        continue;
+                    }
+                    $this->eventDispatcher->dispatch(new NewSubmitWithAnotherUserEvent($submit, $this->getUser(), $user));
+                }
+            }
 
             return $this->redirectToRoute('user_submits');
         }
