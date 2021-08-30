@@ -9,7 +9,7 @@
  * please view the LICENSE file that was distributed with this source code.
  */
 
-namespace App\Controller\User;
+namespace App\Controller\UserAccount;
 
 use App\Form\UserAccount\UserProfileType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class UserProfileController extends AbstractController
+class ProfileController extends AbstractController
 {
     public function __construct(
         private EntityManagerInterface $em,

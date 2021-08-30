@@ -9,7 +9,7 @@
  * please view the LICENSE file that was distributed with this source code.
  */
 
-namespace App\Tests\Controller\User;
+namespace App\Tests\Controller\UserAccount;
 
 use App\Entity\Participation;
 use App\Enum\Workflow\Transition\Participation as TransitionParticipation;
@@ -19,7 +19,7 @@ use App\Repository\ParticipationRepository;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Component\DomCrawler\Crawler;
 
-class UserParticipationControllerTest extends BaseFactories
+class ParticipationControllerTest extends BaseFactories
 {
     /** @dataProvider provideRoutes */
     public function testAllPagesLoad(string $route)

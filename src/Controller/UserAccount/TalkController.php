@@ -9,7 +9,7 @@
  * please view the LICENSE file that was distributed with this source code.
  */
 
-namespace App\Controller\User;
+namespace App\Controller\UserAccount;
 
 use App\Entity\Talk;
 use App\Form\UserAccount\EditTalkType;
@@ -24,7 +24,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Twig\Markup;
 
-class UserTalkController extends AbstractController
+class TalkController extends AbstractController
 {
     public function __construct(
         private UserChartBuilder $userChartBuilder,
