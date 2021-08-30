@@ -10,8 +10,8 @@
             <h3 class="card-header text-primary">
                 {{ talk.title }}
             </h3>
-            <div class="lead card-body">
-                <div class="card-text indent-50">{{ talk.intro }}</div>
+            <div class="card-body">
+                <div class="card-text">{{ talk.intro }}</div>
                 <div class="text-center mt-4">
                     <a href="{{ path('edit_talk', { id: talk.id }) }}">
                         <div class="btn bg-edit text-white">

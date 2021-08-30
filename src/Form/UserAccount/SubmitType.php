@@ -13,15 +13,17 @@ namespace App\Form\UserAccount;
 
 use App\Entity\Talk;
 use App\Entity\User;
-use App\Repository\ConferenceRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Security\Core\Security;
 
 class SubmitType extends AbstractType
 {
     public function __construct(
-        private ConferenceRepository $conferenceRepository,
+        private Security $security,
     ) {
     }
 
@@ -36,6 +38,14 @@ class SubmitType extends AbstractType
             ->add('talk', EntityType::class, [
                 'class' => Talk::class,
             ])
+            ->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
+                if (!$event->getForm()->isValid()) {
+                    return;
+                }
+
+                $submit = $event->getData();
+                $submit->setSubmittedBy($this->security->getUser());
+            })
         ;
     }
 }

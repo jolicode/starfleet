@@ -12,30 +12,34 @@
 namespace App\EventListener;
 
 use App\Entity\Submit;
+use App\Entity\User;
 use App\Event\SubmitStatusChangedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\EasyAdminEvents;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
+use Symfony\Component\Security\Core\Security;
 
 class EasyAdminEventListener implements EventSubscriberInterface
 {
     public function __construct(
         private EventDispatcherInterface $eventDispatcher,
+        private Security $security,
     ) {
     }
 
     public static function getSubscribedEvents()
     {
         return [
-            EasyAdminEvents::POST_UPDATE => 'onUpdate',
+            EasyAdminEvents::POST_UPDATE => 'onPostUpdate',
+            EasyAdminEvents::PRE_PERSIST => 'onPrePersist',
         ];
     }
 
     /**
      * @param GenericEvent<EasyAdminEvents> $event
      */
-    public function onUpdate(GenericEvent $event): void
+    public function onPostUpdate(GenericEvent $event): void
     {
         $entity = $event->getSubject();
         if ($entity instanceof Submit) {
@@ -43,6 +47,16 @@ class EasyAdminEventListener implements EventSubscriberInterface
                 $this->eventDispatcher->dispatch(new SubmitStatusChangedEvent($entity));
                 $entity->resetStatusChanged();
             }
+        }
+    }
+
+    public function onPrePersist(GenericEvent $event): void
+    {
+        $entity = $event->getSubject();
+        if ($entity instanceof Submit) {
+            /** @var User $user */
+            $user = $this->security->getUser();
+            $entity->setSubmittedBy($user);
         }
     }
 }

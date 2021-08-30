@@ -44,6 +44,7 @@ class ConferenceRepository extends ServiceEntityRepository
         return $this->getFutureConferencesQueryBuilder()
             ->andWhere('c.featured = :false')
             ->setParameter('false', false)
+            ->orderBy('c.startAt', 'ASC')
             ->getQuery()
             ->execute()
         ;

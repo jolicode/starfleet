@@ -16,6 +16,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Table(name="submit")
@@ -65,6 +66,12 @@ class Submit
      * @ORM\ManyToMany(targetEntity="App\Entity\User", inversedBy="submits")
      * @ORM\JoinTable(name="submits_users")
      *
+     * @CustomAssert\MustBeByUser(groups={"user_account"})
+     * @Assert\Count(
+     *      min = 1,
+     *      minMessage = "You must add at least one user"
+     * )
+     *
      * @var Collection<User>
      */
     private Collection $users;
@@ -84,6 +91,11 @@ class Submit
     private Talk $talk;
 
     private bool $statusChanged = false;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class)
+     */
+    private ?User $submittedBy;
 
     public function __construct()
     {
@@ -189,5 +201,17 @@ class Submit
     public function resetStatusChanged(): void
     {
         $this->statusChanged = false;
+    }
+
+    public function getSubmittedBy(): User
+    {
+        return $this->submittedBy;
+    }
+
+    public function setSubmittedBy(User $submittedBy): self
+    {
+        $this->submittedBy = $submittedBy;
+
+        return $this;
     }
 }

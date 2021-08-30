@@ -37,7 +37,7 @@ class SubmitRepository extends ServiceEntityRepository
             ->andWhere('s.status = :status')
             ->setParameter('status', $status)
             ->innerJoin('s.conference', 'c')
-            ->orderBy('s.createdAt', 'DESC')
+            ->orderBy('c.id', 'DESC')
             ->getQuery()
             ->execute()
         ;
