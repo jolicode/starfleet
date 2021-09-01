@@ -2,8 +2,6 @@
 
 namespace App\Twig;
 
-use App\Entity\Submit;
-use App\Entity\User;
 use Symfony\Component\Serializer\SerializerInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;

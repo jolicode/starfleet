@@ -16,6 +16,7 @@ use App\Entity\Notifications\Notification;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -46,6 +47,8 @@ class User implements UserInterface, \Serializable
 
     /**
      * @ORM\Column(name="name", type="string", length=255, nullable=true)
+     *
+     * @Groups({"submitAddedEvent", "submitStatusChangedEvent"})
      */
     private ?string $name = null;
 
@@ -54,6 +57,8 @@ class User implements UserInterface, \Serializable
      *
      * @Assert\NotBlank()
      * @Assert\Email()
+     *
+     * @Groups({"submitAddedEvent", "submitStatusChangedEvent"})
      */
     private string $email;
 

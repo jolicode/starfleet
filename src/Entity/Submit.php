@@ -61,7 +61,7 @@ class Submit
     /**
      * @ORM\Column(name="status", type="string", length=255)
      *
-     * @Groups("submitStatusChangedEvent")
+     * @Groups({"submitStatusChangedEvent", "submitAddedEvent"})
      */
     private string $status = self::STATUS_PENDING;
 
@@ -75,6 +75,8 @@ class Submit
      *      minMessage = "You must add at least one user"
      * )
      *
+     * @Groups({"submitAddedEvent"})
+     *
      *  @var Collection<User>
      */
     private Collection $users;
@@ -85,7 +87,7 @@ class Submit
      *
      * @CustomAssert\NotEndedConference()
      *
-     * @Groups("submitStatusChangedEvent")
+     * @Groups({"submitStatusChangedEvent", "submitAddedEvent"})
      */
     private Conference $conference;
 
@@ -93,7 +95,7 @@ class Submit
      * @ORM\ManyToOne(targetEntity="App\Entity\Talk", inversedBy="submits", cascade={"persist"})
      * @ORM\JoinColumn(onDelete="CASCADE")
      *
-     * @Groups("submitStatusChangedEvent")
+     * @Groups({"submitStatusChangedEvent", "submitAddedEvent"})
      */
     private Talk $talk;
 
@@ -129,8 +131,10 @@ class Submit
 
     public function setStatus(string $status): self
     {
+        if ($this->status !== $status) {
+            $this->statusChanged = true;
+        }
         $this->status = $status;
-        $this->statusChanged = true;
 
         return $this;
     }

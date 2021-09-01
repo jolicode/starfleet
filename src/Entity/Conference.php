@@ -48,7 +48,7 @@ class Conference
     /**
      * @ORM\Column(name="name", type="string", length=255)
      *
-     * @Groups("submitStatusChangedEvent")
+     * @Groups({"submitStatusChangedEvent", "newFeaturedConferenceEvent"})
      */
     private string $name;
 
@@ -56,7 +56,7 @@ class Conference
      * @ORM\Column(name="slug", type="string", length=255, nullable=false, unique=true)
      * @Gedmo\Slug(fields={"name"})
      *
-     * @Groups("submitStatusChangedEvent")
+     * @Groups({"submitStatusChangedEvent", "newFeaturedConferenceEvent"})
      */
     private string $slug;
 

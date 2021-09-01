@@ -2,22 +2,22 @@
 
 namespace App\Event\Notification;
 
-use App\Entity\Submit;
 use App\Entity\Notifications\Notification;
+use App\Entity\Participation;
 use Symfony\Contracts\EventDispatcher\Event;
 
-class SubmitStatusChangedEvent extends Event
+class ParticipationStatusChangedEvent extends Event
 {
     private Notification $notification;
 
     public function __construct(
-        private Submit $submit,
+        private Participation $participation,
     ) {
     }
 
-    public function getSubmit(): Submit
+    public function getParticipation(): Participation
     {
-        return $this->submit;
+        return $this->participation;
     }
 
     public function setNotification(Notification $notification): void

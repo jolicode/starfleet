@@ -47,7 +47,7 @@ class EasyAdminEventListener implements EventSubscriberInterface
         if ($entity instanceof Submit) {
             if ($entity->hasStatusChanged()) {
                 $this->eventDispatcher->dispatch(new SlackSubmitStatusChanged($entity));
-                $this->eventDispatcher->dispatch(new NotificationSubmitStatusChangedEvent($entity));
+                $this->eventDispatcher->dispatch(new NotificationSubmitStatusChangedEvent($entity, $this->security->getUser()));
                 $entity->resetStatusChanged();
             }
         }

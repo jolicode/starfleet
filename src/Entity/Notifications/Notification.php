@@ -4,22 +4,23 @@ namespace App\Entity\Notifications;
 
 use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
-use App\Repository\NotificationRepository;
-use App\Event\Notification\SubmitAddedEvent;
-use App\Event\Notification\SubmitStatusChangedEvent;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass=NotificationRepository::class)
+ * @ORM\Entity(repositoryClass=App\Repository\NotificationRepository::class)
  */
 class Notification
 {
     public const TRIGGER_SUBMIT_ADDED = 'SubmitAdded';
     public const TRIGGER_SUBMIT_STATUS_CHANGED = 'SubmitStatusChanged';
+    public const TRIGGER_PARTICIPATION_STATUS_CHANGED = 'ParticipationStatusChanged';
+    public const TRIGGER_NEW_FEATURED_CONFERENCE = 'NewFeaturedConference';
 
     public const TRIGGERS = [
-        SubmitAddedEvent::class => self::TRIGGER_SUBMIT_ADDED,
-        SubmitStatusChangedEvent::class => self::TRIGGER_SUBMIT_STATUS_CHANGED,
+        self::TRIGGER_SUBMIT_ADDED,
+        self::TRIGGER_SUBMIT_STATUS_CHANGED,
+        self::TRIGGER_PARTICIPATION_STATUS_CHANGED,
+        self::TRIGGER_NEW_FEATURED_CONFERENCE,
     ];
 
     /**
@@ -30,7 +31,7 @@ class Notification
     private int $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="Notifications")
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="notifications")
      * @ORM\JoinColumn(nullable=false)
      */
     private User $targetUser;
@@ -48,8 +49,13 @@ class Notification
 
     /**
      * @ORM\Column(type="jsonb")
+     *
+     * An array of data that will oftenly contain serialized data, but also various other data.
      */
-    private array $data;
+    private array $data = [
+        'objects' => [],
+        'strings' => [],
+    ];
 
     public function __construct()
     {
@@ -96,10 +102,13 @@ class Notification
         return $this->data;
     }
 
-    public function setData($data): self
+    public function addSerializedObject(string $className, string $serializedObject)
     {
-        $this->data = $data;
+        $this->data['objects'][$className] = $serializedObject;
+    }
 
-        return $this;
+    public function addString(string $key, string $value)
+    {
+        $this->data['strings'][$key] = $value;
     }
 }

@@ -8,11 +8,6 @@
             <pre>
                 {{ dump(notif) }}
             </pre>
-            {% for class, data in notif.data %}
-                <pre>
-                    {{ dump(class, deserialize(data, class)) }}
-                </pre>
-            {% endfor %}
         {% endfor %}
         <ul class="nav flex-column nav-pills">
             <li class="nav-item">

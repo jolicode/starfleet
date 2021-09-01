@@ -11,22 +11,21 @@
 
 namespace App\Controller\UserAccount;
 
-use App\Entity\Conference;
 use App\Entity\Submit;
-use App\Entity\User;
-use App\Event\Notification\SubmitAddedEvent;
-use App\Event\Notification\SubmitStatusChangedEvent;
-use App\Form\UserAccount\SubmitType;
-use App\Repository\ConferenceRepository;
-use App\Repository\SubmitRepository;
+use App\Entity\Conference;
 use App\UX\UserChartBuilder;
+use App\Form\UserAccount\SubmitType;
+use App\Repository\SubmitRepository;
+use App\Repository\ConferenceRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use App\Event\Notification\SubmitAddedEvent;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Event\Notification\SubmitStatusChangedEvent;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class SubmitController extends AbstractController
@@ -51,12 +50,15 @@ class SubmitController extends AbstractController
 
         if ($form->handleRequest($request)->isSubmitted() && $form->isValid()) {
             $this->em->persist($submit);
-            $this->em->flush();
 
             if (\count($submit->getUsers()) > 1) {
-                $this->sendSubmitAddedNotifications($submit->getUsers()->toArray(), $submit);
+                $event = new SubmitAddedEvent($submit);
+                $this->eventDispatcher->dispatch($event);
+
+                $this->em->persist($event->getNotification());
             }
 
+            $this->em->flush();
             $this->addFlash('info', 'The submit has been saved.');
 
             return $this->redirectToRoute('user_submits');
@@ -124,7 +126,6 @@ class SubmitController extends AbstractController
         ]);
 
         if ($form->handleRequest($request)->isSubmitted() && $form->isValid()) {
-            $this->em->flush();
 
             $newUsers = [];
 
@@ -135,9 +136,13 @@ class SubmitController extends AbstractController
             }
 
             if (\count($newUsers)) {
-                $this->sendSubmitAddedNotifications($newUsers, $submit);
+                $event = new SubmitAddedEvent($submit);
+                $this->eventDispatcher->dispatch($event);
+
+                $this->em->persist($event->getNotification());
             }
 
+            $this->em->flush();
             $this->addFlash('info', 'Your talk has been submitted.');
 
             return $this->redirectToRoute('user_submits');
@@ -161,12 +166,15 @@ class SubmitController extends AbstractController
 
         if ($form->handleRequest($request)->isSubmitted() && $form->isValid()) {
             $this->em->persist($submit);
-            $this->em->flush();
 
             if (\count($submit->getUsers()) > 1) {
-                $this->sendSubmitAddedNotifications($submit->getUsers()->toArray(), $submit);
+                $event = new SubmitAddedEvent($submit);
+                $this->eventDispatcher->dispatch($event);
+
+                $this->em->persist($event->getNotification());
             }
 
+            $this->em->flush();
             $this->addFlash('info', 'Your talk has been submitted.');
 
             return $this->redirectToRoute('user_submits');
@@ -188,12 +196,12 @@ class SubmitController extends AbstractController
 
         $submit->setStatus(Submit::STATUS_ACCEPTED);
 
-        $this->em->flush();
 
         foreach ($submit->getUsers() as $user) {
             $this->eventDispatcher->dispatch(new SubmitStatusChangedEvent($submit, $user));
         }
 
+        $this->em->flush();
         $this->addFlash('info', sprintf('Submit for %s tagged as accepted.', $submit->getConference()->getName()));
 
         return $this->redirectToRoute('user_submits');
@@ -208,6 +216,11 @@ class SubmitController extends AbstractController
         }
 
         $submit->setStatus(Submit::STATUS_DONE);
+
+
+        foreach ($submit->getUsers() as $user) {
+            $this->eventDispatcher->dispatch(new SubmitStatusChangedEvent($submit, $user));
+        }
 
         $this->em->flush();
         $this->addFlash('info', sprintf('Submit for %s tagged as done.', $submit->getConference()->getName()));
@@ -225,6 +238,11 @@ class SubmitController extends AbstractController
 
         $submit->setStatus(Submit::STATUS_REJECTED);
 
+
+        foreach ($submit->getUsers() as $user) {
+            $this->eventDispatcher->dispatch(new SubmitStatusChangedEvent($submit, $user));
+        }
+
         $this->em->flush();
         $this->addFlash('info', sprintf('Submit for %s tagged as rejected.', $submit->getConference()->getName()));
 
@@ -240,6 +258,11 @@ class SubmitController extends AbstractController
         }
 
         $submit->setStatus(Submit::STATUS_PENDING);
+
+
+        foreach ($submit->getUsers() as $user) {
+            $this->eventDispatcher->dispatch(new SubmitStatusChangedEvent($submit, $user));
+        }
 
         $this->em->flush();
         $this->addFlash('info', sprintf('Submit for %s tagged as pending.', $submit->getConference()->getName()));
@@ -260,15 +283,5 @@ class SubmitController extends AbstractController
         $this->addFlash('info', 'Submit has been cancelled.');
 
         return $this->redirectToRoute('user_submits');
-    }
-
-    /** @param array<User> $users */
-    private function sendSubmitAddedNotifications(array $users, Submit $submit): void
-    {
-        foreach ($users as $user) {
-            $this->eventDispatcher->dispatch(new SubmitAddedEvent($submit, $this->getUser(), $user));
-        }
-
-        $this->em->flush();
     }
 }
