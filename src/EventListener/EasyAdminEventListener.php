@@ -13,7 +13,9 @@ namespace App\EventListener;
 
 use App\Entity\User;
 use App\Entity\Submit;
-use App\Event\SubmitStatusChangedEvent;
+use App\Event\Notification\SubmitAddedEvent;
+use App\Event\Notification\SubmitStatusChangedEvent as NotificationSubmitStatusChangedEvent;
+use App\Event\SubmitStatusChangedEvent as SlackSubmitStatusChanged;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\EasyAdminEvents;
@@ -31,7 +33,7 @@ class EasyAdminEventListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            EasyAdminEvents::POST_UPDATE => 'onPostUpdate',
+            EasyAdminEvents::PRE_UPDATE => 'onPostUpdate',
             EasyAdminEvents::PRE_PERSIST => 'onPrePersist',
         ];
     }
@@ -44,7 +46,8 @@ class EasyAdminEventListener implements EventSubscriberInterface
         $entity = $event->getSubject();
         if ($entity instanceof Submit) {
             if ($entity->hasStatusChanged()) {
-                $this->eventDispatcher->dispatch(new SubmitStatusChangedEvent($entity));
+                $this->eventDispatcher->dispatch(new SlackSubmitStatusChanged($entity));
+                $this->eventDispatcher->dispatch(new NotificationSubmitStatusChangedEvent($entity));
                 $entity->resetStatusChanged();
             }
         }
@@ -57,6 +60,7 @@ class EasyAdminEventListener implements EventSubscriberInterface
             /** @var User $user */
             $user = $this->security->getUser();
             $entity->setSubmittedBy($user);
+            $this->eventDispatcher->dispatch(new SubmitAddedEvent($entity, $this->security->getUser()));
         }
     }
 }

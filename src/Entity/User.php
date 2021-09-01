@@ -124,7 +124,7 @@ class User implements UserInterface, \Serializable
     private ?string $password = null;
 
     /**
-     * @ORM\OneToMany(targetEntity=Notification::class, mappedBy="targetUser")
+     * @ORM\OneToMany(targetEntity=Notification::class, mappedBy="targetUser", cascade={"persist"})
      *
      * @var Collection<Notification> $notifications
      */

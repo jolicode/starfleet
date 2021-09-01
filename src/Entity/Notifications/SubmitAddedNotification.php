@@ -11,7 +11,7 @@ use App\Entity\Notifications\Notification;
 /**
  * @ORM\Entity(repositoryClass=NewSubmitWithAnotherUserNotificationRepository::class)
  */
-class SubmitNotification extends Notification
+class SubmitAddedNotification extends Notification
 {
     /**
      * @ORM\ManyToOne(targetEntity=User::class)

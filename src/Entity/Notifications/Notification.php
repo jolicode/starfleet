@@ -4,21 +4,24 @@ namespace App\Entity\Notifications;
 
 use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\InheritanceType;
 use App\Repository\NotificationRepository;
-use Doctrine\ORM\Mapping\DiscriminatorMap;
-use Doctrine\ORM\Mapping\DiscriminatorColumn;
+use App\Event\Notification\SubmitAddedEvent;
+use App\Event\Notification\SubmitStatusChangedEvent;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=NotificationRepository::class)
- * @InheritanceType("SINGLE_TABLE")
- * @DiscriminatorColumn(name="trigger", type="string")
- * @DiscriminatorMap({
- *     "submit" = "SubmitNotification"
- * })
  */
-abstract class Notification
+class Notification
 {
+    public const TRIGGER_SUBMIT_ADDED = 'SubmitAdded';
+    public const TRIGGER_SUBMIT_STATUS_CHANGED = 'SubmitStatusChanged';
+
+    public const TRIGGERS = [
+        SubmitAddedEvent::class => self::TRIGGER_SUBMIT_ADDED,
+        SubmitStatusChangedEvent::class => self::TRIGGER_SUBMIT_STATUS_CHANGED,
+    ];
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -36,6 +39,17 @@ abstract class Notification
      * @ORM\Column(type="datetime")
      */
     private \DateTimeInterface $createdAt;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    #[Assert\Choice(choices: self::TRIGGERS)]
+    private string $trigger;
+
+    /**
+     * @ORM\Column(type="jsonb")
+     */
+    private array $data;
 
     public function __construct()
     {
@@ -64,7 +78,7 @@ abstract class Notification
         return $this->createdAt;
     }
 
-    public function getTrigger(): string
+    public function getTrigger(): ?string
     {
         return $this->trigger;
     }
@@ -72,6 +86,19 @@ abstract class Notification
     public function setTrigger(string $trigger): self
     {
         $this->trigger = $trigger;
+
+        return $this;
+    }
+
+    /** @return array<mixed> */
+    public function getData(): array
+    {
+        return $this->data;
+    }
+
+    public function setData($data): self
+    {
+        $this->data = $data;
 
         return $this;
     }

@@ -13,7 +13,9 @@ namespace App\Controller\UserAccount;
 
 use App\Entity\Conference;
 use App\Entity\Submit;
-use App\Event\Notification\NewSubmitWithAnotherUserEvent;
+use App\Entity\User;
+use App\Event\Notification\SubmitAddedEvent;
+use App\Event\Notification\SubmitStatusChangedEvent;
 use App\Form\UserAccount\SubmitType;
 use App\Repository\ConferenceRepository;
 use App\Repository\SubmitRepository;
@@ -51,16 +53,11 @@ class SubmitController extends AbstractController
             $this->em->persist($submit);
             $this->em->flush();
 
-            $this->addFlash('info', 'The submit has been saved.');
-
             if (\count($submit->getUsers()) > 1) {
-                foreach ($submit->getUsers() as $user) {
-                    if ($user === $this->getUser()) {
-                        continue;
-                    }
-                    $this->eventDispatcher->dispatch(new NewSubmitWithAnotherUserEvent($submit, $this->getUser(), $user));
-                }
+                $this->sendSubmitAddedNotifications($submit->getUsers()->toArray(), $submit);
             }
+
+            $this->addFlash('info', 'The submit has been saved.');
 
             return $this->redirectToRoute('user_submits');
         }
@@ -120,12 +117,26 @@ class SubmitController extends AbstractController
     #[Route(path: '/user/submit-edit/{id}', name: 'edit_submit')]
     public function editSubmit(Submit $submit, Request $request): Response
     {
+        $preEditUsers = $submit->getUsers();
+
         $form = $this->createForm(SubmitType::class, $submit, [
             'validation_groups' => ['Default', 'user_account'],
         ]);
 
         if ($form->handleRequest($request)->isSubmitted() && $form->isValid()) {
             $this->em->flush();
+
+            $newUsers = [];
+
+            foreach ($submit->getUsers() as $user) {
+                if (!$preEditUsers->contains($user)) {
+                    $newUsers[] = $user;
+                }
+            }
+
+            if (\count($newUsers)) {
+                $this->sendSubmitAddedNotifications($newUsers, $submit);
+            }
 
             $this->addFlash('info', 'Your talk has been submitted.');
 
@@ -152,6 +163,10 @@ class SubmitController extends AbstractController
             $this->em->persist($submit);
             $this->em->flush();
 
+            if (\count($submit->getUsers()) > 1) {
+                $this->sendSubmitAddedNotifications($submit->getUsers()->toArray(), $submit);
+            }
+
             $this->addFlash('info', 'Your talk has been submitted.');
 
             return $this->redirectToRoute('user_submits');
@@ -174,6 +189,11 @@ class SubmitController extends AbstractController
         $submit->setStatus(Submit::STATUS_ACCEPTED);
 
         $this->em->flush();
+
+        foreach ($submit->getUsers() as $user) {
+            $this->eventDispatcher->dispatch(new SubmitStatusChangedEvent($submit, $user));
+        }
+
         $this->addFlash('info', sprintf('Submit for %s tagged as accepted.', $submit->getConference()->getName()));
 
         return $this->redirectToRoute('user_submits');
@@ -240,5 +260,15 @@ class SubmitController extends AbstractController
         $this->addFlash('info', 'Submit has been cancelled.');
 
         return $this->redirectToRoute('user_submits');
+    }
+
+    /** @param array<User> $users */
+    private function sendSubmitAddedNotifications(array $users, Submit $submit): void
+    {
+        foreach ($users as $user) {
+            $this->eventDispatcher->dispatch(new SubmitAddedEvent($submit, $this->getUser(), $user));
+        }
+
+        $this->em->flush();
     }
 }
