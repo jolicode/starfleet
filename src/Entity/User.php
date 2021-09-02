@@ -390,29 +390,4 @@ class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInt
         // If you store any temporary, sensitive data on the user, clear it here
         $this->plainPassword = '';
     }
-
-    public function serialize(): ?string
-    {
-        return serialize([
-            $this->getId(),
-            $this->getUserIdentifier(),
-            $this->getPassword(),
-            $this->getSalt(),
-            $this->getGoogleId(),
-            $this->getGithubId(),
-        ]);
-    }
-
-    /** @return array<mixed> */
-    public function unserialize($serialized): ?array
-    {
-        return list(
-            $this->id,
-            $this->email,
-            $this->password,
-            $this->salt,
-            $this->googleId,
-            $this->githubId
-        ) = unserialize($serialized);
-    }
 }
