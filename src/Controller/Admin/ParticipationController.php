@@ -43,10 +43,8 @@ class ParticipationController extends EasyAdminController
         $workflow = $this->workflowRegistry->get($participation, 'participation_request');
 
         $workflow->apply($participation, ParticipationTransition::ACCEPTED);
-        $event = new ParticipationStatusChangedEvent($participation);
-        $this->eventDispatcher->dispatch($event);
+        $this->eventDispatcher->dispatch(new ParticipationStatusChangedEvent($participation));
 
-        $this->em->persist($event->getNotification());
         $this->em->flush();
 
         return $this->redirectToRoute('easyadmin', [
@@ -64,10 +62,8 @@ class ParticipationController extends EasyAdminController
         $workflow = $this->workflowRegistry->get($participation, 'participation_request');
 
         $workflow->apply($participation, ParticipationTransition::REJECTED);
-        $event = new ParticipationStatusChangedEvent($participation);
-        $this->eventDispatcher->dispatch($event);
+        $this->eventDispatcher->dispatch(new ParticipationStatusChangedEvent($participation));
 
-        $this->em->persist($event->getNotification());
         $this->em->flush();
 
         return $this->redirectToRoute('easyadmin', [
@@ -84,10 +80,8 @@ class ParticipationController extends EasyAdminController
         $participation = $this->request->attributes->get('easyadmin')['item'];
         $workflow = $this->workflowRegistry->get($participation, 'participation_request');
         $workflow->apply($participation, ParticipationTransition::CANCELLED);
-        $event = new ParticipationStatusChangedEvent($participation);
-        $this->eventDispatcher->dispatch($event);
+        $this->eventDispatcher->dispatch(new ParticipationStatusChangedEvent($participation));
 
-        $this->em->persist($event->getNotification());
         $this->em->flush();
 
         return $this->redirectToRoute('easyadmin', [

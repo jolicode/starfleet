@@ -11,6 +11,7 @@
 
 namespace App\EventListener;
 
+use App\Entity\Participation;
 use App\Entity\User;
 use App\Entity\Submit;
 use App\Event\Notification\SubmitAddedEvent;
@@ -35,6 +36,7 @@ class EasyAdminEventListener implements EventSubscriberInterface
         return [
             EasyAdminEvents::PRE_UPDATE => 'onPostUpdate',
             EasyAdminEvents::PRE_PERSIST => 'onPrePersist',
+            EasyAdminEvents::POST_PERSIST => 'onPostPersist',
         ];
     }
 
@@ -47,7 +49,7 @@ class EasyAdminEventListener implements EventSubscriberInterface
         if ($entity instanceof Submit) {
             if ($entity->hasStatusChanged()) {
                 $this->eventDispatcher->dispatch(new SlackSubmitStatusChanged($entity));
-                $this->eventDispatcher->dispatch(new NotificationSubmitStatusChangedEvent($entity, $this->security->getUser()));
+                $this->eventDispatcher->dispatch(new NotificationSubmitStatusChangedEvent($entity));
                 $entity->resetStatusChanged();
             }
         }
@@ -60,7 +62,15 @@ class EasyAdminEventListener implements EventSubscriberInterface
             /** @var User $user */
             $user = $this->security->getUser();
             $entity->setSubmittedBy($user);
-            $this->eventDispatcher->dispatch(new SubmitAddedEvent($entity, $this->security->getUser()));
+        }
+    }
+
+    public function onPostPersist(GenericEvent $event): void
+    {
+        $entity = $event->getSubject();
+
+        if ($entity instanceof Submit) {
+            $this->eventDispatcher->dispatch(new SubmitAddedEvent($entity));
         }
     }
 }

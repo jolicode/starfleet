@@ -52,10 +52,7 @@ class SubmitController extends AbstractController
             $this->em->persist($submit);
 
             if (\count($submit->getUsers()) > 1) {
-                $event = new SubmitAddedEvent($submit);
-                $this->eventDispatcher->dispatch($event);
-
-                $this->em->persist($event->getNotification());
+                $this->eventDispatcher->dispatch(new SubmitAddedEvent($submit));
             }
 
             $this->em->flush();
@@ -136,10 +133,7 @@ class SubmitController extends AbstractController
             }
 
             if (\count($newUsers)) {
-                $event = new SubmitAddedEvent($submit);
-                $this->eventDispatcher->dispatch($event);
-
-                $this->em->persist($event->getNotification());
+                $this->eventDispatcher->dispatch(new SubmitAddedEvent($submit));
             }
 
             $this->em->flush();
@@ -168,10 +162,7 @@ class SubmitController extends AbstractController
             $this->em->persist($submit);
 
             if (\count($submit->getUsers()) > 1) {
-                $event = new SubmitAddedEvent($submit);
-                $this->eventDispatcher->dispatch($event);
-
-                $this->em->persist($event->getNotification());
+                $this->eventDispatcher->dispatch(new SubmitAddedEvent($submit));
             }
 
             $this->em->flush();
@@ -196,10 +187,7 @@ class SubmitController extends AbstractController
 
         $submit->setStatus(Submit::STATUS_ACCEPTED);
 
-
-        foreach ($submit->getUsers() as $user) {
-            $this->eventDispatcher->dispatch(new SubmitStatusChangedEvent($submit, $user));
-        }
+        $this->eventDispatcher->dispatch(new SubmitStatusChangedEvent($submit));
 
         $this->em->flush();
         $this->addFlash('info', sprintf('Submit for %s tagged as accepted.', $submit->getConference()->getName()));
@@ -217,10 +205,7 @@ class SubmitController extends AbstractController
 
         $submit->setStatus(Submit::STATUS_DONE);
 
-
-        foreach ($submit->getUsers() as $user) {
-            $this->eventDispatcher->dispatch(new SubmitStatusChangedEvent($submit, $user));
-        }
+        $this->eventDispatcher->dispatch(new SubmitStatusChangedEvent($submit));
 
         $this->em->flush();
         $this->addFlash('info', sprintf('Submit for %s tagged as done.', $submit->getConference()->getName()));
@@ -239,9 +224,7 @@ class SubmitController extends AbstractController
         $submit->setStatus(Submit::STATUS_REJECTED);
 
 
-        foreach ($submit->getUsers() as $user) {
-            $this->eventDispatcher->dispatch(new SubmitStatusChangedEvent($submit, $user));
-        }
+        $this->eventDispatcher->dispatch(new SubmitStatusChangedEvent($submit));
 
         $this->em->flush();
         $this->addFlash('info', sprintf('Submit for %s tagged as rejected.', $submit->getConference()->getName()));
@@ -260,9 +243,7 @@ class SubmitController extends AbstractController
         $submit->setStatus(Submit::STATUS_PENDING);
 
 
-        foreach ($submit->getUsers() as $user) {
-            $this->eventDispatcher->dispatch(new SubmitStatusChangedEvent($submit, $user));
-        }
+        $this->eventDispatcher->dispatch(new SubmitStatusChangedEvent($submit));
 
         $this->em->flush();
         $this->addFlash('info', sprintf('Submit for %s tagged as pending.', $submit->getConference()->getName()));

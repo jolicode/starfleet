@@ -8,8 +8,6 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class ParticipationStatusChangedEvent extends Event
 {
-    private Notification $notification;
-
     public function __construct(
         private Participation $participation,
     ) {
@@ -18,15 +16,5 @@ class ParticipationStatusChangedEvent extends Event
     public function getParticipation(): Participation
     {
         return $this->participation;
-    }
-
-    public function setNotification(Notification $notification): void
-    {
-        $this->notification = $notification;
-    }
-
-    public function getNotification(): Notification
-    {
-        return $this->notification;
     }
 }

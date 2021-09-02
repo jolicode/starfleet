@@ -4,12 +4,23 @@ namespace App\Entity\Notifications;
 
 use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\InheritanceType;
+use Doctrine\ORM\Mapping\DiscriminatorMap;
+use Doctrine\ORM\Mapping\DiscriminatorColumn;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass=App\Repository\NotificationRepository::class)
+ * @ORM\Entity
+ * @InheritanceType("SINGLE_TABLE")
+ * @DiscriminatorColumn(name="type", type="string")
+ * @DiscriminatorMap({
+ *      "submitAdded" = "SubmitAddedNotification",
+ *      "submitStatusChanged" = "SubmitStatusChangedNotification",
+ *      "participationStatusChangedNotification" = "ParticipationStatusChangedNotification",
+ *      "newFeaturedConference" = "NewFeaturedConferenceNotification"
+ * })
  */
-class Notification
+abstract class Notification
 {
     public const TRIGGER_SUBMIT_ADDED = 'SubmitAdded';
     public const TRIGGER_SUBMIT_STATUS_CHANGED = 'SubmitStatusChanged';
@@ -28,38 +39,29 @@ class Notification
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private int $id;
+    protected int $id;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="notifications")
      * @ORM\JoinColumn(nullable=false)
      */
-    private User $targetUser;
+    protected User $targetUser;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private \DateTimeInterface $createdAt;
+    protected \DateTimeInterface $createdAt;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
     #[Assert\Choice(choices: self::TRIGGERS)]
-    private string $trigger;
+    protected string $trigger;
 
-    /**
-     * @ORM\Column(type="jsonb")
-     *
-     * An array of data that will oftenly contain serialized data, but also various other data.
-     */
-    private array $data = [
-        'objects' => [],
-        'strings' => [],
-    ];
-
-    public function __construct()
+    public function __construct(User $targetUser)
     {
         $this->createdAt = new \DateTime();
+        $this->setTargetUser($targetUser);
     }
 
     public function getId(): int
@@ -75,6 +77,7 @@ class Notification
     public function setTargetUser(User $targetUser): self
     {
         $this->targetUser = $targetUser;
+        $targetUser->addNotification($this);
 
         return $this;
     }
@@ -84,7 +87,7 @@ class Notification
         return $this->createdAt;
     }
 
-    public function getTrigger(): ?string
+    public function getTrigger(): string
     {
         return $this->trigger;
     }
@@ -94,21 +97,5 @@ class Notification
         $this->trigger = $trigger;
 
         return $this;
-    }
-
-    /** @return array<mixed> */
-    public function getData(): array
-    {
-        return $this->data;
-    }
-
-    public function addSerializedObject(string $className, string $serializedObject)
-    {
-        $this->data['objects'][$className] = $serializedObject;
-    }
-
-    public function addString(string $key, string $value)
-    {
-        $this->data['strings'][$key] = $value;
     }
 }
