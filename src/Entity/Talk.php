@@ -16,7 +16,6 @@ use Doctrine\Common\Collections\Collection;
 use App\Validator\Constraints as CustomAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Table(name="talk")
@@ -30,8 +29,6 @@ class Talk
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     *
-     * @Groups("submitStatusChangedEvent")
      */
     private int $id;
 
@@ -39,8 +36,6 @@ class Talk
      * @ORM\Column(name="title", type="string", length=255, unique="true")
      *
      * @CustomAssert\UniqueTitle()
-     *
-     * @Groups("submitStatusChangedEvent")
      */
     private string $title;
 

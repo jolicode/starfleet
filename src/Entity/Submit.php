@@ -16,7 +16,6 @@ use Doctrine\Common\Collections\Collection;
 use App\Validator\Constraints as CustomAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -61,7 +60,6 @@ class Submit
     /**
      * @ORM\Column(name="status", type="string", length=255)
      *
-     * @Groups({"submitStatusChangedEvent", "submitAddedEvent"})
      */
     private string $status = self::STATUS_PENDING;
 
@@ -75,7 +73,6 @@ class Submit
      *      minMessage = "You must add at least one user"
      * )
      *
-     * @Groups({"submitAddedEvent"})
      *
      *  @var Collection<User>
      */
@@ -87,7 +84,6 @@ class Submit
      *
      * @CustomAssert\NotEndedConference()
      *
-     * @Groups({"submitStatusChangedEvent", "submitAddedEvent"})
      */
     private Conference $conference;
 
@@ -95,7 +91,6 @@ class Submit
      * @ORM\ManyToOne(targetEntity="App\Entity\Talk", inversedBy="submits", cascade={"persist"})
      * @ORM\JoinColumn(onDelete="CASCADE")
      *
-     * @Groups({"submitStatusChangedEvent", "submitAddedEvent"})
      */
     private Talk $talk;
 

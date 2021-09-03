@@ -16,7 +16,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Table(name="conference")
@@ -47,16 +46,12 @@ class Conference
 
     /**
      * @ORM\Column(name="name", type="string", length=255)
-     *
-     * @Groups({"submitStatusChangedEvent", "newFeaturedConferenceEvent"})
      */
     private string $name;
 
     /**
      * @ORM\Column(name="slug", type="string", length=255, nullable=false, unique=true)
      * @Gedmo\Slug(fields={"name"})
-     *
-     * @Groups({"submitStatusChangedEvent", "newFeaturedConferenceEvent"})
      */
     private string $slug;
 
