@@ -31,7 +31,6 @@ final class SubmitStatusChangedNotificationFactory extends ModelFactory
         return [
             'emitter' => UserFactory::random(),
             'trigger' => Notification::TRIGGER_SUBMIT_STATUS_CHANGED,
-            'submit' => SubmitFactory::random(),
         ];
     }
 
@@ -39,7 +38,14 @@ final class SubmitStatusChangedNotificationFactory extends ModelFactory
     {
         return $this
             ->instantiateWith(function (array $attributes) {
-                $notification =  new SubmitStatusChangedNotification($attributes['submit'], $attributes['targetUser']);
+                $submit = SubmitFactory::createOne([
+                    'users' => [
+                        $attributes['targetUser'],
+                        UserFactory::createOne(),
+                    ]
+                ]);
+
+                $notification =  new SubmitStatusChangedNotification($submit->object(), $attributes['targetUser']);
                 $notification->setTrigger($attributes['trigger']);
                 $notification->setEmitter($attributes['emitter']);
 

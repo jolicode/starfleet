@@ -31,7 +31,6 @@ final class SubmitAddedNotificationFactory extends ModelFactory
         return [
             'emitter' => UserFactory::random(),
             'trigger' => Notification::TRIGGER_SUBMIT_ADDED,
-            'submit' => SubmitFactory::random(),
         ];
     }
 
@@ -39,7 +38,14 @@ final class SubmitAddedNotificationFactory extends ModelFactory
     {
         return $this
             ->instantiateWith(function (array $attributes) {
-                $notification =  new SubmitAddedNotification($attributes['submit'], $attributes['targetUser']);
+                $submit = SubmitFactory::createOne([
+                    'users' => [
+                        $attributes['targetUser'],
+                        UserFactory::createOne(),
+                    ]
+                ]);
+
+                $notification =  new SubmitAddedNotification($submit->object(), $attributes['targetUser']);
                 $notification->setTrigger($attributes['trigger']);
                 $notification->setEmitter($attributes['emitter']);
 

@@ -22,10 +22,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 abstract class Notification
 {
-    public const TRIGGER_SUBMIT_ADDED = 'SubmitAdded';
-    public const TRIGGER_SUBMIT_STATUS_CHANGED = 'SubmitStatusChanged';
-    public const TRIGGER_PARTICIPATION_STATUS_CHANGED = 'ParticipationStatusChanged';
-    public const TRIGGER_NEW_FEATURED_CONFERENCE = 'NewFeaturedConference';
+    // These const must match the names of the templates in templates/user/notifications
+    public const TRIGGER_SUBMIT_ADDED = 'submit_added';
+    public const TRIGGER_SUBMIT_STATUS_CHANGED = 'submit_status_changed';
+    public const TRIGGER_PARTICIPATION_STATUS_CHANGED = 'participation_status_changed';
+    public const TRIGGER_NEW_FEATURED_CONFERENCE = 'new_featured_conference';
 
     public const TRIGGERS = [
         self::TRIGGER_SUBMIT_ADDED,

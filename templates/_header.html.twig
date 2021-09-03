@@ -1,5 +1,5 @@
 <header class="container">
-    <nav class="navbar navbar-expand-lg bg-purple navbar-dark justify-content-between">
+    <nav class="navbar navbar-expand-lg bg-purple navbar-dark justify-content-between mx--30">
         <a class="navbar-brand" href="{{ path('conferences_list') }}">
             <img src="{{ asset('build/images/logo.svg') }}"
                  width="100"
@@ -21,13 +21,27 @@
             </button>
 
             <div class="collapse navbar-collapse" id="navbar">
-                <ul class="navbar-nav mr-auto">
+                <ul class="navbar-nav mr-auto position-relative">
                     <li class="nav-item mr-2">
-                        <a class="nav-link btn btn-outline-secondary btn-sm text-light"
+                        <a class="nav-link btn btn-outline-secondary btn-sm text-light fsize-medium"
                            href="{{ app.user ? path('user_account') : path('login') }}">
                             {{ app.user ? '👤 Account' : '🔒 Login' }}
                         </a>
                     </li>
+                    {% if app.user and app.user.notifications|length %}
+                        <li class="nav-item mr-2">
+                            <a class="notification-button nav-link btn btn-outline-secondary btn-sm text-light fsize-medium">
+                                 <i class="fas fa-exclamation-circle text-danger mr-1 fsize-medium"></i> {{ app.user.notifications|length }} Notifications <i class="fas fa-chevron-right ml-1 text-danger"></i>
+                            </a>
+                        </li>
+                        <li class="notification-list nav-item mr-2">
+                            {% for notification in app.user.notifications %}
+                                {% for notification in app.user.notifications %}
+                                    <div class="notification fsize-medium text-light">{{ include('user/notifications/' ~ notification.trigger ~ '.html.twig', { notification: notification }) }}</div>
+                                {% endfor %}
+                            {% endfor %}
+                        </li>
+                    {% endif %}
                 </ul>
             </div>
         </div>

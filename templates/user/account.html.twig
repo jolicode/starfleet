@@ -3,12 +3,6 @@
 {% block content %}
     <aside class="col-4">
         <h1>{{ app.user.name }}</h1>
-        <h1>You have {{ app.user.notifications|length }} Notifications !</h1>
-        {% for notif in app.user.notifications %}
-            <pre>
-                {{ dump(notif) }}
-            </pre>
-        {% endfor %}
         <ul class="nav flex-column nav-pills">
             <li class="nav-item">
                 <a href="{{ path('future_conferences') }}" class="nav-link active">

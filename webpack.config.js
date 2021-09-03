@@ -14,6 +14,7 @@ Encore
     .enableSourceMaps(!Encore.isProduction())
     .enableVersioning(Encore.isProduction())
     .addEntry('js/app', './assets/js/app.js')
+    .addEntry('js/highlightScroll', './assets/js/highlight_scroll.js')
     .addEntry('js/tomSelect', './assets/js/tomSelect.js')
     .configureBabel((config) => {
         config.plugins.push('@babel/plugin-proposal-class-properties');

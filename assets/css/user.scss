@@ -88,3 +88,28 @@
     border: 1px solid rgba(0, 0, 0, 0.125);
     flex-grow: 1;
 }
+
+.fsize-medium {
+    font-size: 1em;
+}
+
+.notification-list {
+    border: 1px solid #dc3545;
+    position: absolute;
+    width: 20em;
+    min-width: 200px;
+    max-width: 300px;
+    left: 100%;
+}
+
+.mx--30 {
+    margin-left: -30px;
+    margin-right: -30px;
+}
+
+.highlight {
+    border: 1px #ebb001 solid;
+    width: 80% !important;
+    -webkit-box-shadow: 0px 0px 14px 0px rgba(235,176,1,0.36);
+    box-shadow: 0px 0px 14px 0px rgba(235,176,1,0.36);
+}

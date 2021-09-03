@@ -1,0 +1,9 @@
+<div class="notification-reason">A submit has been created for you.</div>
+<div class="notification-content">
+    See it here : <a href="{{ path(notification.submit.status ~ '_submits', { highlight: notification.submit.id }) }}">Link</a>
+</div>
+<div class="notification-source">Created by : {{ notification.emitter }}</div>
+
+<pre>
+    {{ dump(notification.submit) }}
+</pre>

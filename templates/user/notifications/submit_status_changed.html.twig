@@ -1,0 +1,10 @@
+<div class="notification-reason">Submit status changed.</div>
+<div class="notification-content">
+    New status : {{ notification.submit.status }}
+    See it here : <a href="{{ path(notification.submit.status ~ '_submits', { highlight: notification.submit.id }) }}">Link</a>
+</div>
+<div class="notification-source">Modified by : {{ notification.emitter }}</div>
+
+<pre>
+    {{ dump(notification.submit) }}
+</pre>
