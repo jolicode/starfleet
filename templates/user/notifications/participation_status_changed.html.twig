@@ -1,3 +1,3 @@
-Your <a href="{{ path(notification.participation.marking ~ '_participations', { highlight: notification.participation.id }) }}" class="text-primary">Participation</a>
-for <a href="{{ path('conferences_show', { slug: notification.participation.conference.slug }) }}" class="text-primary">{{ notification.participation.conference.name }}</a>
-has been marked as <span class="color-{{ notification.participation.marking }}">{{ notification.participation.marking }}</span> by <strong>{{ notification.emitter }}</strong>.
+The <a href="{{ path(notification.participation.marking ~ '_participations', { highlight: notification.participation.id }) }}" class="text-primary">Participation</a>
+demand you made for <a href="{{ path('conferences_show', { slug: notification.participation.conference.slug }) }}" class="text-primary">{{ notification.participation.conference.name }}</a>
+was marked as <span class="color-{{ notification.participation.marking }}">{{ notification.participation.marking }}</span> by <strong>{{ notification.emitter }}</strong>.

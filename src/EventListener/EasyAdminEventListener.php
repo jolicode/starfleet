@@ -11,17 +11,15 @@
 
 namespace App\EventListener;
 
-use App\Entity\Participation;
-use App\Entity\User;
 use App\Entity\Submit;
-use App\Event\Notification\SubmitAddedEvent;
-use App\Event\Notification\SubmitStatusChangedEvent as NotificationSubmitStatusChangedEvent;
-use App\Event\SubmitStatusChangedEvent as SlackSubmitStatusChanged;
-use Symfony\Component\Security\Core\Security;
-use Symfony\Component\EventDispatcher\GenericEvent;
+use App\Entity\User;
+use App\Event\Notification\NewSubmitEvent;
+use App\Event\Notification\SubmitStatusChangedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\EasyAdminEvents;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\EventDispatcher\GenericEvent;
+use Symfony\Component\Security\Core\Security;
 
 class EasyAdminEventListener implements EventSubscriberInterface
 {
@@ -34,7 +32,7 @@ class EasyAdminEventListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            EasyAdminEvents::PRE_UPDATE => 'onPostUpdate',
+            EasyAdminEvents::PRE_UPDATE => 'onPreUpdate',
             EasyAdminEvents::PRE_PERSIST => 'onPrePersist',
             EasyAdminEvents::POST_PERSIST => 'onPostPersist',
         ];
@@ -43,13 +41,12 @@ class EasyAdminEventListener implements EventSubscriberInterface
     /**
      * @param GenericEvent<EasyAdminEvents> $event
      */
-    public function onPostUpdate(GenericEvent $event): void
+    public function onPreUpdate(GenericEvent $event): void
     {
         $entity = $event->getSubject();
         if ($entity instanceof Submit) {
             if ($entity->hasStatusChanged()) {
-                $this->eventDispatcher->dispatch(new SlackSubmitStatusChanged($entity));
-                $this->eventDispatcher->dispatch(new NotificationSubmitStatusChangedEvent($entity));
+                $this->eventDispatcher->dispatch(new SubmitStatusChangedEvent($entity));
                 $entity->resetStatusChanged();
             }
         }
@@ -70,7 +67,7 @@ class EasyAdminEventListener implements EventSubscriberInterface
         $entity = $event->getSubject();
 
         if ($entity instanceof Submit) {
-            $this->eventDispatcher->dispatch(new SubmitAddedEvent($entity));
+            $this->eventDispatcher->dispatch(new NewSubmitEvent($entity));
         }
     }
 }

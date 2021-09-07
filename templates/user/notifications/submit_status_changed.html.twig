@@ -1,3 +1,3 @@
-<strong>{{ notification.emitter }}</strong> set your <a href="{{ path(notification.submit.status ~ '_submits', { highlight: notification.submit.id }) }}" class="text-primary">Submit</a>
-for <a href="{{ path('conferences_show', { slug: notification.submit.conference.slug }) }}" class="text-primary">{{ notification.submit.conference.name }}</a>
-as <span class="color-{{ notification.submit.status }}">{{ notification.submit.status }}</span>.
+<strong>{{ notification.emitter }}</strong> updated the status of your <a href="{{ path(notification.submit.status ~ '_submits', { highlight: notification.submit.id }) }}" class="text-primary">Submit</a>
+for <a href="{{ path('conferences_show', { slug: notification.submit.conference.slug }) }}" class="text-primary">{{ notification.submit.conference.name }}</a>.<br>
+This submit is now marked as <span class="color-{{ notification.submit.status }}">{{ notification.submit.status }}</span>.

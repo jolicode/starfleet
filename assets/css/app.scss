@@ -249,7 +249,7 @@ header nav {
 
 .notification-read-all {
     text-align: center;
-    color: #dc3545;
+    color: #43a14b;
     border-bottom: 1px solid #747474;
     padding-bottom: 1em;
     margin-bottom: 1em;
@@ -257,7 +257,7 @@ header nav {
 }
 
 .notification-read-all * {
-    color: #dc3545;
+    color: #43a14b;
 }
 
 :not(:last-of-type).notification {
@@ -274,7 +274,7 @@ header nav {
 
 .notification-read button {
     font-style: italic;
-    color: #dc3545;
+    color: #43a14b;
     font-size: .9em;
     text-align: right;
     padding-right: 1em;
@@ -312,7 +312,7 @@ header nav {
     transform-origin: top center;
 }
 
-@for $i from 0 to 100 {
+@for $i from 0 to 10 {
     .notification-list .notification-#{$i} {
         animation: appear 300ms (200ms + $i * 100ms) ease-in-out forwards;
         transform-origin: top center;

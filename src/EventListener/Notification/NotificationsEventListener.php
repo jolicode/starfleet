@@ -1,22 +1,28 @@
 <?php
 
+/*
+ * This file is part of the Starfleet Project.
+ *
+ * (c) Starfleet <msantostefano@jolicode.com>
+ *
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
+ */
+
 namespace App\EventListener\Notification;
 
-use App\Entity\Conference;
+use App\Entity\Notifications\AbstractNotification;
 use App\Entity\Notifications\NewFeaturedConferenceNotification;
-use App\Entity\User;
-use App\Entity\Notifications\Notification;
+use App\Entity\Notifications\NewSubmitNotification;
 use App\Entity\Notifications\ParticipationStatusChangedNotification;
-use App\Entity\Notifications\SubmitAddedNotification;
 use App\Entity\Notifications\SubmitStatusChangedNotification;
-use App\Entity\Participation;
 use App\Event\Notification\NewFeaturedConferenceEvent;
-use App\Event\Notification\SubmitAddedEvent;
-use Symfony\Component\Security\Core\Security;
-use App\Event\Notification\SubmitStatusChangedEvent;
+use App\Event\Notification\NewSubmitEvent;
 use App\Event\Notification\ParticipationStatusChangedEvent;
+use App\Event\Notification\SubmitStatusChangedEvent;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Security\Core\Security;
 
 class NotificationsEventListener implements EventSubscriberInterface
 {
@@ -30,36 +36,46 @@ class NotificationsEventListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            SubmitAddedEvent::class => 'onSubmitAdded',
+            NewSubmitEvent::class => 'onNewSubmit',
             SubmitStatusChangedEvent::class => 'onSubmitStatusChanged',
             ParticipationStatusChangedEvent::class => 'onParticipationStatusChanged',
             NewFeaturedConferenceEvent::class => 'onNewFeaturedConference',
         ];
     }
 
-    public function onSubmitAdded(SubmitAddedEvent $event)
+    public function onNewSubmit(NewSubmitEvent $event)
     {
+        $currentUser = $this->security->getUser();
+
         foreach ($event->getSubmit()->getUsers() as $targetUser) {
-            if ($targetUser === $this->security->getUser()) {
+            if ($targetUser === $currentUser) {
                 continue;
             }
 
-            $notification = new SubmitAddedNotification($event->getSubmit(), $targetUser);
-            $notification->setEmitter($targetUser);
-            $notification->setTrigger(Notification::TRIGGER_SUBMIT_ADDED);
+            new NewSubmitNotification(
+                submit: $event->getSubmit(),
+                emitter: $currentUser,
+                targetUser: $targetUser,
+                trigger: AbstractNotification::TRIGGER_NEW_SUBMIT
+            );
         }
     }
 
     public function onSubmitStatusChanged(SubmitStatusChangedEvent $event): void
     {
+        $currentUser = $this->security->getUser();
+
         foreach ($event->getSubmit()->getUsers() as $targetUser) {
-            if ($targetUser === $this->security->getUser()) {
+            if ($targetUser === $currentUser) {
                 continue;
             }
 
-            $notification = new SubmitStatusChangedNotification($event->getSubmit(), $targetUser);
-            $notification->setEmitter($targetUser);
-            $notification->setTrigger(Notification::TRIGGER_SUBMIT_STATUS_CHANGED);
+            new SubmitStatusChangedNotification(
+                submit: $event->getSubmit(),
+                emitter: $currentUser,
+                targetUser: $targetUser,
+                trigger: AbstractNotification::TRIGGER_SUBMIT_STATUS_CHANGED
+            );
         }
     }
 
@@ -67,9 +83,12 @@ class NotificationsEventListener implements EventSubscriberInterface
     {
         $targetUser = $event->getParticipation()->getParticipant();
 
-        $notification = new ParticipationStatusChangedNotification($event->getParticipation(), $targetUser);
-        $notification->setEmitter($this->security->getUser());
-        $notification->setTrigger(Notification::TRIGGER_PARTICIPATION_STATUS_CHANGED);
+        new ParticipationStatusChangedNotification(
+            participation: $event->getParticipation(),
+            emitter: $this->security->getUser(),
+            targetUser: $targetUser,
+            trigger: AbstractNotification::TRIGGER_PARTICIPATION_STATUS_CHANGED
+        );
     }
 
     public function onNewFeaturedConference(NewFeaturedConferenceEvent $event): void
@@ -77,8 +96,7 @@ class NotificationsEventListener implements EventSubscriberInterface
         $query = $this->em->createQuery('select u from App\Entity\User u');
 
         foreach ($query->toIterable() as $targetUser) {
-            $notification = new NewFeaturedConferenceNotification($event->getConference(), $targetUser);
-            $notification->setTrigger(Notification::TRIGGER_NEW_FEATURED_CONFERENCE);
+            new NewFeaturedConferenceNotification($event->getConference(), $targetUser, AbstractNotification::TRIGGER_NEW_FEATURED_CONFERENCE);
         }
     }
 }

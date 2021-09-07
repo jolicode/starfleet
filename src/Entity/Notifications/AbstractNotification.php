@@ -1,35 +1,44 @@
 <?php
 
+/*
+ * This file is part of the Starfleet Project.
+ *
+ * (c) Starfleet <msantostefano@jolicode.com>
+ *
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
+ */
+
 namespace App\Entity\Notifications;
 
 use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\InheritanceType;
-use Doctrine\ORM\Mapping\DiscriminatorMap;
 use Doctrine\ORM\Mapping\DiscriminatorColumn;
+use Doctrine\ORM\Mapping\DiscriminatorMap;
+use Doctrine\ORM\Mapping\InheritanceType;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity()
  * @InheritanceType("SINGLE_TABLE")
  * @DiscriminatorColumn(name="type", type="string")
  * @DiscriminatorMap({
- *      "submitAdded" = "SubmitAddedNotification",
+ *      "NewSubmit" = "NewSubmitNotification",
  *      "submitStatusChanged" = "SubmitStatusChangedNotification",
  *      "participationStatusChangedNotification" = "ParticipationStatusChangedNotification",
  *      "newFeaturedConference" = "NewFeaturedConferenceNotification"
  * })
  */
-abstract class Notification
+abstract class AbstractNotification
 {
     // These const must match the names of the templates in templates/user/notifications
-    public const TRIGGER_SUBMIT_ADDED = 'submit_added';
+    public const TRIGGER_NEW_SUBMIT = 'new_submit';
     public const TRIGGER_SUBMIT_STATUS_CHANGED = 'submit_status_changed';
     public const TRIGGER_PARTICIPATION_STATUS_CHANGED = 'participation_status_changed';
     public const TRIGGER_NEW_FEATURED_CONFERENCE = 'new_featured_conference';
 
     public const TRIGGERS = [
-        self::TRIGGER_SUBMIT_ADDED,
+        self::TRIGGER_NEW_SUBMIT,
         self::TRIGGER_SUBMIT_STATUS_CHANGED,
         self::TRIGGER_PARTICIPATION_STATUS_CHANGED,
         self::TRIGGER_NEW_FEATURED_CONFERENCE,
@@ -44,7 +53,7 @@ abstract class Notification
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="notifications")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
     protected User $targetUser;
 
@@ -64,10 +73,12 @@ abstract class Notification
      */
     private bool $read = false;
 
-    public function __construct(User $targetUser)
+    public function __construct(User $targetUser, string $trigger)
     {
         $this->createdAt = new \DateTime();
-        $this->setTargetUser($targetUser);
+        $this->targetUser = $targetUser;
+        $targetUser->addNotification($this);
+        $this->trigger = $trigger;
     }
 
     public function getId(): int
@@ -80,14 +91,6 @@ abstract class Notification
         return $this->targetUser;
     }
 
-    public function setTargetUser(User $targetUser): self
-    {
-        $this->targetUser = $targetUser;
-        $targetUser->addNotification($this);
-
-        return $this;
-    }
-
     public function getCreatedAt(): \DateTimeInterface
     {
         return $this->createdAt;
@@ -98,22 +101,13 @@ abstract class Notification
         return $this->trigger;
     }
 
-    public function setTrigger(string $trigger): self
-    {
-        $this->trigger = $trigger;
-
-        return $this;
-    }
-
     public function isRead(): bool
     {
         return $this->read;
     }
 
-    public function setRead(bool $read): self
+    public function markAsRead(): void
     {
-        $this->read = $read;
-
-        return $this;
+        $this->read = true;
     }
 }

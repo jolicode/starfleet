@@ -29,35 +29,7 @@
                         </a>
                     </li>
                     {% if app.user %}
-                        {% set unreadNotifications = getUnreadNotifications(app.user.notifications) %}
-                        <li class="notification-dropdown nav-item {{ unreadNotifications|length ? 'activated' : '' }}">
-                            <a class="notification-button nav-link btn btn-outline-secondary btn-sm text-light fsize-medium mr-2">
-                                {% if unreadNotifications|length %}
-                                    <i class="fas fa-exclamation-circle text-danger mr-1 fsize-medium"></i> {{ unreadNotifications|length }} Notifications <i class="fas fa-chevron-right ml-1 text-danger"></i>
-                                {% else %}
-                                    No Notifications
-                                {% endif %}
-                            </a>
-
-                            <div class="notification-list">
-                                <form action="{{ path('read_all_notification', { route_name: app.request.get('_route') }) }}" method="POST" class="notification-read-all">
-                                    <button type="submit" class="btn"><i class="fas fa-times-circle"></i> Mark all as read</button>
-                                    <input type="hidden" name="token" value="{{ csrf_token('') }}">
-                                </form>
-                                {% for index, notification in unreadNotifications|slice(0, 5) %}
-                                    <div class="notification notification-{{ index }} fsize-medium">
-                                        {{ include('user/notifications/' ~ notification.trigger ~ '.html.twig', { notification: notification }) }}
-                                        <form class="notification-read" action="{{ path('read_notification', { id: notification.id, route_name: app.request.get('_route') }) }}" method="POST">
-                                            <button type="submit" class="btn"><i class="fas fa-times"></i> Mark as read</button>
-                                            <input type="hidden" name="token" value="{{ csrf_token('') }}">
-                                        </form>
-                                    </div>
-                                {% endfor %}
-                                {% if unreadNotifications|length > 5 %}
-                                    <div class="notification-more text-center mb-2">And {{ unreadNotifications|length - 5 }} more</div>
-                                {% endif %}
-                            </div>
-                        </li>
+                        {{ render(controller('App\\Controller\\UserAccount\\NotificationController::allUnreadNotifications')) }}
                     {% endif %}
                 </ul>
             </div>

@@ -11,13 +11,13 @@
 
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use App\Entity\Notifications\Notification;
-use Doctrine\Common\Collections\Collection;
+use App\Entity\Notifications\AbstractNotification;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Table(name="users")
@@ -124,9 +124,9 @@ class User implements UserInterface, \Serializable
     private ?string $password = null;
 
     /**
-     * @ORM\OneToMany(targetEntity=Notification::class, mappedBy="targetUser", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity=AbstractNotification::class, mappedBy="targetUser", cascade={"persist"})
      *
-     * @var Collection<Notification> $notifications
+     * @var Collection<AbstractNotification>
      */
     private Collection $notifications;
 
@@ -419,26 +419,18 @@ class User implements UserInterface, \Serializable
     }
 
     /**
-     * @return Collection|Notification[]
+     * @return Collection|AbstractNotification[]
      */
     public function getNotifications(): Collection
     {
         return $this->notifications;
     }
 
-    public function addNotification(Notification $notification): self
+    public function addNotification(AbstractNotification $notification): self
     {
         if (!$this->notifications->contains($notification)) {
             $this->notifications[] = $notification;
-            $notification->setTargetUser($this);
         }
-
-        return $this;
-    }
-
-    public function removeNotification(Notification $notification): self
-    {
-        $this->notifications->removeElement($notification);
 
         return $this;
     }
