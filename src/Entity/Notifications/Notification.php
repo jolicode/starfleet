@@ -59,6 +59,11 @@ abstract class Notification
     #[Assert\Choice(choices: self::TRIGGERS)]
     protected string $trigger;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private bool $read = false;
+
     public function __construct(User $targetUser)
     {
         $this->createdAt = new \DateTime();
@@ -96,6 +101,18 @@ abstract class Notification
     public function setTrigger(string $trigger): self
     {
         $this->trigger = $trigger;
+
+        return $this;
+    }
+
+    public function isRead(): bool
+    {
+        return $this->read;
+    }
+
+    public function setRead(bool $read): self
+    {
+        $this->read = $read;
 
         return $this;
     }

@@ -226,3 +226,113 @@ header nav {
         transform: translate(0%,0%) rotate(random(30) + deg);
     }
 }
+
+.fsize-medium {
+    font-size: 1em;
+}
+
+.notification-list {
+    border: 1px solid #747474;
+    border-radius: 5px;
+    background-color: #F8F9FA;
+    color: #666565;
+    position: absolute;
+    width: 20em;
+    min-width: 200px;
+    max-width: 300px;
+    left: 100%;
+    top: 0;
+    padding: 1em 1em 0;
+    z-index: 100;
+    display: none;
+}
+
+.notification-read-all {
+    text-align: center;
+    color: #dc3545;
+    border-bottom: 1px solid #747474;
+    padding-bottom: 1em;
+    margin-bottom: 1em;
+    width: 100%;
+}
+
+.notification-read-all * {
+    color: #dc3545;
+}
+
+:not(:last-of-type).notification {
+    border-bottom: 1px solid #747474;
+    margin-bottom: 1em;
+}
+
+.notification-read {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-end;
+    margin-top: 1em;
+}
+
+.notification-read button {
+    font-style: italic;
+    color: #dc3545;
+    font-size: .9em;
+    text-align: right;
+    padding-right: 1em;
+    cursor: pointer;
+}
+
+.notification-read .fa-times  {
+    font-size: 1.1em;
+    margin-right: .2em;
+}
+
+.notification-list :is(.notification, .notification-read-all) {
+    display: none;
+    opacity: 0;
+}
+
+.activated.notification-dropdown:hover .notification-list {
+    display: block;
+}
+
+.activated.notification-dropdown:hover .notification-list :is(.notification, .notification-read-all) {
+    display: block;
+}
+
+.fa-chevron-right {
+    transition: all .5s;
+}
+
+.notification-dropdown:hover .fa-chevron-right {
+    transform: rotate(90deg);
+}
+
+.notification-list .notification-read-all {
+    animation: appear 300ms 100ms ease-in-out forwards;
+    transform-origin: top center;
+}
+
+@for $i from 0 to 100 {
+    .notification-list .notification-#{$i} {
+        animation: appear 300ms (200ms + $i * 100ms) ease-in-out forwards;
+        transform-origin: top center;
+    }
+    .notification-list .notification-#{$i} .notification-read {
+        animation: appear 300ms (200ms + $i * 100ms) ease-in-out forwards;
+        transform-origin: top center;
+    }
+}
+
+@keyframes appear {
+    0% {
+        opacity: 0;
+        transform: rotateX(-90deg);
+    }
+    50% {
+        transform: rotateX(-10deg);
+    }
+    100% {
+        opacity: 1;
+        transform: rotateX(0deg);
+    }
+}

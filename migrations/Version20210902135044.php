@@ -12,7 +12,7 @@ final class Version20210902135044 extends AbstractMigration
     public function up(Schema $schema) : void
     {
         $this->addSql('CREATE SEQUENCE notification_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
-        $this->addSql('CREATE TABLE notification (id INT NOT NULL, target_user_id INT NOT NULL, submit_id INT, emitter_id INT, participation_id INT, conference_id INT, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, trigger VARCHAR(255) NOT NULL, type VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE notification (id INT NOT NULL, target_user_id INT NOT NULL, submit_id INT, emitter_id INT, participation_id INT, conference_id INT, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, trigger VARCHAR(255) NOT NULL, type VARCHAR(255) NOT NULL, read BOOLEAN NOT NULL DEFAULT FALSE, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_BF5476CA6C066AFE ON notification (target_user_id)');
         $this->addSql('CREATE INDEX IDX_BF5476CA8AAB0BD7 ON notification (submit_id)');
         $this->addSql('CREATE INDEX IDX_BF5476CA37BC4DC6 ON notification (emitter_id)');

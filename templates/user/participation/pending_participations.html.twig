@@ -9,7 +9,7 @@
     <div class="mb-5 w-100">
         <h2 class="ml-5 mb-5">Participations still waiting for approval</h2>
         {% for participation in participations %}
-            <div class="card w-75 mx-auto my-2">
+            <div id="{{ participation.id }}" class="card w-75 mx-auto my-2">
                 <div class="card-header d-flex justify-content-between">
                     <a href="{{ path('conferences_show', { slug: participation.conference.slug }) }}">
                         <h5 class="card-title text-primary my-0">{{ participation.conference.name }}</h5>

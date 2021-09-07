@@ -1,10 +1,3 @@
-<div class="notification-reason">Submit status changed.</div>
-<div class="notification-content">
-    New status : {{ notification.submit.status }}
-    See it here : <a href="{{ path(notification.submit.status ~ '_submits', { highlight: notification.submit.id }) }}">Link</a>
-</div>
-<div class="notification-source">Modified by : {{ notification.emitter }}</div>
-
-<pre>
-    {{ dump(notification.submit) }}
-</pre>
+<strong>{{ notification.emitter }}</strong> set your <a href="{{ path(notification.submit.status ~ '_submits', { highlight: notification.submit.id }) }}" class="text-primary">Submit</a>
+for <a href="{{ path('conferences_show', { slug: notification.submit.conference.slug }) }}" class="text-primary">{{ notification.submit.conference.name }}</a>
+as <span class="color-{{ notification.submit.status }}">{{ notification.submit.status }}</span>.
