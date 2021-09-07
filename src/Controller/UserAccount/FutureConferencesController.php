@@ -23,7 +23,7 @@ class FutureConferencesController extends AbstractController
     ) {
     }
 
-    #[Route(path: '/user/future-conferences', name: 'user_conferences')]
+    #[Route(path: '/user/future-conferences', name: 'future_conferences')]
     public function futureConferences(): Response
     {
         $conferences = $this->conferenceRepository->getUserFutureConferences();
