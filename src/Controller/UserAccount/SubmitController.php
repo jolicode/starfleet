@@ -185,8 +185,9 @@ class SubmitController extends AbstractController
         }
 
         $submit->setStatus(Submit::STATUS_ACCEPTED);
-        $this->eventDispatcher->dispatch(new SubmitStatusChangedEvent($submit));
+        $this->em->flush();
 
+        $this->eventDispatcher->dispatch(new SubmitStatusChangedEvent($submit));
         $this->em->flush();
         $this->addFlash('info', sprintf('Submit for %s tagged as accepted.', $submit->getConference()->getName()));
 
@@ -202,8 +203,9 @@ class SubmitController extends AbstractController
         }
 
         $submit->setStatus(Submit::STATUS_DONE);
-        $this->eventDispatcher->dispatch(new SubmitStatusChangedEvent($submit));
+        $this->em->flush();
 
+        $this->eventDispatcher->dispatch(new SubmitStatusChangedEvent($submit));
         $this->em->flush();
         $this->addFlash('info', sprintf('Submit for %s tagged as done.', $submit->getConference()->getName()));
 
@@ -219,8 +221,9 @@ class SubmitController extends AbstractController
         }
 
         $submit->setStatus(Submit::STATUS_REJECTED);
-        $this->eventDispatcher->dispatch(new SubmitStatusChangedEvent($submit));
+        $this->em->flush();
 
+        $this->eventDispatcher->dispatch(new SubmitStatusChangedEvent($submit));
         $this->em->flush();
         $this->addFlash('info', sprintf('Submit for %s tagged as rejected.', $submit->getConference()->getName()));
 
@@ -236,8 +239,9 @@ class SubmitController extends AbstractController
         }
 
         $submit->setStatus(Submit::STATUS_PENDING);
-        $this->eventDispatcher->dispatch(new SubmitStatusChangedEvent($submit));
+        $this->em->flush();
 
+        $this->eventDispatcher->dispatch(new SubmitStatusChangedEvent($submit));
         $this->em->flush();
         $this->addFlash('info', sprintf('Submit for %s tagged as pending.', $submit->getConference()->getName()));
 
