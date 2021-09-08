@@ -52,12 +52,14 @@ class NotificationsEventListener implements EventSubscriberInterface
                 continue;
             }
 
-            new NewSubmitNotification(
+            $notification = new NewSubmitNotification(
                 submit: $event->getSubmit(),
                 emitter: $currentUser,
                 targetUser: $targetUser,
                 trigger: AbstractNotification::TRIGGER_NEW_SUBMIT
             );
+
+            $this->em->persist($notification);
         }
     }
 
@@ -70,12 +72,14 @@ class NotificationsEventListener implements EventSubscriberInterface
                 continue;
             }
 
-            new SubmitStatusChangedNotification(
+            $notification = new SubmitStatusChangedNotification(
                 submit: $event->getSubmit(),
                 emitter: $currentUser,
                 targetUser: $targetUser,
                 trigger: AbstractNotification::TRIGGER_SUBMIT_STATUS_CHANGED
             );
+
+            $this->em->persist($notification);
         }
     }
 
@@ -83,12 +87,14 @@ class NotificationsEventListener implements EventSubscriberInterface
     {
         $targetUser = $event->getParticipation()->getParticipant();
 
-        new ParticipationStatusChangedNotification(
+        $notification = new ParticipationStatusChangedNotification(
             participation: $event->getParticipation(),
             emitter: $this->security->getUser(),
             targetUser: $targetUser,
             trigger: AbstractNotification::TRIGGER_PARTICIPATION_STATUS_CHANGED
         );
+
+        $this->em->persist($notification);
     }
 
     public function onNewFeaturedConference(NewFeaturedConferenceEvent $event): void
@@ -96,7 +102,9 @@ class NotificationsEventListener implements EventSubscriberInterface
         $query = $this->em->createQuery('select u from App\Entity\User u');
 
         foreach ($query->toIterable() as $targetUser) {
-            new NewFeaturedConferenceNotification($event->getConference(), $targetUser, AbstractNotification::TRIGGER_NEW_FEATURED_CONFERENCE);
+            $notification = new NewFeaturedConferenceNotification($event->getConference(), $targetUser, AbstractNotification::TRIGGER_NEW_FEATURED_CONFERENCE);
+
+            $this->em->persist($notification);
         }
     }
 }

@@ -50,12 +50,12 @@ class SubmitController extends AbstractController
 
         if ($form->handleRequest($request)->isSubmitted() && $form->isValid()) {
             $this->em->persist($submit);
-            $this->em->flush();
 
             if (\count($submit->getUsers()) > 1) {
                 $this->eventDispatcher->dispatch(new NewSubmitEvent($submit));
             }
 
+            $this->em->flush();
             $this->addFlash('info', 'The submit has been saved.');
 
             return $this->redirectToRoute('user_submits');
@@ -123,8 +123,6 @@ class SubmitController extends AbstractController
         ]);
 
         if ($form->handleRequest($request)->isSubmitted() && $form->isValid()) {
-            $this->em->flush();
-
             $newUsers = [];
 
             foreach ($submit->getUsers() as $user) {
@@ -137,6 +135,7 @@ class SubmitController extends AbstractController
                 $this->eventDispatcher->dispatch(new NewSubmitEvent($submit));
             }
 
+            $this->em->flush();
             $this->addFlash('info', 'Your talk has been submitted.');
 
             return $this->redirectToRoute('user_submits');
@@ -160,12 +159,12 @@ class SubmitController extends AbstractController
 
         if ($form->handleRequest($request)->isSubmitted() && $form->isValid()) {
             $this->em->persist($submit);
-            $this->em->flush();
 
             if (\count($submit->getUsers()) > 1) {
                 $this->eventDispatcher->dispatch(new NewSubmitEvent($submit));
             }
 
+            $this->em->flush();
             $this->addFlash('info', 'Your talk has been submitted.');
 
             return $this->redirectToRoute('user_submits');
@@ -186,9 +185,9 @@ class SubmitController extends AbstractController
         }
 
         $submit->setStatus(Submit::STATUS_ACCEPTED);
-        $this->em->flush();
-
         $this->eventDispatcher->dispatch(new SubmitStatusChangedEvent($submit));
+
+        $this->em->flush();
         $this->addFlash('info', sprintf('Submit for %s tagged as accepted.', $submit->getConference()->getName()));
 
         return $this->redirectToRoute('user_submits');
@@ -203,9 +202,9 @@ class SubmitController extends AbstractController
         }
 
         $submit->setStatus(Submit::STATUS_DONE);
-        $this->em->flush();
-
         $this->eventDispatcher->dispatch(new SubmitStatusChangedEvent($submit));
+
+        $this->em->flush();
         $this->addFlash('info', sprintf('Submit for %s tagged as done.', $submit->getConference()->getName()));
 
         return $this->redirectToRoute('user_submits');
@@ -220,9 +219,9 @@ class SubmitController extends AbstractController
         }
 
         $submit->setStatus(Submit::STATUS_REJECTED);
-        $this->em->flush();
-
         $this->eventDispatcher->dispatch(new SubmitStatusChangedEvent($submit));
+
+        $this->em->flush();
         $this->addFlash('info', sprintf('Submit for %s tagged as rejected.', $submit->getConference()->getName()));
 
         return $this->redirectToRoute('user_submits');
@@ -237,9 +236,9 @@ class SubmitController extends AbstractController
         }
 
         $submit->setStatus(Submit::STATUS_PENDING);
-        $this->em->flush();
-
         $this->eventDispatcher->dispatch(new SubmitStatusChangedEvent($submit));
+
+        $this->em->flush();
         $this->addFlash('info', sprintf('Submit for %s tagged as pending.', $submit->getConference()->getName()));
 
         return $this->redirectToRoute('user_submits');
