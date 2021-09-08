@@ -29,6 +29,9 @@
                         <a href="{{ path('user_account') }}">
                             <div class="btn btn-secondary">Back Home</div>
                         </a>
+                        <a href="{{ path('future_conferences') }}">
+                            <div class="btn btn-{{ section == 'conferences' ? 'primary' : 'secondary' }}">Conferences</div>
+                        </a>
                         <a href="{{ path('user_submits') }}">
                             <div class="btn btn-{{ section == 'submits' ? 'primary' : 'secondary' }}">Submits</div>
                         </a>

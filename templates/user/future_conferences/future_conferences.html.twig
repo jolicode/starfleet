@@ -1,5 +1,10 @@
 {% extends "user/user_layout.html.twig" %}
 
+{% block nav %}
+    {% set section = 'conferences' %}
+    {{ parent() }}
+{% endblock %}
+
 {% block content %}
     <div class="mb-5 w-100">
         <h1 class="text-center mt-3">All upcoming Conferences</h1>
