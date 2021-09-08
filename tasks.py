@@ -153,7 +153,6 @@ def tests(c):
     Launch unit and functional tests
     """
     with Builder(c):
-        fixtures(c)
         docker_compose_run(c, 'php ./vendor/bin/simple-phpunit')
 
 
