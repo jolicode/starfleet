@@ -1,3 +1,18 @@
-The <a href="{{ path(notification.participation.marking ~ '_participations', { highlight: notification.participation.id }) }}" class="text-primary">Participation</a>
-demand you made for <a href="{{ path('conferences_show', { slug: notification.participation.conference.slug }) }}" class="text-primary">{{ notification.participation.conference.name }}</a>
-was marked as <span class="color-{{ notification.participation.marking }}">{{ notification.participation.marking }}</span> by <strong>{{ notification.emitter }}</strong>.
+{% if notification.participation.marking == constant('App\\Enum\\Workflow\\Transition\\Participation::CANCELLED') %}
+    The Participation demand you made for <a href="{{ path('conferences_show', { slug: notification.participation.conference.slug }) }}" class="text-primary">{{ notification.participation.conference.name }}</a>
+    was <span class="color-{{ notification.participation.marking }}">{{ notification.participation.marking }}</span> by <strong>{{ notification.emitter }}</strong>.
+{% else %}
+    {% if notification.participation.marking == constant('App\\Enum\\Workflow\\Transition\\Participation::ACCEPTED') %}
+        {% if notification.participation.conference.startAt|date("Y/m/d") > "now"|date("Y/m/d") %}
+            {% set route = 'future_participations' %}
+        {% else %}
+            {% set route = 'past_participations' %}
+        {% endif %}
+    {% else %}
+        {% set route = notification.participation.marking ~ '_participations' %}
+    {% endif %}
+
+    The <a href="{{ path(route, { highlight: notification.participation.id }) }}" class="text-primary">Participation</a>
+    demand you made for <a href="{{ path('conferences_show', { slug: notification.participation.conference.slug }) }}" class="text-primary">{{ notification.participation.conference.name }}</a>
+    was marked as <span class="color-{{ notification.participation.marking }}">{{ notification.participation.marking }}</span> by <strong>{{ notification.emitter }}</strong>.
+{% endif %}

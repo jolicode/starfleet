@@ -2,3 +2,4 @@ import '../bootstrap'; // Stimulus bootstraping file, not related to Bootstrap C
 require('bootstrap');
 
 import './urlBuilder';
+import './highlightScroll';

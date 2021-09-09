@@ -7,14 +7,14 @@
         {% endif %}
     </div>
     <div class="notification-list">
-        <form class="notification-read-all js-build-url" data-action="{{ url('read_all_notification') }}" method="POST">
+        <form class="notification-read-all js-build-url" action="{{ url('read_all_notification') }}" method="POST">
             <button type="submit" class="btn"><i class="fas fa-check"></i> Mark all as read</button>
             <input type="hidden" name="token" value="{{ csrf_token('') }}">
         </form>
         {% for index, notification in unreadNotifications|slice(0, 5) %}
             <div class="notification notification-{{ index }} fsize-medium">
                 {{ include('user/notifications/' ~ notification.trigger ~ '.html.twig', { notification: notification }) }}
-                <form class="notification-read js-build-url" data-action="{{ url('read_notification', { id: notification.id }) }}" method="POST">
+                <form class="notification-read js-build-url" action="{{ url('read_notification', { id: notification.id }) }}" method="POST">
                     <button type="submit" class="btn"><i class="fas fa-check"></i> Mark as read</button>
                     <input type="hidden" name="token" value="{{ csrf_token('') }}">
                 </form>

@@ -67,7 +67,7 @@ class NotificationController extends AbstractController
     }
 
     #[Route(path: '/user/notification-all-unread', name: 'notification_all_unread')]
-    public function allUnreadNotifications()
+    public function allUnreadNotifications(): Response
     {
         return $this->render('user/notifications/_all_unread.html.twig', [
             'unreadNotifications' => $this->notificationRepository->getAllUnreadForUser($this->getUser()),

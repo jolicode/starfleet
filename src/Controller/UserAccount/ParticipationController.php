@@ -73,10 +73,10 @@ class ParticipationController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/user/future-participations', name: 'accepted_participations')]
+    #[Route(path: '/user/future-participations', name: 'future_participations')]
     public function futureParticipations(): Response
     {
-        return $this->render('user/participation/accepted_participations.html.twig', [
+        return $this->render('user/participation/future_participations.html.twig', [
             'participations' => $this->participationRepository->findFutureParticipationsByUser($this->getUser()),
         ]);
     }

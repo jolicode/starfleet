@@ -24,7 +24,7 @@ use Zenstruck\Foundry\Proxy;
 
 class NotificationsFixtures extends Fixture implements DependentFixtureInterface
 {
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         foreach (UserFactory::all() as $user) {
             foreach (range(1, random_int(1, 3)) as $i) {
@@ -50,6 +50,7 @@ class NotificationsFixtures extends Fixture implements DependentFixtureInterface
             2 => ParticipationStatusChangedNotificationFactory::findOrCreate(['targetUser' => $user]),
             3 => NewSubmitNotificationFactory::findOrCreate(['targetUser' => $user]),
             4 => SubmitStatusChangedNotificationFactory::findOrCreate(['targetUser' => $user]),
+            default => NewSubmitNotificationFactory::findOrCreate(['targetUser' => $user]),
         };
 
         return $proxy->object();

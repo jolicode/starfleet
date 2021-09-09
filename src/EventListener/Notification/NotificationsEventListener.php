@@ -16,6 +16,7 @@ use App\Entity\Notifications\NewFeaturedConferenceNotification;
 use App\Entity\Notifications\NewSubmitNotification;
 use App\Entity\Notifications\ParticipationStatusChangedNotification;
 use App\Entity\Notifications\SubmitStatusChangedNotification;
+use App\Entity\User;
 use App\Event\Notification\NewFeaturedConferenceEvent;
 use App\Event\Notification\NewSubmitEvent;
 use App\Event\Notification\ParticipationStatusChangedEvent;
@@ -43,8 +44,9 @@ class NotificationsEventListener implements EventSubscriberInterface
         ];
     }
 
-    public function onNewSubmit(NewSubmitEvent $event)
+    public function onNewSubmit(NewSubmitEvent $event): void
     {
+        /** @var User $currentUser */
         $currentUser = $this->security->getUser();
 
         foreach ($event->getSubmit()->getUsers() as $targetUser) {
@@ -65,6 +67,7 @@ class NotificationsEventListener implements EventSubscriberInterface
 
     public function onSubmitStatusChanged(SubmitStatusChangedEvent $event): void
     {
+        /** @var User $currentUser */
         $currentUser = $this->security->getUser();
 
         foreach ($event->getSubmit()->getUsers() as $targetUser) {
@@ -86,10 +89,12 @@ class NotificationsEventListener implements EventSubscriberInterface
     public function onParticipationStatusChanged(ParticipationStatusChangedEvent $event): void
     {
         $targetUser = $event->getParticipation()->getParticipant();
+        /** @var User $emitter */
+        $emitter = $this->security->getUser();
 
         $notification = new ParticipationStatusChangedNotification(
             participation: $event->getParticipation(),
-            emitter: $this->security->getUser(),
+            emitter: $emitter,
             targetUser: $targetUser,
             trigger: AbstractNotification::TRIGGER_PARTICIPATION_STATUS_CHANGED
         );

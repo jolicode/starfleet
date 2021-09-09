@@ -4,7 +4,7 @@ if (urls.length) {
     const currentUrl = new URL(window.location.href);
 
     [...urls].forEach(form => {
-        const targetUrl = form.dataset.action;
+        const targetUrl = form.action;
         const newUrl = new URL(targetUrl);
 
         newUrl.searchParams.append('previousUrl', currentUrl);
