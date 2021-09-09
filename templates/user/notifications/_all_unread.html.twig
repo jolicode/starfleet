@@ -1,7 +1,7 @@
 <li class="notification-dropdown nav-item {{ unreadNotifications|length ? 'activated' : '' }}">
-    <div class="notification-button nav-link btn btn-outline-secondary btn-sm text-light fsize-medium mr-2">
+    <div class="header-button notification-button fsize-medium mr-2">
         {% if unreadNotifications|length %}
-            <i class="fas fa-exclamation-circle text-danger mr-1 fsize-medium"></i> {{ unreadNotifications|length }} Notifications <i class="fas fa-chevron-right ml-1 text-danger"></i>
+            <i class="fas fa-exclamation-circle text-danger mr-1 fsize-large align-middle"></i> {{ unreadNotifications|length }} Notifications <i class="fas fa-chevron-right ml-1 text-danger"></i>
         {% else %}
             No Notifications
         {% endif %}

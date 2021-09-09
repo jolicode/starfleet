@@ -29,7 +29,7 @@
                     <div>
                         <a href="{{ path('conferences_show', { slug: submit.conference.slug }) }}">
                             <span class="text-primary">{{ submit.conference.name -}}</span>
-                        </a> - starting on {{ submit.conference.startAt|date('m/d/Y') }}
+                        </a> - starting on <mark>{{ submit.conference.startAt|date('m/d/Y') }}</mark>
                     </div>
 
                     <div class="d-flex justify-content-around mt-2">

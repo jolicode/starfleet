@@ -23,9 +23,13 @@
             <div class="collapse navbar-collapse" id="navbar">
                 <ul class="navbar-nav mr-auto position-relative">
                     <li class="nav-item mr-2">
-                        <a class="nav-link btn btn-outline-secondary btn-sm text-light fsize-medium"
+                        <a class="header-button fsize-medium"
                            href="{{ app.user ? path('user_account') : path('login') }}">
-                            {{ app.user ? '👤 Account' : '🔒 Login' }}
+                           {% if app.user %}
+                                <i class="fas fa-user-circle text-primary fsize-large align-middle mr-1"></i> My Account
+                            {% else %}
+                                <i class="fas fa-unlock text-warning fsize-large align-middle mr-1"></i> Login
+                           {% endif %}
                         </a>
                     </li>
                     {% if app.user %}

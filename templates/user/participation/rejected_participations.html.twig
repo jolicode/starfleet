@@ -14,7 +14,7 @@
                     <a href="{{ path('conferences_show', { slug: participation.conference.slug }) }}">
                         <h5 class="card-title text-primary my-0">{{ participation.conference.name }}</h5>
                     </a>
-                    <div>starts on {{ participation.conference.startAt|date('m/d/Y') }}</div>
+                    <div>From <mark>{{ participation.conference.startAt|date('m/d/Y') }}</mark> to <mark>{{ participation.conference.endAt|date('m/d/Y') }}</div></mark>
                 </div>
             </div>
         {% endfor %}

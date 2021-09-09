@@ -42,4 +42,18 @@ class TalkRepository extends ServiceEntityRepository
             ->execute()
         ;
     }
+
+    /** @return array<Talk> */
+    public function findNonUserTalks(User $user): array
+    {
+        return $this->createQueryBuilder('t')
+            ->innerJoin('t.submits', 's')
+            ->innerJoin('s.users', 'u')
+            ->andWhere('u.id != :userId')
+            ->setParameter('userId', $user->getId())
+            ->orderBy('t.id', 'DESC')
+            ->getQuery()
+            ->execute()
+        ;
+    }
 }

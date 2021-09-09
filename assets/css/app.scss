@@ -55,6 +55,24 @@ header nav {
     }
 }
 
+.header-button {
+    display: block;
+    padding: 0.7em;
+    line-height: 1.5;
+    background-color: #F8F9FA;
+    border: 1px solid #190629;
+    color: #190629;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.header-button:hover {
+    text-decoration: none;
+    background-color: #190629;
+    color: #F8F9FA;
+    border: 1px solid #F8F9FA;
+}
+
 .showcase {
     padding-top: 30px;
 }
@@ -228,7 +246,11 @@ header nav {
 }
 
 .fsize-medium {
-    font-size: 1em;
+    font-size: .95em;
+}
+
+.fsize-large {
+    font-size: 1.5em;
 }
 
 .notification-list {

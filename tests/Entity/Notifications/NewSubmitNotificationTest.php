@@ -13,6 +13,7 @@ namespace App\Tests\Entity\Notifications;
 
 use App\Factory\ConferenceFactory;
 use App\Factory\Notifications\NewSubmitNotificationFactory;
+use App\Factory\SubmitFactory;
 use App\Factory\TalkFactory;
 use App\Factory\UserFactory;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -31,13 +32,18 @@ class NewSubmitNotificationTest extends WebTestCase
     {
         $emitterUser = UserFactory::createOne();
         $targetUser = UserFactory::createOne();
-        $talk = TalkFactory::createOne();
         $conference = ConferenceFactory::createOne([
-                'name' => 'Future Conference',
-                'startAt' => new \DateTime('+10 days'),
-                'endAt' => new \DateTime('+12 days'),
-            ])
-        ;
+            'name' => 'Future Conference',
+            'startAt' => new \DateTime('+10 days'),
+            'endAt' => new \DateTime('+12 days'),
+        ]);
+        $talk = TalkFactory::createOne();
+        $user = UserFactory::createOne();
+        SubmitFactory::createOne([
+            'users' => [$user],
+            'talk' => $talk,
+            'conference' => $conference,
+        ]);
 
         $this->ensureKernelShutdown();
         $client = $this->createClient();
