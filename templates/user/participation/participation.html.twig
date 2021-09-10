@@ -28,7 +28,7 @@
                             <a href="{{ path('conferences_show', { slug: participation.conference.slug }) }}">
                                 <h5 class="card-title text-primary my-0">{{ participation.conference.name }}</h5>
                             </a>
-                            <div>starts on {{ participation.conference.startAt|date('m/d/Y') }}</div>
+                            <div>starts on <mark>{{ participation.conference.startAt|date('m/d/Y') }}</mark></div>
                         </div>
 
                         <div class="card-body d-flex justify-content-around">
@@ -44,7 +44,7 @@
                     </div>
                 {% endfor %}
                 {% if futureParticipations|length > 3 %}
-                    <a href="{{ path('future_participations') }}"><span class="text-primary">...Show more</span></a>
+                    <a href="{{ path('accepted_participations') }}"><span class="text-primary">...Show more</span></a>
                 {% endif %}
             </div>
         {% endif %}
@@ -58,7 +58,7 @@
                             <a href="{{ path('conferences_show', { slug: participation.conference.slug }) }}">
                                 <h5 class="card-title text-primary my-0">{{ participation.conference.name }}</h5>
                             </a>
-                            <div>starts on {{ participation.conference.startAt|date('m/d/Y') }}</div>
+                            <div>starts on <mark>{{ participation.conference.startAt|date('m/d/Y') }}</mark></div>
                         </div>
 
                         <div class="card-body d-flex justify-content-around">
@@ -87,7 +87,7 @@
                         <div class="card-body">
                             <a href="{{ path('conferences_show', { slug: participation.conference.slug }) }}">
                                 <h5 class="card-title text-primary my-0">{{ participation.conference.name }}</h5>
-                            </a>starts on {{ participation.conference.startAt|date('m/d/Y') }}
+                            </a>Ended on <mark>{{ participation.conference.startAt|date('m/d/Y') }}</mark>
                         </div>
                     </div>
                 {% endfor %}
@@ -105,7 +105,7 @@
                         <div class="card-body">
                             <a href="{{ path('conferences_show', { slug: participation.conference.slug }) }}">
                                 <h5 class="card-title text-primary my-0">{{ participation.conference.name }}</h5>
-                            </a>ended on {{ participation.conference.endAt|date('m/d/Y') }}
+                            </a>Ended on <mark>{{ participation.conference.endAt|date('m/d/Y') }}</mark>
                         </div>
                     </div>
                 {% endfor %}

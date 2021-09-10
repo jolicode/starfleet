@@ -9,7 +9,7 @@
     <div class="mb-5 w-100">
         <h2 class="ml-5 mb-5">Submits still waiting for approval</h2>
         {% for submit in submits %}
-            <div class="card w-75 mx-auto my-2">
+            <div id="{{ submit.id }}" class="card w-75 mx-auto my-2">
                 <div class="card-header">
                     <a href="{{ path('show_talk', { id: submit.talk.id }) }}">
                         <h5 class="card-title text-primary my-0">{{ submit.talk.title }}</h5>
@@ -29,7 +29,7 @@
                     <div>
                         <a href="{{ path('conferences_show', { slug: submit.conference.slug }) }}">
                             <span class="text-primary">{{ submit.conference.name -}}</span>
-                        </a> - starting on {{ submit.conference.startAt|date('m/d/Y') }}
+                        </a> - starting on <mark>{{ submit.conference.startAt|date('m/d/Y') }}</mark>
                     </div>
 
                     <div class="d-flex justify-content-around mt-2">
@@ -57,4 +57,8 @@
             </div>
         {% endfor %}
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
 {% endblock %}

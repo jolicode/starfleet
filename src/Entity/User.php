@@ -11,6 +11,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Notifications\AbstractNotification;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -123,12 +124,20 @@ class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInt
      */
     private ?string $password = null;
 
+    /**
+     * @ORM\OneToMany(targetEntity=AbstractNotification::class, mappedBy="targetUser", cascade={"persist"})
+     *
+     * @var Collection<AbstractNotification>
+     */
+    private Collection $notifications;
+
     public function __construct()
     {
         $this->submits = new ArrayCollection();
         $this->participations = new ArrayCollection();
         // guarantee every user at least has ROLE_USER
         $this->roles = ['ROLE_USER'];
+        $this->notifications = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -413,5 +422,22 @@ class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInt
             $this->googleId,
             $this->githubId
         ) = unserialize($serialized);
+    }
+
+    /**
+     * @return Collection|AbstractNotification[]
+     */
+    public function getNotifications(): Collection
+    {
+        return $this->notifications;
+    }
+
+    public function addNotification(AbstractNotification $notification): self
+    {
+        if (!$this->notifications->contains($notification)) {
+            $this->notifications[] = $notification;
+        }
+
+        return $this;
     }
 }

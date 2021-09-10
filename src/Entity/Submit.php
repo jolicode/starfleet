@@ -72,7 +72,7 @@ class Submit
      *      minMessage = "You must add at least one user"
      * )
      *
-     * @var Collection<User>
+     *  @var Collection<User>
      */
     private Collection $users;
 
@@ -122,8 +122,10 @@ class Submit
 
     public function setStatus(string $status): self
     {
+        if ($this->status !== $status) {
+            $this->statusChanged = true;
+        }
         $this->status = $status;
-        $this->statusChanged = true;
 
         return $this;
     }

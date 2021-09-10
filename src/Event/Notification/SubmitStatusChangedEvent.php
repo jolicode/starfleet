@@ -9,7 +9,7 @@
  * please view the LICENSE file that was distributed with this source code.
  */
 
-namespace App\Event;
+namespace App\Event\Notification;
 
 use App\Entity\Submit;
 use Symfony\Contracts\EventDispatcher\Event;

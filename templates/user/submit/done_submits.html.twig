@@ -9,7 +9,7 @@
     <div class="mb-5 w-100">
         <h2 class="ml-5 mb-5">Done Submits</h2>
         {% for submit in submits %}
-            <div class="card w-75 mx-auto my-2">
+            <div id="{{ submit.id }}" class="card w-75 mx-auto my-2">
                 <div class="card-header">
                     <a href="{{ path('show_talk', { id: submit.talk.id }) }}">
                         <h5 class="card-title text-primary my-0">{{ submit.talk.title }}</h5>
@@ -35,4 +35,8 @@
             </div>
         {% endfor %}
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
 {% endblock %}

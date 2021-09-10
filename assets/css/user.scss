@@ -1,3 +1,7 @@
+a:hover {
+    text-decoration: underline #007bff .1em;
+}
+
 .lr-100 {
     left: 0;
     right: 0;
@@ -87,4 +91,15 @@
     background-color: #fbfbfb;
     border: 1px solid rgba(0, 0, 0, 0.125);
     flex-grow: 1;
+}
+.mx--30 {
+    margin-left: -30px;
+    margin-right: -30px;
+}
+
+.highlight {
+    border: 1px #ebb001 solid;
+    width: 80% !important;
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(235,176,1,0.36);
+    box-shadow: 0px 0px 5px 0px rgba(235,176,1,0.36);
 }

@@ -56,7 +56,14 @@ class SubmitControllerTest extends BaseFactories
             'startAt' => new \DateTime('+10 days'),
             'endAt' => new \DateTime('+12 days'),
         ]);
-        $talk = TalkFactory::createOne()->object();
+        $talk = TalkFactory::createOne();
+        $user = UserFactory::createOne();
+        UserFactory::createOne();
+        SubmitFactory::createOne([
+            'users' => [$user],
+            'talk' => $talk,
+            'conference' => $conference,
+        ]);
 
         $this->getClient()->request('GET', '/user/submits');
         $this->getClient()->submitForm('submit_submit', [
@@ -65,8 +72,8 @@ class SubmitControllerTest extends BaseFactories
             'submit[users]' => $this->getTestUser()->getId(),
         ]);
 
-        self::assertCount(1, SubmitFactory::all());
-        self::assertSame($this->getTestUser(), SubmitFactory::find(1)->getUsers()[0]);
+        self::assertCount(2, SubmitFactory::all());
+        self::assertSame($this->getTestUser(), SubmitFactory::find(2)->getUsers()[0]);
     }
 
     /** @dataProvider provideActions */

@@ -30,6 +30,6 @@ class UserFixtures extends Fixture
             'email' => 'user@starfleet.app',
             'password' => 'user',
         ]);
-        UserFactory::createMany(24);
+        UserFactory::createMany(10);
     }
 }
