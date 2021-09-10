@@ -6,6 +6,7 @@ easy_admin:
     design:
         brand_color: '#0C1A31'
         menu:
+            - { label: 'Administration' }
             - { entity: 'NextConference', label: 'Next Conferences', icon: 'forward', default: true }
             - { entity: 'PassedConference', label: 'Passed Conferences', icon: 'backward' }
             - { entity: 'ExcludedConference', label: 'Excluded Conferences', icon: 'times' }
@@ -16,6 +17,9 @@ easy_admin:
             - { entity: 'Continent', label: 'Continents', icon: 'globe' }
             - { entity: 'Submit', label: 'Submitted Talks', icon: 'check-circle' }
             - { label: 'Fetchers', route: 'fetcher_list', icon: 'bell' }
+            - { label: 'Links' }
+            - { label: 'Front Page', url: '/', icon: 'home'  }
+            - { label: 'My Account', url: '/user/account', icon: 'user' }
         assets:
             css:
                 - 'build/css/admin.css'
