@@ -237,6 +237,7 @@
                     class: 'row flex-column',
                 }
             }) }}
+                {{ form_errors(form) }}
                 {{ form_row(form.conference) }}
                 {{ form_row(form.talk) }}
                 {{ form_row(form.users) }}

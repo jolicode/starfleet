@@ -21,6 +21,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Table(name="submit")
  * @ORM\Entity()
+ *
+ * @CustomAssert\NoSubmitDuplicate()
  */
 class Submit
 {

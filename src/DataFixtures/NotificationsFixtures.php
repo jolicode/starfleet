@@ -15,6 +15,7 @@ use App\Entity\Notifications\AbstractNotification;
 use App\Factory\Notifications\NewFeaturedConferenceNotificationFactory;
 use App\Factory\Notifications\NewSubmitNotificationFactory;
 use App\Factory\Notifications\ParticipationStatusChangedNotificationFactory;
+use App\Factory\Notifications\SubmitCancelledNotificationFactory;
 use App\Factory\Notifications\SubmitStatusChangedNotificationFactory;
 use App\Factory\UserFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -45,11 +46,12 @@ class NotificationsFixtures extends Fixture implements DependentFixtureInterface
 
     private function createRandomNotification(Proxy $user): AbstractNotification
     {
-        $proxy = match (random_int(1, 4)) {
+        $proxy = match (random_int(1, 5)) {
             1 => NewFeaturedConferenceNotificationFactory::findOrCreate(['targetUser' => $user]),
             2 => ParticipationStatusChangedNotificationFactory::findOrCreate(['targetUser' => $user]),
             3 => NewSubmitNotificationFactory::findOrCreate(['targetUser' => $user]),
             4 => SubmitStatusChangedNotificationFactory::findOrCreate(['targetUser' => $user]),
+            5 => SubmitCancelledNotificationFactory::findOrCreate(['targetUser' => $user]),
             default => NewSubmitNotificationFactory::findOrCreate(['targetUser' => $user]),
         };
 

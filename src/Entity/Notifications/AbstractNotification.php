@@ -26,7 +26,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      "NewSubmit" = "NewSubmitNotification",
  *      "submitStatusChanged" = "SubmitStatusChangedNotification",
  *      "participationStatusChangedNotification" = "ParticipationStatusChangedNotification",
- *      "newFeaturedConference" = "NewFeaturedConferenceNotification"
+ *      "newFeaturedConference" = "NewFeaturedConferenceNotification",
+ *      "submitCancelled" = "SubmitCancelledNotification"
  * })
  */
 abstract class AbstractNotification
@@ -36,12 +37,14 @@ abstract class AbstractNotification
     public const TRIGGER_SUBMIT_STATUS_CHANGED = 'submit_status_changed';
     public const TRIGGER_PARTICIPATION_STATUS_CHANGED = 'participation_status_changed';
     public const TRIGGER_NEW_FEATURED_CONFERENCE = 'new_featured_conference';
+    public const TRIGGER_SUBMIT_CANCELLED = 'submit_cancelled';
 
     public const TRIGGERS = [
         self::TRIGGER_NEW_SUBMIT,
         self::TRIGGER_SUBMIT_STATUS_CHANGED,
         self::TRIGGER_PARTICIPATION_STATUS_CHANGED,
         self::TRIGGER_NEW_FEATURED_CONFERENCE,
+        self::TRIGGER_SUBMIT_CANCELLED,
     ];
 
     /**
