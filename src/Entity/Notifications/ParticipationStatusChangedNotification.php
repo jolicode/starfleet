@@ -22,13 +22,13 @@ class ParticipationStatusChangedNotification extends AbstractNotification
 {
     /**
      * @ORM\ManyToOne(targetEntity=Participation::class)
-     * @ORM\JoinColumn()
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private ?Participation $participation;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class)
-     * @ORM\JoinColumn()
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private ?User $emitter;
 

@@ -11,20 +11,27 @@
 
 namespace App\Entity\Notifications;
 
-use App\Entity\Submit;
+use App\Entity\Conference;
+use App\Entity\Talk;
 use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity()
  */
-class NewSubmitNotification extends AbstractNotification
+class SubmitCancelledNotification extends AbstractNotification
 {
     /**
-     * @ORM\ManyToOne(targetEntity=Submit::class)
+     * @ORM\ManyToOne(targetEntity=Talk::class)
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
-    private ?Submit $submit;
+    private ?Talk $talk;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Conference::class)
+     * @ORM\JoinColumn(onDelete="CASCADE")
+     */
+    private ?Conference $conference;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class)
@@ -32,16 +39,22 @@ class NewSubmitNotification extends AbstractNotification
      */
     private ?User $emitter;
 
-    public function __construct(Submit $submit, User $emitter, User $targetUser, string $trigger)
+    public function __construct(Talk $talk, Conference $conference, User $emitter, User $targetUser, string $trigger)
     {
-        $this->submit = $submit;
+        $this->talk = $talk;
+        $this->conference = $conference;
         $this->emitter = $emitter;
         parent::__construct($targetUser, $trigger);
     }
 
-    public function getSubmit(): Submit
+    public function getTalk(): Talk
     {
-        return $this->submit;
+        return $this->talk;
+    }
+
+    public function getConference(): Conference
+    {
+        return $this->conference;
     }
 
     public function getEmitter(): User

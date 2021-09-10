@@ -14,6 +14,7 @@ namespace App\Controller\UserAccount;
 use App\Entity\Conference;
 use App\Entity\Submit;
 use App\Event\Notification\NewSubmitEvent;
+use App\Event\Notification\SubmitCancelledEvent;
 use App\Event\Notification\SubmitStatusChangedEvent;
 use App\Form\UserAccount\SubmitType;
 use App\Repository\ConferenceRepository;
@@ -255,6 +256,8 @@ class SubmitController extends AbstractController
         if (!$this->isCsrfTokenValid('', $request->request->get('token'))) {
             throw new AccessDeniedException();
         }
+
+        $this->eventDispatcher->dispatch(new SubmitCancelledEvent($submit));
 
         $this->em->remove($submit);
         $this->em->flush();
