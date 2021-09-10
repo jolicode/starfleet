@@ -84,13 +84,13 @@ class Submit
      *
      * @CustomAssert\NotEndedConference()
      */
-    private Conference $conference;
+    private ?Conference $conference;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Talk", inversedBy="submits", cascade={"persist"})
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
-    private Talk $talk;
+    private ?Talk $talk;
 
     private bool $statusChanged = false;
 
