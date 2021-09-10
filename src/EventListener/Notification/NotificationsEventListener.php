@@ -15,11 +15,13 @@ use App\Entity\Notifications\AbstractNotification;
 use App\Entity\Notifications\NewFeaturedConferenceNotification;
 use App\Entity\Notifications\NewSubmitNotification;
 use App\Entity\Notifications\ParticipationStatusChangedNotification;
+use App\Entity\Notifications\SubmitCancelledNotification;
 use App\Entity\Notifications\SubmitStatusChangedNotification;
 use App\Entity\User;
 use App\Event\Notification\NewFeaturedConferenceEvent;
 use App\Event\Notification\NewSubmitEvent;
 use App\Event\Notification\ParticipationStatusChangedEvent;
+use App\Event\Notification\SubmitCancelledEvent;
 use App\Event\Notification\SubmitStatusChangedEvent;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -41,6 +43,7 @@ class NotificationsEventListener implements EventSubscriberInterface
             SubmitStatusChangedEvent::class => 'onSubmitStatusChanged',
             ParticipationStatusChangedEvent::class => 'onParticipationStatusChanged',
             NewFeaturedConferenceEvent::class => 'onNewFeaturedConference',
+            SubmitCancelledEvent::class => 'onSubmitCancelled',
         ];
     }
 
@@ -108,6 +111,28 @@ class NotificationsEventListener implements EventSubscriberInterface
 
         foreach ($query->toIterable() as $targetUser) {
             $notification = new NewFeaturedConferenceNotification($event->getConference(), $targetUser, AbstractNotification::TRIGGER_NEW_FEATURED_CONFERENCE);
+
+            $this->em->persist($notification);
+        }
+    }
+
+    public function onSubmitCancelled(SubmitCancelledEvent $event): void
+    {
+        /** @var User $currentUser */
+        $currentUser = $this->security->getUser();
+
+        foreach ($event->getSubmit()->getUsers() as $targetUser) {
+            if ($targetUser === $currentUser) {
+                continue;
+            }
+
+            $notification = new SubmitCancelledNotification(
+                talk: $event->getTalk(),
+                conference: $event->getConference(),
+                emitter: $currentUser,
+                targetUser: $targetUser,
+                trigger: AbstractNotification::TRIGGER_SUBMIT_CANCELLED,
+            );
 
             $this->em->persist($notification);
         }
