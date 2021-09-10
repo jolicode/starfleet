@@ -40,7 +40,7 @@ class ParticipationRepository extends ServiceEntityRepository
             ->innerJoin('p.conference', 'c')
             ->andWhere('c.startAt > :today')
             ->setParameter('today', $today)
-            ->orderBy('c.createdAt', 'DESC')
+            ->orderBy('c.id', 'DESC')
             ->getQuery()
             ->execute()
         ;
@@ -56,7 +56,7 @@ class ParticipationRepository extends ServiceEntityRepository
             ->innerJoin('p.conference', 'c')
             ->andWhere('c.endAt < :today')
             ->setParameter('today', $today)
-            ->orderBy('c.createdAt', 'DESC')
+            ->orderBy('c.id', 'DESC')
             ->getQuery()
             ->execute()
         ;
@@ -69,7 +69,7 @@ class ParticipationRepository extends ServiceEntityRepository
     {
         return $this->createStatusAndUserQueryBuilder($user, 'pending')
             ->innerJoin('p.conference', 'c')
-            ->orderBy('c.createdAt', 'DESC')
+            ->orderBy('c.id', 'DESC')
             ->getQuery()
             ->execute()
         ;
@@ -82,7 +82,7 @@ class ParticipationRepository extends ServiceEntityRepository
     {
         return $this->createStatusAndUserQueryBuilder($user, 'rejected')
             ->innerJoin('p.conference', 'c')
-            ->orderBy('c.createdAt', 'DESC')
+            ->orderBy('c.id', 'DESC')
             ->getQuery()
             ->execute()
         ;

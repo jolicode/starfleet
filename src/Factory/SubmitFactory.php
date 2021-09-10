@@ -37,9 +37,10 @@ final class SubmitFactory extends ModelFactory
         return [
             'submittedAt' => self::faker()->dateTimeBetween('-2years'),
             'status' => self::faker()->randomElement(Submit::STATUSES),
-            'users' => UserFactory::randomRange(1, 2),
+            'users' => $users = UserFactory::randomRange(1, 2),
             'talk' => TalkFactory::random(),
             'conference' => ConferenceFactory::random(),
+            'submittedBy' => $users[0],
         ];
     }
 

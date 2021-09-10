@@ -1,5 +1,5 @@
 <header class="container">
-    <nav class="navbar navbar-expand-lg bg-purple navbar-dark justify-content-between">
+    <nav class="navbar navbar-expand-lg bg-purple navbar-dark justify-content-between mx--30">
         <a class="navbar-brand" href="{{ path('conferences_list') }}">
             <img src="{{ asset('build/images/logo.svg') }}"
                  width="100"
@@ -21,13 +21,20 @@
             </button>
 
             <div class="collapse navbar-collapse" id="navbar">
-                <ul class="navbar-nav mr-auto">
+                <ul class="navbar-nav mr-auto position-relative">
                     <li class="nav-item mr-2">
-                        <a class="nav-link btn btn-outline-secondary btn-sm text-light"
+                        <a class="header-button fsize-medium"
                            href="{{ app.user ? path('user_account') : path('login') }}">
-                            {{ app.user ? '👤 Account' : '🔒 Login' }}
+                           {% if app.user %}
+                                <i class="fas fa-user-circle text-primary fsize-large align-middle mr-1"></i> My Account
+                            {% else %}
+                                <i class="fas fa-unlock text-warning fsize-large align-middle mr-1"></i> Login
+                           {% endif %}
                         </a>
                     </li>
+                    {% if app.user %}
+                        {{ render(controller('App\\Controller\\UserAccount\\NotificationController::allUnreadNotifications')) }}
+                    {% endif %}
                 </ul>
             </div>
         </div>

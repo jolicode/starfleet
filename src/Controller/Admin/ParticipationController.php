@@ -14,7 +14,9 @@ namespace App\Controller\Admin;
 use AlterPHP\EasyAdminExtensionBundle\Controller\EasyAdminController;
 use App\Entity\Participation;
 use App\Enum\Workflow\Transition\Participation as ParticipationTransition;
+use App\Event\Notification\ParticipationStatusChangedEvent;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Workflow\Registry as WorkflowRegistry;
@@ -23,6 +25,7 @@ class ParticipationController extends EasyAdminController
 {
     public function __construct(
         private WorkflowRegistry $workflowRegistry,
+        private EventDispatcherInterface $eventDispatcher,
     ) {
     }
 
@@ -40,6 +43,7 @@ class ParticipationController extends EasyAdminController
         $workflow = $this->workflowRegistry->get($participation, 'participation_request');
 
         $workflow->apply($participation, ParticipationTransition::ACCEPTED);
+        $this->eventDispatcher->dispatch(new ParticipationStatusChangedEvent($participation));
 
         $this->em->flush();
 
@@ -58,6 +62,7 @@ class ParticipationController extends EasyAdminController
         $workflow = $this->workflowRegistry->get($participation, 'participation_request');
 
         $workflow->apply($participation, ParticipationTransition::REJECTED);
+        $this->eventDispatcher->dispatch(new ParticipationStatusChangedEvent($participation));
 
         $this->em->flush();
 
@@ -75,6 +80,7 @@ class ParticipationController extends EasyAdminController
         $participation = $this->request->attributes->get('easyadmin')['item'];
         $workflow = $this->workflowRegistry->get($participation, 'participation_request');
         $workflow->apply($participation, ParticipationTransition::CANCELLED);
+        $this->eventDispatcher->dispatch(new ParticipationStatusChangedEvent($participation));
 
         $this->em->flush();
 

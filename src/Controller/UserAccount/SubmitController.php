@@ -13,6 +13,8 @@ namespace App\Controller\UserAccount;
 
 use App\Entity\Conference;
 use App\Entity\Submit;
+use App\Event\Notification\NewSubmitEvent;
+use App\Event\Notification\SubmitStatusChangedEvent;
 use App\Form\UserAccount\SubmitType;
 use App\Repository\ConferenceRepository;
 use App\Repository\SubmitRepository;
@@ -20,6 +22,7 @@ use App\UX\UserChartBuilder;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -32,6 +35,7 @@ class SubmitController extends AbstractController
         private ConferenceRepository $conferenceRepository,
         private UserChartBuilder $userChartBuilder,
         private EntityManagerInterface $em,
+        private EventDispatcherInterface $eventDispatcher,
     ) {
     }
 
@@ -46,8 +50,12 @@ class SubmitController extends AbstractController
 
         if ($form->handleRequest($request)->isSubmitted() && $form->isValid()) {
             $this->em->persist($submit);
-            $this->em->flush();
 
+            if (\count($submit->getUsers()) > 1) {
+                $this->eventDispatcher->dispatch(new NewSubmitEvent($submit));
+            }
+
+            $this->em->flush();
             $this->addFlash('info', 'The submit has been saved.');
 
             return $this->redirectToRoute('user_submits');
@@ -108,13 +116,26 @@ class SubmitController extends AbstractController
     #[Route(path: '/user/submit-edit/{id}', name: 'edit_submit')]
     public function editSubmit(Submit $submit, Request $request): Response
     {
+        $preEditUsers = $submit->getUsers();
+
         $form = $this->createForm(SubmitType::class, $submit, [
             'validation_groups' => ['Default', 'user_account'],
         ]);
 
         if ($form->handleRequest($request)->isSubmitted() && $form->isValid()) {
-            $this->em->flush();
+            $newUsers = [];
 
+            foreach ($submit->getUsers() as $user) {
+                if (!$preEditUsers->contains($user)) {
+                    $newUsers[] = $user;
+                }
+            }
+
+            if (\count($newUsers)) {
+                $this->eventDispatcher->dispatch(new NewSubmitEvent($submit));
+            }
+
+            $this->em->flush();
             $this->addFlash('info', 'Your talk has been submitted.');
 
             return $this->redirectToRoute('user_submits');
@@ -138,8 +159,12 @@ class SubmitController extends AbstractController
 
         if ($form->handleRequest($request)->isSubmitted() && $form->isValid()) {
             $this->em->persist($submit);
-            $this->em->flush();
 
+            if (\count($submit->getUsers()) > 1) {
+                $this->eventDispatcher->dispatch(new NewSubmitEvent($submit));
+            }
+
+            $this->em->flush();
             $this->addFlash('info', 'Your talk has been submitted.');
 
             return $this->redirectToRoute('user_submits');
@@ -160,7 +185,9 @@ class SubmitController extends AbstractController
         }
 
         $submit->setStatus(Submit::STATUS_ACCEPTED);
+        $this->em->flush();
 
+        $this->eventDispatcher->dispatch(new SubmitStatusChangedEvent($submit));
         $this->em->flush();
         $this->addFlash('info', sprintf('Submit for %s tagged as accepted.', $submit->getConference()->getName()));
 
@@ -176,7 +203,9 @@ class SubmitController extends AbstractController
         }
 
         $submit->setStatus(Submit::STATUS_DONE);
+        $this->em->flush();
 
+        $this->eventDispatcher->dispatch(new SubmitStatusChangedEvent($submit));
         $this->em->flush();
         $this->addFlash('info', sprintf('Submit for %s tagged as done.', $submit->getConference()->getName()));
 
@@ -192,7 +221,9 @@ class SubmitController extends AbstractController
         }
 
         $submit->setStatus(Submit::STATUS_REJECTED);
+        $this->em->flush();
 
+        $this->eventDispatcher->dispatch(new SubmitStatusChangedEvent($submit));
         $this->em->flush();
         $this->addFlash('info', sprintf('Submit for %s tagged as rejected.', $submit->getConference()->getName()));
 
@@ -208,7 +239,9 @@ class SubmitController extends AbstractController
         }
 
         $submit->setStatus(Submit::STATUS_PENDING);
+        $this->em->flush();
 
+        $this->eventDispatcher->dispatch(new SubmitStatusChangedEvent($submit));
         $this->em->flush();
         $this->addFlash('info', sprintf('Submit for %s tagged as pending.', $submit->getConference()->getName()));
 
