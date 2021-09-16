@@ -18,7 +18,7 @@ class HomepageControllerTest extends BaseFactories
         $crawler = $this->getClient()->request('GET', '/user/account');
 
         self::assertResponseIsSuccessful();
-        self::assertSelectorTextContains('h1', $this->getTestUser()->getName());
+        self::assertSelectorTextContains('.username', $this->getTestUser()->getName());
         self::assertCount(0, $crawler->filter('#admin-button'));
     }
 
@@ -28,7 +28,7 @@ class HomepageControllerTest extends BaseFactories
         $crawler = $this->getClient()->request('GET', '/user/account');
 
         self::assertResponseIsSuccessful();
-        self::assertSelectorTextContains('h1', $user->getName());
+        self::assertSelectorTextContains('.username', $user->getName());
         self::assertCount(1, $crawler->filter('#admin-button'));
     }
 }

@@ -24,8 +24,10 @@ class SecurityControllerTest extends WebTestCase
     public function testAdminCanAccessToAdmin()
     {
         $userProxy = UserFactory::createOne([
+            'email' => 'admin@starfleet.app',
             'roles' => ['ROLE_ADMIN'],
             'name' => 'Admin',
+            'password' => 'password',
         ]);
 
         $this->ensureKernelShutdown();

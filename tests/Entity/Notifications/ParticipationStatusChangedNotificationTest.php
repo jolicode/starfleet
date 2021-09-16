@@ -31,9 +31,13 @@ class ParticipationStatusChangedNotificationTest extends WebTestCase
     {
         $testAdmin = UserFactory::createOne([
             'roles' => ['ROLE_ADMIN'],
+            'password' => 'admin',
+            'email' => 'admin@starfleet.app',
         ]);
         $testUser = UserFactory::createOne([
             'roles' => ['ROLE_USER'],
+            'password' => 'user',
+            'email' => 'user@starfleet.app',
         ]);
         ParticipationFactory::createOne([
             'participant' => $testUser,

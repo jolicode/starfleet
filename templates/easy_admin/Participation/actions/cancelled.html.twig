@@ -1,5 +1,5 @@
-{% if item.marking.accepted is defined
-    or item.marking.pending is defined %}
+{% if item.marking == 'accepted'
+    or item.marking == 'pending' %}
     {{ include('@EasyAdmin/default/action.html.twig', {
         action: action}) }}
 {% endif %}
