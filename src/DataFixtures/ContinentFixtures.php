@@ -11,30 +11,14 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Continent;
+use App\Factory\ContinentFactory;
+use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
-class ContinentFixtures extends AbstractFixtures
+class ContinentFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        $continents = [
-            'Africa',
-            'Asia',
-            'Europe',
-            'North America',
-            'Oceania',
-            'South America',
-        ];
-
-        foreach ($continents as $continentName) {
-            $continent = new Continent();
-            $continent->setName($continentName);
-            $continent->setEnabled(true);
-
-            $manager->persist($continent);
-        }
-
-        $manager->flush();
+        ContinentFactory::createMany(6);
     }
 }

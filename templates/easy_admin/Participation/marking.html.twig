@@ -1,3 +1,10 @@
-{% for marking in value|keys %}
-    {{ marking|trans ~ (not loop.last ? ',') }}
-{% endfor %}
+{% set badgeClasses = {
+    'pending': 'info',
+    'accepted': 'success',
+    'rejected': 'danger',
+    'cancelled': 'warning',
+} %}
+
+<span class="badge badge-{{ badgeClasses[value] }}">
+    {{ value|trans }}
+</span>

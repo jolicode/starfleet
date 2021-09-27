@@ -1,0 +1,4 @@
+{% if item.marking == 'pending' %}
+    {{ include('@EasyAdmin/default/action.html.twig', {
+        action: action}) }}
+{% endif %}

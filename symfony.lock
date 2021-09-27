@@ -142,6 +142,9 @@
     "egulias/email-validator": {
         "version": "2.1.24"
     },
+    "fakerphp/faker": {
+        "version": "v1.14.1"
+    },
     "friendsofphp/php-cs-fixer": {
         "version": "2.17",
         "recipe": {
@@ -156,9 +159,6 @@
     },
     "friendsofphp/proxy-manager-lts": {
         "version": "v1.0.3"
-    },
-    "fzaninotto/faker": {
-        "version": "v1.9.2"
     },
     "gedmo/doctrine-extensions": {
         "version": "v3.0.0"
@@ -668,9 +668,6 @@
     "symfony/polyfill-mbstring": {
         "version": "v1.20.0"
     },
-    "symfony/polyfill-php70": {
-        "version": "v1.20.0"
-    },
     "symfony/polyfill-php72": {
         "version": "v1.20.0"
     },
@@ -789,6 +786,9 @@
             "templates/base.html.twig"
         ]
     },
+    "symfony/ux-chartjs": {
+        "version": "v1.2.0"
+    },
     "symfony/validator": {
         "version": "4.3",
         "recipe": {
@@ -898,6 +898,12 @@
             "config/packages/twig_extensions.yaml"
         ]
     },
+    "twig/extra-bundle": {
+        "version": "v3.3.1"
+    },
+    "twig/string-extra": {
+        "version": "v3.3.1"
+    },
     "twig/twig": {
         "version": "v2.14.1"
     },
@@ -909,5 +915,21 @@
     },
     "willdurand/geocoder": {
         "version": "4.3.0"
+    },
+    "zenstruck/callback": {
+        "version": "v1.2.0"
+    },
+    "zenstruck/foundry": {
+        "version": "1.9",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "1.9",
+            "ref": "e03ffeeb52fd76e99f2c527ecddc9c986cb194e5"
+        },
+        "files": [
+            "config/packages/dev/zenstruck_foundry.yaml",
+            "config/packages/test/zenstruck_foundry.yaml"
+        ]
     }
 }

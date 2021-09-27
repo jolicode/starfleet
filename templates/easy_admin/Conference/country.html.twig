@@ -1,5 +1,5 @@
 {% if item.online %}
-    <img class="country-flag" alt="Online image" title="Online" src="{{ asset('build/images/online.svg') }}">
+    <img class="country-flag" alt="Online" title="Online" src="{{ asset('build/images/online.svg') }}">
 {% elseif value %}
-    <img class="country-flag" alt="{{ country_name }} flag" title="{{ country_name }}" src="/bundles/easyadmin/images/flags/{{ value }}.png">
+    <img class="country-flag" alt="{{ country_name }}" title="{{ country_name }}" src="/bundles/easyadmin/images/flags/{{ value }}.png">
 {% endif %}

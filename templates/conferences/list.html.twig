@@ -17,7 +17,7 @@
                             </h3>
                             <h4 class="h6 card-subtitle mb-2 text-muted font-weight-normal">
                             {% if conference.online %}
-                                Online <img class="country-flag" alt="Online Icon" src="{{ asset('build/images/online.svg') }}">
+                                Online <img class="country-flag" alt="" src="{{ asset('build/images/online.svg') }}">
                             {% elseif conference.country %}
                                 {{ conference.city }} <img width="24" height="16" class="country-flag" alt="Country Flag" src="/bundles/easyadmin/images/flags/{{ conference.country|upper }}.png">
                             {% endif %}
@@ -28,11 +28,11 @@
                                 </small>
                             </p>
                             <a href="{{ conference.siteUrl }}" target="_blank" class="btn btn-outline-secondary btn-sm">
-                                {{ 'conference.card.site_button_label'|trans }} <i class="fa fa-external-link"></i>
+                                {{ 'conference.card.site_button_label'|trans }} <i class="fas fa-external-link-alt"></i>
                             </a>
                             {% if conference.cfpUrl is not null %}
                                 <a href="{{ conference.cfpUrl }}" target="_blank" class="btn btn-outline-success btn-sm">
-                                    {{ 'conferences.card.cfp_button_label'|trans }} <i class="fa fa-external-link"></i>
+                                    {{ 'conferences.card.cfp_button_label'|trans }} <i class="fas fa-external-link-alt"></i>
                                 </a>
                             {% endif %}
                         </div>

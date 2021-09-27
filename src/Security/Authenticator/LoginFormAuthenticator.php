@@ -14,7 +14,7 @@ namespace App\Security\Authenticator;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
@@ -31,18 +31,18 @@ class LoginFormAuthenticator extends AbstractAuthenticator implements Authentica
     use TargetPathTrait;
 
     public function __construct(
-        private RouterInterface $router,
+        private UrlGeneratorInterface $urlGenerator,
     ) {
     }
 
     public function start(Request $request, ?AuthenticationException $authException = null)
     {
-        return new RedirectResponse('login');
+        return new RedirectResponse($this->urlGenerator->generate('login'));
     }
 
     protected function getLoginUrl(): string
     {
-        return $this->router->generate('login');
+        return $this->urlGenerator->generate('login');
     }
 
     public function supports(Request $request): ?bool
@@ -71,17 +71,20 @@ class LoginFormAuthenticator extends AbstractAuthenticator implements Authentica
         );
     }
 
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey): ?Response
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
+        if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }
 
-        return new RedirectResponse($this->router->generate('easyadmin'));
+        return new RedirectResponse($this->urlGenerator->generate('user_account'));
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
-        return new RedirectResponse($this->router->generate('login'));
+        // @phpstan-ignore-next-line
+        $request->getSession()->getFlashBag()->add('error', 'Either your email or password is invalid.');
+
+        return new RedirectResponse($this->urlGenerator->generate('login'));
     }
 }

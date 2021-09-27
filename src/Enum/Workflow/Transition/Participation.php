@@ -15,13 +15,8 @@ use MyCLabs\Enum\Enum;
 
 class Participation extends Enum
 {
-    const ACCEPT = 'accept';
-    const REJECT = 'reject';
-
-    const BUY_TICKET = 'buy_ticket';
-    const RESERVE_TRANSPORT = 'reserve_transport';
-    const BOOK_HOTEL = 'book_hotel';
-
-    const VALIDATE = 'validate';
-    const CANCEL = 'cancel';
+    public const PENDING = 'pending';
+    public const ACCEPTED = 'accepted';
+    public const REJECTED = 'rejected';
+    public const CANCELLED = 'cancelled';
 }

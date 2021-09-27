@@ -1,14 +1,15 @@
 {% extends '@EasyAdmin/default/list.html.twig' %}
 
 {% block item_actions %}
-    {% set transition_action_icons = {
-        'accept' : 'check',
-        'reject' : 'times',
-        'cancel' : 'times-circle',
-        'ticket bought' : 'ticket',
-        'transport reserved' : 'plane',
-        'hotel booked' : 'bed',
-        'validate' : 'check-circle',
+    {% set transition_icons = {
+        'accepted' : 'check',
+        'rejected' : 'times',
+        'cancelled' : 'times-circle',
+    } %}
+    {% set transition_css_classes = {
+        'accepted' : 'success',
+        'rejected' : 'danger',
+        'cancelled' : 'warning',
     } %}
 
     {% set _transition_actions = {} %}
@@ -20,8 +21,8 @@
                 type: 'method',
                 label: 'action.' ~ transition_title|lower,
                 title: transition_title,
-                css_class: transition_title == 'Cancel' ? 'text-danger action-show' : 'action-show',
-                icon: transition_action_icons[transition_title|lower] ?? 'circle',
+                css_class: 'text-' ~ transition_css_classes[transition.name] ~ ' action-show',
+                icon: transition_icons[transition.name],
                 target: '_self',
                 template: 'easy_admin/Participation/actions/' ~ transition.name ~ '.html.twig'
             }
@@ -29,7 +30,7 @@
     {% endfor %}
 
     {{ include('@EasyAdmin/default/includes/_actions.html.twig', {
-        actions: _transition_actions,
+        actions: _transition_actions|length > 0 ? _transition_actions : _list_item_actions,
         request_parameters: _request_parameters,
         translation_domain: _entity_config.translation_domain,
         trans_parameters: _trans_parameters,
@@ -37,12 +38,14 @@
         item: item
     }, with_context = false) }}
 
-    {{ include('easy_admin/Participation/includes/_actions_dropdown.html.twig', {
-        actions: _list_item_actions,
-        request_parameters: _request_parameters,
-        translation_domain: _entity_config.translation_domain,
-        trans_parameters: _trans_parameters,
-        item_id: _item_id,
-        item: item
-    }, with_context = false) }}
+    {% if _transition_actions|length %}
+        {{ include('easy_admin/Participation/includes/_actions_dropdown.html.twig', {
+            actions: _list_item_actions,
+            request_parameters: _request_parameters,
+            translation_domain: _entity_config.translation_domain,
+            trans_parameters: _trans_parameters,
+            item_id: _item_id,
+            item: item
+        }, with_context = false) }}
+    {% endif %}
 {% endblock item_actions %}

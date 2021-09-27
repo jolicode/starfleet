@@ -1,0 +1,9 @@
+{% set badgeClasses = {
+    'not_needed': 'light',
+    'needed': 'warning',
+    'booked': 'success',
+} %}
+
+<span class="badge badge-{{ badgeClasses[value] }}">
+    {{ value|trans }}
+</span>

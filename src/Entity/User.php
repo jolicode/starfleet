@@ -11,6 +11,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Notifications\AbstractNotification;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -51,6 +52,9 @@ class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInt
 
     /**
      * @ORM\Column(name="email", type="string", length=255, unique=true)
+     *
+     * @Assert\NotBlank()
+     * @Assert\Email()
      */
     private string $email;
 
@@ -92,7 +96,7 @@ class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInt
     private Collection $submits;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Participation", mappedBy="participant")
+     * @ORM\OneToMany(targetEntity="App\Entity\Participation", mappedBy="participant", cascade={"persist", "remove"})
      *
      * @var Collection<Participation>
      */
@@ -101,9 +105,9 @@ class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInt
     /**
      * @ORM\Column(type="json")
      *
-     * @var array<mixed>
+     * @var array<string>
      */
-    private array $roles = [];
+    private array $roles;
 
     /**
      * @Assert\Length(max=4096)
@@ -120,15 +124,25 @@ class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInt
      */
     private ?string $password = null;
 
+    /**
+     * @ORM\OneToMany(targetEntity=AbstractNotification::class, mappedBy="targetUser", cascade={"persist"})
+     *
+     * @var Collection<AbstractNotification>
+     */
+    private Collection $notifications;
+
     public function __construct()
     {
         $this->submits = new ArrayCollection();
         $this->participations = new ArrayCollection();
+        // guarantee every user at least has ROLE_USER
+        $this->roles = ['ROLE_USER'];
+        $this->notifications = new ArrayCollection();
     }
 
     public function __toString(): string
     {
-        return $this->getName() ?? (string) $this->id;
+        return $this->name ?? (string) $this->id;
     }
 
     public function getId(): ?int
@@ -172,7 +186,7 @@ class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInt
         return $this->name;
     }
 
-    public function setEmail(?string $email): self
+    public function setEmail(string $email): self
     {
         $this->email = $email;
 
@@ -277,8 +291,6 @@ class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInt
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
     }
@@ -305,7 +317,7 @@ class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInt
         return $this->plainPassword;
     }
 
-    public function setPlainPassword(?string $plainPassword): self
+    public function setPlainPassword(string $plainPassword): self
     {
         $this->plainPassword = $plainPassword;
 
@@ -365,10 +377,6 @@ class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInt
     {
         if ($this->participations->contains($participation)) {
             $this->participations->removeElement($participation);
-            // set the owning side to null (unless already changed)
-            if ($participation->getParticipant() === $this) {
-                $participation->setParticipant(null);
-            }
         }
 
         return $this;
@@ -377,7 +385,7 @@ class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInt
     /**
      * @see UserInterface
      */
-    public function getSalt()
+    public function getSalt(): ?string
     {
         return $this->salt;
     }
@@ -403,7 +411,7 @@ class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInt
         ]);
     }
 
-    /** @return array<mixed> */
+    /** @return array<string> */
     public function unserialize($serialized): ?array
     {
         return list(
@@ -414,5 +422,22 @@ class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInt
             $this->googleId,
             $this->githubId
         ) = unserialize($serialized);
+    }
+
+    /**
+     * @return Collection|AbstractNotification[]
+     */
+    public function getNotifications(): Collection
+    {
+        return $this->notifications;
+    }
+
+    public function addNotification(AbstractNotification $notification): self
+    {
+        if (!$this->notifications->contains($notification)) {
+            $this->notifications[] = $notification;
+        }
+
+        return $this;
     }
 }

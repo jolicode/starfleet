@@ -1,0 +1,260 @@
+{% extends "user/user_layout.html.twig" %}
+
+{% block nav %}
+    {% set section = 'submits' %}
+    {{ parent() }}
+{% endblock %}
+
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+{% form_theme form.conference _self %}
+{% form_theme form.users _self %}
+
+{% block _submit_conference_widget %}
+    <input list="{{ id }}" class="form-control" name="{{ full_name }}" required autocomplete="off">
+    <datalist id="{{ id }}">
+        {% for choice in choices %}
+            <option value="{{ choice.name }}"></option>
+        {% endfor %}
+    </datalist>
+{% endblock %}
+
+{% block _submit_users_label %}
+    <label for="{{ full_name }}" class="d-block">Users</label>
+    {{ form_errors(form) }}
+{% endblock %}
+
+{% block _submit_users_widget %}
+    <select name="{{ full_name }}" class="tom-select" multiple required>
+        {% for choice in choices %}
+            <option
+                value="{{ choice.value }}"
+                {% if choice.value in value %} selected {% endif %}
+            >
+                {{ choice.label }}
+            </option>
+        {% endfor %}
+    </select>
+{% endblock %}
+
+{% block content %}
+    <aside class="col-6">
+        {% if pendingSubmits|length %}
+            <div class="mb-5" id="pending-submits-block">
+                <h2 class="mx-0 mb-5">Submits still waiting for approval</h2>
+                {% for submit in pendingSubmits|slice(0, 3) %}
+                    <div class="card w-100 mx-auto my-2">
+                        <div class="card-header">
+                            <a href="{{ path('show_talk', { id: submit.talk.id }) }}">
+                                <h5 class="card-title text-primary my-0">{{ submit.talk.title }}</h5>
+                            </a>
+                        </div>
+
+                        <div class="card-body">
+                            {% if submit.users|length > 1 %}
+                                <div>
+                                    Given with :
+                                    {% for user in submit.users|filter(v => v != app.user) %}
+                                        {%- if not loop.first %}, {% endif %}{{ user.name -}}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+                            <div>
+                                <a href="{{ path('conferences_show', { slug: submit.conference.slug }) }}">
+                                    <span class="text-primary">{{ submit.conference.name -}}</span>
+                                </a> - starting on <mark>{{ submit.conference.startAt|date('m/d/Y') }}</mark>
+                            </div>
+
+                            <div class="d-flex justify-content-around mt-2">
+                                <form action="{{ path('user_submit_accept', { id: submit.id }) }}" method="POST" class="action-accept">
+                                    <button type="submit" class="btn color-accept p-0"><i class="fa fa-check"></i> Accept</button>
+                                    <input type="hidden" name="token" value="{{ csrf_token('') }}">
+                                </form>
+                                <form action="{{ path('user_submit_done', { id: submit.id }) }}" method="POST" class="action-done">
+                                    <button type="submit" class="btn color-done p-0"><i class="fa fa-clipboard"></i> Done</button>
+                                    <input type="hidden" name="token" value="{{ csrf_token('') }}">
+                                </form>
+                                <form action="{{ path('user_submit_reject', { id: submit.id }) }}" method="POST" class="action-reject">
+                                    <button type="submit" class="btn color-reject p-0"><i class="fa fa-times"></i> Reject</button>
+                                    <input type="hidden" name="token" value="{{ csrf_token('') }}">
+                                </form>
+                                <form action="{{ path('edit_submit', { id: submit.id }) }}" method="GET" class="action-edit">
+                                    <button type="submit" class="btn color-edit p-0"><i class="fa fa-edit"></i> Edit</button>
+                                </form>
+                                <form action="{{ path('user_submit_cancel', { id: submit.id }) }}" method="POST" class="action-cancel">
+                                    <button type="submit" class="btn color-cancel p-0"><i class="fa fa-times-circle"></i> Cancel</button>
+                                    <input type="hidden" name="token" value="{{ csrf_token('') }}">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                {% if pendingSubmits|length > 3 %}
+                    <a href="{{ path('pending_submits') }}"><span class="text-primary">...Show more</span></a>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        {% if futureSubmits|length %}
+            <div class="mb-5" id="future-submits-block">
+                <h2 class="mx-0 mb-5">Future Submits</h2>
+                {% for submit in futureSubmits|slice(0, 3) %}
+                    <div class="card w-100 mx-auto my-2">
+                        <div class="card-header">
+                            <a href="{{ path('show_talk', { id: submit.talk.id }) }}">
+                                <h5 class="card-title text-primary my-0">{{ submit.talk.title }}</h5>
+                            </a>
+                        </div>
+
+                        <div class="card-body">
+                            {% if submit.users|length > 1 %}
+                                <div>
+                                    Given with :
+                                    {% for user in submit.users|filter(v => v != app.user) %}
+                                        {%- if not loop.first %}, {% endif %}{{ user.name -}}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+                            <div>
+                                <a href="{{ path('conferences_show', { slug: submit.conference.slug }) }}">
+                                    <span class="text-primary">{{ submit.conference.name -}}</span>
+                                </a> - starting on <mark>{{ submit.conference.startAt|date('m/d/Y') }}</mark>
+                            </div>
+
+                            <div class="d-flex justify-content-around mt-2">
+                                <form action="{{ path('user_submit_pending', { id: submit.id }) }}" method="POST" class="action-pending">
+                                    <button type="submit" class="btn color-pending p-0"><i class="fas fa-hourglass-half"></i> Pending</button>
+                                    <input type="hidden" name="token" value="{{ csrf_token('') }}">
+                                </form>
+                                <form action="{{ path('user_submit_done', { id: submit.id }) }}" method="POST" class="action-done">
+                                    <button type="submit" class="btn color-done p-0"><i class="fa fa-clipboard"></i> Done</button>
+                                    <input type="hidden" name="token" value="{{ csrf_token('') }}">
+                                </form>
+                                <form action="{{ path('user_submit_reject', { id: submit.id }) }}" method="POST" class="action-reject">
+                                    <button type="submit" class="btn color-reject p-0"><i class="fa fa-times"></i> Reject</button>
+                                    <input type="hidden" name="token" value="{{ csrf_token('') }}">
+                                </form>
+                                <form action="{{ path('edit_submit', { id: submit.id }) }}" method="GET" class="action-edit">
+                                    <button type="submit" class="btn color-edit p-0"><i class="fa fa-edit"></i> Edit</button>
+                                </form>
+                                <form action="{{ path('user_submit_cancel', { id: submit.id }) }}" method="POST" class="action-cancel">
+                                    <button type="submit" class="btn color-cancel p-0"><i class="fa fa-times-circle"></i> Cancel</button>
+                                    <input type="hidden" name="token" value="{{ csrf_token('') }}">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                {% if futureSubmits|length > 3 %}
+                    <a href="{{ path('accepted_submits') }}"><span class="text-primary">...Show more</span></a>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        {% if doneSubmits|length %}
+            <div class="mb-5" id="done-submits-block">
+                <h2 class="mx-0 mb-5">Done Submits</h2>
+                {% for submit in doneSubmits|slice(0, 3) %}
+                    <div class="card w-100 mx-auto my-2">
+                        <div class="card-header">
+                            <a href="{{ path('show_talk', { id: submit.talk.id }) }}">
+                                <h5 class="card-title text-primary my-0">{{ submit.talk.title }}</h5>
+                            </a>
+                        </div>
+
+                        <div class="card-body">
+                            {% if submit.users|length > 1 %}
+                                <div>
+                                    Given with :
+                                    {% for user in submit.users|filter(v => v != app.user) %}
+                                        {%- if not loop.first %}, {% endif %}{{ user.name -}}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+                            <div>
+                                <a href="{{ path('conferences_show', { slug: submit.conference.slug }) }}">
+                                    <span class="text-primary">{{ submit.conference.name -}}</span>
+                                </a> - ended on {{ submit.conference.endAt|date('m/d/Y') }}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                {% if doneSubmits|length > 3 %}
+                    <a href="{{ path('done_submits') }}"><span class="text-primary">...Show more</span></a>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        {% if rejectedSubmits|length %}
+            <div class="mb-5" id="rejected-submits-block">
+                <h2 class="mx-0 mb-5">Rejected Submits</h2>
+                {% for submit in rejectedSubmits|slice(0, 3) %}
+                    <div class="card w-100 mx-auto my-2">
+                        <div class="card-header">
+                            <a href="{{ path('show_talk', { id: submit.talk.id }) }}">
+                                <h5 class="card-title text-primary my-0">{{ submit.talk.title }}</h5>
+                            </a>
+                        </div>
+
+                        <div class="card-body">
+                            {% if submit.users|length > 1 %}
+                                <div>
+                                    Given with :
+                                    {% for user in submit.users|filter(v => v != app.user) %}
+                                        {%- if not loop.first %}, {% endif %}{{ user.name -}}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+                            <div>
+                                <a href="{{ path('conferences_show', { slug: submit.conference.slug }) }}">
+                                    <span class="text-primary">{{ submit.conference.name -}}</span>
+                                </a> - starting on <mark>{{ submit.conference.startAt|date('m/d/Y') }}</mark>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                {% if rejectedSubmits|length > 3 %}
+                    <a href="{{ path('rejected_submits') }}"><span class="text-primary">...Show more</span></a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </aside>
+
+    <section class="col-6 pl-5">
+        <div class="mb-5">
+            {% if chart %}
+                {{ render_chart(chart) }}
+            {% endif %}
+        </div>
+
+        <div class="pt-5">
+            <h2>Submit a talk</h2>
+            {{ form_start(form, {
+                attr: {
+                    class: 'row flex-column',
+                }
+            }) }}
+                {{ form_errors(form) }}
+                {{ form_row(form.conference) }}
+                {{ form_row(form.talk) }}
+                {{ form_row(form.users) }}
+
+                <button type="submit" class="btn btn-primary align-self-center" id="submit_submit">Submit</button>
+
+            {{ form_end(form) }}
+        </div>
+    </section>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('js/tomSelect') }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('css/tomSelect') }}
+{% endblock %}

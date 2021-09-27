@@ -1,5 +1,5 @@
 <header class="container">
-    <nav class="navbar bg-purple navbar-dark justify-content-center justify-content-md-between">
+    <nav class="navbar navbar-expand-lg bg-purple navbar-dark justify-content-center justify-content-md-between mx--30">
         <div class="c-logo">
             <img src="{{ asset('build/images/logo.svg') }}"
                  width="86"
@@ -18,5 +18,34 @@
                      alt="JoliCode">
             </a>
         </p>
+        <div>
+            <button class="navbar-toggler"
+                    type="button"
+                    data-toggle="collapse"
+                    data-target="#navbar"
+                    aria-controls="navbar"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbar">
+                <ul class="navbar-nav mr-auto position-relative">
+                    <li class="nav-item mr-2">
+                        <a class="header-button fsize-medium"
+                           href="{{ app.user ? path('user_account') : path('login') }}">
+                           {% if app.user %}
+                                <i class="fas fa-user-circle text-primary fsize-large align-middle mr-1"></i> My Account
+                            {% else %}
+                                <i class="fas fa-unlock text-warning fsize-large align-middle mr-1"></i> Login
+                           {% endif %}
+                        </a>
+                    </li>
+                    {% if app.user %}
+                        {{ render(controller('App\\Controller\\UserAccount\\NotificationController::allUnreadNotifications')) }}
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
     </nav>
 </header>

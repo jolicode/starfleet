@@ -16,7 +16,7 @@ use App\Entity\Conference;
 use App\Entity\Submit;
 use App\Entity\Talk;
 use App\Event\NewTalkSubmittedEvent;
-use App\Event\SubmitStatusChangedEvent;
+use App\Event\Notification\SubmitStatusChangedEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\Form;
 

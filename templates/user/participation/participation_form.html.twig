@@ -1,0 +1,58 @@
+{% extends "user/user_layout.html.twig" %}
+
+{% block nav %}
+    {% set section = 'participations' %}
+    {{ parent() }}
+{% endblock %}
+
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+{% form_theme form.conference _self %}
+
+{% block _participation_conference_widget %}
+    {% if not form.vars.disabled %}
+        <input list="{{ id }}" id="{{ id }}_input" class="form-control" name="{{ full_name }}" autocomplete="off" placeholder="{{ value }}">
+        <datalist id="{{ id }}">
+            {% for choice in choices %}
+                <option value="{{ choice.name }}"></option>
+            {% endfor %}
+        </datalist>
+    {% else %}
+        <input list="{{ id }}" id="{{ id }}_input" class="form-control" name="{{ full_name }}" autocomplete="off" value="{{ value }}" disabled>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="row flex-column align-items-center w-100">
+        <h2>{{ action|capitalize }} participation</h2>
+        <div class="row flex-column align-items-center w-50">
+            {{ form_start(form, {
+                attr: {
+                    class: 'row flex-column w-100',
+                    id: form.vars.id
+                }
+            }) }}
+                {{ form_row(form.conference) }}
+                {{ form_row(form.transportStatus) }}
+                {{ form_row(form.hotelStatus) }}
+                {{ form_row(form.conferenceTicketStatus) }}
+                {{ form_row(form.asSpeaker, {
+                    row_attr: {class: 'align-self-center'}
+                }) }}
+                <button type="submit" class="btn btn-primary align-self-center" id="edit_participation">Submit</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        const form = document.getElementById('participation');
+        const datalist = document.getElementById('participation_conference_input');
+        form.addEventListener('submit', function (e) {
+            if (!datalist.value) {
+                datalist.value = datalist.getAttribute('placeholder');
+            }
+        })
+    </script>
+{% endblock %}

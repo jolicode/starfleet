@@ -11,13 +11,29 @@
 
 namespace App\Entity;
 
+use App\Validator\Constraints as CustomAssert;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\ParticipationRepository")
+ * @ORM\Entity()
  */
 class Participation
 {
+    use TimestampableEntity;
+
+    public const STATUS_NOT_NEEDED = 'not_needed';
+    public const STATUS_NEEDED = 'needed';
+    public const STATUS_BOOKED = 'booked';
+    public const STATUS_PENDING = 'pending';
+
+    public const STATUSES = [
+        self::STATUS_NOT_NEEDED => self::STATUS_NOT_NEEDED,
+        self::STATUS_NEEDED => self::STATUS_NEEDED,
+        self::STATUS_BOOKED => self::STATUS_BOOKED,
+    ];
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -28,6 +44,9 @@ class Participation
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Conference", inversedBy="participations", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
+     *
+     * @CustomAssert\NoParticipationDuplicate()
+     * @CustomAssert\NotEndedConference()
      */
     private Conference $conference;
 
@@ -43,30 +62,43 @@ class Participation
     private bool $asSpeaker;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="string")
      */
-    private bool $needTransport = true;
+    #[Assert\Choice(choices: [
+        self::STATUS_NOT_NEEDED,
+        self::STATUS_NEEDED,
+        self::STATUS_BOOKED,
+    ])]
+    private string $transportStatus = self::STATUS_NOT_NEEDED;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="string")
      */
-    private bool $needHotel = true;
+    #[Assert\Choice(choices: [
+        self::STATUS_NOT_NEEDED,
+        self::STATUS_NEEDED,
+        self::STATUS_BOOKED,
+    ])]
+    private string $hotelStatus = self::STATUS_NOT_NEEDED;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="string")
      */
-    private bool $needTicket = true;
+    #[Assert\Choice(choices: [
+        self::STATUS_NOT_NEEDED,
+        self::STATUS_NEEDED,
+        self::STATUS_BOOKED,
+    ])]
+    private string $conferenceTicketStatus = self::STATUS_NOT_NEEDED;
 
     /**
-     * @ORM\Column(type="jsonb")
-     *
-     * @var array<string,int>
+     * @ORM\Column(type="string")
      */
-    private array $marking = [];
+    private string $marking = self::STATUS_PENDING;
 
-    public function __construct()
+    public function __construct(User $participant)
     {
-        $this->marking = ['pending' => 1];
+        $this->participant = $participant;
     }
 
     public function getId(): ?int
@@ -79,7 +111,7 @@ class Participation
         return $this->conference;
     }
 
-    public function setConference(?Conference $conference): self
+    public function setConference(Conference $conference): self
     {
         $this->conference = $conference;
 
@@ -91,7 +123,7 @@ class Participation
         return $this->participant;
     }
 
-    public function setParticipant(?User $participant): self
+    public function setParticipant(User $participant): self
     {
         $this->participant = $participant;
 
@@ -110,50 +142,48 @@ class Participation
         return $this;
     }
 
-    public function getNeedTransport(): ?bool
+    public function getTransportStatus(): string
     {
-        return $this->needTransport;
+        return $this->transportStatus;
     }
 
-    public function setNeedTransport(bool $needTransport): self
+    public function setTransportStatus(string $transportStatus): self
     {
-        $this->needTransport = $needTransport;
+        $this->transportStatus = $transportStatus;
 
         return $this;
     }
 
-    public function getNeedHotel(): ?bool
+    public function getHotelStatus(): string
     {
-        return $this->needHotel;
+        return $this->hotelStatus;
     }
 
-    public function setNeedHotel(bool $needHotel): self
+    public function setHotelStatus(string $hotelStatus): self
     {
-        $this->needHotel = $needHotel;
+        $this->hotelStatus = $hotelStatus;
 
         return $this;
     }
 
-    public function getNeedTicket(): ?bool
+    public function getConferenceTicketStatus(): string
     {
-        return $this->needTicket;
+        return $this->conferenceTicketStatus;
     }
 
-    public function setNeedTicket(bool $needTicket): self
+    public function setConferenceTicketStatus(string $conferenceTicketStatus): self
     {
-        $this->needTicket = $needTicket;
+        $this->conferenceTicketStatus = $conferenceTicketStatus;
 
         return $this;
     }
 
-    /** @return array<string,int> */
-    public function getMarking(): array
+    public function getMarking(): string
     {
         return $this->marking;
     }
 
-    /** @param array<string,int> $marking */
-    public function setMarking(array $marking): self
+    public function setMarking(string $marking): self
     {
         $this->marking = $marking;
 

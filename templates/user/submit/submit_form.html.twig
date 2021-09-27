@@ -1,0 +1,75 @@
+{% extends 'user/user_layout.html.twig' %}
+
+{% block nav %}
+    {% set section = 'submits' %}
+    {{ parent() }}
+{% endblock %}
+
+{% form_theme form 'bootstrap_4_layout.html.twig'%}
+{% form_theme form.conference _self %}
+{% form_theme form.users _self %}
+
+{% block _submit_conference_widget %}
+    <input list="{{ id }}" id="{{ id }}_input" class="form-control" name="{{ full_name }}" autocomplete="off" placeholder="{{ value }}">
+    <datalist id="{{ id }}">
+        {% for choice in choices %}
+            <option value="{{ choice.name }}"></option>
+        {% endfor %}
+    </datalist>
+{% endblock %}
+
+{% block _submit_users_label %}
+    <label for="{{ full_name }}" class="d-block">Users</label>
+{% endblock %}
+
+{% block _submit_users_widget %}
+    <select name="{{ full_name }}" class="tom-select" multiple>
+        {% for choice in choices %}
+            <option
+                value="{{ choice.value }}"
+                {% if choice.value in value %} selected {% endif %}
+            >
+                {{ choice.label }}
+            </option>
+        {% endfor %}
+    </select>
+{% endblock %}
+
+{% block content %}
+    <div class="row flex-column align-items-center w-100">
+        <h2>{{ action|capitalize }} submit</h2>
+        {{ form_start(form, {
+            attr: {
+                class: 'row flex-column',
+                id: form.vars.id
+            }
+        }) }}
+            {{ form_errors(form) }}
+            {{ form_row(form.conference) }}
+            {{ form_row(form.talk) }}
+            {{ form_row(form.users) }}
+
+            <button type="submit" class="btn btn-primary align-self-center" id="submit_submit">Submit</button>
+
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('js/tomSelect') }}
+    <script>
+        const form = document.getElementById('submit');
+        const datalist = document.getElementById('submit_conference_input');
+        form.addEventListener('submit', function (e) {
+            if (!datalist.value) {
+                datalist.value = datalist.getAttribute('placeholder');
+            }
+        })
+    </script>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('css/tomSelect') }}
+{% endblock %}

@@ -12,6 +12,8 @@
 namespace App\Repository;
 
 use App\Entity\Conference;
+use App\Entity\User;
+use App\Enum\Workflow\Transition\Participation;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -23,14 +25,39 @@ class ConferenceRepository extends ServiceEntityRepository
         parent::__construct($registry, Conference::class);
     }
 
+    public function getFutureConferencesQueryBuilder(): QueryBuilder
+    {
+        $today = new \DateTime();
+        $today->setTime(0, 0);
+
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.startAt >= :today')
+            ->andWhere('c.excluded = :excluded')
+            ->setParameter('excluded', false)
+            ->setParameter('today', $today)
+        ;
+    }
+
+    /** @return array<Conference> */
+    public function getUserFutureConferences(): array
+    {
+        return $this->getFutureConferencesQueryBuilder()
+            ->andWhere('c.featured = :false')
+            ->setParameter('false', false)
+            ->orderBy('c.startAt', 'ASC')
+            ->getQuery()
+            ->execute()
+        ;
+    }
+
     /** @return array<mixed> */
     public function findEndingCfps(): array
     {
         $today = new \DateTime();
-        $today->setTime(0, 0, 0);
+        $today->setTime(0, 0);
 
         $threshold = new \DateTime('+31 days');
-        $threshold->setTime(0, 0, 0);
+        $threshold->setTime(0, 0);
 
         return $this->createQueryBuilder('c')
             ->andWhere('c.cfpEndAt IS NOT NULL AND c.cfpEndAt >= :today AND c.cfpEndAt < :threshold')
@@ -40,14 +67,14 @@ class ConferenceRepository extends ServiceEntityRepository
             ->setParameter('threshold', $threshold)
             ->getQuery()
             ->execute()
-            ;
+        ;
     }
 
     /** @return array<mixed> */
     public function getDailyConferences(): array
     {
         $today = new \DateTime();
-        $today->setTime(0, 0, 0);
+        $today->setTime(0, 0);
 
         $threshold = new \DateTime();
         $threshold->setTime(23, 59, 59);
@@ -60,7 +87,7 @@ class ConferenceRepository extends ServiceEntityRepository
             ->setParameter('threshold', $threshold)
             ->getQuery()
             ->execute()
-            ;
+        ;
     }
 
     /** @return array<mixed> */
@@ -69,7 +96,7 @@ class ConferenceRepository extends ServiceEntityRepository
         return $this->createAttendedQueryBuilder()
             ->getQuery()
             ->execute()
-            ;
+        ;
     }
 
     /** @return array<mixed> */
@@ -81,7 +108,7 @@ class ConferenceRepository extends ServiceEntityRepository
             ->setParameter('tagName', json_encode($tag))
             ->getQuery()
             ->execute()
-            ;
+        ;
     }
 
     /** @return \Generator<Conference>|null */
@@ -92,8 +119,8 @@ class ConferenceRepository extends ServiceEntityRepository
             ->setParameter('falseValue', false)
             ->andWhere('c.coordinates IS NULL')
             ->getQuery()
-            ->iterate()
-            ;
+            ->toIterable()
+        ;
 
         foreach ($iterator as $conference) {
             yield $conference[0];
@@ -112,7 +139,7 @@ class ConferenceRepository extends ServiceEntityRepository
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult()
-            ;
+        ;
     }
 
     /** @return array<mixed> */
@@ -157,14 +184,49 @@ class ConferenceRepository extends ServiceEntityRepository
         ];
     }
 
+    /** @return array<Conference> */
+    public function findAttentedConferencesByUser(User $user): array
+    {
+        $today = new \DateTime();
+        $today->setTime(0, 0);
+
+        return $this->createAttendedQueryBuilder()
+            ->select('c')
+            ->andWhere('p.participant = :user')
+            ->andWhere('c.startAt < :today')
+            ->setParameter('user', $user)
+            ->setParameter('today', $today)
+            ->getQuery()
+            ->execute()
+        ;
+    }
+
+    /** @return array<Conference> */
+    public function findFeaturedConferences(): array
+    {
+        $today = new \DateTime();
+        $today->setTime(0, 0);
+
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.featured = :true')
+            ->setParameter('true', true)
+            ->andWhere('c.startAt > :today')
+            ->setParameter('today', $today)
+            ->getQuery()
+            ->execute()
+        ;
+    }
+
     private function createAttendedQueryBuilder(): QueryBuilder
     {
         return $this->createQueryBuilder('c')
             ->innerJoin('c.participations', 'p')
             ->andWhere('SIZE(c.participations) > 0')
-            ->andWhere('CONTAINS(p.marking, :marking) = true')
-            ->setParameter('marking', '{"validated": 1}')
+            ->andWhere('p.marking = :marking')
+            ->andWhere('c.excluded = :excluded')
+            ->setParameter('marking', Participation::ACCEPTED)
+            ->setParameter('excluded', false)
             ->orderBy('c.startAt', 'ASC')
-            ;
+        ;
     }
 }

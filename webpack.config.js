@@ -14,15 +14,18 @@ Encore
     .enableSourceMaps(!Encore.isProduction())
     .enableVersioning(Encore.isProduction())
     .addEntry('js/app', './assets/js/app.js')
+    .addEntry('js/tomSelect', './assets/js/tomSelect.js')
     .configureBabel((config) => {
         config.plugins.push('@babel/plugin-proposal-class-properties');
     })
     .configureBabelPresetEnv((config) => {
-        config.useBuiltIns = 'usage';
+        // config.useBuiltIns = 'usage'; // commented to let the compilation works with symfony/ux packages
         config.corejs = 3;
     })
     .addStyleEntry('css/admin', './assets/css/admin.scss')
+    .addStyleEntry('css/user', './assets/css/user.scss')
     .addStyleEntry('css/app', './assets/css/app.scss')
+    .addStyleEntry('css/tomSelect', './assets/css/tomSelect.scss')
     .enableSassLoader(function(sassOptions) {}, {
         resolveUrlLoader: false,
     })
@@ -30,7 +33,8 @@ Encore
         from: './assets/images',
         to: 'images',
     }]))
-    .autoProvidejQuery()
+
+    .enableStimulusBridge('./assets/controllers.json')
 ;
 
 module.exports = Encore.getWebpackConfig();

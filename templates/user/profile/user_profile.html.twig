@@ -1,0 +1,50 @@
+{% extends "user/user_layout.html.twig" %}
+
+{% block nav %}
+    {% set section = 'profile' %}
+    {{ parent() }}
+{% endblock %}
+
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+
+{% block content %}
+    {{ form_start(form, {
+        attr: {
+            class: 'w-75 mx-auto'
+        }
+    }) }}
+        <h2 class="text-center my-5">Edit your Profile</h2>
+
+        <div class="row justify-content-stretch">
+            <div class="profile-form-block">
+                <h4 class="indent-50 text-primary my-4">Account</h4>
+
+                {{ form_row(form.name) }}
+                {{ form_row(form.email) }}
+                {{ form_row(form.previousPassword) }}
+                {{ form_row(form.password) }}
+            </div>
+
+            <div class="profile-form-block">
+                <h4 class="indent-50 text-primary my-4">Medias</h4>
+
+                {{ form_row(form.githubId) }}
+                {{ form_row(form.googleId) }}
+                {{ form_row(form.twitterAccount) }}
+            </div>
+
+            <div class="profile-form-block">
+                <h4 class="indent-50 text-primary my-4">Personal Informations</h4>
+
+                {{ form_row(form.job) }}
+                {{ form_row(form.bio) }}
+                {{ form_row(form.tshirtSize) }}
+                {{ form_row(form.foodPreferences) }}
+                {{ form_row(form.allergies) }}
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary d-block mx-auto my-5">Save Profile</button>
+
+    {{ form_end(form) }}
+{% endblock %}

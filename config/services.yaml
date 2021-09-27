@@ -71,3 +71,7 @@ services:
     App\Twig\MapboxUrlEncoder:
         arguments:
             $apiToken: '%env(MAPBOX_TOKEN)%'
+
+    App\Controller\UserAccount\ParticipationController:
+        arguments:
+            $workflow: '@state_machine.participation_request'
