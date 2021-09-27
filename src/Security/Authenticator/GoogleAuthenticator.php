@@ -95,15 +95,17 @@ class GoogleAuthenticator extends OAuth2Authenticator
         return new RedirectResponse($this->urlGenerator->generate('connect_google'));
     }
 
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): Response
     {
-        return new RedirectResponse($this->urlGenerator->generate('conferences_list'));
+        $message = strtr($exception->getMessageKey(), $exception->getMessageData());
+
+        return new Response($message, Response::HTTP_FORBIDDEN);
     }
 
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey): ?Response
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey): Response
     {
         $url = $this->getPreviousUrl($request, $providerKey);
 
-        return new RedirectResponse($url ?: $this->urlGenerator->generate('easyadmin'));
+        return new RedirectResponse($url ?: $this->urlGenerator->generate('user_account'));
     }
 }

@@ -82,6 +82,9 @@ class LoginFormAuthenticator extends AbstractAuthenticator implements Authentica
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
+        // @phpstan-ignore-next-line
+        $request->getSession()->getFlashBag()->add('error', 'Either your email or password is invalid.');
+
         return new RedirectResponse($this->urlGenerator->generate('login'));
     }
 }

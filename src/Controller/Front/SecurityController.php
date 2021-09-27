@@ -42,11 +42,8 @@ class SecurityController extends AbstractController
     }
 
     #[Route(path: '/connect/google/check', name: 'connect_google_check')]
-    public function connectGoogleCheckAction(Request $request, ClientRegistry $clientRegistry): Response
+    public function connectGoogleCheckAction(Request $request, ClientRegistry $clientRegistry): void
     {
-        $client = $clientRegistry->getClient('google');
-
-        return $this->redirectToRoute('conferences_list');
     }
 
     #[Route(path: '/connect/github', name: 'connect_github')]
