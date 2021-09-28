@@ -12,6 +12,7 @@
 namespace App\Security\Authenticator;
 
 use App\Entity\User;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\OAuth2Authenticator;
@@ -32,6 +33,7 @@ class GitHubAuthenticator extends OAuth2Authenticator
     public function __construct(
         private ClientRegistry $clientRegistry,
         private EntityManagerInterface $em,
+        private UserRepository $userRepository,
         private UrlGeneratorInterface $urlGenerator,
         private HttpClientInterface $httpClient,
         private string $allowedGitHubOrganization,
@@ -53,8 +55,7 @@ class GitHubAuthenticator extends OAuth2Authenticator
                 /** @var GithubResourceOwner $githubUser */
                 $githubUser = $client->fetchUserFromToken($accessToken);
 
-                $existingUser = $this->em->getRepository(User::class)
-                    ->findOneBy(['githubId' => $githubUser->getId()]);
+                $existingUser = $this->userRepository->findOneBy(['githubId' => $githubUser->getId()]);
 
                 $response = $this->httpClient->request('GET', sprintf('https://api.github.com/users/%s/orgs', $githubUser->getNickname()));
                 $githubOrganizations = json_decode($response->getContent());
@@ -71,27 +72,38 @@ class GitHubAuthenticator extends OAuth2Authenticator
                     return $existingUser;
                 }
 
-                /** @var User|null $user */
-                $user = $this->em->getRepository(User::class)
-                    ->findOneBy(['email' => $githubUser->getEmail()]);
+                $response = $this->httpClient->request('GET', 'https://api.github.com/user/emails', [
+                    'headers' => [
+                        'Authorization' => sprintf('token %s', $accessToken->getToken()),
+                    ],
+                ]);
+                $userEmails = json_decode($response->getContent());
 
-                if ($user) {
-                    $user->setGithubId($githubUser->getId());
+                foreach ($userEmails as $email) {
+                    $user = $this->userRepository->findOneBy(['email' => $email->email]);
 
-                    $this->em->flush();
+                    if ($user) {
+                        $user->setGithubId($githubUser->getId());
 
-                    return $user;
+                        $this->em->flush();
+
+                        return $user;
+                    }
+
+                    if ($email->primary && $email->verified) {
+                        $user = new User();
+                        $user->setName($githubUser->getName());
+                        $user->setEmail($email->email);
+                        $user->setGithubId($githubUser->getId());
+
+                        $this->em->persist($user);
+                        $this->em->flush();
+
+                        return $user;
+                    }
                 }
 
-                $user = new User();
-                $user->setName($githubUser->getName());
-                $user->setEmail($githubUser->getEmail());
-                $user->setGithubId($githubUser->getId());
-
-                $this->em->persist($user);
-                $this->em->flush();
-
-                return $user;
+                return null;
             })
         );
     }
@@ -104,7 +116,7 @@ class GitHubAuthenticator extends OAuth2Authenticator
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
         // @phpstan-ignore-next-line
-        $request->getSession()->getFlashBag()->add('error', 'Your GitHub user is not in the allowed organization, or the membership is private.');
+        $request->getSession()->getFlashBag()->add('error', 'Authentication failed. This may be because your GitHub user is not in the allowed organization, the membership is private, or we couldn\'t reach a primary and verified email for your account.');
 
         return new RedirectResponse($this->urlGenerator->generate('login'));
     }
