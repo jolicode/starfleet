@@ -49,7 +49,7 @@ class SecurityController extends AbstractController
     #[Route(path: '/connect/github', name: 'connect_github')]
     public function connectGitHubAction(ClientRegistry $clientRegistry): Response
     {
-        return $clientRegistry->getClient('github')->redirect([], []);
+        return $clientRegistry->getClient('github')->redirect(['user:email'], []);
     }
 
     #[Route(path: '/connect/github/check', name: 'connect_github_check')]
