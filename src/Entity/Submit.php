@@ -207,7 +207,7 @@ class Submit
         $this->statusChanged = false;
     }
 
-    public function getSubmittedBy(): User
+    public function getSubmittedBy(): ?User
     {
         return $this->submittedBy;
     }
