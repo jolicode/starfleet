@@ -40,6 +40,10 @@
     <section class="col-8">
         {% if chart %}
             {{ render_chart(chart) }}
+        {% else %}
+            <div class="d-flex justify-content-center align-items-center h-100">
+                <em>You seem to be quite new around here... Nothing to display yet !</em>
+            </div>
         {% endif %}
     </section>
 {% endblock %}

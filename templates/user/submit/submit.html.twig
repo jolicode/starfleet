@@ -93,6 +93,10 @@
                     <a href="{{ path('pending_submits') }}"><span class="text-primary">...Show more</span></a>
                 {% endif %}
             </div>
+        {% else %}
+            <div class="d-flex justify-content-center align-items-center h-100">
+                <em>You don't have any submit to show yet. Maybe soon ?</em>
+            </div>
         {% endif %}
 
         {% if futureSubmits|length %}

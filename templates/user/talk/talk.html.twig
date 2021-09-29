@@ -65,6 +65,10 @@
                     <a href="{{ path('user_talks_all') }}"><span class="text-primary">...Show more</span></a>
                 {% endif %}
             </div>
+        {% else %}
+            <div class="d-flex justify-content-center align-items-center h-100">
+                <em>You don't have any talk to show yet. Maybe soon ?</em>
+            </div>
         {% endif %}
     </aside>
 
