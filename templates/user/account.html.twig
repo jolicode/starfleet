@@ -1,43 +1,9 @@
 {% extends 'user/user_layout.html.twig' %}
 
 {% block content %}
-    <aside class="col-4">
-        <h1 class="username">{{ app.user.name }}</h1>
-        <ul class="nav flex-column nav-pills">
-            <li class="nav-item">
-                <a href="{{ path('future_conferences') }}" class="nav-link active">
-                    Future Conferences
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ path('user_submits') }}" class="nav-link">
-                    My submits
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ path('user_participations') }}" class="nav-link">
-                    My participations
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ path('user_talks') }}" class="nav-link">
-                    My talks
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ path('user_profile') }}" class="nav-link">
-                    Edit my profile
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ path('logout') }}" class="nav-link">
-                    {{ '➡️ Logout' }}
-                </a>
-            </li>
-        </ul>
-    </aside>
-
-    <section class="col-8">
+    {% set section = 'homepage' %}
+    <section class="col-8 mx-auto">
+        {{ parent() }}
         {% if chart %}
             {{ render_chart(chart) }}
         {% else %}

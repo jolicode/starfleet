@@ -21,7 +21,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserProfileType extends AbstractType
@@ -55,14 +54,6 @@ class UserProfileType extends AbstractType
                 'attr' => [
                     'rows' => '6',
                 ],
-            ])
-            ->add('githubId', TextType::class, [
-                'required' => false,
-                'label' => 'Github ID',
-            ])
-            ->add('googleId', TextType::class, [
-                'required' => false,
-                'label' => 'Google ID',
             ])
             ->add('twitterAccount', TextType::class, [
                 'required' => false,
@@ -101,23 +92,28 @@ class UserProfileType extends AbstractType
         ;
     }
 
-    /** @return FormInterface|void */
-    public function onPasswordSubmit(FormEvent $event): mixed
+    public function onPasswordSubmit(FormEvent $event): void
     {
         $form = $event->getForm();
         $user = $event->getData();
 
         if ($passwordData = $form->get('password')->getData()) {
             if (!$previousPasswordData = $form->get('previousPassword')->getData()) {
-                return $form->get('previousPassword')->addError(new FormError('Invalid password.'));
+                $form->get('previousPassword')->addError(new FormError('Invalid password.'));
+
+                return;
             }
 
             if (!$this->encoder->isPasswordValid($user, $previousPasswordData)) {
-                return $form->get('previousPassword')->addError(new FormError('Invalid password.'));
+                $form->get('previousPassword')->addError(new FormError('Invalid password.'));
+
+                return;
             }
 
             if (\strlen($passwordData) < 7) {
-                return $form->get('password')->addError(new FormError('Your password must have at least 6 characters.'));
+                $form->get('password')->addError(new FormError('Your password must have at least 6 characters.'));
+
+                return;
             }
 
             $user->setPassword($this->encoder->encodePassword($user, $passwordData));
