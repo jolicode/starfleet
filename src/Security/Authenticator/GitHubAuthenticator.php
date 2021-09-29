@@ -55,8 +55,6 @@ class GitHubAuthenticator extends OAuth2Authenticator
                 /** @var GithubResourceOwner $githubUser */
                 $githubUser = $client->fetchUserFromToken($accessToken);
 
-                $existingUser = $this->userRepository->findOneBy(['githubId' => $githubUser->getId()]);
-
                 $response = $this->httpClient->request('GET', sprintf('https://api.github.com/users/%s/orgs', $githubUser->getNickname()));
                 $githubOrganizations = json_decode($response->getContent());
 
@@ -68,7 +66,14 @@ class GitHubAuthenticator extends OAuth2Authenticator
                     return null;
                 }
 
+                $existingUser = $this->userRepository->findOneBy(['githubId' => $githubUser->getId()]) ?: $this->userRepository->findOneBy(['name' => $githubUser->getName()]);
+
                 if ($existingUser) {
+                    if (!$existingUser->getGithubId()) {
+                        $existingUser->setGithubId($githubUser->getId());
+                        $this->em->flush();
+                    }
+
                     return $existingUser;
                 }
 
@@ -125,6 +130,6 @@ class GitHubAuthenticator extends OAuth2Authenticator
     {
         $url = $this->getPreviousUrl($request, $providerKey);
 
-        return new RedirectResponse($url ?: $this->urlGenerator->generate('easyadmin'));
+        return new RedirectResponse($url ?: $this->urlGenerator->generate('user_account'));
     }
 }
