@@ -6,3 +6,7 @@ twig:
         '%kernel.project_dir%/assets/images': images
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
+
+when@test:
+    twig:
+        strict_variables: true

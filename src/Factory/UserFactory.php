@@ -12,7 +12,7 @@
 namespace App\Factory;
 
 use App\Entity\User;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
 
@@ -34,7 +34,7 @@ use Zenstruck\Foundry\Proxy;
 final class UserFactory extends ModelFactory
 {
     public function __construct(
-        private UserPasswordEncoderInterface $passwordEncoder,
+        private UserPasswordHasherInterface $passwordHasher,
     ) {
         parent::__construct();
     }
@@ -57,7 +57,7 @@ final class UserFactory extends ModelFactory
     protected function initialize(): self
     {
         return $this->afterInstantiate(function (User $user) {
-            $user->setPassword($this->passwordEncoder->encodePassword($user, $user->getPassword()));
+            $user->setPassword($this->passwordHasher->hashPassword($user, $user->getPassword()));
         });
     }
 

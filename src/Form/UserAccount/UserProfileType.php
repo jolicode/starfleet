@@ -21,12 +21,12 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserProfileType extends AbstractType
 {
     public function __construct(
-        private UserPasswordEncoderInterface $encoder,
+        private UserPasswordHasherInterface $hasher,
     ) {
     }
 
@@ -104,7 +104,7 @@ class UserProfileType extends AbstractType
                 return;
             }
 
-            if (!$this->encoder->isPasswordValid($user, $previousPasswordData)) {
+            if (!$this->hasher->isPasswordValid($user, $previousPasswordData)) {
                 $form->get('previousPassword')->addError(new FormError('Invalid password.'));
 
                 return;
@@ -116,7 +116,7 @@ class UserProfileType extends AbstractType
                 return;
             }
 
-            $user->setPassword($this->encoder->encodePassword($user, $passwordData));
+            $user->setPassword($this->hasher->hashPassword($user, $passwordData));
         }
     }
 }

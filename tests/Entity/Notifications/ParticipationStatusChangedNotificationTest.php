@@ -55,6 +55,8 @@ class ParticipationStatusChangedNotificationTest extends WebTestCase
         self::assertCount(1, ParticipationStatusChangedNotificationFactory::all());
         self::assertSame($testUser->object(), ParticipationStatusChangedNotificationFactory::find(1)->getTargetUser());
 
+        $this->ensureKernelShutdown();
+        $client = $this->createClient();
         $client->loginUser($testUser->object());
         $crawler = $client->request('GET', '/user/account');
 

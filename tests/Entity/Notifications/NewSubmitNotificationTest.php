@@ -61,6 +61,8 @@ class NewSubmitNotificationTest extends WebTestCase
         self::assertCount(1, NewSubmitNotificationFactory::all());
         self::assertSame($targetUser->object(), NewSubmitNotificationFactory::find(1)->getTargetUser());
 
+        $this->ensureKernelShutdown();
+        $client = $this->createClient();
         $client->loginUser($targetUser->object());
         $crawler = $client->request('GET', '/user/account');
 
