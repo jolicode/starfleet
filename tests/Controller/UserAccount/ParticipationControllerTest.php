@@ -16,10 +16,14 @@ use App\Enum\Workflow\Transition\Participation as TransitionParticipation;
 use App\Factory\ConferenceFactory;
 use App\Factory\ParticipationFactory;
 use App\Repository\ParticipationRepository;
+use App\Tests\AbstractStarfleetTest;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Component\DomCrawler\Crawler;
 
-class ParticipationControllerTest extends BaseFactories
+/**
+ * @group user_account
+ */
+class ParticipationControllerTest extends AbstractStarfleetTest
 {
     /** @dataProvider provideRoutes */
     public function testAllPagesLoad(string $route)
@@ -31,8 +35,6 @@ class ParticipationControllerTest extends BaseFactories
 
     public function testParticipationsPageWork()
     {
-        $this->createTestData();
-
         $crawler = $this->getClient()->request('GET', '/user/participations');
 
         self::assertCount(2, $crawler->filter('#pending-participations-block .card'));
@@ -50,6 +52,7 @@ class ParticipationControllerTest extends BaseFactories
             'startAt' => new \DateTime('+10 days'),
             'endAt' => new \DateTime('+12 days'),
         ]);
+        $preSubmitCount = \count(ParticipationFactory::all());
 
         $this->getClient()->request('GET', '/user/participations');
         $this->getClient()->submitForm('submit_participation', [
@@ -59,8 +62,10 @@ class ParticipationControllerTest extends BaseFactories
             'participation[conferenceTicketStatus]' => Participation::STATUS_NOT_NEEDED,
         ]);
 
-        self::assertCount(1, ParticipationFactory::all());
-        self::assertSame($this->getTestUser(), ParticipationFactory::find(1)->getParticipant());
+        $allParticipations = ParticipationFactory::all();
+
+        self::assertCount($preSubmitCount + 1, $allParticipations);
+        self::assertSame($this->getTestUser(), $allParticipations[$preSubmitCount]->getParticipant());
     }
 
     public function testEditParticipationPageWork()
@@ -94,8 +99,6 @@ class ParticipationControllerTest extends BaseFactories
     /** @dataProvider provideActionRoutes */
     public function testAllEditParticipationLinksWork(string $route)
     {
-        $this->createTestData();
-
         $this->getClient()->request('GET', $route);
         $this->getClient()->submitForm('Edit Participation');
 
@@ -105,7 +108,6 @@ class ParticipationControllerTest extends BaseFactories
     /** @dataProvider provideActionRoutes */
     public function testAllCancelParticipationLinksWork(string $route)
     {
-        $this->createTestData();
         $crawler = $this->getClient()->request('GET', $route);
 
         if ('/user/participations' === $route) {
@@ -173,7 +175,7 @@ class ParticipationControllerTest extends BaseFactories
 
     private function mainPageCancelLink(KernelBrowser $client, Crawler $crawler)
     {
-        $participationRepository = static::$container->get(ParticipationRepository::class);
+        $participationRepository = $this->getContainer()->get(ParticipationRepository::class);
         $participations = $participationRepository->findPendingParticipationsByUser($this->getTestUser());
         $preCancelCount = \count($participations);
 
@@ -187,7 +189,7 @@ class ParticipationControllerTest extends BaseFactories
         self::assertCount(--$preCancelCount, $participationRepository->findPendingParticipationsByUser($this->getTestUser()));
     }
 
-    private function createTestData()
+    protected function generateData()
     {
         ParticipationFactory::createMany(2, [
             'participant' => $this->getTestUser(),

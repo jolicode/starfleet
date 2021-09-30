@@ -16,8 +16,12 @@ use App\Factory\ConferenceFactory;
 use App\Factory\SubmitFactory;
 use App\Factory\TalkFactory;
 use App\Factory\UserFactory;
+use App\Tests\AbstractStarfleetTest;
 
-class SubmitControllerTest extends BaseFactories
+/**
+ * @group user_account
+ */
+class SubmitControllerTest extends AbstractStarfleetTest
 {
     /** @dataProvider provideRoutes */
     public function testAllPagesLoad(string $route)
@@ -38,7 +42,6 @@ class SubmitControllerTest extends BaseFactories
 
     public function testSubmitsPageWork()
     {
-        $this->createTestData();
         $crawler = $this->getClient()->request('GET', '/user/submits');
 
         self::assertCount(1, $crawler->filter('#pending-submits-block .card'));
@@ -65,6 +68,8 @@ class SubmitControllerTest extends BaseFactories
             'conference' => $conference,
         ]);
 
+        $preSubmitCount = \count(SubmitFactory::all());
+
         $this->getClient()->request('GET', '/user/submits');
         $this->getClient()->submitForm('submit_submit', [
             'submit[conference]' => $conference->getName(),
@@ -72,15 +77,15 @@ class SubmitControllerTest extends BaseFactories
             'submit[users]' => $this->getTestUser()->getId(),
         ]);
 
-        self::assertCount(2, SubmitFactory::all());
-        self::assertSame($this->getTestUser(), SubmitFactory::find(2)->getUsers()[0]);
+        $allSubmits = SubmitFactory::all();
+
+        self::assertCount($preSubmitCount + 1, $allSubmits);
+        self::assertSame($this->getTestUser(), $allSubmits[$preSubmitCount]->getUsers()[0]);
     }
 
     /** @dataProvider provideActions */
     public function testSubmitActions(string $action)
     {
-        $this->createTestData();
-
         foreach (['accepted', 'pending'] as $pageName) {
             if ($pageName === $action || ('accept' === $action && 'accepted' === $pageName)) {
                 continue;
@@ -107,8 +112,6 @@ class SubmitControllerTest extends BaseFactories
     /** @dataProvider provideActions */
     public function mainPageActions(string $action): void
     {
-        $this->createTestData();
-
         if ('cancel' === $action) {
             $submits = SubmitFactory::repository()->findUserSubmitsByStatus($this->getTestUser(), Submit::STATUS_DONE);
         } else {
@@ -176,7 +179,7 @@ class SubmitControllerTest extends BaseFactories
         yield ['Edit Profile'];
     }
 
-    private function createTestData()
+    protected function generateData()
     {
         UserFactory::createMany(2);
         ConferenceFactory::createMany(5);

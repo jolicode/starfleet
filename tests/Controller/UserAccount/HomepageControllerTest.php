@@ -11,7 +11,12 @@
 
 namespace App\Tests\Controller\UserAccount;
 
-class HomepageControllerTest extends BaseFactories
+use App\Tests\AbstractStarfleetTest;
+
+/**
+ * @group user_account
+ */
+class HomepageControllerTest extends AbstractStarfleetTest
 {
     public function testUserPageForUsers()
     {
@@ -25,10 +30,15 @@ class HomepageControllerTest extends BaseFactories
     public function testUserPageForAdmins()
     {
         $user = $this->getAdminUser();
-        $crawler = $this->getClient()->request('GET', '/user/account');
+        $crawler = $this->getClient($user)->request('GET', '/user/account');
 
         self::assertResponseIsSuccessful();
         self::assertSelectorTextContains('.username', $user->getName());
         self::assertCount(1, $crawler->filter('#admin-button'));
+    }
+
+    protected function generateData()
+    {
+        // No specific data needed for these tests
     }
 }

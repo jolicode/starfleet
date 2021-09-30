@@ -11,54 +11,32 @@
 
 namespace App\Tests\Controller\Front;
 
-use App\Factory\UserFactory;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use App\Tests\AbstractStarfleetTest;
 use Zenstruck\Foundry\Test\Factories;
-use Zenstruck\Foundry\Test\ResetDatabase;
 
-class SecurityControllerTest extends WebTestCase
+class SecurityControllerTest extends AbstractStarfleetTest
 {
     use Factories;
-    use ResetDatabase;
 
     public function testAdminCanAccessToAdmin()
     {
-        $userProxy = UserFactory::createOne([
-            'email' => 'admin@starfleet.app',
-            'roles' => ['ROLE_ADMIN'],
-            'name' => 'Admin',
-            'password' => 'password',
-        ]);
-
-        $this->ensureKernelShutdown();
-        $client = $this->createClient();
-        $client->loginUser($userProxy->object());
-        $client->followRedirects();
-
+        $client = $this->getClient($this->getAdminUser());
         $client->request('GET', '/admin/');
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('span.user-name', 'Admin');
+        $this->assertSelectorTextContains('span.user-name', 'Starfleet Admin');
     }
 
     public function testUserCannotAccessToAdmin()
     {
-        $userProxy = UserFactory::createOne([
-            'roles' => ['ROLE_USER'],
-        ]);
-
-        $this->ensureKernelShutdown();
-        $client = $this->createClient();
-        $client->followRedirects();
-        $client->loginUser($userProxy->object());
-
-        $client->request('GET', '/admin/');
+        $this->getClient()->request('GET', '/admin/');
 
         $this->assertResponseStatusCodeSame(403);
     }
 
     public function testNotAuthenticatedUserCanNotAccessToAdmin()
     {
+        $this->ensureKernelShutdown();
         $client = $this->createClient();
         $client->followRedirects();
 
@@ -66,5 +44,10 @@ class SecurityControllerTest extends WebTestCase
 
         $this->assertResponseIsSuccessful();
         $this->assertRouteSame('login');
+    }
+
+    protected function generateData()
+    {
+        // No specific data needed for these tests.
     }
 }

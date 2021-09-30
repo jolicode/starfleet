@@ -17,40 +17,32 @@ use App\Factory\Notifications\SubmitStatusChangedNotificationFactory;
 use App\Factory\SubmitFactory;
 use App\Factory\TalkFactory;
 use App\Factory\UserFactory;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use App\Tests\AbstractStarfleetTest;
 use Zenstruck\Foundry\Test\Factories;
-use Zenstruck\Foundry\Test\ResetDatabase;
 
 /**
  * @group notifications
  */
-class SubmitStatusChangedNotificationTest extends WebTestCase
+class SubmitStatusChangedNotificationTest extends AbstractStarfleetTest
 {
     use Factories;
-    use ResetDatabase;
 
     public function testNotificationIsCreated()
     {
-        $emitterUser = UserFactory::createOne();
-        $targetUser = UserFactory::createOne();
-        $submit = SubmitFactory::createOne([
-            'conference' => ConferenceFactory::createOne(),
-            'talk' => TalkFactory::createOne(),
-            'users' => [$emitterUser, $targetUser],
-            'status' => Submit::STATUS_PENDING,
-        ]);
+        $emitterUser = UserFactory::find(['name' => 'Emitter']);
+        $targetUser = UserFactory::find(['name' => 'Target']);
+        $submit = SubmitFactory::random();
 
-        $this->ensureKernelShutdown();
-        $client = $this->createClient();
-        $client->loginUser($emitterUser->object());
-        $client->request('GET', sprintf('/user/submits', $submit->getId()));
+        $client = $this->getClient($emitterUser->object());
+        $client->request('GET', '/user/submits');
 
         $client->submitForm('Accept');
         $submit->refresh()->save();
         $targetUser->refresh();
 
-        self::assertCount(1, SubmitStatusChangedNotificationFactory::all());
-        self::assertSame(Submit::STATUS_ACCEPTED, SubmitStatusChangedNotificationFactory::find(1)->getSubmit()->getStatus());
+        $allNotifications = SubmitStatusChangedNotificationFactory::all();
+        self::assertCount(1, $allNotifications);
+        self::assertSame(Submit::STATUS_ACCEPTED, $allNotifications[0]->getSubmit()->getStatus());
 
         $this->ensureKernelShutdown();
         $client = $this->createClient();
@@ -59,5 +51,21 @@ class SubmitStatusChangedNotificationTest extends WebTestCase
 
         $notificationsButton = $crawler->filter('div.notification-button');
         self::assertSame('1 Notifications', $notificationsButton->text());
+    }
+
+    protected function generateData()
+    {
+        $emitterUser = UserFactory::createOne([
+            'name' => 'Emitter',
+        ]);
+        $targetUser = UserFactory::createOne([
+            'name' => 'Target',
+        ]);
+        SubmitFactory::createOne([
+            'conference' => ConferenceFactory::createOne(),
+            'talk' => TalkFactory::createOne(),
+            'users' => [$emitterUser, $targetUser],
+            'status' => Submit::STATUS_PENDING,
+        ]);
     }
 }
