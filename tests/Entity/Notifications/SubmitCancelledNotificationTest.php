@@ -52,6 +52,8 @@ class SubmitCancelledNotificationTest extends WebTestCase
         self::assertCount(0, SubmitFactory::all());
         self::assertSame($targetUser->object(), SubmitCancelledNotificationFactory::find(1)->getTargetUser());
 
+        $this->ensureKernelShutdown();
+        $client = $this->createClient();
         $client->loginUser($targetUser->object());
         $crawler = $client->request('GET', '/user/account');
 

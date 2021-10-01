@@ -1,10 +1,15 @@
 framework:
     secret: '%env(APP_SECRET)%'
     default_locale: en
+    http_method_override: false
+
     session:
+        handler_id: null
         save_path: '%kernel.project_dir%/var/sessions/%kernel.environment%'
         cookie_secure: auto
         cookie_samesite: lax
+        storage_factory_id: session.storage.factory.native
+
     php_errors:
         log: true
     assets:
@@ -12,3 +17,9 @@ framework:
     trusted_hosts:
         - '%env(TRUSTED_HOSTS)%'
         - 'localhost'
+
+when@test:
+    framework:
+        test: true
+        session:
+            storage_factory_id: session.storage.factory.mock_file

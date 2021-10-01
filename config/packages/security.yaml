@@ -1,4 +1,5 @@
 security:
+    enable_authenticator_manager: true
     password_hashers:
         App\Entity\User:
             algorithm: native
@@ -12,6 +13,7 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
+            lazy: true
             provider: user
             user_checker: App\Security\LoginableChecker
             entry_point: App\Security\Authenticator\LoginFormAuthenticator
@@ -22,7 +24,6 @@ security:
             logout:
                 path: logout
                 target: conferences_list
-    enable_authenticator_manager: true
     access_control:
         - { path: ^/login$, role: PUBLIC_ACCESS }
         - { path: ^/user, roles: ROLE_USER }

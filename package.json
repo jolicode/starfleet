@@ -21,8 +21,10 @@
         "babel-preset-stage-2": "^6.24.1",
         "chart.js": "^2.9.4",
         "copy-webpack-plugin": "^4.2.1",
+        "core-js": "3.0.0",
         "node-sass": "^4.7.2",
         "prettier": "1.8.2",
+        "regenerator-runtime": "^0.13.2",
         "sass-loader": "^9.0.1",
         "stimulus": "^2.0.0",
         "webpack-notifier": "^1.6.0"
@@ -31,7 +33,7 @@
         "dev-server": "encore dev-server",
         "dev": "encore dev",
         "watch": "encore dev --watch",
-        "build": "encore production",
+        "build": "encore production --progress",
         "check-prettier": "prettier \"assets/js/**/*.js\"",
         "prettier": "prettier --write \"assets/js/**/*.js\""
     },

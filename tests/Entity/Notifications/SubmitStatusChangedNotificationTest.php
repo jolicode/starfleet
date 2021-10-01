@@ -52,6 +52,8 @@ class SubmitStatusChangedNotificationTest extends WebTestCase
         self::assertCount(1, SubmitStatusChangedNotificationFactory::all());
         self::assertSame(Submit::STATUS_ACCEPTED, SubmitStatusChangedNotificationFactory::find(1)->getSubmit()->getStatus());
 
+        $this->ensureKernelShutdown();
+        $client = $this->createClient();
         $client->loginUser($targetUser->object());
         $crawler = $client->request('GET', '/user/account');
 
