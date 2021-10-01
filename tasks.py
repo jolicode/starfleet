@@ -49,7 +49,6 @@ def start(c):
     cache_clear(c)
     install(c)
     migrate(c)
-    fixtures(c)
     start_workers(c)
 
     print(Fore.GREEN + 'The stack is now up and running.')
@@ -101,7 +100,7 @@ def fixtures(c):
     Load fixtures into database
     """
     with Builder(c):
-        docker_compose_run(c, 'php bin/console doctrine:database:drop --force')
+        docker_compose_run(c, 'php bin/console doctrine:database:drop --force --if-exists')
         docker_compose_run(c, 'php bin/console doctrine:database:create --if-not-exists')
         migrate(c)
         docker_compose_run(c, 'php bin/console doctrine:fixtures:load -n')
