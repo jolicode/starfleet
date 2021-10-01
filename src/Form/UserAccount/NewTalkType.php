@@ -13,7 +13,9 @@ namespace App\Form\UserAccount;
 
 use App\Entity\Submit;
 use App\Entity\User;
+use App\Event\Notification\NewSubmitEvent;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -26,7 +28,8 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 class NewTalkType extends AbstractType
 {
     public function __construct(
-        private Security $security
+        private Security $security,
+        private EventDispatcherInterface $eventDispatcher,
     ) {
     }
 
@@ -76,6 +79,10 @@ class NewTalkType extends AbstractType
 
                     foreach ($form->get('users')->getData() as $user) {
                         $submit->addUser($user);
+                    }
+
+                    if (\count($submit->getUsers()) > 1) {
+                        $this->eventDispatcher->dispatch(new NewSubmitEvent($submit));
                     }
 
                     $talk->addSubmit($submit);
