@@ -30,4 +30,3 @@ easy_admin:
                             multiple: true
                             choices:
                                 Admin: ROLE_ADMIN
-                                User: ROLE_USER

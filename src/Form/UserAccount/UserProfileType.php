@@ -42,7 +42,7 @@ class UserProfileType extends AbstractType
                 'mapped' => false,
                 'required' => false,
             ])
-            ->add('password', PasswordType::class, [
+            ->add('newPassword', PasswordType::class, [
                 'required' => false,
                 'mapped' => false,
             ])

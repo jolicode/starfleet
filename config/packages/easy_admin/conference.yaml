@@ -3,7 +3,7 @@ easy_admin:
         PassedConference:
             class: App\Entity\Conference
             controller: App\Controller\Admin\ConferenceController
-            disabled_actions: ['edit', 'delete']
+            disabled_actions: ['edit', 'delete', 'new']
             list:
                 title: 'Passed Conferences'
                 filters: ['name', 'city', 'country', 'startAt', 'tags', 'source']
@@ -69,7 +69,7 @@ easy_admin:
         ExcludedConference:
             class: App\Entity\Conference
             controller: App\Controller\Admin\ConferenceController
-            disabled_actions: ['delete']
+            disabled_actions: ['delete', 'new']
             list:
                 title: 'Excluded Conferences'
                 filters: ['name', 'city', 'country', 'startAt', 'tags', 'source']
