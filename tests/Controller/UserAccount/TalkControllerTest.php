@@ -15,8 +15,12 @@ use App\Factory\ConferenceFactory;
 use App\Factory\SubmitFactory;
 use App\Factory\TalkFactory;
 use App\Factory\UserFactory;
+use App\Tests\AbstractStarfleetTest;
 
-class TalkControllerTest extends BaseFactories
+/**
+ * @group user_account
+ */
+class TalkControllerTest extends AbstractStarfleetTest
 {
     /** @dataProvider provideRoutes */
     public function testPagesLoad(string $route)
@@ -33,7 +37,6 @@ class TalkControllerTest extends BaseFactories
 
     public function testTalksPageWork()
     {
-        $this->createTestData();
         $crawler = $this->getClient()->request('GET', '/user/talks');
 
         self::assertSelectorExists('#all-talks-block a', '...Show more');
@@ -48,6 +51,8 @@ class TalkControllerTest extends BaseFactories
             'endAt' => new \DateTime('+12 days'),
         ]);
 
+        $preSubmitCount = \count(TalkFactory::all());
+
         $this->getClient()->request('GET', '/user/talks');
         $this->getClient()->submitForm('submit_talk', [
             'new_talk[title]' => 'My Amazing Test Title',
@@ -56,7 +61,7 @@ class TalkControllerTest extends BaseFactories
             'new_talk[users]' => $this->getTestUser()->getId(),
         ]);
 
-        self::assertCount(1, ConferenceFactory::all());
+        self::assertCount($preSubmitCount + 1, TalkFactory::all());
     }
 
     public function testEditTalkPageWork()
@@ -85,7 +90,6 @@ class TalkControllerTest extends BaseFactories
     /** @dataProvider provideRoutes */
     public function testAllEditTalkLinksWork(string $route)
     {
-        $this->createTestData();
         $this->getClient()->request('GET', $route);
         $this->getClient()->submitForm('Edit');
 
@@ -111,16 +115,15 @@ class TalkControllerTest extends BaseFactories
         yield ['Edit Profile'];
     }
 
-    private function createTestData()
+    protected function generateData()
     {
         UserFactory::createMany(2);
         ConferenceFactory::createMany(5);
-        TalkFactory::createMany(10);
 
-        foreach (range(1, 4) as $id) {
+        foreach (TalkFactory::createMany(4) as $talk) {
             SubmitFactory::createOne([
                 'users' => [$this->getTestUser()],
-                'talk' => TalkFactory::find($id),
+                'talk' => $talk,
             ]);
         }
     }

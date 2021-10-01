@@ -15,18 +15,29 @@ use App\Enum\Workflow\Transition\Participation;
 use App\Factory\ConferenceFactory;
 use App\Factory\ParticipationFactory;
 use App\Factory\UserFactory;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use App\Tests\AbstractStarfleetTest;
 use Zenstruck\Foundry\Test\Factories;
-use Zenstruck\Foundry\Test\ResetDatabase;
 
-class FrontControllerTest extends WebTestCase
+class FrontControllerTest extends AbstractStarfleetTest
 {
     use Factories;
-    use ResetDatabase;
 
     public function testConferencesWithAcceptedParticipationsAreDisplayed()
     {
-        UserFactory::createMany(2);
+        $crawler = $this->getClient()->request('GET', '/');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('#conferencesTabs', 'Incoming conferences');
+        $this->assertSelectorTextContains('#conferencesTabs', '🔴 Live conferences! Find us there!');
+        $this->assertSelectorTextContains('#conferencesTabs', 'Past conferences');
+        $this->assertCount(1, $crawler->filter('div#future div.card'));
+        $this->assertCount(1, $crawler->filter('div#live div.card'));
+        $this->assertCount(1, $crawler->filter('div#past div.card'));
+    }
+
+    protected function generateData()
+    {
+        UserFactory::createOne();
         $pastConferenceProxy = ConferenceFactory::createOne([
             'name' => 'Past Conference',
             'excluded' => false,
@@ -57,17 +68,5 @@ class FrontControllerTest extends WebTestCase
             'marking' => Participation::ACCEPTED,
             'conference' => ConferenceFactory::find($futureConferenceProxy),
         ]);
-
-        $this->ensureKernelShutdown();
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/');
-
-        $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('#conferencesTabs', 'Incoming conferences');
-        $this->assertSelectorTextContains('#conferencesTabs', '🔴 Live conferences! Find us there!');
-        $this->assertSelectorTextContains('#conferencesTabs', 'Past conferences');
-        $this->assertCount(1, $crawler->filter('div#future div.card'));
-        $this->assertCount(1, $crawler->filter('div#live div.card'));
-        $this->assertCount(1, $crawler->filter('div#past div.card'));
     }
 }

@@ -12,8 +12,12 @@
 namespace App\Tests\Controller\UserAccount;
 
 use App\Factory\ConferenceFactory;
+use App\Tests\AbstractStarfleetTest;
 
-class FutureConferencesControllerTest extends BaseFactories
+/**
+ * @group user_account
+ */
+class FutureConferencesControllerTest extends AbstractStarfleetTest
 {
     private string $conferencesUrl = '/user/future-conferences';
 
@@ -25,31 +29,22 @@ class FutureConferencesControllerTest extends BaseFactories
 
     public function testConferencesAreDisplayed()
     {
-        ConferenceFactory::createMany(3, [
-            'featured' => true,
-            'startAt' => new \DateTime('+2 days'),
-            'endAt' => new \DateTime('+5 days'),
-        ]);
-
-        ConferenceFactory::createMany(5, [
-            'featured' => false,
-            'startAt' => new \DateTime('+2 days'),
-            'endAt' => new \DateTime('+5 days'),
-        ]);
-
         $crawler = $this->getClient()->request('GET', $this->conferencesUrl);
 
-        self::assertCount(3, $crawler->filter('div#featured-conferences-block div.conference-card'));
-        self::assertCount(5, $crawler->filter('div#regular-conferences-block div.conference-card'));
+        $featuredConferencesCount = \count(ConferenceFactory::findBy([
+            'featured' => true,
+        ]));
+
+        $regularConferencesCount = \count(ConferenceFactory::findBy([
+            'featured' => false,
+        ]));
+
+        self::assertCount($featuredConferencesCount, $crawler->filter('div#featured-conferences-block div.conference-card'));
+        self::assertCount($regularConferencesCount, $crawler->filter('div#regular-conferences-block div.conference-card'));
     }
 
     public function testAskParticipationWork()
     {
-        ConferenceFactory::createOne([
-            'startAt' => new \DateTime('+2 days'),
-            'endAt' => new \DateTime('+5 days'),
-        ]);
-
         $this->getClient()->request('GET', $this->conferencesUrl);
         $this->getClient()->submitForm('Ask Participation');
 
@@ -58,15 +53,24 @@ class FutureConferencesControllerTest extends BaseFactories
 
     public function testSubmitTalkWork()
     {
-        ConferenceFactory::createOne([
-            'startAt' => new \DateTime('+2 days'),
-            'endAt' => new \DateTime('+5 days'),
-            'cfpEndAt' => new \DateTime('+5 days'),
-        ]);
-
         $this->getClient()->request('GET', $this->conferencesUrl);
         $this->getClient()->submitForm('Submit a Talk');
 
         self::assertResponseIsSuccessful();
+    }
+
+    protected function generateData()
+    {
+        ConferenceFactory::createMany(3, [
+            'featured' => true,
+            'startAt' => new \DateTime('+1 days'),
+            'endAt' => new \DateTime('+1 days'),
+        ]);
+
+        ConferenceFactory::createMany(3, [
+            'featured' => false,
+            'startAt' => new \DateTime('+1 days'),
+            'endAt' => new \DateTime('+1 days'),
+        ]);
     }
 }
