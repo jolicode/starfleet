@@ -18,6 +18,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class SlackNotifier
@@ -239,9 +240,15 @@ class SlackNotifier
     /** @param array<mixed> $blocks */
     private function notify(array $blocks): void
     {
-        $this->httpClient->request('POST', $this->webHookUrl, [
-            'headers' => ['Content-type' => 'application/json'],
-            'body' => json_encode($blocks),
-        ]);
+        try {
+            $this->httpClient->request('POST', $this->webHookUrl, [
+                'headers' => ['Content-type' => 'application/json'],
+                'body' => json_encode($blocks),
+            ]);
+        } catch (TransportExceptionInterface $exception) {
+            $this->logger->error('An error occured while trying to request Slack.', [
+                'context' => $exception,
+            ]);
+        }
     }
 }
