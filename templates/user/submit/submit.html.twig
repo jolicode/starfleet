@@ -19,8 +19,10 @@
 {% endblock %}
 
 {% block _submit_users_label %}
-    <label for="{{ full_name }}" class="d-block">Users</label>
-    {{ form_errors(form) }}
+    <label for="{{ full_name }}" class="d-block">
+        Users
+        {{ form_errors(form) }}
+    </label>
 {% endblock %}
 
 {% block _submit_users_widget %}

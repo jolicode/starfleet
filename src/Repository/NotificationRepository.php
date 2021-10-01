@@ -29,10 +29,9 @@ class NotificationRepository extends ServiceEntityRepository
         parent::__construct($registry, AbstractNotification::class);
     }
 
-    /** @return array<AbstractNotification> */
-    public function markAllAsReadForUser(User $user): array
+    public function markAllAsReadForUser(User $user): void
     {
-        return $this->createQueryBuilder('n')
+        $this->createQueryBuilder('n')
             ->update()
             ->set('n.read', ':newRead')
             ->andWhere('n.targetUser = :user')

@@ -38,12 +38,20 @@ class ConferenceNameTransformer implements DataTransformerInterface
             return null;
         }
 
-        $conference = $this->conferenceRepository->findOneBy(['name' => $conferenceName]);
+        $requestedConference = null;
 
-        if (null === $conference) {
+        foreach ($this->conferenceRepository->findBy(['name' => $conferenceName]) as $conference) {
+            $requestedConference = $requestedConference ?: $conference;
+
+            if ($requestedConference->getStartAt() < $conference->getStartAt()) {
+                $requestedConference = $conference;
+            }
+        }
+
+        if (!$requestedConference) {
             throw new TransformationFailedException(sprintf('The conference with name "%s" doesn\'t seem to exist.', $conferenceName));
         }
 
-        return $conference;
+        return $requestedConference;
     }
 }
