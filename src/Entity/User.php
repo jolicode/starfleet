@@ -29,6 +29,16 @@ class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInt
     use TimestampableEntity;
 
     /**
+     * @Assert\Length(max=4096)
+     */
+    protected string $plainPassword;
+
+    /**
+     * @Assert\Length(max=4096)
+     */
+    protected ?string $salt = null;
+
+    /**
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(name="id", type="integer")
@@ -108,16 +118,6 @@ class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInt
      * @var array<string>
      */
     private array $roles;
-
-    /**
-     * @Assert\Length(max=4096)
-     */
-    protected string $plainPassword;
-
-    /**
-     * @Assert\Length(max=4096)
-     */
-    protected ?string $salt = null;
 
     /**
      * @ORM\Column(type="string", nullable=true)
@@ -414,18 +414,18 @@ class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInt
     /** @return array<string> */
     public function unserialize($serialized): ?array
     {
-        return list(
+        return [
             $this->id,
             $this->email,
             $this->password,
             $this->salt,
             $this->googleId,
             $this->githubId
-        ) = unserialize($serialized);
+        ] = unserialize($serialized);
     }
 
     /**
-     * @return Collection|AbstractNotification[]
+     * @return AbstractNotification[]|Collection
      */
     public function getNotifications(): Collection
     {

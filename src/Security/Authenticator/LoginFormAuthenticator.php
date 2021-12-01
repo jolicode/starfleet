@@ -40,11 +40,6 @@ class LoginFormAuthenticator extends AbstractAuthenticator implements Authentica
         return new RedirectResponse($this->urlGenerator->generate('login'));
     }
 
-    protected function getLoginUrl(): string
-    {
-        return $this->urlGenerator->generate('login');
-    }
-
     public function supports(Request $request): ?bool
     {
         return 'login' === $request->attributes->get('_route')
@@ -86,5 +81,10 @@ class LoginFormAuthenticator extends AbstractAuthenticator implements Authentica
         $request->getSession()->getFlashBag()->add('error', 'Either your email or password is invalid.');
 
         return new RedirectResponse($this->urlGenerator->generate('login'));
+    }
+
+    protected function getLoginUrl(): string
+    {
+        return $this->urlGenerator->generate('login');
     }
 }

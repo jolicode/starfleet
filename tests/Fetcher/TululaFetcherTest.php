@@ -293,7 +293,7 @@ class TululaFetcherTest extends KernelTestCase
 
     public function testRealResponse()
     {
-        $realTululaData = file_get_contents(\dirname(__DIR__).'/Fixtures/tulula.json');
+        $realTululaData = file_get_contents(\dirname(__DIR__) . '/Fixtures/tulula.json');
         $response = new MockResponse($realTululaData);
         $result = $this
             ->createFetcher($response)
@@ -306,7 +306,8 @@ class TululaFetcherTest extends KernelTestCase
                     'Python',
                 ],
                 'allowEmptyTags' => false,
-            ]);
+            ])
+        ;
 
         self::assertNotEmpty(iterator_to_array($result));
     }
@@ -316,21 +317,21 @@ class TululaFetcherTest extends KernelTestCase
         $locationGuesser = $this->prophesize(LocationGuesser::class);
         $locationGuesser
             ->getContinent(Argument::type('string'))
-            ->willReturn($continent = new Continent());
+            ->willReturn($continent = new Continent())
+        ;
         $continent->setName('Europe');
         $continent->setEnabled(true);
 
         $locationGuesser
             ->getCoordinates(Argument::type('string'))
-            ->willReturn([666, 666]);
+            ->willReturn([666, 666])
+        ;
 
         $client = new MockHttpClient($response);
 
-        $fetcher = new TululaFetcher(
+        return new TululaFetcher(
             $locationGuesser->reveal(),
             $client
         );
-
-        return $fetcher;
     }
 }

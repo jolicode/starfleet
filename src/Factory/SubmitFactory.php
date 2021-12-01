@@ -28,7 +28,7 @@ use Zenstruck\Foundry\Proxy;
  * @method static       Submit[]|Proxy[] findBy(array $attributes)
  * @method static       Submit[]|Proxy[] randomSet(int $number, array $attributes = [])
  * @method static       Submit[]|Proxy[] randomRange(int $min, int $max, array $attributes = [])
- * @method Submit|Proxy create($attributes = [])
+ * @method Proxy|Submit create($attributes = [])
  */
 final class SubmitFactory extends ModelFactory
 {

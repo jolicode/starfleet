@@ -48,17 +48,15 @@ final class ParticipationStatusChangedNotificationFactory extends ModelFactory
         return $this
             ->instantiateWith(function (array $attributes) {
                 $participation = ParticipationFactory::findOrCreate([
-                        'participant' => $attributes['targetUser'],
+                    'participant' => $attributes['targetUser'],
                 ]);
 
-                $notification = new ParticipationStatusChangedNotification(
+                return new ParticipationStatusChangedNotification(
                     $participation->object(),
                     $attributes['emitter'],
                     $attributes['targetUser'],
                     $attributes['trigger']
                 );
-
-                return $notification;
             })
         ;
     }

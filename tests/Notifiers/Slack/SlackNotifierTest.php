@@ -116,7 +116,8 @@ class SlackNotifierTest extends WebTestCase
                 ['slug' => 'test-slug'],
                 Argument::type('integer')
             )
-            ->willReturn('Route URL');
+            ->willReturn('Route URL')
+        ;
 
         return new SlackNotifier(
             $webHookUrl,

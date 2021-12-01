@@ -137,8 +137,10 @@ class TululaFetcher implements FetcherInterface
                 // Sometimes, an event will have no tags. If you want to fetch them anyway, you should set the `allowEmptyTags` option to true in the admin
                 if (\array_key_exists('allowEmptyTags', $configuration) && $configuration['allowEmptyTags']) {
                     yield $this->denormalizeConference($conference);
+
                     continue;
                 }
+
                 continue;
             }
 
@@ -151,6 +153,7 @@ class TululaFetcher implements FetcherInterface
                     }
 
                     yield $denormalizedConference;
+
                     break;
                 }
             }
@@ -171,7 +174,8 @@ class TululaFetcher implements FetcherInterface
                 'label' => 'Allow Empty Tags',
                 'help' => 'Fetch conferences with no tags at all',
                 'required' => false,
-            ]);
+            ])
+        ;
     }
 
     /** @param array<mixed> $rawConference */
@@ -230,7 +234,7 @@ class TululaFetcher implements FetcherInterface
         return $conference;
     }
 
-    /** @return array<array>|null */
+    /** @return null|array<array> */
     private function queryTulula(): ?array
     {
         try {
@@ -244,39 +248,39 @@ class TululaFetcher implements FetcherInterface
                             'cfpFrom' => date('Y-m-d'),
                         ],
                     ],
-                    'query' => <<<QUERY
-                        query QueryEventsSearch(\$filter: EventSearchFilter) {
-                            events: eventsSearch(filter: \$filter) {
-                                events {
-                                ...EventData
+                    'query' => <<<'QUERY'
+                            query QueryEventsSearch($filter: EventSearchFilter) {
+                                events: eventsSearch(filter: $filter) {
+                                    events {
+                                    ...EventData
+                                    }
                                 }
                             }
-                        }
-                        fragment EventData on Event {
-                            name
-                            url
-                            dateStart
-                            dateEnd
-                            cfpDateEnd
-                            cfpUrl
-                            isOnline
-                            slug
-                            venue {
-                                ...VenueData
+                            fragment EventData on Event {
+                                name
+                                url
+                                dateStart
+                                dateEnd
+                                cfpDateEnd
+                                cfpUrl
+                                isOnline
+                                slug
+                                venue {
+                                    ...VenueData
+                                }
+                                tags {
+                                    ...TagData
+                                }
                             }
-                            tags {
-                                ...TagData
+                            fragment VenueData on Venue {
+                                countryCode
+                                state
+                                city
                             }
-                        }
-                        fragment VenueData on Venue {
-                            countryCode
-                            state
-                            city
-                        }
-                        fragment TagData on Tag {
-                            name
-                        }
-                    QUERY
+                            fragment TagData on Tag {
+                                name
+                            }
+                        QUERY
                 ],
             ]);
         } catch (TransportExceptionInterface $exception) {

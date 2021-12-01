@@ -54,14 +54,12 @@ final class NewSubmitNotificationFactory extends ModelFactory
                     ],
                 ]);
 
-                $notification = new NewSubmitNotification(
+                return new NewSubmitNotification(
                     $submit->object(),
                     $attributes['emitter'],
                     $attributes['targetUser'],
                     $attributes['trigger']
                 );
-
-                return $notification;
             })
         ;
     }

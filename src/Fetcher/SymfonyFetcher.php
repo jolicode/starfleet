@@ -118,7 +118,7 @@ class SymfonyFetcher implements FetcherInterface
         return $conference;
     }
 
-    /** @return array<mixed>|null */
+    /** @return null|array<mixed> */
     private function querySymfony(): ?array
     {
         try {
@@ -142,8 +142,6 @@ class SymfonyFetcher implements FetcherInterface
             return null;
         }
 
-        $result = $response->toArray();
-
-        return $result;
+        return $response->toArray();
     }
 }

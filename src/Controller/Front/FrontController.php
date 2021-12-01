@@ -33,7 +33,7 @@ class FrontController extends AbstractController
         $conferences = $conferenceRepository->findAttendedConferencesByTag($tag);
 
         if (!$conferences) {
-            $this->addFlash('info', 'No conferences found for tag "'.$tag.'"');
+            $this->addFlash('info', 'No conferences found for tag "' . $tag . '"');
 
             return $this->redirectToRoute('conferences_list');
         }

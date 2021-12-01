@@ -29,7 +29,7 @@ use Zenstruck\Foundry\Proxy;
  * @method static     User[]|Proxy[] findBy(array $attributes)
  * @method static     User[]|Proxy[] randomSet(int $number, array $attributes = [])
  * @method static     User[]|Proxy[] randomRange(int $min, int $max, array $attributes = [])
- * @method User|Proxy create($attributes = [])
+ * @method Proxy|User create($attributes = [])
  */
 final class UserFactory extends ModelFactory
 {
@@ -46,7 +46,7 @@ final class UserFactory extends ModelFactory
             'email' => self::faker()->unique()->safeEmail(),
             'password' => 'password',
             'job' => self::faker()->jobTitle(),
-            'twitterAccount' => '@'.self::faker()->word(),
+            'twitterAccount' => '@' . self::faker()->word(),
             'tshirtSize' => self::faker()->randomElement(['XS', 'S', 'M', 'L', 'XL', 'XXL']),
             'bio' => self::faker()->paragraph(),
             'foodPreferences' => self::faker()->paragraph(),

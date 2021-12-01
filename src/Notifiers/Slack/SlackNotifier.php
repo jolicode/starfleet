@@ -116,7 +116,7 @@ class SlackNotifier
         }
 
         $text = \count($submit->getUsers()) > 1 ? '*Speakers*' : '*Speaker*';
-        $text .= ' : '.$submit->getSpeakersNames();
+        $text .= ' : ' . $submit->getSpeakersNames();
         $text .= ' *Conference* : ';
         $text .= sprintf('<%s|%s>', $submit->getConference()->getSiteUrl(), $submit->getConference()->getName());
 

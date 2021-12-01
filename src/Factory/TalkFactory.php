@@ -28,7 +28,7 @@ use Zenstruck\Foundry\Proxy;
  * @method static     Talk[]|Proxy[] findBy(array $attributes)
  * @method static     Talk[]|Proxy[] randomSet(int $number, array $attributes = [])
  * @method static     Talk[]|Proxy[] randomRange(int $min, int $max, array $attributes = [])
- * @method Talk|Proxy create($attributes = [])
+ * @method Proxy|Talk create($attributes = [])
  */
 final class TalkFactory extends ModelFactory
 {

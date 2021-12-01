@@ -110,11 +110,12 @@ class SymfonyFetcherTest extends KernelTestCase
 
     public function testRealResponse()
     {
-        $realSymfonyData = file_get_contents(\dirname(__DIR__).'/Fixtures/symfony.json');
+        $realSymfonyData = file_get_contents(\dirname(__DIR__) . '/Fixtures/symfony.json');
         $response = new MockResponse($realSymfonyData);
         $result = $this
             ->createFetcher($response)
-            ->fetch();
+            ->fetch()
+        ;
 
         self::assertNotEmpty(iterator_to_array($result));
     }
@@ -124,21 +125,21 @@ class SymfonyFetcherTest extends KernelTestCase
         $locationGuesser = $this->prophesize(LocationGuesser::class);
         $locationGuesser
             ->getContinent(Argument::type('string'))
-            ->willReturn($continent = new Continent());
+            ->willReturn($continent = new Continent())
+        ;
         $continent->setName('Europe');
         $continent->setEnabled(true);
 
         $locationGuesser
             ->getCoordinates(Argument::type('string'))
-            ->willReturn([666, 666]);
+            ->willReturn([666, 666])
+        ;
 
         $client = new MockHttpClient($response);
 
-        $fetcher = new SymfonyFetcher(
+        return new SymfonyFetcher(
             $locationGuesser->reveal(),
             $client
         );
-
-        return $fetcher;
     }
 }

@@ -46,9 +46,7 @@ final class NewFeaturedConferenceNotificationFactory extends ModelFactory
     {
         return $this
             ->instantiateWith(function (array $attributes) {
-                $notification = new NewFeaturedConferenceNotification($attributes['conference'], $attributes['targetUser'], $attributes['trigger']);
-
-                return $notification;
+                return new NewFeaturedConferenceNotification($attributes['conference'], $attributes['targetUser'], $attributes['trigger']);
             })
         ;
     }

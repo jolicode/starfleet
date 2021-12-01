@@ -54,7 +54,7 @@ class FetcherController extends AbstractController
         $class = sprintf('App\Fetcher\%s', $fetcherShortClass);
 
         if (!$this->serviceProvider->has($class)) {
-            throw $this->createNotFoundException("The fetcher '$fetcherShortClass' is not found.");
+            throw $this->createNotFoundException("The fetcher '{$fetcherShortClass}' is not found.");
         }
 
         $fetcherConfiguration = $this->fetcherConfigurationRepository->findOneOrCreate($fetcherShortClass);
@@ -94,7 +94,7 @@ class FetcherController extends AbstractController
         $class = sprintf('App\Fetcher\%s', $fetcher);
 
         if (!$this->serviceProvider->has($class)) {
-            throw $this->createNotFoundException("Required fetcher $fetcher not found");
+            throw $this->createNotFoundException("Required fetcher {$fetcher} not found");
         }
 
         $fetcherConfig = $this->fetcherConfigurationRepository->findOneOrCreate($fetcher);

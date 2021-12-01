@@ -32,6 +32,7 @@ class TalkUserType extends AbstractType
                 'class' => User::class,
                 'multiple' => true,
                 'data' => [$this->tokenStorage->getToken()->getUser()],
-            ]);
+            ])
+        ;
     }
 }

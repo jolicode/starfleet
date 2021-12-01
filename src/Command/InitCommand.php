@@ -37,7 +37,8 @@ class InitCommand extends Command
             ->setDescription('Init command that create first admin user.')
             ->addArgument('name', InputArgument::REQUIRED, 'Admin name')
             ->addArgument('email', InputArgument::REQUIRED, 'Admin email')
-            ->addArgument('password', InputArgument::REQUIRED, 'Admin password');
+            ->addArgument('password', InputArgument::REQUIRED, 'Admin password')
+        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

@@ -34,7 +34,7 @@ class Jsonb extends Type
     /**
      * Converts a value from its PHP representation to its database representation of the type.
      *
-     * @param array|object|null $value the value to convert
+     * @param null|array|object $value the value to convert
      */
     // @phpstan-ignore-next-line
     public function convertToDatabaseValue($value, AbstractPlatform $platform): ?string
@@ -49,9 +49,9 @@ class Jsonb extends Type
     /**
      * Converts a value from its database representation to its PHP representation of this type.
      *
-     * @param string|null $value the value to convert
+     * @param null|string $value the value to convert
      *
-     * @return array<mixed>|null
+     * @return null|array<mixed>
      */
     public function convertToPHPValue($value, AbstractPlatform $platform): ?array
     {

@@ -72,12 +72,12 @@ class ParticipationControllerTest extends AbstractStarfleetTest
     {
         $conference = ConferenceFactory::createOne(['name' => 'My Test Conference']);
         $participation = ParticipationFactory::createOne([
-                'conference' => $conference,
-                'participant' => $this->getTestUser(),
-                'transportStatus' => Participation::STATUS_NOT_NEEDED,
-                'hotelStatus' => Participation::STATUS_NOT_NEEDED,
-                'conferenceTicketStatus' => Participation::STATUS_NOT_NEEDED,
-            ])
+            'conference' => $conference,
+            'participant' => $this->getTestUser(),
+            'transportStatus' => Participation::STATUS_NOT_NEEDED,
+            'hotelStatus' => Participation::STATUS_NOT_NEEDED,
+            'conferenceTicketStatus' => Participation::STATUS_NOT_NEEDED,
+        ])
         ;
         $conference->addParticipation($participation->object());
 
@@ -173,22 +173,6 @@ class ParticipationControllerTest extends AbstractStarfleetTest
         self::assertResponseStatusCodeSame(403);
     }
 
-    private function mainPageCancelLink(KernelBrowser $client, Crawler $crawler)
-    {
-        $participationRepository = $this->getContainer()->get(ParticipationRepository::class);
-        $participations = $participationRepository->findPendingParticipationsByUser($this->getTestUser());
-        $preCancelCount = \count($participations);
-
-        $form = $crawler
-            ->filter('#pending-participations-block form.action-cancel')
-            ->first()
-            ->form()
-        ;
-        $client->click($form);
-
-        self::assertCount(--$preCancelCount, $participationRepository->findPendingParticipationsByUser($this->getTestUser()));
-    }
-
     protected function generateData()
     {
         ParticipationFactory::createMany(2, [
@@ -223,5 +207,21 @@ class ParticipationControllerTest extends AbstractStarfleetTest
                 'endAt' => new \DateTime('+1 years'),
             ]),
         ]);
+    }
+
+    private function mainPageCancelLink(KernelBrowser $client, Crawler $crawler)
+    {
+        $participationRepository = $this->getContainer()->get(ParticipationRepository::class);
+        $participations = $participationRepository->findPendingParticipationsByUser($this->getTestUser());
+        $preCancelCount = \count($participations);
+
+        $form = $crawler
+            ->filter('#pending-participations-block form.action-cancel')
+            ->first()
+            ->form()
+        ;
+        $client->click($form);
+
+        self::assertCount(--$preCancelCount, $participationRepository->findPendingParticipationsByUser($this->getTestUser()));
     }
 }

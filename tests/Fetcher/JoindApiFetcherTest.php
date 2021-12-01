@@ -150,7 +150,7 @@ class JoindApiFetcherTest extends KernelTestCase
 
     public function testRealResponse()
     {
-        $realJoindData = file_get_contents(\dirname(__DIR__).'/Fixtures/joind.json');
+        $realJoindData = file_get_contents(\dirname(__DIR__) . '/Fixtures/joind.json');
         $response = new MockResponse($realJoindData);
         $result = $this
             ->createFetcher($response)
@@ -163,7 +163,8 @@ class JoindApiFetcherTest extends KernelTestCase
                     'python',
                 ],
                 'allowEmptyTags' => false,
-            ]);
+            ])
+        ;
 
         self::assertNotEmpty(iterator_to_array($result));
     }
@@ -173,25 +174,26 @@ class JoindApiFetcherTest extends KernelTestCase
         $locationGuesser = $this->prophesize(LocationGuesser::class);
         $locationGuesser
             ->getContinent(Argument::type('string'))
-            ->willReturn($continent = new Continent());
+            ->willReturn($continent = new Continent())
+        ;
         $continent->setName('Europe');
         $continent->setEnabled(true);
 
         $locationGuesser
             ->getCoordinates(Argument::type('string'))
-            ->willReturn([666, 666]);
+            ->willReturn([666, 666])
+        ;
 
         $locationGuesser
             ->getCountry(Argument::type('string'))
-            ->willReturn('FR');
+            ->willReturn('FR')
+        ;
 
         $client = new MockHttpClient($response);
 
-        $fetcher = new JoindApiFetcher(
+        return new JoindApiFetcher(
             $locationGuesser->reveal(),
             $client
         );
-
-        return $fetcher;
     }
 }
