@@ -105,6 +105,13 @@ class Submit
         $this->submittedAt = new \DateTime();
     }
 
+    public function __toString(): string
+    {
+        return ($this->getTalk()->getTitle() && $this->getConference()->getName())
+            ? sprintf('%s - %s', $this->getTalk()->getTitle(), $this->getConference()->getName())
+            : (string) $this->id;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -183,17 +190,10 @@ class Submit
         return $this->talk;
     }
 
-    public function __toString(): string
-    {
-        return ($this->getTalk()->getTitle() && $this->getConference()->getName())
-            ? sprintf('%s - %s', $this->getTalk()->getTitle(), $this->getConference()->getName())
-            : (string) $this->id;
-    }
-
     public function getSpeakersNames(): string
     {
         return array_reduce($this->getUsers()->toArray(), function ($r, User $u) {
-            return '' === $r ? $u->getName() : $r.', '.$u->getName();
+            return '' === $r ? $u->getName() : $r . ', ' . $u->getName();
         }, '');
     }
 

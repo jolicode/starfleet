@@ -54,7 +54,8 @@ class TalkSubmitType extends AbstractType
                 'attr' => [
                     'class' => 'd-none',
                 ],
-            ]);
+            ])
+        ;
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             $form = $event->getForm();
@@ -70,7 +71,8 @@ class TalkSubmitType extends AbstractType
                         'class' => User::class,
                         'multiple' => true,
                         'data' => $submit->getUsers()->toArray(),
-                    ]);
+                    ])
+                ;
             }
         });
     }

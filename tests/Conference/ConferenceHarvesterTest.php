@@ -46,16 +46,19 @@ class ConferenceHarvesterTest extends KernelTestCase
         $testConference = new Conference();
         $testConference
             ->setName('TestConference')
-            ->setStartAt(new \DateTime());
+            ->setStartAt(new \DateTime())
+        ;
 
         $differentTestConference = new Conference();
         $differentTestConference
             ->setName('OtherTestConference')
-            ->setStartAt(new \DateTime('+1 year'));
+            ->setStartAt(new \DateTime('+1 year'))
+        ;
 
         $ignoredTestConference = new Conference();
         $ignoredTestConference
-            ->setName('Java Conference');
+            ->setName('Java Conference')
+        ;
 
         yield 'test fetchers add new conference' => [
             'expectedUpdatedConferences' => 0,
@@ -99,39 +102,47 @@ class ConferenceHarvesterTest extends KernelTestCase
         $fetcherProphecy = $this->prophesize($name);
         $fetcherProphecy
             ->fetch([])
-            ->willYield([$conference]);
+            ->willYield([$conference])
+        ;
 
         $fetcherConfigurationRepository = $this->prophesize(FetcherConfigurationRepository::class);
         $fetcherConfigurationRepository
             ->findOneOrCreate(Argument::type('string'))
-            ->willReturn($fetcherConfiguration = new FetcherConfiguration('Test'));
+            ->willReturn($fetcherConfiguration = new FetcherConfiguration('Test'))
+        ;
         $fetcherConfiguration->setActive($isActive);
 
         $conferenceFilterRepository = $this->prophesize(ConferenceFilterRepository::class);
         $conferenceFilterRepository
             ->findAll()
-            ->willReturn([$filter = new ConferenceFilter()]);
+            ->willReturn([$filter = new ConferenceFilter()])
+        ;
         $filter->setName('java');
 
         $conferenceRepository = $this->prophesize(ConferenceRepository::class);
         $conferenceRepository
             ->findExistingConference(Argument::type(Conference::class))
-            ->willReturn($existingConference);
+            ->willReturn($existingConference)
+        ;
         $conferenceRepository
             ->getEndingCfpsByRemainingDays()
-            ->willReturn([]);
+            ->willReturn([])
+        ;
 
         $entityManager = $this->prophesize(EntityManager::class);
         $entityManager
-            ->persist(Argument::type(Conference::class));
+            ->persist(Argument::type(Conference::class))
+        ;
         $entityManager
-            ->flush();
+            ->flush()
+        ;
 
         $eventDispatcher = $this->prophesize(EventDispatcherInterface::class);
         $eventDispatcher
-            ->dispatch(Argument::type(DailyNotificationEvent::class));
+            ->dispatch(Argument::type(DailyNotificationEvent::class))
+        ;
 
-        $harvester = new ConferencesHarvester(
+        return new ConferencesHarvester(
             new \ArrayIterator([$fetcherProphecy->reveal()]),
             $fetcherConfigurationRepository->reveal(),
             $conferenceFilterRepository->reveal(),
@@ -139,7 +150,5 @@ class ConferenceHarvesterTest extends KernelTestCase
             $entityManager->reveal(),
             $eventDispatcher->reveal()
         );
-
-        return $harvester;
     }
 }

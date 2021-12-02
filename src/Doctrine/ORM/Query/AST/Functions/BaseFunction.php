@@ -42,6 +42,26 @@ abstract class BaseFunction extends FunctionNode
      */
     protected $nodes = [];
 
+    public function parse(Parser $parser): void
+    {
+        $this->customiseFunction();
+
+        $parser->match(Lexer::T_IDENTIFIER);
+        $parser->match(Lexer::T_OPEN_PARENTHESIS);
+        $this->feedParserWithNodes($parser);
+        $parser->match(Lexer::T_CLOSE_PARENTHESIS);
+    }
+
+    public function getSql(SqlWalker $sqlWalker): string
+    {
+        $dispatched = [];
+        foreach ($this->nodes as $node) {
+            $dispatched[] = $node->dispatch($sqlWalker);
+        }
+
+        return vsprintf($this->functionPrototype, $dispatched);
+    }
+
     abstract protected function customiseFunction(): void;
 
     protected function setFunctionPrototype(string $functionPrototype): void
@@ -52,16 +72,6 @@ abstract class BaseFunction extends FunctionNode
     protected function addNodeMapping(string $parserMethod): void
     {
         $this->nodesMapping[] = $parserMethod;
-    }
-
-    public function parse(Parser $parser): void
-    {
-        $this->customiseFunction();
-
-        $parser->match(Lexer::T_IDENTIFIER);
-        $parser->match(Lexer::T_OPEN_PARENTHESIS);
-        $this->feedParserWithNodes($parser);
-        $parser->match(Lexer::T_CLOSE_PARENTHESIS);
     }
 
     /**
@@ -78,15 +88,5 @@ abstract class BaseFunction extends FunctionNode
                 $parser->match(Lexer::T_COMMA);
             }
         }
-    }
-
-    public function getSql(SqlWalker $sqlWalker): string
-    {
-        $dispatched = [];
-        foreach ($this->nodes as $node) {
-            $dispatched[] = $node->dispatch($sqlWalker);
-        }
-
-        return vsprintf($this->functionPrototype, $dispatched);
     }
 }

@@ -34,7 +34,8 @@ class ConfTechFetcherTest extends KernelTestCase
             ->fetch([
                 'tags' => $tags,
                 'now' => new \DateTime('2021-01-01'),
-            ]);
+            ])
+        ;
 
         if (!$expectedItems['expectedCity']) {
             return self::assertEmpty(iterator_to_array($result));
@@ -126,29 +127,31 @@ class ConfTechFetcherTest extends KernelTestCase
         $locationGuesser = $this->prophesize(LocationGuesser::class);
         $locationGuesser
             ->getContinent(Argument::type('string'))
-            ->willReturn($continent = new Continent());
+            ->willReturn($continent = new Continent())
+        ;
         $continent->setName('Europe');
         $continent->setEnabled(true);
 
         $locationGuesser
             ->getCoordinates(Argument::type('string'))
-            ->willReturn([666, 666]);
+            ->willReturn([666, 666])
+        ;
 
         $locationGuesser
             ->getCountry(Argument::type('string'))
-            ->willReturn('FR');
+            ->willReturn('FR')
+        ;
 
         $confTechCloner = $this->prophesize(ConfTechCloner::class);
         $confTechCloner
             ->clone()
-            ->willReturn(\dirname(__DIR__).'/Fixtures/conftech_data/conferences');
+            ->willReturn(\dirname(__DIR__) . '/Fixtures/conftech_data/conferences')
+        ;
 
-        $fetcher = new ConfTechFetcher(
+        return new ConfTechFetcher(
             $locationGuesser->reveal(),
             new Filesystem(),
             $confTechCloner->reveal(),
         );
-
-        return $fetcher;
     }
 }

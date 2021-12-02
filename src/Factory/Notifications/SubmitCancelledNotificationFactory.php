@@ -31,7 +31,7 @@ use Zenstruck\Foundry\Proxy;
  * @method static                            SubmitCancelledNotification[]|Proxy[] findBy(array $attributes)
  * @method static                            SubmitCancelledNotification[]|Proxy[] randomSet(int $number, array $attributes = [])
  * @method static                            SubmitCancelledNotification[]|Proxy[] randomRange(int $min, int $max, array $attributes = [])
- * @method SubmitCancelledNotification|Proxy create($attributes = [])
+ * @method Proxy|SubmitCancelledNotification create($attributes = [])
  */
 final class SubmitCancelledNotificationFactory extends ModelFactory
 {
@@ -54,15 +54,13 @@ final class SubmitCancelledNotificationFactory extends ModelFactory
                     ],
                 ]);
 
-                $notification = new SubmitCancelledNotification(
+                return new SubmitCancelledNotification(
                     $submit->getTalk(),
                     $submit->getConference(),
                     $attributes['emitter'],
                     $attributes['targetUser'],
                     $attributes['trigger']
                 );
-
-                return $notification;
             })
         ;
     }

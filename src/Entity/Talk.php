@@ -56,6 +56,11 @@ class Talk
         $this->submits = new ArrayCollection();
     }
 
+    public function __toString(): string
+    {
+        return $this->title ?? (string) $this->id;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -124,10 +129,5 @@ class Talk
         sort($uniqueNames);
 
         return $uniqueNames;
-    }
-
-    public function __toString(): string
-    {
-        return $this->title ?? (string) $this->id;
     }
 }

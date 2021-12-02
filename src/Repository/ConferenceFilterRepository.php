@@ -16,8 +16,8 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method ConferenceFilter|null find($id, $lockMode = null, $lockVersion = null)
- * @method ConferenceFilter|null findOneBy(array $criteria, array $orderBy = null)
+ * @method null|ConferenceFilter find($id, $lockMode = null, $lockVersion = null)
+ * @method null|ConferenceFilter findOneBy(array $criteria, array $orderBy = null)
  * @method ConferenceFilter[]    findAll()
  * @method ConferenceFilter[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */

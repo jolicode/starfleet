@@ -51,15 +51,17 @@ class GoogleAuthenticator extends OAuth2Authenticator
                 $googleUser = $client->fetchUserFromToken($accessToken);
 
                 $existingUser = $this->em->getRepository(User::class)
-                ->findOneBy(['googleId' => $googleUser->getId()]);
+                    ->findOneBy(['googleId' => $googleUser->getId()])
+                ;
 
                 if ($existingUser) {
                     return $existingUser;
                 }
 
-                /** @var User|null $user */
+                /** @var null|User $user */
                 $user = $this->em->getRepository(User::class)
-                ->findOneBy(['email' => $googleUser->getEmail()]);
+                    ->findOneBy(['email' => $googleUser->getEmail()])
+                ;
 
                 if ($user instanceof User) {
                     $user->setGoogleId($googleUser->getId());
@@ -78,7 +80,7 @@ class GoogleAuthenticator extends OAuth2Authenticator
                 }
 
                 $user = new User();
-                $user->setName($googleUser->getFirstName().' '.$googleUser->getLastName());
+                $user->setName($googleUser->getFirstName() . ' ' . $googleUser->getLastName());
                 $user->setEmail($googleUser->getEmail());
                 $user->setGoogleId($googleUser->getId());
 

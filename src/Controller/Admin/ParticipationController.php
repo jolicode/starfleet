@@ -29,11 +29,6 @@ class ParticipationController extends EasyAdminController
     ) {
     }
 
-    protected function createNewParticipationEntity(): Participation
-    {
-        return new Participation($this->getUser());
-    }
-
     #[Route(path: '/participation/accept', name: 'participation_accept')]
     #[IsGranted('ROLE_ADMIN')]
     public function acceptedAction(): Response
@@ -88,5 +83,10 @@ class ParticipationController extends EasyAdminController
             'action' => 'list',
             'entity' => $this->request->query->get('entity'),
         ]);
+    }
+
+    protected function createNewParticipationEntity(): Participation
+    {
+        return new Participation($this->getUser());
     }
 }

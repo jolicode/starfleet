@@ -118,7 +118,7 @@ class JoindApiFetcher implements FetcherInterface
 
         // Sometimes, an event will have no tags. If you want to fetch them anyway, you should set the `allowEmptyTags` option to true in the admin
         if (\array_key_exists('allowEmptyTags', $configuration) && $configuration['allowEmptyTags']) {
-            foreach ($this->queryJoindIn($url.'&tags[]=') as $conference) {
+            foreach ($this->queryJoindIn($url . '&tags[]=') as $conference) {
                 yield $this->denormalizeConference($conference);
             }
         }
@@ -152,7 +152,8 @@ class JoindApiFetcher implements FetcherInterface
                 'label' => 'Allow Empty Tags',
                 'help' => 'Fetch conferences with no tags at all',
                 'required' => false,
-            ]);
+            ])
+        ;
     }
 
     /** @param array<mixed> $rawConference */
@@ -214,7 +215,7 @@ class JoindApiFetcher implements FetcherInterface
         return $conference;
     }
 
-    /** @return array<array>|null */
+    /** @return null|array<array> */
     private function queryJoindIn(string $url): ?array
     {
         try {

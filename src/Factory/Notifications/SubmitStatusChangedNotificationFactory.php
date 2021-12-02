@@ -31,7 +31,7 @@ use Zenstruck\Foundry\Proxy;
  * @method static                                SubmitStatusChangedNotification[]|Proxy[] findBy(array $attributes)
  * @method static                                SubmitStatusChangedNotification[]|Proxy[] randomSet(int $number, array $attributes = [])
  * @method static                                SubmitStatusChangedNotification[]|Proxy[] randomRange(int $min, int $max, array $attributes = [])
- * @method SubmitStatusChangedNotification|Proxy create($attributes = [])
+ * @method Proxy|SubmitStatusChangedNotification create($attributes = [])
  */
 final class SubmitStatusChangedNotificationFactory extends ModelFactory
 {
@@ -54,14 +54,12 @@ final class SubmitStatusChangedNotificationFactory extends ModelFactory
                     ],
                 ]);
 
-                $notification = new SubmitStatusChangedNotification(
+                return new SubmitStatusChangedNotification(
                     $submit->object(),
                     $attributes['emitter'],
                     $attributes['targetUser'],
                     $attributes['trigger']
                 );
-
-                return $notification;
             })
         ;
     }

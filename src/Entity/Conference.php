@@ -135,7 +135,7 @@ class Conference
     /**
      * @ORM\Column(type="jsonb", nullable=true)
      *
-     * @var array<float>|null
+     * @var null|array<float>
      */
     private ?array $coordinates = null;
 
@@ -154,7 +154,7 @@ class Conference
     {
         $startYear = $this->getStartAt() ? $this->getStartAt()->format('Y') : '';
 
-        return trim(sprintf('%s %s', $this->getName(), "($startYear)")) ?? '';
+        return trim(sprintf('%s %s', $this->getName(), "({$startYear})")) ?? '';
     }
 
     public function getId(): ?int
@@ -432,13 +432,13 @@ class Conference
         return 'NextConference';
     }
 
-    /** @return array<float>|null */
+    /** @return null|array<float> */
     public function getCoordinates(): ?array
     {
         return $this->coordinates;
     }
 
-    /** @param array<float>|null $coordinates */
+    /** @param null|array<float> $coordinates */
     public function setCoordinates(?array $coordinates): self
     {
         $this->coordinates = $coordinates;

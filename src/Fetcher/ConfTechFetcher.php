@@ -118,7 +118,8 @@ class ConfTechFetcher implements FetcherInterface
                 'expanded' => false,
                 'multiple' => true,
                 'required' => false,
-            ]);
+            ])
+        ;
     }
 
     /** @param array<mixed> $rawConference */

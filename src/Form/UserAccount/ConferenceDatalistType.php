@@ -44,7 +44,8 @@ class ConferenceDatalistType extends AbstractType
                     new NotBlank(),
                 ],
                 'invalid_message' => 'Submitted conference could not be found',
-            ]);
+            ])
+        ;
     }
 
     public function getParent(): string
