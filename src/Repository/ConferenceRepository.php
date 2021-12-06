@@ -111,7 +111,7 @@ class ConferenceRepository extends ServiceEntityRepository
         ;
     }
 
-    /** @return null|\Generator<Conference> */
+    /** @return \Generator<Conference>|null */
     public function getNullCoordinatesConferences(): ?\Generator
     {
         $iterator = $this->createQueryBuilder('c')

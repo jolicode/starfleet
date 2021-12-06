@@ -215,7 +215,7 @@ class JoindApiFetcher implements FetcherInterface
         return $conference;
     }
 
-    /** @return null|array<array> */
+    /** @return array<array>|null */
     private function queryJoindIn(string $url): ?array
     {
         try {

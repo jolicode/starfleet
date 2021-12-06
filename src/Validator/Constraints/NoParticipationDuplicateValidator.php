@@ -28,7 +28,7 @@ class NoParticipationDuplicateValidator extends ConstraintValidator
     }
 
     /**
-     * @param null|Conference          $conference
+     * @param Conference|null          $conference
      * @param NoParticipationDuplicate $constraint
      */
     public function validate($conference, Constraint $constraint): void

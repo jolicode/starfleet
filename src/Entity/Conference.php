@@ -135,7 +135,7 @@ class Conference
     /**
      * @ORM\Column(type="jsonb", nullable=true)
      *
-     * @var null|array<float>
+     * @var array<float>|null
      */
     private ?array $coordinates = null;
 
@@ -432,13 +432,13 @@ class Conference
         return 'NextConference';
     }
 
-    /** @return null|array<float> */
+    /** @return array<float>|null */
     public function getCoordinates(): ?array
     {
         return $this->coordinates;
     }
 
-    /** @param null|array<float> $coordinates */
+    /** @param array<float>|null $coordinates */
     public function setCoordinates(?array $coordinates): self
     {
         $this->coordinates = $coordinates;

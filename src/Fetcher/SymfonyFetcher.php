@@ -118,7 +118,7 @@ class SymfonyFetcher implements FetcherInterface
         return $conference;
     }
 
-    /** @return null|array<mixed> */
+    /** @return array<mixed>|null */
     private function querySymfony(): ?array
     {
         try {
