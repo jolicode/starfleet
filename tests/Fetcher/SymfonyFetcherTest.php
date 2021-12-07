@@ -114,7 +114,7 @@ class SymfonyFetcherTest extends KernelTestCase
         $response = new MockResponse($realSymfonyData);
         $result = $this
             ->createFetcher($response)
-            ->fetch()
+            ->fetch([], new \DateTime('2020-06-01'))
         ;
 
         self::assertNotEmpty(iterator_to_array($result));

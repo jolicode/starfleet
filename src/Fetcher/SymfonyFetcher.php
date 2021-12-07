@@ -36,8 +36,9 @@ class SymfonyFetcher implements FetcherInterface
         $this->logger = $logger ?: new NullLogger();
     }
 
-    public function fetch(array $configuration = []): \Generator
+    public function fetch(array $configuration = [], \DateTime $now = null): \Generator
     {
+        $now = $now ?: new \DateTime();
         foreach ($this->querySymfony() as $conference) {
             if (!\array_key_exists('ends_at', $conference) || !$conference['ends_at']['date']) {
                 continue;
@@ -45,7 +46,7 @@ class SymfonyFetcher implements FetcherInterface
 
             $endDate = new \DateTime($conference['ends_at']['date']);
 
-            if (new \DateTime('now') < $endDate) {
+            if ($now < $endDate) {
                 $denormalizedConference = $this->denormalizeConference($conference);
 
                 if (!$denormalizedConference) {
