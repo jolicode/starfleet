@@ -19,7 +19,7 @@ use Symfony\Component\Validator\ConstraintValidator;
 class NotEndedConferenceValidator extends ConstraintValidator
 {
     /**
-     * @param null|Conference    $conference
+     * @param Conference|null    $conference
      * @param NotEndedConference $constraint
      */
     public function validate($conference, Constraint $constraint): void

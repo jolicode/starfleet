@@ -16,8 +16,8 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method null|FetcherConfiguration find($id, $lockMode = null, $lockVersion = null)
- * @method null|FetcherConfiguration findOneBy(array $criteria, array $orderBy = null)
+ * @method FetcherConfiguration|null find($id, $lockMode = null, $lockVersion = null)
+ * @method FetcherConfiguration|null findOneBy(array $criteria, array $orderBy = null)
  * @method FetcherConfiguration[]    findAll()
  * @method FetcherConfiguration[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */

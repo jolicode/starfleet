@@ -27,7 +27,7 @@ class NoSubmitDuplicateValidator extends ConstraintValidator
     }
 
     /**
-     * @param null|Submit       $submit
+     * @param Submit|null       $submit
      * @param NoSubmitDuplicate $constraint
      */
     public function validate($submit, Constraint $constraint): void

@@ -234,7 +234,7 @@ class TululaFetcher implements FetcherInterface
         return $conference;
     }
 
-    /** @return null|array<array> */
+    /** @return array<array>|null */
     private function queryTulula(): ?array
     {
         try {
