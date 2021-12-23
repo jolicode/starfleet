@@ -3,8 +3,6 @@ easy_admin:
         Submit:
             class: App\Entity\Submit
             disabled_actions: ['show']
-            edit:
-                role: ROLE_SUBMIT_EDIT
             delete:
                 role: ROLE_SUBMIT_EDIT
             list:
@@ -16,8 +14,9 @@ easy_admin:
                     - { property: 'submittedBy', type: 'text' }
                     - { property: 'status', template: 'easy_admin/Submit/status.html.twig' }
                     - { property: 'users', type: 'array', label: 'Speakers' }
-            form:
-                fields:
+            edit:
+                role: ROLE_SUBMIT_EDIT
+                fields: &submitFields
                     - { type: 'group', columns: 6, icon: 'pencil', label: 'Submit' }
                     -   property: 'talk'
                         type: entity
@@ -41,3 +40,9 @@ easy_admin:
                         type_options:
                             multiple: true
                             class: App\Entity\User
+            new:
+                fields:
+                    <<: *submitFields
+                form_options: {
+                    validation_groups: ['Default', 'submit:create']
+                }

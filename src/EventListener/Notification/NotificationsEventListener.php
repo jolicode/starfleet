@@ -18,12 +18,14 @@ use App\Entity\Notifications\ParticipationStatusChangedNotification;
 use App\Entity\Notifications\SubmitCancelledNotification;
 use App\Entity\Notifications\SubmitStatusChangedNotification;
 use App\Entity\User;
+use App\Event\NewTalkSubmittedEvent;
 use App\Event\Notification\NewFeaturedConferenceEvent;
 use App\Event\Notification\NewSubmitEvent;
 use App\Event\Notification\ParticipationStatusChangedEvent;
 use App\Event\Notification\SubmitCancelledEvent;
 use App\Event\Notification\SubmitStatusChangedEvent;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Core\Security;
 
@@ -32,6 +34,7 @@ class NotificationsEventListener implements EventSubscriberInterface
     public function __construct(
         private Security $security,
         private EntityManagerInterface $em,
+        private EventDispatcherInterface $eventDispatcher,
     ) {
     }
 
@@ -66,6 +69,8 @@ class NotificationsEventListener implements EventSubscriberInterface
 
             $this->em->persist($notification);
         }
+
+        $this->eventDispatcher->dispatch(new NewTalkSubmittedEvent($event->getSubmit()->getTalk(), [$event->getSubmit()]));
     }
 
     public function onSubmitStatusChanged(SubmitStatusChangedEvent $event): void

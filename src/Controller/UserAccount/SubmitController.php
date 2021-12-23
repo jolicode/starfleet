@@ -49,15 +49,13 @@ class SubmitController extends AbstractController
         $submit->addUser($user);
         $submit->setSubmittedBy($user);
         $form = $this->createForm(SubmitType::class, $submit, [
-            'validation_groups' => ['Default', 'user_account'],
+            'validation_groups' => ['Default', 'user_account', 'submit:create'],
         ]);
 
         if ($form->handleRequest($request)->isSubmitted() && $form->isValid()) {
             $this->em->persist($submit);
 
-            if (\count($submit->getUsers()) > 1) {
-                $this->eventDispatcher->dispatch(new NewSubmitEvent($submit));
-            }
+            $this->eventDispatcher->dispatch(new NewSubmitEvent($submit));
 
             $this->em->flush();
             $this->addFlash('info', 'The submit has been saved.');
@@ -180,9 +178,7 @@ class SubmitController extends AbstractController
         if ($form->handleRequest($request)->isSubmitted() && $form->isValid()) {
             $this->em->persist($submit);
 
-            if (\count($submit->getUsers()) > 1) {
-                $this->eventDispatcher->dispatch(new NewSubmitEvent($submit));
-            }
+            $this->eventDispatcher->dispatch(new NewSubmitEvent($submit));
 
             $this->em->flush();
             $this->addFlash('info', 'Your talk has been submitted.');

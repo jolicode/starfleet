@@ -75,3 +75,7 @@ services:
     App\Controller\UserAccount\ParticipationController:
         arguments:
             $workflow: '@state_machine.participation_request'
+
+    App\EventListener\SlackNotifierEventListener:
+        arguments:
+            $env: '%kernel.environment%'
