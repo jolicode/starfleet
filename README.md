@@ -70,6 +70,10 @@ During dev, you may use [Ngrok](https://ngrok.com/) to let Slack reach your appl
 
 We provide you with the possibility of adding a map with a marker on every location you and your team attended a conference. If you want to enable this feature, you need to create an account at [Mapbox](https://www.mapbox.com/). You then need to retrieve your API Token and add it to your `.env` file, by replacing the default value of the `MAPBOX_TOKEN` variable.
 
+## Translations
+
+To add easily add new translations, please install and use [i18n-ally](https://plugins.jetbrains.com/plugin/17212-i18n-ally).
+
 ## Changes
 
 View the [CHANGELOG](CHANGELOG.md) file attached to this project.

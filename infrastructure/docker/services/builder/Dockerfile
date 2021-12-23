@@ -12,6 +12,7 @@ RUN apt-get update \
         curl \
         git \
         make \
+        nano \
         nodejs \
         sudo \
         unzip \
