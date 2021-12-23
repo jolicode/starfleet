@@ -13,6 +13,7 @@ namespace App\Controller\Admin;
 
 use AlterPHP\EasyAdminExtensionBundle\Controller\EasyAdminController;
 use App\Entity\Participation;
+use App\Entity\User;
 use App\Enum\Workflow\Transition\Participation as ParticipationTransition;
 use App\Event\Notification\ParticipationStatusChangedEvent;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -87,6 +88,9 @@ class ParticipationController extends EasyAdminController
 
     protected function createNewParticipationEntity(): Participation
     {
-        return new Participation($this->getUser());
+        /** @var User $user */
+        $user = $this->getUser();
+
+        return new Participation($user);
     }
 }

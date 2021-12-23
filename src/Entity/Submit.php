@@ -152,7 +152,9 @@ class Submit
 
     public function addUser(User $user): self
     {
-        $this->users[] = $user;
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+        }
 
         return $this;
     }

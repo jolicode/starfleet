@@ -12,6 +12,7 @@
 namespace App\Controller\UserAccount;
 
 use App\Entity\Notifications\AbstractNotification;
+use App\Entity\User;
 use App\Repository\NotificationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -55,7 +56,10 @@ class NotificationController extends AbstractController
             throw new AccessDeniedException();
         }
 
-        $this->notificationRepository->markAllAsReadForUser($this->getUser());
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $this->notificationRepository->markAllAsReadForUser($user);
         $this->em->flush();
         $this->addFlash('info', 'All your notifications are now marked as read.');
 
@@ -69,8 +73,11 @@ class NotificationController extends AbstractController
     #[Route(path: '/user/notification-all-unread', name: 'notification_all_unread')]
     public function allUnreadNotifications(): Response
     {
+        /** @var User $user */
+        $user = $this->getUser();
+
         return $this->render('user/notifications/_all_unread.html.twig', [
-            'unreadNotifications' => $this->notificationRepository->getAllUnreadForUser($this->getUser()),
+            'unreadNotifications' => $this->notificationRepository->getAllUnreadForUser($user),
         ]);
     }
 }
