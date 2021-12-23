@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 
 jobs:
     check-php-cs:
@@ -15,11 +15,11 @@ jobs:
 
     check-python-cs:
         docker:
-            - image: circleci/python:3.8
+            - image: cimg/python:3.7
         working_directory: ~/project
         steps:
             - checkout
-            - run: sudo pip install pycodestyle
+            - run: pip install pycodestyle
             - run:
                   name: Check cs
                   command: pycodestyle --ignore=E501,W605,E722 invoke.py tasks.py
@@ -57,7 +57,7 @@ jobs:
     tests:
         machine:
             docker_layer_caching: true
-            image: ubuntu-2004:202010-01
+            image: ubuntu-2004:202107-02
         working_directory: ~/project
         steps:
             - checkout
@@ -79,20 +79,21 @@ jobs:
                 name: Install Requirements
                 command: |
                     set -e
+                    pyenv global 3.9.4
                     pip install --upgrade pip
-                    pip install --user pipenv
-                    ~/.local/bin/pipenv install
+                    pip install pipenv
+                    pipenv install
             - run:
                 name: Install and build everything
                 command: |
                     set -x
-                    ~/.local/bin/pipenv run inv start
-                    ~/.local/bin/pipenv run inv webpack
+                    pipenv run inv start
+                    pipenv run inv webpack
             - run:
                 name: Run unit and functional tests
                 command: |
                     set -x
-                    ~/.local/bin/pipenv run inv tests
+                    pipenv run inv tests
 
             - save_cache:
                 key: func-cache-{{ checksum "~/project/composer.lock" }}

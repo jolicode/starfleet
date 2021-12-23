@@ -283,7 +283,7 @@ def help(c):
     print('')
 
     print('Run ' + Fore.GREEN + 'inv -l' + Fore.RESET + ' to list all the available tasks.')
-    c.run('inv --list')
+    c.run('pipenv run inv --list')
 
     print(Fore.GREEN + 'Available URLs for this project:' + Fore.RESET)
     for domain in [c.root_domain] + c.extra_domains:
