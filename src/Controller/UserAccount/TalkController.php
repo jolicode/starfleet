@@ -12,10 +12,10 @@
 namespace App\Controller\UserAccount;
 
 use App\Entity\Talk;
+use App\Entity\User;
 use App\Form\UserAccount\EditTalkType;
 use App\Form\UserAccount\NewTalkType;
 use App\Repository\TalkRepository;
-use App\UX\UserChartBuilder;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -27,7 +27,6 @@ use Twig\Markup;
 class TalkController extends AbstractController
 {
     public function __construct(
-        private UserChartBuilder $userChartBuilder,
         private TalkRepository $talkRepository,
         private EntityManagerInterface $em,
     ) {
@@ -58,10 +57,11 @@ class TalkController extends AbstractController
             return $this->redirectToRoute('user_talks');
         }
 
-        $userTalks = $this->talkRepository->findUserTalks($this->getUser());
+        /** @var User $user */
+        $user = $this->getUser();
 
         return $this->render('user/talk/talk.html.twig', [
-            'talks' => $userTalks,
+            'talks' => $this->talkRepository->findUserTalks($user),
             'form' => $form->createView(),
         ]);
     }
@@ -69,10 +69,11 @@ class TalkController extends AbstractController
     #[Route('/user/talks/all', name: 'user_talks_all')]
     public function userTalksAll(): Response
     {
-        $userTalks = $this->talkRepository->findUserTalks($this->getUser());
+        /** @var User $user */
+        $user = $this->getUser();
 
         return $this->render('user/talk/all.html.twig', [
-            'talks' => $userTalks,
+            'talks' => $this->talkRepository->findUserTalks($user),
         ]);
     }
 

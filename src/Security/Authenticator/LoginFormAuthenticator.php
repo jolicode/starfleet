@@ -35,7 +35,7 @@ class LoginFormAuthenticator extends AbstractAuthenticator implements Authentica
     ) {
     }
 
-    public function start(Request $request, ?AuthenticationException $authException = null)
+    public function start(Request $request, ?AuthenticationException $authException = null): RedirectResponse
     {
         return new RedirectResponse($this->urlGenerator->generate('login'));
     }

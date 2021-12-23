@@ -13,11 +13,11 @@ namespace App\Controller\UserAccount;
 
 use App\Entity\Conference;
 use App\Entity\Submit;
+use App\Entity\User;
 use App\Event\Notification\NewSubmitEvent;
 use App\Event\Notification\SubmitCancelledEvent;
 use App\Event\Notification\SubmitStatusChangedEvent;
 use App\Form\UserAccount\SubmitType;
-use App\Repository\ConferenceRepository;
 use App\Repository\SubmitRepository;
 use App\UX\UserChartBuilder;
 use Doctrine\ORM\EntityManagerInterface;
@@ -33,7 +33,6 @@ class SubmitController extends AbstractController
 {
     public function __construct(
         private SubmitRepository $submitRepository,
-        private ConferenceRepository $conferenceRepository,
         private UserChartBuilder $userChartBuilder,
         private EntityManagerInterface $em,
         private EventDispatcherInterface $eventDispatcher,
@@ -43,8 +42,12 @@ class SubmitController extends AbstractController
     #[Route(path: '/user/submits', name: 'user_submits')]
     public function userSubmits(Request $request): Response
     {
+        /** @var User $user */
+        $user = $this->getUser();
+
         $submit = new Submit();
-        $submit->addUser($this->getUser());
+        $submit->addUser($user);
+        $submit->setSubmittedBy($user);
         $form = $this->createForm(SubmitType::class, $submit, [
             'validation_groups' => ['Default', 'user_account'],
         ]);
@@ -62,10 +65,10 @@ class SubmitController extends AbstractController
             return $this->redirectToRoute('user_submits');
         }
 
-        $pendingSubmits = $this->submitRepository->findUserSubmitsByStatus($this->getUser(), Submit::STATUS_PENDING);
-        $doneSubmits = $this->submitRepository->findUserSubmitsByStatus($this->getUser(), Submit::STATUS_DONE);
-        $rejectedSubmits = $this->submitRepository->findUserSubmitsByStatus($this->getUser(), Submit::STATUS_REJECTED);
-        $futureSubmits = $this->submitRepository->findUserSubmitsByStatus($this->getUser(), Submit::STATUS_ACCEPTED);
+        $pendingSubmits = $this->submitRepository->findUserSubmitsByStatus($user, Submit::STATUS_PENDING);
+        $doneSubmits = $this->submitRepository->findUserSubmitsByStatus($user, Submit::STATUS_DONE);
+        $rejectedSubmits = $this->submitRepository->findUserSubmitsByStatus($user, Submit::STATUS_REJECTED);
+        $futureSubmits = $this->submitRepository->findUserSubmitsByStatus($user, Submit::STATUS_ACCEPTED);
 
         if (0 !== \count($pendingSubmits) + \count($doneSubmits) + \count($rejectedSubmits) + \count($futureSubmits)) {
             $chart = $this->userChartBuilder->buildSubmitsChart($pendingSubmits, $doneSubmits, $rejectedSubmits, $futureSubmits);
@@ -84,32 +87,44 @@ class SubmitController extends AbstractController
     #[Route(path: '/user/accepted-submits', name: 'accepted_submits')]
     public function futureSubmits(): Response
     {
+        /** @var User $user */
+        $user = $this->getUser();
+
         return $this->render('user/submit/accepted_submits.html.twig', [
-            'submits' => $this->submitRepository->findUserSubmitsByStatus($this->getUser(), Submit::STATUS_ACCEPTED),
+            'submits' => $this->submitRepository->findUserSubmitsByStatus($user, Submit::STATUS_ACCEPTED),
         ]);
     }
 
     #[Route(path: '/user/pending-submits', name: 'pending_submits')]
     public function pendingSubmits(): Response
     {
+        /** @var User $user */
+        $user = $this->getUser();
+
         return $this->render('user/submit/pending_submits.html.twig', [
-            'submits' => $this->submitRepository->findUserSubmitsByStatus($this->getUser(), Submit::STATUS_PENDING),
+            'submits' => $this->submitRepository->findUserSubmitsByStatus($user, Submit::STATUS_PENDING),
         ]);
     }
 
     #[Route(path: '/user/done-submits', name: 'done_submits')]
     public function doneSubmits(): Response
     {
+        /** @var User $user */
+        $user = $this->getUser();
+
         return $this->render('user/submit/done_submits.html.twig', [
-            'submits' => $this->submitRepository->findUserSubmitsByStatus($this->getUser(), Submit::STATUS_DONE),
+            'submits' => $this->submitRepository->findUserSubmitsByStatus($user, Submit::STATUS_DONE),
         ]);
     }
 
     #[Route(path: '/user/rejected-submits', name: 'rejected_submits')]
     public function rejectedSubmits(): Response
     {
+        /** @var User $user */
+        $user = $this->getUser();
+
         return $this->render('user/submit/rejected_submits.html.twig', [
-            'submits' => $this->submitRepository->findUserSubmitsByStatus($this->getUser(), Submit::STATUS_REJECTED),
+            'submits' => $this->submitRepository->findUserSubmitsByStatus($user, Submit::STATUS_REJECTED),
         ]);
     }
 
@@ -151,8 +166,12 @@ class SubmitController extends AbstractController
     #[Route(path: '/user/submit-new/{id}', name: 'new_submit')]
     public function newSubmit(Conference $conference, Request $request): Response
     {
+        /** @var User $user */
+        $user = $this->getUser();
+
         $submit = new Submit();
-        $submit->addUser($this->getUser());
+        $submit->addUser($user);
+        $submit->setSubmittedBy($user);
         $submit->setConference($conference);
         $form = $this->createForm(SubmitType::class, $submit, [
             'validation_groups' => ['Default', 'user_account'],

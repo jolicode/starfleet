@@ -22,7 +22,7 @@ class Levenshtein extends FunctionNode
     public ?object $firstStringExpression = null;
     public ?object $secondStringExpression = null;
 
-    public function getSql(SqlWalker $sqlWalker)
+    public function getSql(SqlWalker $sqlWalker): string
     {
         return sprintf(
             'levenshtein(%s, %s)',
@@ -31,7 +31,7 @@ class Levenshtein extends FunctionNode
         );
     }
 
-    public function parse(Parser $parser)
+    public function parse(Parser $parser): void
     {
         // levenshtein(str1, str2)
         $parser->match(Lexer::T_IDENTIFIER);

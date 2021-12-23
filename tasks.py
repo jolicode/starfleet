@@ -136,7 +136,7 @@ def reset(c):
 
 
 @task
-def cs_fix(c, dry_run=False):
+def phpcs(c, dry_run=False):
     """
     Fix coding standards in code
     """

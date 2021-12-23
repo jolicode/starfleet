@@ -24,24 +24,16 @@ class MustBeByUserValidator extends ConstraintValidator
     }
 
     /**
-     * @param mixed        $value
+     * @param Collection   $value
      * @param MustBeByUser $constraint
      */
     public function validate($value, Constraint $constraint): void
     {
-        if (!\count($value)) {
+        if ($value->isEmpty()) {
             return;
         }
 
-        $hasViolation = false;
-
-        if ($value instanceof Collection && !$value->contains($this->security->getUser())) {
-            $hasViolation = true;
-        } elseif (!$value instanceof Collection && !\in_array($this->security->getUser(), $value)) {
-            $hasViolation = true;
-        }
-
-        if ($hasViolation) {
+        if (!$value->contains($this->security->getUser())) {
             $this->context
                 ->buildViolation($constraint->message)
                 ->addViolation()
