@@ -33,14 +33,14 @@ class SubmitRepository extends ServiceEntityRepository
     /** @return array<Submit> */
     public function findUserSubmitsByStatus(User $user, string $status): array
     {
-        return $this->createUserQueryBuilder($user)
+        $qb = $this->createUserQueryBuilder($user)
             ->andWhere('s.status = :status')
             ->setParameter('status', $status)
             ->innerJoin('s.conference', 'c')
             ->orderBy('c.id', 'DESC')
-            ->getQuery()
-            ->execute()
         ;
+
+        return $qb->getQuery()->execute();
     }
 
     /**
