@@ -1,15 +1,16 @@
 {% extends 'user/user_layout.html.twig' %}
 
 {% block content %}
-    {% set section = 'homepage' %}
-    <section class="col-8 mx-auto">
-        {{ parent() }}
-        {% if chart %}
-            {{ render_chart(chart) }}
-        {% else %}
-            <div class="d-flex justify-content-center align-items-center h-100">
-                <em>You seem to be quite new around here... Nothing to display yet !</em>
-            </div>
-        {% endif %}
-    </section>
+    {% set section = 'account' %}
+    {{ parent() }}
+
+    {% if chart %}
+        {{ render_chart(chart) }}
+    {% else %}
+        <h1 class="text-center">Welcome {{ app.user.name }}!</h1>
+        <div class="d-flex justify-content-center align-items-center h-100">
+            <em>You seem to be quite new around here... Nothing to display yet !</em>
+        </div>
+    {% endif %}
 {% endblock %}
+

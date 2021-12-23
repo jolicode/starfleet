@@ -1,3 +1,5 @@
-<div class="alert alert-info">
+{% set center = center|default(false) %}
+
+<div class="alert alert-info {{ center ? 'text-center' }}">
     {{ message|trans }}
 </div>

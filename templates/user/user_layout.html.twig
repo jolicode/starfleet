@@ -1,6 +1,6 @@
 {% extends "base.html.twig" %}
 
-{% set section = 'home' %}
+{% set section = 'account' %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -8,61 +8,71 @@
 {% endblock %}
 
 {% block body %}
-<div class="container-fluid bg-light">
-    <div class="container">
-        <div class="position-relative pt-5">
-            <div class="lr-100">
-                {% for message in app.flashes('info') %}
-                    <div class="alert alert-info text-center">
-                        {{ message }}
-                    </div>
+    <div class="container-fluid bg-light pt-4 pb-5">
+        <div class="container">
+            {% for level, messages in app.flashes %}
+                {% for message in messages %}
+                    {{ include('flashes/'~level~'.html.twig', {
+                        message: message,
+                        center: true
+                    }) }}
                 {% endfor %}
-                {% for message in app.flashes('error') %}
-                    <div class="alert alert-danger text-center">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            </div>
-            <div class="pt-5 pl-5 mt-5 d-flex align-items-stretch user_menu">
+            {% endfor %}
+
+            <div class="d-flex justify-content-between user_menu">
                 {% block nav %}
-                    <a href="{{ path('user_account') }}">
-                        <div class="btn btn-secondary">Back Home</div>
-                    </a>
-                    <a href="{{ path('future_conferences') }}">
-                        <div class="btn btn-{{ section == 'conferences' ? 'primary' : 'secondary' }}">Conferences</div>
-                    </a>
-                    <a href="{{ path('user_submits') }}">
-                        <div class="btn btn-{{ section == 'submits' ? 'primary' : 'secondary' }}">Submits</div>
-                    </a>
-                    <a href="{{ path('user_talks') }}">
-                        <div class="btn btn-{{ section == 'talks' ? 'primary' : 'secondary' }}">Talks</div>
-                    </a>
-                    <a href="{{ path('user_participations') }}">
-                        <div class="btn btn-{{ section ==  'participations' ? 'primary' : 'secondary' }}">Participations</div>
-                    </a>
-                    <a href="{{ path('user_profile') }}">
-                        <div class="btn btn-{{ section ==  'profile' ? 'primary' : 'secondary' }}">Edit Profile</div>
-                    </a>
-                    {% if is_granted('ROLE_ADMIN') %}
-                        <a href="{{ path('easyadmin') }}">
-                            <div class="btn btn-info" id ="admin-button">Admin</div>
-                        </a>
-                    {% endif %}
-                    <a href="{{ path('logout') }}" class="ml-auto mr-5">
-                        <div class="btn btn-info">Logout</div>
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item">
+                                <a href="{{ path('user_account') }}" class="nav-link {{ section == 'account' ? 'active' }}">
+                                    Account
+                                </a>
+                            </li>
+                        <li class="nav-item">
+                            <a href="{{ path('future_conferences') }}"
+                               class="nav-link {{ section == 'conferences' ? 'active' }}">
+                                Conferences
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ path('user_submits') }}" class="nav-link {{ section == 'submits' ? 'active' }}">
+                                Submits
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ path('user_talks') }}" class="nav-link {{ section == 'talks' ? 'active' }}">
+                                Talks
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ path('user_participations') }}" class="nav-link {{ section ==  'participations' ? 'active' }}">
+                                Participations
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ path('user_profile') }}" class="nav-link {{ section ==  'profile' ? 'active' }}">
+                                Edit Profile
+                            </a>
+                        </li>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <li class="nav-item">
+                                <a href="{{ path('easyadmin') }}" class="nav-link">
+                                    <span id ="admin-button">Admin</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                    <a href="{{ path('logout') }}">
+                        <div class="btn btn-outline-dark">Logout</div>
                     </a>
                 {% endblock %}
             </div>
-        </div>
 
-        <div class="row py-5">
-            {% block content %}
-                {% if section == 'homepage' %}
-                    <h1 class="username">{{ app.user.name }}</h1>
-                {% endif %}
-            {% endblock %}
-        </div>
+            <div class="row mt-4">
+                <section class="col-12 mx-auto">
+                    {% block content %}{% endblock %}
+                </section>
+            </div>
 
+        </div>
     </div>
-</div>
 {% endblock %}

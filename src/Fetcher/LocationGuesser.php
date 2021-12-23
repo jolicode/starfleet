@@ -37,9 +37,11 @@ class LocationGuesser
             return null;
         }
 
-        $continents = $this->getStoredContinents();
+        $continents = $this->getContinents();
 
-        return $continents[$countriesArray[$results->first()->getCountry()->getCode()]['continent']];
+        $country = $countriesArray[$results->first()->getCountry()->getCode()];
+
+        return $continents[$country['continent']];
     }
 
     public function getCountry(string $queryString): ?string
@@ -66,7 +68,7 @@ class LocationGuesser
     }
 
     /** @return array<Continent> */
-    private function getStoredContinents(): array
+    private function getContinents(): array
     {
         return $this->continents ??= $this->continentRepository->findAllAsKey();
     }

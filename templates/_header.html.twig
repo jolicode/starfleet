@@ -10,14 +10,16 @@
             </h1>
             <span class="c-logo__badge badge badge-light ml-3">beta</span>
         </div>
-        <p class="mb-0 text-light">
-            <a href="https://jolicode.com" target="_blank">
-                <img src="{{ asset('build/images/logo-jolicode.svg') }}"
-                     width="180"
-                     height='42'
-                     alt="JoliCode">
-            </a>
-        </p>
+        {% if not app.user %}
+            <p class="mb-0 text-light">
+                <a href="https://jolicode.com" target="_blank">
+                    <img src="{{ asset('build/images/logo-jolicode.svg') }}"
+                         width="180"
+                         height='42'
+                         alt="JoliCode">
+                </a>
+            </p>
+        {% endif %}
         <div>
             <button class="navbar-toggler"
                     type="button"
@@ -31,17 +33,14 @@
 
             <div class="collapse navbar-collapse" id="navbar">
                 <ul class="navbar-nav mr-auto position-relative">
-                    <li class="nav-item mr-2">
-                        <a class="header-button fsize-medium"
-                           href="{{ app.user ? path('user_account') : path('login') }}">
-                           {% if app.user %}
-                                <i class="fas fa-user-circle text-primary fsize-large align-middle mr-1"></i> My Account
-                            {% else %}
-                                <i class="fas fa-unlock text-warning fsize-large align-middle mr-1"></i> Login
-                           {% endif %}
-                        </a>
-                    </li>
-                    {% if app.user %}
+                    {% if not app.user %}
+                        <li class="nav-item mr-2">
+                            <a class="btn btn-outline-light py-2 fsize-medium"
+                               href="{{ app.user ? path('user_account') : path('login') }}">
+                                   <i class="fas fa-unlock text-warning fsize-medium align-middle mr-1"></i> Login
+                            </a>
+                        </li>
+                    {% else %}
                         {{ render(controller('App\\Controller\\UserAccount\\NotificationController::allUnreadNotifications')) }}
                     {% endif %}
                 </ul>
