@@ -18,7 +18,6 @@ use App\Event\Notification\NewSubmitEvent;
 use App\Event\Notification\SubmitCancelledEvent;
 use App\Event\Notification\SubmitStatusChangedEvent;
 use App\Form\UserAccount\SubmitType;
-use App\Repository\ConferenceRepository;
 use App\Repository\SubmitRepository;
 use App\UX\UserChartBuilder;
 use Doctrine\ORM\EntityManagerInterface;

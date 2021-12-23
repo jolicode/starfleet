@@ -16,7 +16,6 @@ use App\Entity\User;
 use App\Form\UserAccount\EditTalkType;
 use App\Form\UserAccount\NewTalkType;
 use App\Repository\TalkRepository;
-use App\UX\UserChartBuilder;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

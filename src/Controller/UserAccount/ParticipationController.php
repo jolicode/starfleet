@@ -16,7 +16,6 @@ use App\Entity\Participation;
 use App\Entity\User;
 use App\Enum\Workflow\Transition\Participation as ParticipationTransition;
 use App\Form\UserAccount\ParticipationType;
-use App\Repository\ConferenceRepository;
 use App\Repository\ParticipationRepository;
 use App\UX\UserChartBuilder;
 use Doctrine\ORM\EntityManagerInterface;
