@@ -140,6 +140,8 @@ def phpcs(c, dry_run=False):
     Fix coding standards in code
     """
     with Builder(c):
+        docker_compose_run(c, 'php bin/console lint:yaml --parse-tags config/')
+        docker_compose_run(c, 'php bin/console lint:twig templates/')
         if dry_run:
             docker_compose_run(c, 'php ./vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.php --dry-run --diff')
         else:
