@@ -36,19 +36,9 @@ class SubmitRepository extends ServiceEntityRepository
         $qb = $this->createUserQueryBuilder($user)
             ->andWhere('s.status = :status')
             ->setParameter('status', $status)
-            ->innerJoin('s.conference', 'c');
-
-        if (Submit::STATUS_ACCEPTED === $status) {
-            $qb->andWhere('c.startAt > :today')
-                ->setParameter('today', new \DateTime());
-        }
-
-        if (Submit::STATUS_DONE === $status) {
-            $qb->andWhere('c.startAt <= :today')
-                ->setParameter('today', new \DateTime());
-        }
-
-        $qb->orderBy('c.id', 'DESC');
+            ->innerJoin('s.conference', 'c')
+            ->orderBy('c.id', 'DESC')
+        ;
 
         return $qb->getQuery()->execute();
     }
