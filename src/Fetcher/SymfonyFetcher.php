@@ -97,11 +97,6 @@ class SymfonyFetcher implements FetcherInterface
             $conference->setEndAt($endDate);
         }
 
-        if (\array_key_exists('cfp_starts_at', $rawConference) && $rawConference['cfp_starts_at']) {
-            $cfpStartAt = new \DateTimeImmutable($rawConference['cfp_starts_at']['date']);
-            $conference->setCfpStartAt($cfpStartAt);
-        }
-
         if (\array_key_exists('cfp_ends_at', $rawConference) && $rawConference['cfp_ends_at']) {
             $cfpEndAt = new \DateTimeImmutable($rawConference['cfp_ends_at']['date']);
             $conference->setCfpEndAt($cfpEndAt);
