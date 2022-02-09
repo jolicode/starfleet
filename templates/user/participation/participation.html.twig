@@ -19,17 +19,6 @@
 
 {% block content %}
     <aside class="col-6">
-
-        {% if not futureParticipations|length and
-            not pendingParticipations|length and
-            not rejectedParticipations|length and
-            not pastParticipations|length
-        %}
-            <div class="d-flex justify-content-center align-items-center h-100">
-                <em>You have no participation at a conference yet. Maybe soon ?</em>
-            </div>
-        {% endif %}
-
         {% if futureParticipations|length %}
             <div class="mb-5" id="future-participations-block">
                 <h2 class="mx-0 mb-5">Conferences you will attend soon</h2>
@@ -123,6 +112,17 @@
                 {% if pastParticipations|length > 3 %}
                     <a href="{{ path('past_participations') }}"><span class="text-primary">...Show more</span></a>
                 {% endif %}
+            </div>
+        {% endif %}
+
+        {% if
+            not futureParticipations|length and
+            not pendingParticipations|length and
+            not rejectedParticipations|length and
+            not pastParticipations|length
+        %}
+            <div class="mb-5 mt-5">
+                <em>You have no participation at a conference yet. Maybe soon ?</em>
             </div>
         {% endif %}
     </aside>
