@@ -9,6 +9,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity()
+ *
+ * @CustomAssert\NoParticipationDuplicate()
  */
 class Participation
 {
@@ -38,8 +40,6 @@ class Participation
      * @ORM\ManyToOne(targetEntity="App\Entity\Conference", inversedBy="participations", cascade={"persist"})
      *
      * @ORM\JoinColumn(nullable=false)
-     *
-     * @CustomAssert\NoParticipationDuplicate()
      *
      * @CustomAssert\NotEndedConference()
      */

@@ -8,4 +8,9 @@ use Symfony\Component\Validator\Constraint;
 class NoParticipationDuplicate extends Constraint
 {
     public string $message = 'A participation at this conference is already registered for {{ user_name }}.';
+
+    public function getTargets()
+    {
+        return self::CLASS_CONSTRAINT;
+    }
 }
