@@ -31,6 +31,6 @@ easy_admin:
                 fields:
                     <<: *talkFields
                     4: { type: 'group', columns: 6, icon: 'send', label: 'Publication' }
-                    5: { property: 'conferences', type: 'easyadmin_autocomplete', type_options: { mapped: false, class: App\Entity\Conference, multiple: true } }
+                    5: { property: 'conference', type: 'App\Form\EasyAdmin\FutureConferencesType', type_options: { mapped: false, class: App\Entity\Conference, multiple: true, attr: { data-widget: 'select2' } } }
                     6: { property: authors, type: App\Form\EasyAdmin\TalkUserType, type_options: { mapped: false, required: true } }
 

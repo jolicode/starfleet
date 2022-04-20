@@ -21,7 +21,7 @@ easy_admin:
                 item_permission: ['ROLE_PARTICIPATION_MANAGEMENT']
                 fields:
                     - { type: 'group', columns: 6, icon: 'id-badge', label: 'Participation' }
-                    - { property: 'conference', type: 'App\Form\EasyAdmin\ParticipationConferencesType', type_options: { attr: { data-widget: 'select2' } } }
+                    - { property: 'conference', type: 'App\Form\EasyAdmin\FutureConferencesType', type_options: { attr: { data-widget: 'select2' } } }
                     - { property: 'participant' }
                     - { property: 'asSpeaker' }
                     - property: 'transportStatus'
