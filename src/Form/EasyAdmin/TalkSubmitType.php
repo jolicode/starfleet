@@ -15,6 +15,7 @@ use App\Entity\Conference;
 use App\Entity\Submit;
 use App\Entity\Talk;
 use App\Entity\User;
+use App\Repository\ConferenceRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Type\EasyAdminAutocompleteType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -29,6 +30,7 @@ class TalkSubmitType extends AbstractType
 {
     public function __construct(
         private RequestStack $requestStack,
+        private ConferenceRepository $conferenceRepository,
     ) {
     }
 
@@ -40,6 +42,7 @@ class TalkSubmitType extends AbstractType
             ])
             ->add('conference', EasyAdminAutocompleteType::class, [
                 'class' => Conference::class,
+                'query_builder' => $this->conferenceRepository->getFutureConferencesQueryBuilder(),
             ])
             ->add('status', ChoiceType::class, [
                 'choices' => array_flip(Submit::STATUS_EMOJIS),

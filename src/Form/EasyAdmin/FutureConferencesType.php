@@ -18,7 +18,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ParticipationConferencesType extends AbstractType
+class FutureConferencesType extends AbstractType
 {
     public function __construct(
         private ConferenceRepository $conferenceRepository,
