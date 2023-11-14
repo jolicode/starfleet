@@ -8,14 +8,19 @@ services:
         build: services/router
         volumes:
             - "/var/run/docker.sock:/var/run/docker.sock"
+            - "./services/router/certs:/etc/ssl/certs"
         network_mode: host
 
     frontend:
-        build: services/frontend
+        build:
+            context: services/php
+            target: frontend
         depends_on:
             - postgres
         volumes:
             - "../../${PROJECT_DIRECTORY}:/home/app/application:cached"
+        environment:
+            - "PHP_VERSION=${PHP_VERSION}"
         labels:
             - "traefik.enable=true"
             - "traefik.http.routers.${PROJECT_NAME}-frontend.rule=Host(${PROJECT_DOMAINS})"
@@ -25,22 +30,12 @@ services:
             - "traefik.http.routers.${PROJECT_NAME}-frontend-unsecure.middlewares=redirect-to-https@file"
 
     postgres:
-        build: services/postgres
+        image: postgres:16
         environment:
             - POSTGRES_USER=starfleet
             - POSTGRES_PASSWORD=starfleet
-            - POSTGRES_DB=starfleet
+#            - POSTGRES_DB=starfleet
         ports:
-            - 5432:5432
+            - "5432:5432"
         volumes:
             - postgres-data:/var/lib/postgresql/data
-
-    blackfire:
-        image: blackfire/blackfire
-        ports: ["8707"]
-        environment:
-            # Exposes BLACKFIRE_* environment variables from the host or create an override file 
-            BLACKFIRE_SERVER_ID: ~
-            BLACKFIRE_SERVER_TOKEN: ~
-            BLACKFIRE_CLIENT_ID: ~
-            BLACKFIRE_CLIENT_TOKEN: ~

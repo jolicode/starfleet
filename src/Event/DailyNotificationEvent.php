@@ -17,8 +17,8 @@ use Symfony\Contracts\EventDispatcher\Event;
 class DailyNotificationEvent extends Event
 {
     /**
-     *  @param array<Conference> $newConferences
-     *  @param array<int,array<Conference>> $endingCfps
+     * @param array<Conference>            $newConferences
+     * @param array<int,array<Conference>> $endingCfps
      * */
     public function __construct(
         private array $newConferences,

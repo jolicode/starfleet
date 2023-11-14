@@ -64,7 +64,7 @@ class ConfTechFetcher implements FetcherInterface
         private LocationGuesser $locationGuesser,
         private Filesystem $filesystem,
         private ConfTechCloner $confTechCloner,
-        ?LoggerInterface $logger = null,
+        LoggerInterface $logger = null,
     ) {
         $this->logger = $logger ?: new NullLogger();
     }

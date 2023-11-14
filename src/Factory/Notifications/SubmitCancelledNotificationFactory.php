@@ -19,19 +19,19 @@ use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
 
 /**
- * @method static                            SubmitCancelledNotification|Proxy createOne(array $attributes = [])
- * @method static                            SubmitCancelledNotification[]|Proxy[] createMany(int $number, $attributes = [])
- * @method static                            SubmitCancelledNotification|Proxy find($criteria)
- * @method static                            SubmitCancelledNotification|Proxy findOrCreate(array $attributes)
- * @method static                            SubmitCancelledNotification|Proxy first(string $sortedField = 'id')
- * @method static                            SubmitCancelledNotification|Proxy last(string $sortedField = 'id')
- * @method static                            SubmitCancelledNotification|Proxy random(array $attributes = [])
- * @method static                            SubmitCancelledNotification|Proxy randomOrCreate(array $attributes = [])
- * @method static                            SubmitCancelledNotification[]|Proxy[] all()
- * @method static                            SubmitCancelledNotification[]|Proxy[] findBy(array $attributes)
- * @method static                            SubmitCancelledNotification[]|Proxy[] randomSet(int $number, array $attributes = [])
- * @method static                            SubmitCancelledNotification[]|Proxy[] randomRange(int $min, int $max, array $attributes = [])
- * @method Proxy|SubmitCancelledNotification create($attributes = [])
+ * @method static SubmitCancelledNotification|Proxy     createOne(array $attributes = [])
+ * @method static SubmitCancelledNotification[]|Proxy[] createMany(int $number, $attributes = [])
+ * @method static SubmitCancelledNotification|Proxy     find($criteria)
+ * @method static SubmitCancelledNotification|Proxy     findOrCreate(array $attributes)
+ * @method static SubmitCancelledNotification|Proxy     first(string $sortedField = 'id')
+ * @method static SubmitCancelledNotification|Proxy     last(string $sortedField = 'id')
+ * @method static SubmitCancelledNotification|Proxy     random(array $attributes = [])
+ * @method static SubmitCancelledNotification|Proxy     randomOrCreate(array $attributes = [])
+ * @method static SubmitCancelledNotification[]|Proxy[] all()
+ * @method static SubmitCancelledNotification[]|Proxy[] findBy(array $attributes)
+ * @method static SubmitCancelledNotification[]|Proxy[] randomSet(int $number, array $attributes = [])
+ * @method static SubmitCancelledNotification[]|Proxy[] randomRange(int $min, int $max, array $attributes = [])
+ * @method        Proxy|SubmitCancelledNotification     create($attributes = [])
  */
 final class SubmitCancelledNotificationFactory extends ModelFactory
 {

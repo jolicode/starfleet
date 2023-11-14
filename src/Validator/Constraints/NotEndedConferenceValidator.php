@@ -12,7 +12,6 @@
 namespace App\Validator\Constraints;
 
 use App\Entity\Conference;
-use DateTime;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
@@ -28,7 +27,7 @@ class NotEndedConferenceValidator extends ConstraintValidator
             return;
         }
 
-        if ($conference->getStartAt() < new DateTime()) {
+        if ($conference->getStartAt() < new \DateTime()) {
             $this->context
                 ->buildViolation($constraint->message)
                 ->setParameter('{{ conference_name }}', $conference->getName())

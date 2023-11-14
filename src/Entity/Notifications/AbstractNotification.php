@@ -20,8 +20,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity()
+ *
  * @InheritanceType("SINGLE_TABLE")
+ *
  * @DiscriminatorColumn(name="type", type="string")
+ *
  * @DiscriminatorMap({
  *      "NewSubmit" = "NewSubmitNotification",
  *      "submitStatusChanged" = "SubmitStatusChangedNotification",
@@ -49,13 +52,16 @@ abstract class AbstractNotification
 
     /**
      * @ORM\Id
+     *
      * @ORM\GeneratedValue
+     *
      * @ORM\Column(type="integer")
      */
     protected int $id;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="notifications")
+     *
      * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
     protected User $targetUser;

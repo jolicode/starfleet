@@ -157,7 +157,7 @@ class ConferenceRepository extends ServiceEntityRepository
         $conferences = $this->findEndingCfps();
 
         foreach ($conferences as $conference) {
-            $remainingDays = (int) ($conference->getCfpEndAt()->diff($today)->format('%a'));
+            $remainingDays = (int) $conference->getCfpEndAt()->diff($today)->format('%a');
 
             match ($remainingDays) {
                 0 => $daysRemaining0[] = $conference,

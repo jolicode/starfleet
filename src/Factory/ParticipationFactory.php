@@ -16,19 +16,19 @@ use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
 
 /**
- * @method static              Participation|Proxy createOne(array $attributes = [])
- * @method static              Participation[]|Proxy[] createMany(int $number, $attributes = [])
- * @method static              Participation|Proxy find($criteria)
- * @method static              Participation|Proxy findOrCreate(array $attributes)
- * @method static              Participation|Proxy first(string $sortedField = 'id')
- * @method static              Participation|Proxy last(string $sortedField = 'id')
- * @method static              Participation|Proxy random(array $attributes = [])
- * @method static              Participation|Proxy randomOrCreate(array $attributes = [])
- * @method static              Participation[]|Proxy[] all()
- * @method static              Participation[]|Proxy[] findBy(array $attributes)
- * @method static              Participation[]|Proxy[] randomSet(int $number, array $attributes = [])
- * @method static              Participation[]|Proxy[] randomRange(int $min, int $max, array $attributes = [])
- * @method Participation|Proxy create($attributes = [])
+ * @method static Participation|Proxy     createOne(array $attributes = [])
+ * @method static Participation[]|Proxy[] createMany(int $number, $attributes = [])
+ * @method static Participation|Proxy     find($criteria)
+ * @method static Participation|Proxy     findOrCreate(array $attributes)
+ * @method static Participation|Proxy     first(string $sortedField = 'id')
+ * @method static Participation|Proxy     last(string $sortedField = 'id')
+ * @method static Participation|Proxy     random(array $attributes = [])
+ * @method static Participation|Proxy     randomOrCreate(array $attributes = [])
+ * @method static Participation[]|Proxy[] all()
+ * @method static Participation[]|Proxy[] findBy(array $attributes)
+ * @method static Participation[]|Proxy[] randomSet(int $number, array $attributes = [])
+ * @method static Participation[]|Proxy[] randomRange(int $min, int $max, array $attributes = [])
+ * @method        Participation|Proxy     create($attributes = [])
  */
 final class ParticipationFactory extends ModelFactory
 {

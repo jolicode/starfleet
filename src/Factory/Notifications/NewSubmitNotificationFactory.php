@@ -19,19 +19,19 @@ use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
 
 /**
- * @method static                      NewSubmitNotification|Proxy createOne(array $attributes = [])
- * @method static                      NewSubmitNotification[]|Proxy[] createMany(int $number, $attributes = [])
- * @method static                      NewSubmitNotification|Proxy find($criteria)
- * @method static                      NewSubmitNotification|Proxy findOrCreate(array $attributes)
- * @method static                      NewSubmitNotification|Proxy first(string $sortedField = 'id')
- * @method static                      NewSubmitNotification|Proxy last(string $sortedField = 'id')
- * @method static                      NewSubmitNotification|Proxy random(array $attributes = [])
- * @method static                      NewSubmitNotification|Proxy randomOrCreate(array $attributes = [])
- * @method static                      NewSubmitNotification[]|Proxy[] all()
- * @method static                      NewSubmitNotification[]|Proxy[] findBy(array $attributes)
- * @method static                      NewSubmitNotification[]|Proxy[] randomSet(int $number, array $attributes = [])
- * @method static                      NewSubmitNotification[]|Proxy[] randomRange(int $min, int $max, array $attributes = [])
- * @method NewSubmitNotification|Proxy create($attributes = [])
+ * @method static NewSubmitNotification|Proxy     createOne(array $attributes = [])
+ * @method static NewSubmitNotification[]|Proxy[] createMany(int $number, $attributes = [])
+ * @method static NewSubmitNotification|Proxy     find($criteria)
+ * @method static NewSubmitNotification|Proxy     findOrCreate(array $attributes)
+ * @method static NewSubmitNotification|Proxy     first(string $sortedField = 'id')
+ * @method static NewSubmitNotification|Proxy     last(string $sortedField = 'id')
+ * @method static NewSubmitNotification|Proxy     random(array $attributes = [])
+ * @method static NewSubmitNotification|Proxy     randomOrCreate(array $attributes = [])
+ * @method static NewSubmitNotification[]|Proxy[] all()
+ * @method static NewSubmitNotification[]|Proxy[] findBy(array $attributes)
+ * @method static NewSubmitNotification[]|Proxy[] randomSet(int $number, array $attributes = [])
+ * @method static NewSubmitNotification[]|Proxy[] randomRange(int $min, int $max, array $attributes = [])
+ * @method        NewSubmitNotification|Proxy     create($attributes = [])
  */
 final class NewSubmitNotificationFactory extends ModelFactory
 {

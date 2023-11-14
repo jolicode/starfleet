@@ -35,7 +35,7 @@ class LoginFormAuthenticator extends AbstractAuthenticator implements Authentica
     ) {
     }
 
-    public function start(Request $request, ?AuthenticationException $authException = null): RedirectResponse
+    public function start(Request $request, AuthenticationException $authException = null): RedirectResponse
     {
         return new RedirectResponse($this->urlGenerator->generate('login'));
     }
@@ -43,8 +43,7 @@ class LoginFormAuthenticator extends AbstractAuthenticator implements Authentica
     public function supports(Request $request): ?bool
     {
         return 'login' === $request->attributes->get('_route')
-           && $request->isMethod('POST')
-        ;
+           && $request->isMethod('POST');
     }
 
     public function authenticate(Request $request): PassportInterface

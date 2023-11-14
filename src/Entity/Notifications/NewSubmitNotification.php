@@ -22,12 +22,14 @@ class NewSubmitNotification extends AbstractNotification
 {
     /**
      * @ORM\ManyToOne(targetEntity=Submit::class)
+     *
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private ?Submit $submit;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class)
+     *
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private ?User $emitter;

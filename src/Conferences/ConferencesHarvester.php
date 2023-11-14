@@ -38,7 +38,7 @@ class ConferencesHarvester
         private ConferenceRepository $conferenceRepository,
         private EntityManagerInterface $em,
         private EventDispatcherInterface $eventDispatcher,
-        ?LoggerInterface $logger = null,
+        LoggerInterface $logger = null,
     ) {
         $this->logger = $logger ?: new NullLogger();
     }

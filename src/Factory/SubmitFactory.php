@@ -16,19 +16,19 @@ use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
 
 /**
- * @method static       Submit|Proxy createOne(array $attributes = [])
- * @method static       Submit[]|Proxy[] createMany(int $number, $attributes = [])
- * @method static       Submit|Proxy find($criteria)
- * @method static       Submit|Proxy findOrCreate(array $attributes)
- * @method static       Submit|Proxy first(string $sortedField = 'id')
- * @method static       Submit|Proxy last(string $sortedField = 'id')
- * @method static       Submit|Proxy random(array $attributes = [])
- * @method static       Submit|Proxy randomOrCreate(array $attributes = [])
- * @method static       Submit[]|Proxy[] all()
- * @method static       Submit[]|Proxy[] findBy(array $attributes)
- * @method static       Submit[]|Proxy[] randomSet(int $number, array $attributes = [])
- * @method static       Submit[]|Proxy[] randomRange(int $min, int $max, array $attributes = [])
- * @method Proxy|Submit create($attributes = [])
+ * @method static Submit|Proxy     createOne(array $attributes = [])
+ * @method static Submit[]|Proxy[] createMany(int $number, $attributes = [])
+ * @method static Submit|Proxy     find($criteria)
+ * @method static Submit|Proxy     findOrCreate(array $attributes)
+ * @method static Submit|Proxy     first(string $sortedField = 'id')
+ * @method static Submit|Proxy     last(string $sortedField = 'id')
+ * @method static Submit|Proxy     random(array $attributes = [])
+ * @method static Submit|Proxy     randomOrCreate(array $attributes = [])
+ * @method static Submit[]|Proxy[] all()
+ * @method static Submit[]|Proxy[] findBy(array $attributes)
+ * @method static Submit[]|Proxy[] randomSet(int $number, array $attributes = [])
+ * @method static Submit[]|Proxy[] randomRange(int $min, int $max, array $attributes = [])
+ * @method        Proxy|Submit     create($attributes = [])
  */
 final class SubmitFactory extends ModelFactory
 {

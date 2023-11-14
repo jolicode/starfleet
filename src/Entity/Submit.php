@@ -20,6 +20,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Table(name="submit")
+ *
  * @ORM\Entity()
  *
  * @CustomAssert\NoSubmitDuplicate(groups={"submit:create"})
@@ -49,7 +50,9 @@ class Submit
 
     /**
      * @ORM\Column(name="id", type="integer")
+     *
      * @ORM\Id
+     *
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private int $id;
@@ -66,20 +69,23 @@ class Submit
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\User", inversedBy="submits")
+     *
      * @ORM\JoinTable(name="submits_users")
      *
      * @CustomAssert\MustBeByUser(groups={"user_account"})
+     *
      * @Assert\Count(
      *      min = 1,
      *      minMessage = "You must add at least one user"
      * )
      *
-     *  @var Collection<User>
+     * @var Collection<User>
      */
     private Collection $users;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Conference", inversedBy="submits")
+     *
      * @ORM\JoinColumn(onDelete="CASCADE")
      *
      * @CustomAssert\NotEndedConference()
@@ -88,6 +94,7 @@ class Submit
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Talk", inversedBy="submits", cascade={"persist"})
+     *
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private ?Talk $talk;

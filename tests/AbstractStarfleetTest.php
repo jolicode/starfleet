@@ -31,7 +31,7 @@ abstract class AbstractStarfleetTest extends WebTestCase
         $this->generateData();
     }
 
-    protected function getClient(?User $user = null)
+    protected function getClient(User $user = null)
     {
         if (!$this->client) {
             $user = $user ?: $this->getTestUser();

@@ -14,7 +14,6 @@ namespace App\Tests\Entity;
 use App\Entity\Submit;
 use App\Entity\Talk;
 use App\Entity\User;
-use Generator;
 use PHPUnit\Framework\TestCase;
 
 class TalkTest extends TestCase
@@ -43,7 +42,7 @@ class TalkTest extends TestCase
         self::assertCount($expectedAmount, $result);
     }
 
-    public function provideUsers(): Generator
+    public function provideUsers(): \Generator
     {
         yield [
             'submits' => [['user1'], ['user1']],

@@ -76,9 +76,6 @@ class Jsonb extends Type
         return static::TYPE_NAME;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function requiresSQLCommentHint(AbstractPlatform $platform): bool
     {
         return false;

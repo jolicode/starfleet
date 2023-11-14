@@ -17,13 +17,16 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=FetcherConfigurationRepository::class)
+ *
  * @UniqueEntity("fetcherClass")
  */
 class FetcherConfiguration
 {
     /**
      * @ORM\Id
+     *
      * @ORM\GeneratedValue
+     *
      * @ORM\Column(type="integer")
      */
     private int $id;

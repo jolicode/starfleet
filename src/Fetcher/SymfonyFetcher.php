@@ -30,7 +30,7 @@ class SymfonyFetcher implements FetcherInterface
     public function __construct(
         private LocationGuesser $locationGuesser,
         private ?HttpClientInterface $client = null,
-        ?LoggerInterface $logger = null,
+        LoggerInterface $logger = null,
     ) {
         $this->client = $client ?: HttpClient::create();
         $this->logger = $logger ?: new NullLogger();

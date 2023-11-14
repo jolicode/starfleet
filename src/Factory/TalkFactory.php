@@ -16,19 +16,19 @@ use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
 
 /**
- * @method static     Talk|Proxy createOne(array $attributes = [])
- * @method static     Talk[]|Proxy[] createMany(int $number, $attributes = [])
- * @method static     Talk|Proxy find($criteria)
- * @method static     Talk|Proxy findOrCreate(array $attributes)
- * @method static     Talk|Proxy first(string $sortedField = 'id')
- * @method static     Talk|Proxy last(string $sortedField = 'id')
- * @method static     Talk|Proxy random(array $attributes = [])
- * @method static     Talk|Proxy randomOrCreate(array $attributes = [])
- * @method static     Talk[]|Proxy[] all()
- * @method static     Talk[]|Proxy[] findBy(array $attributes)
- * @method static     Talk[]|Proxy[] randomSet(int $number, array $attributes = [])
- * @method static     Talk[]|Proxy[] randomRange(int $min, int $max, array $attributes = [])
- * @method Proxy|Talk create($attributes = [])
+ * @method static Talk|Proxy     createOne(array $attributes = [])
+ * @method static Talk[]|Proxy[] createMany(int $number, $attributes = [])
+ * @method static Talk|Proxy     find($criteria)
+ * @method static Talk|Proxy     findOrCreate(array $attributes)
+ * @method static Talk|Proxy     first(string $sortedField = 'id')
+ * @method static Talk|Proxy     last(string $sortedField = 'id')
+ * @method static Talk|Proxy     random(array $attributes = [])
+ * @method static Talk|Proxy     randomOrCreate(array $attributes = [])
+ * @method static Talk[]|Proxy[] all()
+ * @method static Talk[]|Proxy[] findBy(array $attributes)
+ * @method static Talk[]|Proxy[] randomSet(int $number, array $attributes = [])
+ * @method static Talk[]|Proxy[] randomRange(int $min, int $max, array $attributes = [])
+ * @method        Proxy|Talk     create($attributes = [])
  */
 final class TalkFactory extends ModelFactory
 {

@@ -18,20 +18,20 @@ use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
 
 /**
- * @method static          Continent|Proxy createOne(array $attributes = [])
- * @method static          Continent[]|Proxy[] createMany(int $number, $attributes = [])
- * @method static          Continent|Proxy find($criteria)
- * @method static          Continent|Proxy findOrCreate(array $attributes)
- * @method static          Continent|Proxy first(string $sortedField = 'id')
- * @method static          Continent|Proxy last(string $sortedField = 'id')
- * @method static          Continent|Proxy random(array $attributes = [])
- * @method static          Continent|Proxy randomOrCreate(array $attributes = [])
- * @method static          Continent[]|Proxy[] all()
- * @method static          Continent[]|Proxy[] findBy(array $attributes)
- * @method static          Continent[]|Proxy[] randomSet(int $number, array $attributes = [])
- * @method static          Continent[]|Proxy[] randomRange(int $min, int $max, array $attributes = [])
- * @method static          ContinentRepository|RepositoryProxy repository()
- * @method Continent|Proxy create($attributes = [])
+ * @method static Continent|Proxy                     createOne(array $attributes = [])
+ * @method static Continent[]|Proxy[]                 createMany(int $number, $attributes = [])
+ * @method static Continent|Proxy                     find($criteria)
+ * @method static Continent|Proxy                     findOrCreate(array $attributes)
+ * @method static Continent|Proxy                     first(string $sortedField = 'id')
+ * @method static Continent|Proxy                     last(string $sortedField = 'id')
+ * @method static Continent|Proxy                     random(array $attributes = [])
+ * @method static Continent|Proxy                     randomOrCreate(array $attributes = [])
+ * @method static Continent[]|Proxy[]                 all()
+ * @method static Continent[]|Proxy[]                 findBy(array $attributes)
+ * @method static Continent[]|Proxy[]                 randomSet(int $number, array $attributes = [])
+ * @method static Continent[]|Proxy[]                 randomRange(int $min, int $max, array $attributes = [])
+ * @method static ContinentRepository|RepositoryProxy repository()
+ * @method        Continent|Proxy                     create($attributes = [])
  */
 final class ContinentFactory extends ModelFactory
 {

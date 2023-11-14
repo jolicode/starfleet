@@ -77,8 +77,7 @@ class ParticipationControllerTest extends AbstractStarfleetTest
             'transportStatus' => Participation::STATUS_NOT_NEEDED,
             'hotelStatus' => Participation::STATUS_NOT_NEEDED,
             'conferenceTicketStatus' => Participation::STATUS_NOT_NEEDED,
-        ])
-        ;
+        ]);
         $conference->addParticipation($participation->object());
 
         $this->getClient()->request('GET', sprintf('/user/participation-edit/%d', $participation->getId()));

@@ -22,6 +22,7 @@ class NewFeaturedConferenceNotification extends AbstractNotification
 {
     /**
      * @ORM\ManyToOne(targetEntity=Conference::class)
+     *
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private ?Conference $conference;

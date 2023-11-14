@@ -29,7 +29,7 @@ class SlackNotifier
         private HttpClientInterface $httpClient,
         private RouterInterface $router,
         private SlackBlocksBuilder $slackBlocksBuilder,
-        ?LoggerInterface $logger = null,
+        LoggerInterface $logger = null,
     ) {
         $this->logger = $logger ?: new NullLogger();
     }

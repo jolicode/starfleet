@@ -23,18 +23,21 @@ class SubmitCancelledNotification extends AbstractNotification
 {
     /**
      * @ORM\ManyToOne(targetEntity=Talk::class)
+     *
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private ?Talk $talk;
 
     /**
      * @ORM\ManyToOne(targetEntity=Conference::class)
+     *
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private ?Conference $conference;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class)
+     *
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private ?User $emitter;

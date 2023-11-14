@@ -22,6 +22,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Table(name="users")
+ *
  * @ORM\Entity()
  */
 class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInterface
@@ -40,7 +41,9 @@ class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInt
 
     /**
      * @ORM\Id()
+     *
      * @ORM\GeneratedValue(strategy="AUTO")
+     *
      * @ORM\Column(name="id", type="integer")
      */
     private int $id;
@@ -64,6 +67,7 @@ class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInt
      * @ORM\Column(name="email", type="string", length=255, unique=true)
      *
      * @Assert\NotBlank()
+     *
      * @Assert\Email()
      */
     private string $email;

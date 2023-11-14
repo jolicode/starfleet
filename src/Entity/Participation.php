@@ -36,22 +36,27 @@ class Participation
 
     /**
      * @ORM\Id()
+     *
      * @ORM\GeneratedValue()
+     *
      * @ORM\Column(type="integer")
      */
     private int $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Conference", inversedBy="participations", cascade={"persist"})
+     *
      * @ORM\JoinColumn(nullable=false)
      *
      * @CustomAssert\NoParticipationDuplicate()
+     *
      * @CustomAssert\NotEndedConference()
      */
     private Conference $conference;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="participations", cascade={"persist"})
+     *
      * @ORM\JoinColumn(nullable=false)
      */
     private User $participant;
