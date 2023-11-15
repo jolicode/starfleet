@@ -2,10 +2,8 @@
 
 namespace App\Validator\Constraints;
 
-use App\Entity\Conference;
-use App\Entity\User;
+use App\Entity\Participation;
 use App\Repository\ParticipationRepository;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedValueException;
@@ -13,36 +11,33 @@ use Symfony\Component\Validator\Exception\UnexpectedValueException;
 class NoParticipationDuplicateValidator extends ConstraintValidator
 {
     public function __construct(
-        private Security $security,
         private ParticipationRepository $participationRepository,
     ) {
     }
 
     /**
-     * @param Conference|null          $conference
+     * @param Participation|null       $participation
      * @param NoParticipationDuplicate $constraint
      */
-    public function validate($conference, Constraint $constraint): void
+    public function validate($participation, Constraint $constraint): void
     {
-        if (!$conference) {
+        if (!$participation) {
             return;
         }
 
-        if (!$conference instanceof Conference) {
-            throw new UnexpectedValueException($conference, Conference::class);
+        if (!$participation instanceof Participation) {
+            throw new UnexpectedValueException($participation, Participation::class);
         }
 
-        /** @var User $user */
-        $user = $this->security->getUser();
         $existingParticipation = $this->participationRepository->findOneBy([
-            'participant' => $user,
-            'conference' => $conference,
+            'participant' => $participation->getParticipant(),
+            'conference' => $participation->getConference(),
         ]);
 
         if ($existingParticipation) {
             $this->context
                 ->buildViolation($constraint->message)
-                ->setParameter('{{ user_name }}', $user->getName())
+                ->setParameter('{{ user_name }}', $participation->getParticipant()->getName())
                 ->addViolation()
             ;
         }
