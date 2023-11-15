@@ -2,20 +2,12 @@
 
 declare(strict_types=1);
 
-/*
- * This file is part of the Starfleet Project.
- *
- * (c) Starfleet <msantostefano@jolicode.com>
- *
- * For the full copyright and license information,
- * please view the LICENSE file that was distributed with this source code.
- */
-
 use Castor\Attribute\AsTask;
 
 use function Castor\import;
 use function Castor\io;
 use function Castor\notify;
+use function Castor\run;
 use function Castor\variable;
 
 import(__DIR__ . '/.castor');
@@ -109,4 +101,42 @@ function fixtures(): void
     docker_compose_run('bin/console doctrine:database:drop --force');
     migrate();
     docker_compose_run('bin/console doctrine:fixtures:load -n');
+}
+
+#[AsTask(namespace: 'app', description: 'Fetch conferences')]
+function fetch_conferences(): void
+{
+    docker_compose_run('bin/console starfleet:conferences:fetch');
+}
+
+#[AsTask(namespace: 'app', description: 'Remind CFP ending')]
+function remind_cfp_ending(): void
+{
+    docker_compose_run('bin/console starfleet:conferences:remind-cfp-ending-soon');
+}
+
+#[AsTask(namespace: 'app', description: 'Reset database')]
+function reset_db(): void
+{
+    docker_compose_run('bin/console doctrine:database:drop --if-exists --force');
+    migrate();
+    fixtures();
+}
+
+#[AsTask(namespace: 'app', description: 'Expose the application with ngrok', aliases: ['ngrok'])]
+function ngrok(): void
+{
+    run('ngrok http -host-header=local.starfleet.app local.starfleet.app:443');
+}
+
+#[AsTask(namespace: 'app', description: 'Watch CSS and JS files for dev env', aliases: ['watch'])]
+function webpack_watch(): void
+{
+    docker_compose_run('yarn run watch');
+}
+
+#[AsTask(namespace: 'app', description: 'Build CSS and JS files for dev env')]
+function webpack_build(): void
+{
+    docker_compose_run('yarn run dev');
 }

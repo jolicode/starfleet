@@ -19,6 +19,7 @@
         "easycorp/easy-log-handler": "^1.0.7",
         "easycorp/easyadmin-bundle": "^2.3",
         "geocoder-php/nominatim-provider": "^5.1",
+        "http-interop/http-factory-guzzle": "^1.2",
         "knpuniversity/oauth2-client-bundle": "^2.6.0",
         "league/oauth2-github": "^2.0",
         "league/oauth2-google": "^3.0",
@@ -79,7 +80,8 @@
         "allow-plugins": {
             "symfony/flex": true,
             "symfony/runtime": true,
-            "symfony/thanks": true
+            "symfony/thanks": true,
+            "php-http/discovery": true
         }
     },
     "autoload": {

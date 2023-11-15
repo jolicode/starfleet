@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the Starfleet Project.
- *
- * (c) Starfleet <msantostefano@jolicode.com>
- *
- * For the full copyright and license information,
- * please view the LICENSE file that was distributed with this source code.
- */
-
 namespace App\DataFixtures;
 
 use App\Entity\Notifications\AbstractNotification;
@@ -34,7 +25,7 @@ class NotificationsFixtures extends Fixture implements DependentFixtureInterface
         }
     }
 
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [
             UserFixtures::class,
@@ -49,7 +40,6 @@ class NotificationsFixtures extends Fixture implements DependentFixtureInterface
         $proxy = match (random_int(1, 5)) {
             1 => NewFeaturedConferenceNotificationFactory::findOrCreate(['targetUser' => $user]),
             2 => ParticipationStatusChangedNotificationFactory::findOrCreate(['targetUser' => $user]),
-            3 => NewSubmitNotificationFactory::findOrCreate(['targetUser' => $user]),
             4 => SubmitStatusChangedNotificationFactory::findOrCreate(['targetUser' => $user]),
             5 => SubmitCancelledNotificationFactory::findOrCreate(['targetUser' => $user]),
             default => NewSubmitNotificationFactory::findOrCreate(['targetUser' => $user]),

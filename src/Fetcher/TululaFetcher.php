@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the Starfleet Project.
- *
- * (c) Starfleet <msantostefano@jolicode.com>
- *
- * For the full copyright and license information,
- * please view the LICENSE file that was distributed with this source code.
- */
-
 namespace App\Fetcher;
 
 use App\Entity\Conference;
@@ -120,7 +111,7 @@ class TululaFetcher implements FetcherInterface
     }
 
     /**
-     * @param array<mixed> $configuration
+     * @param array<array-key, mixed> $configuration
      *
      * @return \Generator<Conference>
      */
@@ -178,7 +169,7 @@ class TululaFetcher implements FetcherInterface
         ;
     }
 
-    /** @param array<mixed> $rawConference */
+    /** @param array<array-key, mixed> $rawConference */
     private function denormalizeConference(array $rawConference): ?Conference
     {
         $city = null;
@@ -234,7 +225,7 @@ class TululaFetcher implements FetcherInterface
         return $conference;
     }
 
-    /** @return array<array>|null */
+    /** @return array<array<array-key, mixed>>|null */
     private function queryTulula(): ?array
     {
         try {

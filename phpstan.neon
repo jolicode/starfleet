@@ -3,9 +3,12 @@ parameters:
     paths:
         - src
         - castor.php
-        - .castor/
     excludePaths:
         - 'src/Factory'
+    scanFiles:
+        - .castor.stub.php
+    scanDirectories:
+        - .castor
     tmpDir: tools/phpstan/var
     inferPrivatePropertyTypeFromConstructor: true
     checkGenericClassInNonGenericObjectType: false

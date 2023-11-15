@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the Starfleet Project.
- *
- * (c) Starfleet <msantostefano@jolicode.com>
- *
- * For the full copyright and license information,
- * please view the LICENSE file that was distributed with this source code.
- */
-
 namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -159,7 +150,7 @@ class Conference
     {
         $startYear = $this->getStartAt() ? $this->getStartAt()->format('Y') : '';
 
-        return trim(sprintf('%s %s', $this->getName(), "({$startYear})")) ?? '';
+        return trim(sprintf('%s %s', $this->getName(), "({$startYear})"));
     }
 
     public function getId(): ?int
