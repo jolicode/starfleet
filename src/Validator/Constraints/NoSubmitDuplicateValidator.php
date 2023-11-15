@@ -1,19 +1,9 @@
 <?php
 
-/*
- * This file is part of the Starfleet Project.
- *
- * (c) Starfleet <msantostefano@jolicode.com>
- *
- * For the full copyright and license information,
- * please view the LICENSE file that was distributed with this source code.
- */
-
 namespace App\Validator\Constraints;
 
 use App\Entity\Submit;
 use App\Repository\SubmitRepository;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedValueException;
@@ -21,23 +11,22 @@ use Symfony\Component\Validator\Exception\UnexpectedValueException;
 class NoSubmitDuplicateValidator extends ConstraintValidator
 {
     public function __construct(
-        private Security $security,
         private SubmitRepository $submitRepository,
     ) {
     }
 
     /**
-     * @param Submit|null       $submit
+     * @param Submit|null       $value
      * @param NoSubmitDuplicate $constraint
      */
-    public function validate($submit, Constraint $constraint): void
+    public function validate($value, Constraint $constraint): void
     {
-        if (!$submit) {
+        if (!$value) {
             return;
         }
 
-        if (!$submit instanceof Submit) {
-            throw new UnexpectedValueException($submit, Submit::class);
+        if (!$value instanceof Submit) {
+            throw new UnexpectedValueException($value, Submit::class);
         }
 
         $qb = $this->submitRepository->createQueryBuilder('s');
@@ -47,16 +36,16 @@ class NoSubmitDuplicateValidator extends ConstraintValidator
             ->innerJoin('s.users', 'u')
             ->andWhere('u.id IN (:users)')
             ->setParameters([
-                'conference' => $submit->getConference(),
-                'talk' => $submit->getTalk(),
-                'users' => $submit->getUsers(),
+                'conference' => $value->getConference(),
+                'talk' => $value->getTalk(),
+                'users' => $value->getUsers(),
             ])
             ->getQuery()
             ->getResult()
         ;
 
         foreach ($existingSubmits as $existingSubmit) {
-            $submitUsers = $submit->getUsers()->toArray();
+            $submitUsers = $value->getUsers()->toArray();
             $existingSubmitUsers = $existingSubmit->getUsers()->toArray();
             sort($submitUsers);
             sort($existingSubmitUsers);
@@ -64,7 +53,7 @@ class NoSubmitDuplicateValidator extends ConstraintValidator
             if ($submitUsers === $existingSubmitUsers) {
                 $this->context
                     ->buildViolation($constraint->message)
-                    ->setParameter('{{ conference }}', $submit->getConference())
+                    ->setParameter('{{ conference }}', $value->getConference())
                     ->addViolation()
                 ;
 

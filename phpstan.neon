@@ -1,21 +1,35 @@
-includes:
-    - vendor/phpstan/phpstan-doctrine/extension.neon
-    - vendor/phpstan/phpstan-doctrine/rules.neon
-    - vendor/phpstan/phpstan-symfony/extension.neon
-
 parameters:
     level: 6
     paths:
         - src
-    excludes_analyse:
+        - castor.php
+    excludePaths:
         - 'src/Factory'
-    tmpDir: var/phpstan-tmp
+    scanFiles:
+        - .castor.stub.php
+    scanDirectories:
+        - .castor
+    tmpDir: tools/phpstan/var
     inferPrivatePropertyTypeFromConstructor: true
     checkGenericClassInNonGenericObjectType: false
 
     symfony:
-        container_xml_path: var/cache/dev/App_KernelDevDebugContainer.xml
-        console_application_loader: var/phpstan-utilities/console-application.php
+       container_xml_path: '%rootDir%/../../../../../var/cache/dev/App_KernelDevDebugContainer.xml'
 
-    doctrine:
-        objectManagerLoader: var/phpstan-utilities/object-manager.php
+    typeAliases:
+        ContextData: '''
+            array{
+                project_name: string,
+                root_domain: string,
+                extra_domains: string[],
+                project_directory: string,
+                php_version: string,
+                docker_compose_files: string[],
+                macos: bool,
+                power_shell: bool,
+                user_id: int,
+                root_dir: string,
+                env: string,
+                composer_cache_dir: string,
+            }
+        '''

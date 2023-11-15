@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the Starfleet Project.
- *
- * (c) Starfleet <msantostefano@jolicode.com>
- *
- * For the full copyright and license information,
- * please view the LICENSE file that was distributed with this source code.
- */
-
 namespace App\Conferences;
 
 use App\Entity\Conference;
@@ -38,7 +29,7 @@ class ConferencesHarvester
         private ConferenceRepository $conferenceRepository,
         private EntityManagerInterface $em,
         private EventDispatcherInterface $eventDispatcher,
-        ?LoggerInterface $logger = null,
+        LoggerInterface $logger = null,
     ) {
         $this->logger = $logger ?: new NullLogger();
     }

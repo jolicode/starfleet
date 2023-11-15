@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the Starfleet Project.
- *
- * (c) Starfleet <msantostefano@jolicode.com>
- *
- * For the full copyright and license information,
- * please view the LICENSE file that was distributed with this source code.
- */
-
 namespace App\Entity\Notifications;
 
 use App\Entity\Participation;
@@ -22,12 +13,14 @@ class ParticipationStatusChangedNotification extends AbstractNotification
 {
     /**
      * @ORM\ManyToOne(targetEntity=Participation::class)
+     *
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private ?Participation $participation;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class)
+     *
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private ?User $emitter;

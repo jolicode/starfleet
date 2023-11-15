@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the Starfleet Project.
- *
- * (c) Starfleet <msantostefano@jolicode.com>
- *
- * For the full copyright and license information,
- * please view the LICENSE file that was distributed with this source code.
- */
-
 namespace App\Repository;
 
 use App\Entity\Conference;
@@ -157,7 +148,7 @@ class ConferenceRepository extends ServiceEntityRepository
         $conferences = $this->findEndingCfps();
 
         foreach ($conferences as $conference) {
-            $remainingDays = (int) ($conference->getCfpEndAt()->diff($today)->format('%a'));
+            $remainingDays = (int) $conference->getCfpEndAt()->diff($today)->format('%a');
 
             match ($remainingDays) {
                 0 => $daysRemaining0[] = $conference,

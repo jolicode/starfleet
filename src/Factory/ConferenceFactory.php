@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the Starfleet Project.
- *
- * (c) Starfleet <msantostefano@jolicode.com>
- *
- * For the full copyright and license information,
- * please view the LICENSE file that was distributed with this source code.
- */
-
 namespace App\Factory;
 
 use App\Entity\Conference;
@@ -19,20 +10,20 @@ use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
 
 /**
- * @method static           Conference|Proxy createOne(array $attributes = [])
- * @method static           Conference[]|Proxy[] createMany(int $number, $attributes = [])
- * @method static           Conference|Proxy find($criteria)
- * @method static           Conference|Proxy findOrCreate(array $attributes)
- * @method static           Conference|Proxy first(string $sortedField = 'id')
- * @method static           Conference|Proxy last(string $sortedField = 'id')
- * @method static           Conference|Proxy random(array $attributes = [])
- * @method static           Conference|Proxy randomOrCreate(array $attributes = [])
- * @method static           Conference[]|Proxy[] all()
- * @method static           Conference[]|Proxy[] findBy(array $attributes)
- * @method static           Conference[]|Proxy[] randomSet(int $number, array $attributes = [])
- * @method static           Conference[]|Proxy[] randomRange(int $min, int $max, array $attributes = [])
- * @method static           ConferenceRepository|RepositoryProxy repository()
- * @method Conference|Proxy create($attributes = [])
+ * @method static Conference|Proxy                     createOne(array $attributes = [])
+ * @method static Conference[]|Proxy[]                 createMany(int $number, $attributes = [])
+ * @method static Conference|Proxy                     find($criteria)
+ * @method static Conference|Proxy                     findOrCreate(array $attributes)
+ * @method static Conference|Proxy                     first(string $sortedField = 'id')
+ * @method static Conference|Proxy                     last(string $sortedField = 'id')
+ * @method static Conference|Proxy                     random(array $attributes = [])
+ * @method static Conference|Proxy                     randomOrCreate(array $attributes = [])
+ * @method static Conference[]|Proxy[]                 all()
+ * @method static Conference[]|Proxy[]                 findBy(array $attributes)
+ * @method static Conference[]|Proxy[]                 randomSet(int $number, array $attributes = [])
+ * @method static Conference[]|Proxy[]                 randomRange(int $min, int $max, array $attributes = [])
+ * @method static ConferenceRepository|RepositoryProxy repository()
+ * @method        Conference|Proxy                     create($attributes = [])
  */
 final class ConferenceFactory extends ModelFactory
 {

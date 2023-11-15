@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the Starfleet Project.
- *
- * (c) Starfleet <msantostefano@jolicode.com>
- *
- * For the full copyright and license information,
- * please view the LICENSE file that was distributed with this source code.
- */
-
 namespace App\Entity\Notifications;
 
 use App\Entity\Conference;
@@ -23,18 +14,21 @@ class SubmitCancelledNotification extends AbstractNotification
 {
     /**
      * @ORM\ManyToOne(targetEntity=Talk::class)
+     *
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private ?Talk $talk;
 
     /**
      * @ORM\ManyToOne(targetEntity=Conference::class)
+     *
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private ?Conference $conference;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class)
+     *
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private ?User $emitter;

@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the Starfleet Project.
- *
- * (c) Starfleet <msantostefano@jolicode.com>
- *
- * For the full copyright and license information,
- * please view the LICENSE file that was distributed with this source code.
- */
-
 namespace App\Entity;
 
 use App\Validator\Constraints as CustomAssert;
@@ -36,22 +27,27 @@ class Participation
 
     /**
      * @ORM\Id()
+     *
      * @ORM\GeneratedValue()
+     *
      * @ORM\Column(type="integer")
      */
     private int $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Conference", inversedBy="participations", cascade={"persist"})
+     *
      * @ORM\JoinColumn(nullable=false)
      *
      * @CustomAssert\NoParticipationDuplicate()
+     *
      * @CustomAssert\NotEndedConference()
      */
     private Conference $conference;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="participations", cascade={"persist"})
+     *
      * @ORM\JoinColumn(nullable=false)
      */
     private User $participant;

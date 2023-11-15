@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the Starfleet Project.
- *
- * (c) Starfleet <msantostefano@jolicode.com>
- *
- * For the full copyright and license information,
- * please view the LICENSE file that was distributed with this source code.
- */
-
 namespace App\Tests\Controller\UserAccount;
 
 use App\Entity\Participation;
@@ -77,8 +68,7 @@ class ParticipationControllerTest extends AbstractStarfleetTest
             'transportStatus' => Participation::STATUS_NOT_NEEDED,
             'hotelStatus' => Participation::STATUS_NOT_NEEDED,
             'conferenceTicketStatus' => Participation::STATUS_NOT_NEEDED,
-        ])
-        ;
+        ]);
         $conference->addParticipation($participation->object());
 
         $this->getClient()->request('GET', sprintf('/user/participation-edit/%d', $participation->getId()));

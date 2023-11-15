@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the Starfleet Project.
- *
- * (c) Starfleet <msantostefano@jolicode.com>
- *
- * For the full copyright and license information,
- * please view the LICENSE file that was distributed with this source code.
- */
-
 namespace App\Entity;
 
 use App\Validator\Constraints as CustomAssert;
@@ -19,6 +10,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
  * @ORM\Table(name="talk")
+ *
  * @ORM\Entity()
  */
 class Talk
@@ -27,7 +19,9 @@ class Talk
 
     /**
      * @ORM\Column(name="id", type="integer")
+     *
      * @ORM\Id
+     *
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private int $id;
@@ -112,7 +106,7 @@ class Talk
         return $this;
     }
 
-    /** @return array<array> */
+    /** @return array<array<string>> */
     public function getUniqueUsersNames(): array
     {
         $uniqueNames = [];

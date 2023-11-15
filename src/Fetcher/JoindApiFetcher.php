@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the Starfleet Project.
- *
- * (c) Starfleet <msantostefano@jolicode.com>
- *
- * For the full copyright and license information,
- * please view the LICENSE file that was distributed with this source code.
- */
-
 namespace App\Fetcher;
 
 use App\Entity\Conference;
@@ -95,7 +86,7 @@ class JoindApiFetcher implements FetcherInterface
     public function __construct(
         private LocationGuesser $locationGuesser,
         private ?HttpClientInterface $client = null,
-        ?LoggerInterface $logger = null,
+        LoggerInterface $logger = null,
     ) {
         $this->client = $client ?: HttpClient::create();
         $this->logger = $logger ?: new NullLogger();
@@ -156,7 +147,7 @@ class JoindApiFetcher implements FetcherInterface
         ;
     }
 
-    /** @param array<mixed> $rawConference */
+    /** @param array<array-key, mixed> $rawConference */
     public function denormalizeConference(array $rawConference): ?Conference
     {
         $city = ucwords(str_ireplace('_', ' ', $rawConference['tz_place']));
@@ -215,7 +206,7 @@ class JoindApiFetcher implements FetcherInterface
         return $conference;
     }
 
-    /** @return array<array>|null */
+    /** @return array<array<array-key, mixed>>|null */
     private function queryJoindIn(string $url): ?array
     {
         try {

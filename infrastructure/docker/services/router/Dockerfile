@@ -1,3 +1,5 @@
-FROM traefik:v2.2
+FROM traefik:v3.0
 
-COPY etc/. /etc/
+COPY traefik /etc/traefik
+
+VOLUME [ "/etc/ssl/certs" ]

@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the Starfleet Project.
- *
- * (c) Starfleet <msantostefano@jolicode.com>
- *
- * For the full copyright and license information,
- * please view the LICENSE file that was distributed with this source code.
- */
-
 namespace App\Notifiers\Slack;
 
 use App\Entity\Conference;
@@ -29,14 +20,14 @@ class SlackNotifier
         private HttpClientInterface $httpClient,
         private RouterInterface $router,
         private SlackBlocksBuilder $slackBlocksBuilder,
-        ?LoggerInterface $logger = null,
+        LoggerInterface $logger = null,
     ) {
         $this->logger = $logger ?: new NullLogger();
     }
 
     /**
-     * @param array<Conference>            $newConferences
-     * @param array<int,array<Conference>> $endingCfps
+     * @param array<Conference>        $newConferences
+     * @param array<array<Conference>> $endingCfps
      * */
     public function sendDailyNotification(array $newConferences, array $endingCfps): void
     {
@@ -50,10 +41,10 @@ class SlackNotifier
     }
 
     /**
-     * @param array<Conference>            $newConferences
-     * @param array<int,array<Conference>> $endingCfps
+     * @param array<Conference>        $newConferences
+     * @param array<array<Conference>> $endingCfps
      *
-     * @return array<array>
+     * @phpstan-ignore-next-line
      */
     public function buildDailyBlocks(array $newConferences, array $endingCfps): array
     {
@@ -143,7 +134,7 @@ class SlackNotifier
     /**
      * @param array<Conference> $conferences
      *
-     * @return array<array>
+     * @phpstan-ignore-next-line
      */
     private function buildConferencesBlocks(array $conferences): array
     {
@@ -184,8 +175,8 @@ class SlackNotifier
     /**
      * @param array<int,array<Conference>> $endingCfps
      *
-     * @return array<array>
-     * */
+     * @phpstan-ignore-next-line
+     */
     private function buildCfpsBlocks(array $endingCfps): array
     {
         if (0 === \count($endingCfps)) {

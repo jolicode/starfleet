@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the Starfleet Project.
- *
- * (c) Starfleet <msantostefano@jolicode.com>
- *
- * For the full copyright and license information,
- * please view the LICENSE file that was distributed with this source code.
- */
-
 namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -19,6 +10,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
  * @ORM\Table(name="conference")
+ *
  * @ORM\Entity(repositoryClass="App\Repository\ConferenceRepository")
  */
 class Conference
@@ -29,7 +21,9 @@ class Conference
 
     /**
      * @ORM\Column(name="id", type="integer")
+     *
      * @ORM\Id
+     *
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private int $id;
@@ -51,6 +45,7 @@ class Conference
 
     /**
      * @ORM\Column(name="slug", type="string", length=255, nullable=false, unique=true)
+     *
      * @Gedmo\Slug(fields={"name"})
      */
     private string $slug;
@@ -104,6 +99,7 @@ class Conference
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Participation", mappedBy="conference", cascade={"persist"})
+     *
      * @ORM\JoinColumn(onDelete="CASCADE")
      *
      * @var Collection<Participation>
@@ -154,7 +150,7 @@ class Conference
     {
         $startYear = $this->getStartAt() ? $this->getStartAt()->format('Y') : '';
 
-        return trim(sprintf('%s %s', $this->getName(), "({$startYear})")) ?? '';
+        return trim(sprintf('%s %s', $this->getName(), "({$startYear})"));
     }
 
     public function getId(): ?int

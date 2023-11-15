@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the Starfleet Project.
- *
- * (c) Starfleet <msantostefano@jolicode.com>
- *
- * For the full copyright and license information,
- * please view the LICENSE file that was distributed with this source code.
- */
-
 namespace App\Fetcher;
 
 use App\Entity\Conference;
@@ -30,7 +21,7 @@ class SymfonyFetcher implements FetcherInterface
     public function __construct(
         private LocationGuesser $locationGuesser,
         private ?HttpClientInterface $client = null,
-        ?LoggerInterface $logger = null,
+        LoggerInterface $logger = null,
     ) {
         $this->client = $client ?: HttpClient::create();
         $this->logger = $logger ?: new NullLogger();
