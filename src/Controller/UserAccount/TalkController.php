@@ -4,12 +4,14 @@ namespace App\Controller\UserAccount;
 
 use App\Entity\Talk;
 use App\Entity\User;
+use App\Event\NewTalkSubmittedEvent;
 use App\Form\UserAccount\EditTalkType;
 use App\Form\UserAccount\NewTalkType;
 use App\Repository\TalkRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -20,6 +22,7 @@ class TalkController extends AbstractController
     public function __construct(
         private TalkRepository $talkRepository,
         private EntityManagerInterface $em,
+        private EventDispatcherInterface $eventDispatcher,
     ) {
     }
 
@@ -44,6 +47,7 @@ class TalkController extends AbstractController
             );
 
             $this->addFlash('info', $message);
+            $this->eventDispatcher->dispatch(new NewTalkSubmittedEvent($talk, $talk->getSubmits()->toArray()));
 
             return $this->redirectToRoute('user_talks');
         }
