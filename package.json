@@ -22,7 +22,7 @@
         "chart.js": "^2.9.4",
         "copy-webpack-plugin": "^4.2.1",
         "core-js": "3.0.0",
-        "node-sass": "^4.7.2",
+        "node-sass": "^7.0.0",
         "prettier": "1.8.2",
         "regenerator-runtime": "^0.13.2",
         "sass-loader": "^9.0.1",
