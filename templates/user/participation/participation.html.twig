@@ -18,99 +18,139 @@
 {% endblock %}
 
 {% block content %}
-    <aside class="col-6">
+    <section class="col-lg-6">
         {% if futureParticipations|length %}
             <div class="mb-5" id="future-participations-block">
-                <h2 class="mx-0 mb-5">Conferences you will attend soon</h2>
+                <h2 class="mb-5">Conferences you will attend soon</h2>
                 {% for participation in futureParticipations|slice(0, 3) %}
-                    <div class="card w-100 mx-auto my-2">
-                        <div class="card-header d-flex justify-content-between">
+                    <article class="card my-4">
+                        <header class="card-header d-flex justify-content-between">
                             <a href="{{ path('conferences_show', { slug: participation.conference.slug }) }}">
                                 <h5 class="card-title text-primary my-0">{{ participation.conference.name }}</h5>
                             </a>
-                            <div>starts on <mark>{{ participation.conference.startAt|date('m/d/Y') }}</mark></div>
-                        </div>
-
-                        <div class="card-body d-flex justify-content-around">
+                            <p class="mb-0">
+                                starts on
+                                <time datetime="{{ participation.conference.startAt|date('m/d/Y') }}" class="mark">
+                                    {{ participation.conference.startAt|date('m/d/Y') }}
+                                </time>
+                            </p>
+                        </header>
+                        <div class="card-body d-flex justify-content-between">
                             <form action="{{ path('edit_participation', { id: participation.id }) }}" method="POST" class="action-edit">
-                                <button type="submit" class="btn color-edit p-0"><i class="fa fa-edit"></i> Edit Participation</button>
+                                <button type="submit" class="btn color-edit p-0">
+                                    <i class="fa fa-edit"></i> Edit Participation
+                                </button>
                                 <input type="hidden" name="token" value="{{ csrf_token('') }}">
                             </form>
                             <form action="{{ path('user_participation_cancel', { id: participation.id }) }}" method="POST" class="action-cancel">
-                                <button type="submit" class="btn color-cancel p-0"><i class="fa fa-times-circle"></i> Cancel Participation</button>
+                                <button type="submit" class="btn color-cancel p-0">
+                                    <i class="fa fa-times-circle"></i> Cancel Participation
+                                </button>
                                 <input type="hidden" name="token" value="{{ csrf_token('') }}">
                             </form>
                         </div>
-                    </div>
+                    </article>
                 {% endfor %}
                 {% if futureParticipations|length > 3 %}
-                    <a href="{{ path('future_participations') }}"><span class="text-primary">...Show more</span></a>
+                    <p>
+                        <a href="{{ path('future_participations') }}">
+                            <span class="text-primary">...Show more</span>
+                        </a>
+                    </p>
                 {% endif %}
             </div>
         {% endif %}
 
         {% if pendingParticipations|length %}
             <div class="mb-5" id="pending-participations-block">
-                <h2 class="mx-0 mb-5">Pending participations</h2>
+                <h2 class="mb-5">Pending participations</h2>
                 {% for participation in pendingParticipations|slice(0, 3) %}
-                    <div class="card w-100 mx-auto my-2">
-                        <div class="card-header d-flex justify-content-between">
+                    <article class="card my-4">
+                        <header class="card-header d-flex justify-content-between">
                             <a href="{{ path('conferences_show', { slug: participation.conference.slug }) }}">
                                 <h5 class="card-title text-primary my-0">{{ participation.conference.name }}</h5>
                             </a>
-                            <div>starts on <mark>{{ participation.conference.startAt|date('m/d/Y') }}</mark></div>
-                        </div>
-
-                        <div class="card-body d-flex justify-content-around">
+                            <p>
+                                starts on
+                                <time datetime="{{ participation.conference.startAt|date('m/d/Y') }}" class="mark">
+                                    {{ participation.conference.startAt|date('m/d/Y') }}
+                                </time>
+                            </p>
+                        </header>
+                        <div class="card-body d-flex justify-content-between">
                             <form action="{{ path('edit_participation', { id: participation.id }) }}" method="POST" class="action-edit">
-                                <button type="submit" class="btn color-edit p-0"><i class="fa fa-edit"></i> Edit Participation</button>
+                                <button type="submit" class="btn color-edit p-0">
+                                    <i class="fa fa-edit"></i> Edit Participation
+                                </button>
                                 <input type="hidden" name="token" value="{{ csrf_token('') }}">
                             </form>
                             <form action="{{ path('user_participation_cancel', { id: participation.id }) }}" method="POST" class="action-cancel">
-                                <button type="submit" class="btn color-cancel p-0"><i class="fa fa-times-circle"></i> Cancel Participation</button>
+                                <button type="submit" class="btn color-cancel p-0">
+                                    <i class="fa fa-times-circle"></i> Cancel Participation
+                                </button>
                                 <input type="hidden" name="token" value="{{ csrf_token('') }}">
                             </form>
                         </div>
-                    </div>
+                    </article>
                 {% endfor %}
                 {% if pendingParticipations|length > 3 %}
-                    <a href="{{ path('pending_participations') }}"><span class="text-primary">...Show more</span></a>
+                    <p>
+                        <a href="{{ path('pending_participations') }}">
+                            <span class="text-primary">...Show more</span>
+                        </a>
+                    </p>
                 {% endif %}
             </div>
         {% endif %}
 
         {% if rejectedParticipations|length %}
             <div class="mb-5" id="rejected-participations-block">
-                <h2 class="mx-0 mb-5">Rejected participations</h2>
+                <h2 class="mb-5">Rejected participations</h2>
                 {% for participation in rejectedParticipations|slice(0, 3) %}
-                    <div class="card w-100 mx-auto my-2">
+                    <article class="card my-4">
                         <div class="card-body">
                             <a href="{{ path('conferences_show', { slug: participation.conference.slug }) }}">
                                 <h5 class="card-title text-primary my-0">{{ participation.conference.name }}</h5>
-                            </a>Ended on <mark>{{ participation.conference.startAt|date('m/d/Y') }}</mark>
+                            </a>
+                            Ended on
+                            <time datetime="{{ participation.conference.startAt|date('m/d/Y') }}" class="mark">
+                                {{ participation.conference.startAt|date('m/d/Y') }}
+                            </time>
                         </div>
-                    </div>
+                    </article>
                 {% endfor %}
                 {% if rejectedParticipations|length > 3 %}
-                    <a href="{{ path('rejected_participations') }}"><span class="text-primary">...Show more</span></a>
+                    <p>
+                        <a href="{{ path('rejected_participations') }}">
+                            <span class="text-primary">...Show more</span>
+                        </a>
+                    </p>
                 {% endif %}
             </div>
         {% endif %}
 
         {% if pastParticipations|length %}
             <div class="mb-5" id="past-participations-block">
-                <h2 class="mx-0 mb-5">Conferences you went to</h2>
+                <h2 class="mb-5">Conferences you went to</h2>
                 {% for participation in pastParticipations|slice(0, 3) %}
-                    <div class="card w-100 mx-auto my-2">
+                    <article class="card my-4">
                         <div class="card-body">
                             <a href="{{ path('conferences_show', { slug: participation.conference.slug }) }}">
                                 <h5 class="card-title text-primary my-0">{{ participation.conference.name }}</h5>
-                            </a>Ended on <mark>{{ participation.conference.endAt|date('m/d/Y') }}</mark>
+                            </a>
+                            Ended on
+                            <time datetime="{{ participation.conference.endAt|date('m/d/Y') }}" class="mark">
+                                {{ participation.conference.endAt|date('m/d/Y') }}
+                            </time>
                         </div>
-                    </div>
+                    </article>
                 {% endfor %}
                 {% if pastParticipations|length > 3 %}
-                    <a href="{{ path('past_participations') }}"><span class="text-primary">...Show more</span></a>
+                    <p>
+                        <a href="{{ path('past_participations') }}">
+                            <span class="text-primary">...Show more</span>
+                        </a>
+                    </p>
                 {% endif %}
             </div>
         {% endif %}
@@ -121,37 +161,30 @@
             not rejectedParticipations|length and
             not pastParticipations|length
         %}
-            <div class="mb-5 mt-5">
+            <p class="my-5">
                 <em>You have no participation at a conference yet. Maybe soon ?</em>
-            </div>
+            </p>
         {% endif %}
-    </aside>
+    </section>
 
-    <section class="col-6 pl-5">
+    <section class="col-lg-6">
         <div class="mb-5">
             {% if chart %}
                 {{ render_chart(chart) }}
             {% endif %}
         </div>
-
         <div class="pt-5">
-            <h2>Ask for participation</h2>
-            {{ form_start(form, {
-                attr: {
-                    class: 'row flex-column',
-                    id: form.vars.id
-                }
-            }) }}
+            <h2 class="mb-5">Ask for participation</h2>
+
+            {{ form_start(form) }}
                 {{ form_row(form.conference) }}
                 {{ form_row(form.transportStatus) }}
                 {{ form_row(form.hotelStatus) }}
                 {{ form_row(form.conferenceTicketStatus) }}
-                {{ form_row(form.asSpeaker, {
-                    row_attr: {class: 'align-self-center'}
-                }) }}
-
-                <button type="submit" class="btn btn-primary align-self-center" id="submit_participation">Submit</button>
-
+                {{ form_row(form.asSpeaker) }}
+                <p class="text-right">
+                    <button type="submit" class="btn btn-primary" id="submit_participation">Submit</button>
+                </p>
             {{ form_end(form) }}
         </div>
     </section>

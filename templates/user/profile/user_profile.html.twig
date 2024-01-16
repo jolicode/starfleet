@@ -10,39 +10,53 @@
 {% block content %}
     {{ form_start(form, {
         attr: {
-            class: 'w-75 mx-auto'
+            class: 'col'
         }
     }) }}
         <h2 class="text-center my-5">Edit your Profile</h2>
+        <div class="row">
+            <div class="col-lg-4">
+                <article class="card h-100">
+                    <div class="card-body">
+                        <h4 class="text-primary text-center my-4">
+                            Account
+                        </h4>
 
-        <div class="row justify-content-stretch">
-            <div class="profile-form-block">
-                <h4 class="indent-50 text-primary my-4">Account</h4>
-
-                {{ form_row(form.name) }}
-                {{ form_row(form.email) }}
-                {{ form_row(form.previousPassword) }}
-                {{ form_row(form.newPassword) }}
+                        {{ form_row(form.name) }}
+                        {{ form_row(form.email) }}
+                        {{ form_row(form.previousPassword) }}
+                        {{ form_row(form.newPassword) }}
+                    </div>
+                </article>
             </div>
+            <div class="col-lg-4 mt-4 mt-lg-0">
+                <article class="card h-100">
+                    <div class="card-body">
+                        <h4 class="text-primary text-center my-4">
+                            Web
+                        </h4>
 
-            <div class="profile-form-block">
-                <h4 class="indent-50 text-primary my-4">Web</h4>
-
-                {{ form_row(form.twitterAccount) }}
+                        {{ form_row(form.twitterAccount) }}
+                </article>
             </div>
+            <div class="col-lg-4 mt-4 mt-lg-0">
+                <article class="card h-100">
+                    <div class="card-body">
+                        <h4 class="text-primary text-center my-4">
+                            Personal Informations
+                        </h4>
 
-            <div class="profile-form-block">
-                <h4 class="indent-50 text-primary my-4">Personal Informations</h4>
-
-                {{ form_row(form.job) }}
-                {{ form_row(form.bio) }}
-                {{ form_row(form.tshirtSize) }}
-                {{ form_row(form.foodPreferences) }}
-                {{ form_row(form.allergies) }}
+                        {{ form_row(form.job) }}
+                        {{ form_row(form.bio) }}
+                        {{ form_row(form.tshirtSize) }}
+                        {{ form_row(form.foodPreferences) }}
+                        {{ form_row(form.allergies) }}
+                    </div>
+                </article>
             </div>
         </div>
-
-        <button type="submit" class="btn btn-primary d-block mx-auto my-5">Save Profile</button>
-
+        <p class="my-5 text-center">
+            <button type="submit" class="btn btn-primary">Save Profile</button>
+        </p>
     {{ form_end(form) }}
 {% endblock %}
