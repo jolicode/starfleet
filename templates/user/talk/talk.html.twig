@@ -37,56 +37,54 @@
 {% endblock %}
 
 {% block content %}
-    <aside class="col-6">
+    <section class="col-lg-6">
         {% if talks|length %}
             <div class="mb-5" id="all-talks-block">
-                <h2 class="mx-0 mb-5">Most recent talks</h2>
+                <h2 class="mb-5">Most recent talks</h2>
                 {% for talk in talks|slice(0, 3) %}
-                    <div class="card w-100 mx-auto my-2">
-                        <div class="card-header">
+                    <article class="card my-4">
+                        <header class="card-header">
                             <a href="{{ path('show_talk', { id: talk.id }) }}">
                                 <h5 class="card-title text-primary my-0">{{ talk.title }}</h5>
                             </a>
-                        </div>
-
+                        </header>
                         <div class="card-body">
                             {{ talk.intro|u.truncate(50, '...', false) }}
 
-                            <div class="justify-content-center mt-2">
-                                <form action="{{ path('edit_talk', { id: talk.id }) }}" method="POST" class="action-edit text-center">
-                                    <button type="submit" class="btn color-edit p-0"><i class="fa fa-edit"></i> Edit</button>
-                                    <input type="hidden" name="token" value="{{ csrf_token('') }}">
-                                </form>
-                            </div>
+                            <form action="{{ path('edit_talk', { id: talk.id }) }}" method="POST" class="action-edit mt-2 text-right">
+                                <button type="submit" class="btn color-edit p-0">
+                                    <i class="fa fa-edit"></i> Edit
+                                </button>
+                                <input type="hidden" name="token" value="{{ csrf_token('') }}">
+                            </form>
                         </div>
-                    </div>
+                    </article>
                 {% endfor %}
                 {% if talks|length > 3 %}
-                    <a href="{{ path('user_talks_all') }}"><span class="text-primary">...Show more</span></a>
+                    <p>
+                        <a href="{{ path('user_talks_all') }}">
+                            <span class="text-primary">...Show more</span>
+                        </a>
+                    </p>
                 {% endif %}
             </div>
         {% else %}
-            <div class="mt-5 mb-5">
+            <p class="my-5">
                 <em>You don't have any talk to show yet. Maybe soon ?</em>
-            </div>
+            </p>
         {% endif %}
-    </aside>
+    </section>
+    <section class="col-lg-6">
+        <h2 class="mb-5">Create a talk</h2>
 
-    <section class="col-6 pl-5">
-        <h2>Create a talk</h2>
-
-        {{ form_start(form, {
-            attr: {
-                class: 'row flex-column',
-            }
-        }) }}
+        {{ form_start(form) }}
             {{ form_row(form.title) }}
             {{ form_row(form.intro) }}
             {{ form_row(form.conference) }}
             {{ form_row(form.users) }}
-
-            <button type="submit" class="btn btn-primary align-self-center" id="submit_talk">Submit</button>
-
+            <p class="text-right">
+                <button type="submit" class="btn btn-primary" id="submit_talk">Submit</button>
+            </p>
         {{ form_end(form) }}
     </section>
 {% endblock %}

@@ -21,9 +21,9 @@ class FrontControllerTest extends AbstractStarfleetTest
         $this->assertSelectorTextContains('#conferencesTabs', 'Incoming conferences');
         $this->assertSelectorTextContains('#conferencesTabs', '🔴 Live conferences! Find us there!');
         $this->assertSelectorTextContains('#conferencesTabs', 'Past conferences');
-        $this->assertCount(1, $crawler->filter('div#future div.card'));
-        $this->assertCount(1, $crawler->filter('div#live div.card'));
-        $this->assertCount(1, $crawler->filter('div#past div.card'));
+        $this->assertCount(1, $crawler->filter('div#future div.tab-pane'));
+        $this->assertCount(1, $crawler->filter('div#live div.tab-pane'));
+        $this->assertCount(1, $crawler->filter('div#past div.tab-pane'));
     }
 
     protected function generateData()

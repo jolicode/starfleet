@@ -6,90 +6,144 @@
 {% endblock %}
 
 {% block content %}
-    <div class="mb-5 w-100">
+    <div class="col mb-5">
         <h1 class="text-center mt-3">All upcoming Conferences</h1>
-
-        <h3 class="ml-5 my-5 text-secondary indent-50">Featured Conferences</h3>
-        <div class="d-flex flex-row flex-wrap justify-content-center" id="featured-conferences-block">
+        <h3 class="my-5 text-secondary">Featured Conferences</h3>
+        <div class="row" id="featured-conferences-block">
             {% for conference in featuredConferences %}
-                <div class="card w-30 m-2 border-warning conference-card">
-                    <div class="card-header d-flex justify-content-between">
-                        <a href="{{ path('conferences_show', { slug: conference.slug }) }}">
-                            <h5 class="card-title text-primary my-0"><i class="far fa-star text-warning mr-3"></i>{{ conference.name }}</h5>
-                        </a>
-                    </div>
-                    <div class="card-body d-flex flex-column">
-                        <div class="card-text text-center">From <mark>{{ conference.startAt|date('m/d/Y') }}</mark> To <mark>{{ conference.endAt|date('m/d/Y') }}</mark></div>
-                        <div class="card-text text-center mt-2">
-                            {% if conference.online %}
-                                Online <img class="country-flag" alt="" src="{{ asset('build/images/online.svg') }}">
-                            {% elseif conference.country %}
-                                {{ conference.city }} <img class="country-flag" alt="" src="/bundles/easyadmin/images/flags/{{ conference.country|upper }}.png">
-                            {% endif %}
-                        </div>
-                        <div class="card-text my-3">{{
-                                conference.description ?
-                                conference.description|u.truncate(100, '...', false) :
-                                '<em>No description provided</em>'|raw
-                        }}</div>
-                        {% set cfpIsOpen = conference.cfpEndAt is defined and (conference.cfpEndAt|date('m/d/Y') > 'now'|date('m/d/Y') or conference.cfpEndAt|date('Y') > 'now'|date('Y')) %}
-                        {% set flexJustify = cfpIsOpen ? 'justify-content-between' : 'justify-content-center' %}
-                        <div class="card-text d-flex {{ flexJustify }} text-center px-3 mt-auto">
-                            <form action="{{ path('new_participation', { id: conference.id }) }}" method="GET" class="action-ask-participation">
-                                <button type="submit" class="btn color-done p-0"><i class="fas fa-hand-paper"></i> Ask Participation</button>
-                                <input type="hidden" name="token" value="{{ csrf_token('') }}">
-                            </form>
-                            {% if cfpIsOpen %}
-                                <form action="{{ path('new_submit', { id: conference.id }) }}" method="GET" class="action-submit">
-                                    <button type="submit" class="btn color-pending p-0"><i class="fa fa-microphone"></i> Submit a Talk</button>
+                <div class="col-md-6 col-lg-4 d-flex">
+                    <article class="card border-warning flex-grow-1 mb-4">
+                        <header class="card-header">
+                            <a href="{{ path('conferences_show', { slug: conference.slug }) }}">
+                                <h5 class="card-title text-primary my-0">
+                                    <i class="far fa-star text-warning mr-2"></i>
+                                    {{ conference.name }}
+                                </h5>
+                            </a>
+                        </header>
+                        <div class="card-body d-flex flex-column">
+                            <div class="card-text">
+                                From
+                                <time datetime="{{ conference.startAt|date('m/d/Y') }}" class="mark">
+                                    {{ conference.startAt|date('m/d/Y') }}
+                                </time>
+                                To
+                                <time datetime="{{ conference.endAt|date('m/d/Y') }}" class="mark">
+                                    {{ conference.endAt|date('m/d/Y') }}
+                                </time>
+                            </div>
+                            <div class="card-text mt-3">
+                                {% if conference.online %}
+                                    Online
+                                    <img class="country-flag" alt="" src="{{ asset('build/images/online.svg') }}" />
+                                {% elseif conference.country %}
+                                    {{ conference.city }}
+                                    <img class="country-flag" alt="" src="/bundles/easyadmin/images/flags/{{ conference.country|upper }}.png" />
+                                {% endif %}
+                            </div>
+                            <div class="card-text my-3">
+                                {{
+                                    conference.description ?
+                                    conference.description|u.truncate(100, '...', false) :
+                                    '<p class="card-text"><em>No description provided</em></p>'|raw
+                                }}
+                            </div>
+
+                            {% set cfpIsOpen = conference.cfpEndAt is defined and (conference.cfpEndAt|date('m/d/Y') > 'now'|date('m/d/Y') or conference.cfpEndAt|date('Y') > 'now'|date('Y')) %}
+                            {% set flexJustify = cfpIsOpen ? 'justify-content-between' : 'justify-content-center' %}
+
+                            <div class="card-text d-flex {{ flexJustify }} text-center mt-auto">
+                                <form action="{{ path('new_participation', { id: conference.id }) }}" method="GET" class="action-ask-participation">
+                                    <button type="submit" class="btn color-done p-0">
+                                        <i class="fas fa-hand-paper"></i>
+                                        Ask Participation
+                                    </button>
                                     <input type="hidden" name="token" value="{{ csrf_token('') }}">
                                 </form>
-                            {% endif %}
+                                {% if cfpIsOpen %}
+                                    <form action="{{ path('new_submit', { id: conference.id }) }}" method="GET" class="action-submit">
+                                        <button type="submit" class="btn color-pending p-0">
+                                            <i class="fa fa-microphone"></i>
+                                            Submit a Talk
+                                        </button>
+                                        <input type="hidden" name="token" value="{{ csrf_token('') }}">
+                                    </form>
+                                {% endif %}
+                            </div>
                         </div>
-                    </div>
+                    </article>
                 </div>
             {% else %}
-                <em>No Featured Conference for now.</em>
+                <div class="col">
+                    <p class="text-center">
+                        <em>No Featured Conference for now.</em>
+                    </p>
+                </div>
             {% endfor %}
         </div>
-        <h3 class="ml-5 my-5 text-secondary indent-50">Regular Conferences</h3>
-        <div class="d-flex flex-row flex-wrap justify-content-center" id="regular-conferences-block">
+        <h3 class="my-5 text-secondary">Regular Conferences</h3>
+        <div class="row" id="regular-conferences-block">
             {% for conference in conferences %}
-                <div class="card w-30 m-2 border-secondary conference-card">
-                    <div class="card-header d-flex justify-content-between">
-                        <a href="{{ path('conferences_show', { slug: conference.slug }) }}">
-                            <h5 class="card-title text-primary my-0">{{ conference.name }}</h5>
-                        </a>
-                    </div>
-                    <div class="card-body d-flex flex-column">
-                        <div class="card-text text-center">From <mark>{{ conference.startAt|date('m/d/Y') }}</mark> To <mark>{{ conference.endAt|date('m/d/Y') }}</mark></div>
-                        <div class="card-text text-center mt-2">
-                            {% if conference.online %}
-                                Online <img class="country-flag" alt="" src="{{ asset('build/images/online.svg') }}">
-                            {% elseif conference.country %}
-                                {{ conference.city }} <img class="country-flag" alt="" src="/bundles/easyadmin/images/flags/{{ conference.country|upper }}.png">
-                            {% endif %}
-                        </div>
-                        <div class="card-text my-3">{{
-                                conference.description ?
-                                conference.description|u.truncate(100, '...', false) :
-                                '<em>No description provided</em>'|raw
-                        }}</div>
-                        {% set cfpIsOpen = conference.cfpEndAt is defined and (conference.cfpEndAt|date('m/d/Y') > 'now'|date('m/d/Y') or conference.cfpEndAt|date('Y') > 'now'|date('Y')) %}
-                        {% set flexJustify = cfpIsOpen ? 'justify-content-between' : 'justify-content-center' %}
-                        <div class="card-text d-flex {{ flexJustify }} text-center px-3 mt-auto">
-                            <form action="{{ path('new_participation', { id: conference.id }) }}" method="GET" class="action-ask-participation">
-                                <button type="submit" class="btn color-done p-0"><i class="fas fa-hand-paper"></i> Ask Participation</button>
-                                <input type="hidden" name="token" value="{{ csrf_token('') }}">
-                            </form>
-                            {% if cfpIsOpen %}
-                                <form action="{{ path('new_submit', { id: conference.id }) }}" method="GET" class="action-submit">
-                                    <button type="submit" class="btn color-pending p-0"><i class="fa fa-microphone"></i> Submit a Talk</button>
+                <div class="col-md-6 col-lg-4 d-flex">
+                    <article class="card border-secondary flex-grow-1 mb-4">
+                        <header class="card-header">
+                            <a href="{{ path('conferences_show', { slug: conference.slug }) }}">
+                                <h5 class="card-title text-primary my-0">
+                                    {{ conference.name }}
+                                </h5>
+                            </a>
+                        </header>
+                        <div class="card-body d-flex flex-column">
+                            <div class="card-text">
+                                From
+                                <time datetime="{{ conference.startAt|date('m/d/Y') }}" class="mark">
+                                    {{ conference.startAt|date('m/d/Y') }}
+                                </time>
+                                To
+                                <time datetime="{{ conference.endAt|date('m/d/Y') }}" class="mark">
+                                    {{ conference.endAt|date('m/d/Y') }}
+                                </time>
+                            </div>
+                            <div class="card-text mt-3">
+                                {% if conference.online %}
+                                    Online
+                                    <img class="country-flag" alt="" src="{{ asset('build/images/online.svg') }}" />
+                                {% elseif conference.country %}
+                                    {{ conference.city }}
+                                    <img class="country-flag" alt="" src="/bundles/easyadmin/images/flags/{{ conference.country|upper }}.png" />
+                                {% endif %}
+                            </div>
+                            <div class="card-text my-3">
+                                {{
+                                    conference.description ?
+                                    conference.description|u.truncate(100, '...', false) :
+                                    '<p class="card-text"><em>No description provided</em></p>'|raw
+                                }}
+                            </div>
+
+                            {% set cfpIsOpen = conference.cfpEndAt is defined and (conference.cfpEndAt|date('m/d/Y') > 'now'|date('m/d/Y') or conference.cfpEndAt|date('Y') > 'now'|date('Y')) %}
+                            {% set flexJustify = cfpIsOpen ? 'justify-content-between' : 'justify-content-center' %}
+
+                            <div class="card-text d-flex {{ flexJustify }} text-center mt-auto">
+                                <form action="{{ path('new_participation', { id: conference.id }) }}" method="GET" class="action-ask-participation">
+                                    <button type="submit" class="btn color-done p-0">
+                                        <i class="fas fa-hand-paper"></i>
+                                        Ask Participation
+                                    </button>
                                     <input type="hidden" name="token" value="{{ csrf_token('') }}">
                                 </form>
-                            {% endif %}
+                                {% if cfpIsOpen %}
+                                    <form action="{{ path('new_submit', { id: conference.id }) }}" method="GET" class="action-submit">
+                                        <button type="submit" class="btn color-pending p-0">
+                                            <i class="fa fa-microphone"></i>
+                                            Submit a Talk
+                                        </button>
+                                        <input type="hidden" name="token" value="{{ csrf_token('') }}">
+                                    </form>
+                                {% endif %}
+                            </div>
                         </div>
-                    </div>
+                    </article>
                 </div>
             {% endfor %}
         </div>
