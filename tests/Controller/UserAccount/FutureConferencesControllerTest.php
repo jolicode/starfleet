@@ -30,8 +30,8 @@ class FutureConferencesControllerTest extends AbstractStarfleetTest
             'featured' => false,
         ]));
 
-        self::assertCount($featuredConferencesCount, $crawler->filter('div#featured-conferences-block div.conference-card'));
-        self::assertCount($regularConferencesCount, $crawler->filter('div#regular-conferences-block div.conference-card'));
+        self::assertCount($featuredConferencesCount, $crawler->filter('div#featured-conferences-block article.card'));
+        self::assertCount($regularConferencesCount, $crawler->filter('div#regular-conferences-block article.card'));
     }
 
     public function testAskParticipationWork()
