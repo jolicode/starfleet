@@ -1,6 +1,6 @@
 <?php
 
-// castor version: v0.9.1
+// castor version: v0.11.1
 namespace Castor\Attribute;
 
 #[\Attribute(\Attribute::TARGET_PARAMETER)]
@@ -27,6 +27,15 @@ namespace Castor\Attribute;
 class AsContext
 {
     public function __construct(public string $name = '', public bool $default = false)
+    {
+    }
+}
+namespace Castor\Attribute;
+
+#[\Attribute(\Attribute::TARGET_FUNCTION | \Attribute::IS_REPEATABLE)]
+class AsListener
+{
+    public function __construct(public readonly string $event, public readonly int $priority = 0)
     {
     }
 }
@@ -114,6 +123,90 @@ class Context implements \ArrayAccess
     {
     }
 }
+namespace Castor\Event;
+
+class AfterApplicationInitializationEvent
+{
+    public function __construct(
+        public readonly \Castor\Console\Application $application,
+        /** @var array<TaskDescriptor> $tasks */
+        public array &$tasks
+    )
+    {
+    }
+}
+namespace Castor\Event;
+
+class AfterExecuteTaskEvent
+{
+    public function __construct(public readonly \Castor\Console\Command\TaskCommand $task, public readonly mixed $result)
+    {
+    }
+}
+namespace Castor\Event;
+
+class BeforeExecuteTaskEvent
+{
+    public function __construct(public readonly \Castor\Console\Command\TaskCommand $task)
+    {
+    }
+}
+namespace Castor;
+
+class EventDispatcher implements \Symfony\Component\EventDispatcher\EventDispatcherInterface
+{
+    public function __construct(private \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher = new \Symfony\Component\EventDispatcher\EventDispatcher(), private \Psr\Log\LoggerInterface $logger = new \Psr\Log\NullLogger())
+    {
+    }
+    public function dispatch(object $event, string $eventName = null) : object
+    {
+    }
+    public function addListener(string $eventName, callable $listener, int $priority = 0) : void
+    {
+    }
+    public function removeListener(string $eventName, callable $listener) : void
+    {
+    }
+    public function addSubscriber(\Symfony\Component\EventDispatcher\EventSubscriberInterface $subscriber) : void
+    {
+    }
+    public function removeSubscriber(\Symfony\Component\EventDispatcher\EventSubscriberInterface $subscriber) : void
+    {
+    }
+    public function getListeners(string $eventName = null) : array
+    {
+    }
+    public function getListenerPriority(string $eventName, callable $listener) : ?int
+    {
+    }
+    public function hasListeners(string $eventName = null) : bool
+    {
+    }
+}
+namespace Castor\Exception\WaitFor;
+
+class ExitedBeforeTimeoutException extends \RuntimeException
+{
+    public function __construct()
+    {
+    }
+}
+namespace Castor\Exception\WaitFor;
+
+class TimeoutReachedException extends \Exception
+{
+    public function __construct(int $timeout)
+    {
+    }
+}
+namespace Castor;
+
+class ExpressionLanguage extends \Symfony\Component\ExpressionLanguage\ExpressionLanguage
+{
+    public function __construct(private readonly ContextRegistry $contextRegistry)
+    {
+    }
+}
 namespace Castor\Fingerprint;
 
 enum FileHashStrategy
@@ -126,10 +219,13 @@ namespace Castor\Fingerprint;
 class FingerprintHelper
 {
     private const SUFFIX = '.fingerprint';
-    public static function verifyFingerprintFromHash(string $fingerprint) : bool
+    public function __construct(private readonly \Psr\Cache\CacheItemPoolInterface&\Symfony\Contracts\Cache\CacheInterface $cache)
     {
     }
-    public static function postProcessFingerprintForHash(string $hash) : void
+    public function verifyFingerprintFromHash(string $fingerprint) : bool
+    {
+    }
+    public function postProcessFingerprintForHash(string $hash) : void
     {
     }
 }
@@ -138,99 +234,49 @@ namespace Castor;
 class GlobalHelper
 {
     private static \Castor\Console\Application $application;
-    private static \Symfony\Component\Console\Input\InputInterface $input;
-    private static SectionOutput $sectionOutput;
-    private static \Symfony\Component\Console\Style\SymfonyStyle $symfonyStyle;
-    private static \Monolog\Logger $logger;
-    private static ContextRegistry $contextRegistry;
-    private static \Symfony\Component\Console\Command\Command $command;
-    private static Context $initialContext;
-    private static \Symfony\Component\Filesystem\Filesystem $fs;
-    private static \Symfony\Contracts\HttpClient\HttpClientInterface $httpClient;
-    private static \Psr\Cache\CacheItemPoolInterface&\Symfony\Contracts\Cache\CacheInterface $cache;
-    private static \Symfony\Component\ExpressionLanguage\ExpressionLanguage $expressionLanguage;
     public static function setApplication(\Castor\Console\Application $application) : void
     {
     }
     public static function getApplication() : \Castor\Console\Application
     {
     }
-    public static function setInput(\Symfony\Component\Console\Input\InputInterface $input) : void
-    {
-    }
-    public static function getInput() : \Symfony\Component\Console\Input\InputInterface
-    {
-    }
-    public static function getOutput() : \Symfony\Component\Console\Output\OutputInterface
-    {
-    }
-    public static function setSectionOutput(SectionOutput $output) : void
-    {
-    }
-    public static function getSectionOutput() : SectionOutput
-    {
-    }
-    public static function getSymfonyStyle() : \Symfony\Component\Console\Style\SymfonyStyle
-    {
-    }
-    public static function setLogger(\Monolog\Logger $logger) : void
-    {
-    }
-    public static function getLogger() : \Monolog\Logger
-    {
-    }
-    public static function setContextRegistry(ContextRegistry $contextRegistry) : void
-    {
-    }
     public static function getContextRegistry() : ContextRegistry
     {
     }
-    public static function setCommand(\Symfony\Component\Console\Command\Command $command) : void
-    {
-    }
-    public static function setInitialContext(Context $initialContext) : void
-    {
-    }
-    public static function getInitialContext() : Context
-    {
-    }
-    public static function getContext(string $name = null) : Context
-    {
-    }
-    /**
-     * @template TKey of key-of<ContextData>
-     * @template TDefault
-     *
-     * @param TKey|string $key
-     * @param TDefault    $default
-     *
-     * @phpstan-return ($key is TKey ? ContextData[TKey] : TDefault)
-     */
-    public static function getVariable(string $key, mixed $default = null) : mixed
-    {
-    }
-    public static function getCommand() : \Symfony\Component\Console\Command\Command
+    public static function getEventDispatcher() : EventDispatcher
     {
     }
     public static function getFilesystem() : \Symfony\Component\Filesystem\Filesystem
     {
     }
-    public static function setHttpClient(\Symfony\Contracts\HttpClient\HttpClientInterface $httpClient) : void
-    {
-    }
     public static function getHttpClient() : \Symfony\Contracts\HttpClient\HttpClientInterface
-    {
-    }
-    public static function setCache(\Psr\Cache\CacheItemPoolInterface&\Symfony\Contracts\Cache\CacheInterface $cache) : void
     {
     }
     public static function getCache() : \Psr\Cache\CacheItemPoolInterface&\Symfony\Contracts\Cache\CacheInterface
     {
     }
-    public static function setupDefaultCache() : void
+    public static function getLogger() : \Monolog\Logger
     {
     }
-    public static function getExpressionLanguage() : \Symfony\Component\ExpressionLanguage\ExpressionLanguage
+    public static function getInput() : \Symfony\Component\Console\Input\InputInterface
+    {
+    }
+    public static function getSectionOutput() : SectionOutput
+    {
+    }
+    public static function getOutput() : \Symfony\Component\Console\Output\OutputInterface
+    {
+    }
+    public static function getSymfonyStyle() : \Symfony\Component\Console\Style\SymfonyStyle
+    {
+    }
+    public static function getCommand() : \Symfony\Component\Console\Command\Command
+    {
+    }
+    public static function getContext(string $name = null) : Context
+    {
+    }
+    public static function getVariable(string $key, mixed $default = null) : mixed
     {
     }
 }
@@ -238,11 +284,11 @@ namespace Castor;
 
 class HasherHelper
 {
-    private \HashContext $hashContext;
+    private readonly \HashContext $hashContext;
     /**
      * @see https://www.php.net/manual/en/function.hash-algos.php
      */
-    public function __construct(string $algo = 'xxh128')
+    public function __construct(private readonly \Castor\Console\Application $application, private readonly \Psr\Log\LoggerInterface $logger = new \Psr\Log\NullLogger(), string $algo = 'xxh128')
     {
     }
     public function write(string $value) : self
@@ -263,10 +309,18 @@ class HasherHelper
     public function writeTaskArgs(string ...$args) : self
     {
     }
-    public function writeTask() : self
+    public function writeTask(string ...$args) : self
     {
     }
     public function finish() : string
+    {
+    }
+}
+namespace Castor;
+
+class ListenerDescriptor
+{
+    public function __construct(public readonly \Castor\Attribute\AsListener $asListener, public readonly \ReflectionFunction $reflectionFunction)
     {
     }
 }
@@ -297,8 +351,14 @@ class PathHelper
 }
 namespace Castor;
 
-class PlatformUtil extends \Joli\JoliNotif\Util\OsHelper
+/**
+ * Platform helper inspired by Composer's Platform class.
+ */
+class PlatformUtil
 {
+    /**
+     * getenv() equivalent but reads from the runtime global variables first.
+     */
     public static function getEnv(string $name) : string|false
     {
     }
@@ -306,6 +366,9 @@ class PlatformUtil extends \Joli\JoliNotif\Util\OsHelper
      * @throws \RuntimeException If the user home could not reliably be determined
      */
     public static function getUserDirectory() : string
+    {
+    }
+    public static function getCacheDirectory() : string
     {
     }
 }
@@ -392,7 +455,42 @@ function get_exit_code(...$args) : int
  *     'password_authentication'?: bool,
  * } $sshOptions
  */
-function ssh(string $command, string $host, string $user, array $sshOptions = [], string $path = null, bool $quiet = null, bool $allowFailure = null, bool $notify = null, float $timeout = null) : \Symfony\Component\Process\Process
+function ssh_run(string $command, string $host, string $user, array $sshOptions = [], string $path = null, bool $quiet = null, bool $allowFailure = null, bool $notify = null, float $timeout = null) : \Symfony\Component\Process\Process
+{
+}
+function ssh(...$args) : \Symfony\Component\Process\Process
+{
+}
+/**
+ * This function is considered experimental and may change in the future.
+ *
+ * @param array{
+ *     'port'?: int,
+ *     'path_private_key'?: string,
+ *     'jump_host'?: string,
+ *     'multiplexing_control_path'?: string,
+ *     'multiplexing_control_persist'?: string,
+ *     'enable_strict_check'?: bool,
+ *     'password_authentication'?: bool,
+ * } $sshOptions
+ */
+function ssh_upload(string $sourcePath, string $destinationPath, string $host, string $user, array $sshOptions = [], bool $quiet = null, bool $allowFailure = null, bool $notify = null, float $timeout = null) : \Symfony\Component\Process\Process
+{
+}
+/**
+ * This function is considered experimental and may change in the future.
+ *
+ * @param array{
+ *     'port'?: int,
+ *     'path_private_key'?: string,
+ *     'jump_host'?: string,
+ *     'multiplexing_control_path'?: string,
+ *     'multiplexing_control_persist'?: string,
+ *     'enable_strict_check'?: bool,
+ *     'password_authentication'?: bool,
+ * } $sshOptions
+ */
+function ssh_download(string $sourcePath, string $destinationPath, string $host, string $user, array $sshOptions = [], bool $quiet = null, bool $allowFailure = null, bool $notify = null, float $timeout = null) : \Symfony\Component\Process\Process
 {
 }
 function notify(string $message) : void
@@ -413,6 +511,9 @@ function watch(string|array $path, callable $function, Context $context = null) 
 function log(string|\Stringable $message, mixed $level = 'info', array $context = []) : void
 {
 }
+function logger() : \Monolog\Logger
+{
+}
 function app() : \Castor\Console\Application
 {
 }
@@ -428,6 +529,9 @@ function get_input() : \Symfony\Component\Console\Input\InputInterface
 function output() : \Symfony\Component\Console\Output\OutputInterface
 {
 }
+/**
+ * @deprecated
+ */
 function get_output() : \Symfony\Component\Console\Output\OutputInterface
 {
 }
@@ -497,9 +601,6 @@ function http_client() : \Symfony\Contracts\HttpClient\HttpClientInterface
 function import(string $path) : void
 {
 }
-function fix_exception(\Exception $exception) : \Exception
-{
-}
 /**
  * @return array<string, mixed>
  */
@@ -528,7 +629,35 @@ function fingerprint_exists(string $fingerprint) : bool
 function fingerprint_save(string $fingerprint) : void
 {
 }
-function fingerprint(callable $callback, string $fingerprint) : void
+function fingerprint(callable $callback, string $fingerprint, bool $force = false) : void
+{
+}
+/**
+ * @throws TimeoutReachedException
+ * @throws ExitedBeforeTimeoutException
+ */
+function wait_for(callable $callback, int $timeout = 10, bool $quiet = false, int $intervalMs = 100, string $message = 'Waiting for callback to be available...') : void
+{
+}
+/**
+ * @throws TimeoutReachedException
+ * @throws ExitedBeforeTimeoutException
+ */
+function wait_for_port(int $port, string $host = '127.0.0.1', int $timeout = 10, bool $quiet = false, int $intervalMs = 100, string $message = null) : void
+{
+}
+/**
+ * @throws TimeoutReachedException
+ * @throws ExitedBeforeTimeoutException
+ */
+function wait_for_url(string $url, int $timeout = 10, bool $quiet = false, int $intervalMs = 100, string $message = null) : void
+{
+}
+/**
+ * @throws TimeoutReachedException
+ * @throws ExitedBeforeTimeoutException
+ */
+function wait_for_http_status(string $url, int $status = 200, callable $responseChecker = null, int $timeout = 10, bool $quiet = false, int $intervalMs = 100, string $message = null) : void
 {
 }
 namespace Symfony\Component\Console;
@@ -622,6 +751,9 @@ class Application implements \Symfony\Contracts\Service\ResetInterface
     public function setHelperSet(\Symfony\Component\Console\Helper\HelperSet $helperSet)
     {
     }
+    /**
+     * Get the helper set associated with the command.
+     */
     public function getHelperSet() : \Symfony\Component\Console\Helper\HelperSet
     {
     }
@@ -631,15 +763,27 @@ class Application implements \Symfony\Contracts\Service\ResetInterface
     public function setDefinition(\Symfony\Component\Console\Input\InputDefinition $definition)
     {
     }
+    /**
+     * Gets the InputDefinition related to this Application.
+     */
     public function getDefinition() : \Symfony\Component\Console\Input\InputDefinition
     {
     }
+    /**
+     * Adds suggestions to $suggestions for the current completion input (e.g. option or argument).
+     */
     public function complete(\Symfony\Component\Console\Completion\CompletionInput $input, \Symfony\Component\Console\Completion\CompletionSuggestions $suggestions) : void
     {
     }
+    /**
+     * Gets the help message.
+     */
     public function getHelp() : string
     {
     }
+    /**
+     * Gets whether to catch exceptions or not during commands execution.
+     */
     public function areExceptionsCaught() : bool
     {
     }
@@ -651,9 +795,15 @@ class Application implements \Symfony\Contracts\Service\ResetInterface
     public function setCatchExceptions(bool $boolean)
     {
     }
+    /**
+     * Sets whether to catch errors or not during commands execution.
+     */
     public function setCatchErrors(bool $catchErrors = true) : void
     {
     }
+    /**
+     * Gets whether to automatically exit after a command execution or not.
+     */
     public function isAutoExitEnabled() : bool
     {
     }
@@ -665,6 +815,9 @@ class Application implements \Symfony\Contracts\Service\ResetInterface
     public function setAutoExit(bool $boolean)
     {
     }
+    /**
+     * Gets the name of the application.
+     */
     public function getName() : string
     {
     }
@@ -676,6 +829,9 @@ class Application implements \Symfony\Contracts\Service\ResetInterface
     public function setName(string $name)
     {
     }
+    /**
+     * Gets the application version.
+     */
     public function getVersion() : string
     {
     }
@@ -695,6 +851,9 @@ class Application implements \Symfony\Contracts\Service\ResetInterface
     public function getLongVersion()
     {
     }
+    /**
+     * Registers a new command.
+     */
     public function register(string $name) : \Symfony\Component\Console\Command\Command
     {
     }
@@ -731,6 +890,9 @@ class Application implements \Symfony\Contracts\Service\ResetInterface
     public function get(string $name)
     {
     }
+    /**
+     * Returns true if the command exists, false otherwise.
+     */
     public function has(string $name) : bool
     {
     }
@@ -808,9 +970,15 @@ class Application implements \Symfony\Contracts\Service\ResetInterface
     protected function doRunCommand(\Symfony\Component\Console\Command\Command $command, \Symfony\Component\Console\Input\InputInterface $input, \Symfony\Component\Console\Output\OutputInterface $output)
     {
     }
+    /**
+     * Gets the name of the command based on input.
+     */
     protected function getCommandName(\Symfony\Component\Console\Input\InputInterface $input) : ?string
     {
     }
+    /**
+     * Gets the default input definition.
+     */
     protected function getDefaultInputDefinition() : \Symfony\Component\Console\Input\InputDefinition
     {
     }
@@ -822,12 +990,23 @@ class Application implements \Symfony\Contracts\Service\ResetInterface
     protected function getDefaultCommands() : array
     {
     }
+    /**
+     * Gets the default helper set with the helpers that should always be available.
+     */
     protected function getDefaultHelperSet() : \Symfony\Component\Console\Helper\HelperSet
     {
     }
+    /**
+     * Returns abbreviated suggestions in string format.
+     */
     private function getAbbreviationSuggestions(array $abbrevs) : string
     {
     }
+    /**
+     * Returns the namespace part of the command name.
+     *
+     * This method is not part of public API and should not be used directly.
+     */
     public function extractNamespace(string $name, int $limit = null) : string
     {
     }
@@ -892,6 +1071,9 @@ class InputArgument
     public function __construct(string $name, int $mode = null, string $description = '', string|bool|int|float|array $default = null, \Closure|array $suggestedValues = [])
     {
     }
+    /**
+     * Returns the argument name.
+     */
     public function getName() : string
     {
     }
@@ -921,6 +1103,9 @@ class InputArgument
     public function setDefault(string|bool|int|float|array $default = null)
     {
     }
+    /**
+     * Returns the default value.
+     */
     public function getDefault() : string|bool|int|float|array|null
     {
     }
@@ -935,6 +1120,9 @@ class InputArgument
     public function complete(\Symfony\Component\Console\Completion\CompletionInput $input, \Symfony\Component\Console\Completion\CompletionSuggestions $suggestions) : void
     {
     }
+    /**
+     * Returns the description text.
+     */
     public function getDescription() : string
     {
     }
@@ -951,6 +1139,9 @@ namespace Symfony\Component\Console\Input;
  */
 interface InputInterface
 {
+    /**
+     * Returns the first argument from the raw parameters (not parsed).
+     */
     public function getFirstArgument() : ?string;
     /**
      * Returns true if the raw parameters (not parsed) contain a value.
@@ -1017,6 +1208,9 @@ interface InputInterface
      * @throws InvalidArgumentException When argument given doesn't exist
      */
     public function setArgument(string $name, mixed $value);
+    /**
+     * Returns true if an InputArgument object exists by name or position.
+     */
     public function hasArgument(string $name) : bool;
     /**
      * Returns all the given options merged with the default values.
@@ -1040,7 +1234,13 @@ interface InputInterface
      * @throws InvalidArgumentException When option given doesn't exist
      */
     public function setOption(string $name, mixed $value);
+    /**
+     * Returns true if an InputOption object exists by name.
+     */
     public function hasOption(string $name) : bool;
+    /**
+     * Is this input means interactive?
+     */
     public function isInteractive() : bool;
     /**
      * Sets the input interactivity.
@@ -1058,10 +1258,25 @@ namespace Symfony\Component\Console\Input;
  */
 class InputOption
 {
+    /**
+     * Do not accept input for the option (e.g. --yell). This is the default behavior of options.
+     */
     public const VALUE_NONE = 1;
+    /**
+     * A value must be passed when the option is used (e.g. --iterations=5 or -i5).
+     */
     public const VALUE_REQUIRED = 2;
+    /**
+     * The option may or may not have a value (e.g. --yell or --yell=loud).
+     */
     public const VALUE_OPTIONAL = 4;
+    /**
+     * The option accepts multiple values (e.g. --dir=/foo --dir=/bar).
+     */
     public const VALUE_IS_ARRAY = 8;
+    /**
+     * The option may have either positive or negative value (e.g. --ansi or --no-ansi).
+     */
     public const VALUE_NEGATABLE = 16;
     private string $name;
     private string|array|null $shortcut;
@@ -1080,9 +1295,15 @@ class InputOption
     public function __construct(string $name, string|array $shortcut = null, int $mode = null, string $description = '', string|bool|int|float|array $default = null, array|\Closure $suggestedValues = [])
     {
     }
+    /**
+     * Returns the option shortcut.
+     */
     public function getShortcut() : ?string
     {
     }
+    /**
+     * Returns the option name.
+     */
     public function getName() : string
     {
     }
@@ -1127,9 +1348,15 @@ class InputOption
     public function setDefault(string|bool|int|float|array $default = null)
     {
     }
+    /**
+     * Returns the default value.
+     */
     public function getDefault() : string|bool|int|float|array|null
     {
     }
+    /**
+     * Returns the description text.
+     */
     public function getDescription() : string
     {
     }
@@ -1144,6 +1371,9 @@ class InputOption
     public function complete(\Symfony\Component\Console\Completion\CompletionInput $input, \Symfony\Component\Console\Completion\CompletionSuggestions $suggestions) : void
     {
     }
+    /**
+     * Checks whether the given option equals this one.
+     */
     public function equals(self $option) : bool
     {
     }
@@ -1198,9 +1428,21 @@ interface OutputInterface
      * @return self::VERBOSITY_*
      */
     public function getVerbosity() : int;
+    /**
+     * Returns whether verbosity is quiet (-q).
+     */
     public function isQuiet() : bool;
+    /**
+     * Returns whether verbosity is verbose (-v).
+     */
     public function isVerbose() : bool;
+    /**
+     * Returns whether verbosity is very verbose (-vv).
+     */
     public function isVeryVerbose() : bool;
+    /**
+     * Returns whether verbosity is debug (-vvv).
+     */
     public function isDebug() : bool;
     /**
      * Sets the decorated flag.
@@ -1208,11 +1450,17 @@ interface OutputInterface
      * @return void
      */
     public function setDecorated(bool $decorated);
+    /**
+     * Gets the decorated flag.
+     */
     public function isDecorated() : bool;
     /**
      * @return void
      */
     public function setFormatter(\Symfony\Component\Console\Formatter\OutputFormatterInterface $formatter);
+    /**
+     * Returns current output formatter instance.
+     */
     public function getFormatter() : \Symfony\Component\Console\Formatter\OutputFormatterInterface;
 }
 namespace Symfony\Component\Console\Style;
@@ -1407,6 +1655,9 @@ class SymfonyStyle extends OutputStyle
     public function newLine(int $count = 1)
     {
     }
+    /**
+     * Returns a new instance which makes use of stderr if available.
+     */
     public function getErrorStyle() : self
     {
     }
@@ -1448,7 +1699,7 @@ namespace Symfony\Component\Filesystem;
  */
 class Filesystem
 {
-    private static $lastError;
+    private static ?string $lastError = null;
     /**
      * Copies a file.
      *
@@ -1474,6 +1725,9 @@ class Filesystem
     public function mkdir(string|iterable $dirs, int $mode = 0777)
     {
     }
+    /**
+     * Checks the existence of files or directories.
+     */
     public function exists(string|iterable $files) : bool
     {
     }
@@ -1591,9 +1845,23 @@ class Filesystem
     private function linkException(string $origin, string $target, string $linkType) : never
     {
     }
+    /**
+     * Resolves links in paths.
+     *
+     * With $canonicalize = false (default)
+     *      - if $path does not exist or is not a link, returns null
+     *      - if $path is a link, returns the next direct target of the link without considering the existence of the target
+     *
+     * With $canonicalize = true
+     *      - if $path does not exist, returns null
+     *      - if $path exists, returns its absolute fully resolved final version
+     */
     public function readlink(string $path, bool $canonicalize = false) : ?string
     {
     }
+    /**
+     * Given an existing path, convert it to a path relative to a given starting path.
+     */
     public function makePathRelative(string $endPath, string $startPath) : string
     {
     }
@@ -1619,6 +1887,9 @@ class Filesystem
     public function mirror(string $originDir, string $targetDir, \Traversable $iterator = null, array $options = [])
     {
     }
+    /**
+     * Returns whether the file path is an absolute path.
+     */
     public function isAbsolutePath(string $file) : bool
     {
     }
@@ -1662,6 +1933,9 @@ class Filesystem
     private function toIterable(string|iterable $files) : iterable
     {
     }
+    /**
+     * Gets a 2-tuple of scheme (may be null) and hierarchical part of a filename (e.g. file:///tmp -> [file, tmp]).
+     */
     private function getSchemeAndHierarchy(string $filename) : array
     {
     }
@@ -1687,18 +1961,38 @@ namespace Symfony\Component\Filesystem;
  */
 final class Path
 {
+    /**
+     * The number of buffer entries that triggers a cleanup operation.
+     */
     private const CLEANUP_THRESHOLD = 1250;
+    /**
+     * The buffer size after the cleanup operation.
+     */
     private const CLEANUP_SIZE = 1000;
     /**
      * Buffers input/output of {@link canonicalize()}.
      *
      * @var array<string, string>
      */
-    private static $buffer = [];
+    private static array $buffer = [];
+    private static int $bufferSize = 0;
     /**
-     * @var int
+     * Canonicalizes the given path.
+     *
+     * During normalization, all slashes are replaced by forward slashes ("/").
+     * Furthermore, all "." and ".." segments are removed as far as possible.
+     * ".." segments at the beginning of relative paths are not removed.
+     *
+     * ```php
+     * echo Path::canonicalize("\symfony\puli\..\css\style.css");
+     * // => /symfony/css/style.css
+     *
+     * echo Path::canonicalize("../css/./style.css");
+     * // => ../css/style.css
+     * ```
+     *
+     * This method is able to deal with both UNIX and Windows paths.
      */
-    private static $bufferSize = 0;
     public static function canonicalize(string $path) : string
     {
     }
@@ -1911,15 +2205,77 @@ final class Path
     public static function makeRelative(string $path, string $basePath) : string
     {
     }
+    /**
+     * Returns whether the given path is on the local filesystem.
+     */
     public static function isLocal(string $path) : bool
     {
     }
+    /**
+     * Returns the longest common base path in canonical form of a set of paths or
+     * `null` if the paths are on different Windows partitions.
+     *
+     * Dot segments ("." and "..") are removed/collapsed and all slashes turned
+     * into forward slashes.
+     *
+     * ```php
+     * $basePath = Path::getLongestCommonBasePath(
+     *     '/symfony/css/style.css',
+     *     '/symfony/css/..'
+     * );
+     * // => /symfony
+     * ```
+     *
+     * The root is returned if no common base path can be found:
+     *
+     * ```php
+     * $basePath = Path::getLongestCommonBasePath(
+     *     '/symfony/css/style.css',
+     *     '/puli/css/..'
+     * );
+     * // => /
+     * ```
+     *
+     * If the paths are located on different Windows partitions, `null` is
+     * returned.
+     *
+     * ```php
+     * $basePath = Path::getLongestCommonBasePath(
+     *     'C:/symfony/css/style.css',
+     *     'D:/symfony/css/..'
+     * );
+     * // => null
+     * ```
+     */
     public static function getLongestCommonBasePath(string ...$paths) : ?string
     {
     }
+    /**
+     * Joins two or more path strings into a canonical path.
+     */
     public static function join(string ...$paths) : string
     {
     }
+    /**
+     * Returns whether a path is a base path of another path.
+     *
+     * Dot segments ("." and "..") are removed/collapsed and all slashes turned
+     * into forward slashes.
+     *
+     * ```php
+     * Path::isBasePath('/symfony', '/symfony/css');
+     * // => true
+     *
+     * Path::isBasePath('/symfony', '/symfony');
+     * // => true
+     *
+     * Path::isBasePath('/symfony', '/symfony/..');
+     * // => false
+     *
+     * Path::isBasePath('/symfony', '/puli');
+     * // => false
+     * ```
+     */
     public static function isBasePath(string $basePath, string $ofPath) : bool
     {
     }
@@ -1983,6 +2339,7 @@ class Finder implements \IteratorAggregate, \Countable
     private array $notNames = [];
     private array $exclude = [];
     private array $filters = [];
+    private array $pruneFilters = [];
     private array $depths = [];
     private array $sizes = [];
     private bool $followLinks = false;
@@ -2001,6 +2358,9 @@ class Finder implements \IteratorAggregate, \Countable
     public function __construct()
     {
     }
+    /**
+     * Creates a new Finder.
+     */
     public static function create() : static
     {
     }
@@ -2380,6 +2740,9 @@ class Finder implements \IteratorAggregate, \Countable
      * The anonymous function receives a \SplFileInfo and must return false
      * to remove files.
      *
+     * @param \Closure(SplFileInfo): bool $closure
+     * @param bool                        $prune   Whether to skip traversing directories further
+     *
      * @return $this
      *
      * @see CustomFilterIterator
@@ -2441,15 +2804,26 @@ class Finder implements \IteratorAggregate, \Countable
     public function append(iterable $iterator) : static
     {
     }
+    /**
+     * Check if any results were found.
+     */
     public function hasResults() : bool
     {
     }
+    /**
+     * Counts all the results collected by the iterators.
+     */
     public function count() : int
     {
     }
     private function searchInDirectory(string $dir) : \Iterator
     {
     }
+    /**
+     * Normalizes given directory names by removing trailing slashes.
+     *
+     * Excluding: (s)ftp:// or ssh2.(s)ftp:// wrapper
+     */
     private function normalizeDir(string $dir) : string
     {
     }
@@ -2474,7 +2848,7 @@ namespace Symfony\Component\Process;
  */
 class ExecutableFinder
 {
-    private $suffixes = ['.exe', '.bat', '.cmd', '.com'];
+    private array $suffixes = ['.exe', '.bat', '.cmd', '.com'];
     /**
      * Replaces default suffixes of executable.
      *
@@ -2523,40 +2897,90 @@ class Process implements \IteratorAggregate
     public const STDIN = 0;
     public const STDOUT = 1;
     public const STDERR = 2;
+    // Timeout Precision in seconds.
     public const TIMEOUT_PRECISION = 0.2;
     public const ITER_NON_BLOCKING = 1;
+    // By default, iterating over outputs is a blocking call, use this flag to make it non-blocking
     public const ITER_KEEP_OUTPUT = 2;
+    // By default, outputs are cleared while iterating, use this flag to keep them in memory
     public const ITER_SKIP_OUT = 4;
+    // Use this flag to skip STDOUT while iterating
     public const ITER_SKIP_ERR = 8;
-    private $callback;
-    private $hasCallback = false;
-    private $commandline;
-    private $cwd;
-    private $env = [];
+    // Use this flag to skip STDERR while iterating
+    private ?\Closure $callback = null;
+    private array|string $commandline;
+    private ?string $cwd;
+    private array $env = [];
+    /** @var resource|string|\Iterator|null */
     private $input;
-    private $starttime;
-    private $lastOutputTime;
-    private $timeout;
-    private $idleTimeout;
-    private $exitcode;
-    private $fallbackStatus = [];
-    private $processInformation;
-    private $outputDisabled = false;
+    private ?float $starttime = null;
+    private ?float $lastOutputTime = null;
+    private ?float $timeout = null;
+    private ?float $idleTimeout = null;
+    private ?int $exitcode = null;
+    private array $fallbackStatus = [];
+    private array $processInformation;
+    private bool $outputDisabled = false;
+    /** @var resource */
     private $stdout;
+    /** @var resource */
     private $stderr;
+    /** @var resource|null */
     private $process;
-    private $status = self::STATUS_READY;
-    private $incrementalOutputOffset = 0;
-    private $incrementalErrorOutputOffset = 0;
-    private $tty = false;
-    private $pty;
-    private $options = ['suppress_errors' => true, 'bypass_shell' => true];
-    private $useFileHandles = false;
-    /** @var PipesInterface */
-    private $processPipes;
-    private $latestSignal;
-    private static $sigchild;
-    public static $exitCodes = [0 => 'OK', 1 => 'General error', 2 => 'Misuse of shell builtins', 126 => 'Invoked command cannot execute', 127 => 'Command not found', 128 => 'Invalid exit argument', 129 => 'Hangup', 130 => 'Interrupt', 131 => 'Quit and dump core', 132 => 'Illegal instruction', 133 => 'Trace/breakpoint trap', 134 => 'Process aborted', 135 => 'Bus error: "access to undefined portion of memory object"', 136 => 'Floating point exception: "erroneous arithmetic operation"', 137 => 'Kill (terminate immediately)', 138 => 'User-defined 1', 139 => 'Segmentation violation', 140 => 'User-defined 2', 141 => 'Write to pipe with no one reading', 142 => 'Signal raised by alarm', 143 => 'Termination (request to terminate)', 145 => 'Child process terminated, stopped (or continued*)', 146 => 'Continue if stopped', 147 => 'Stop executing temporarily', 148 => 'Terminal stop signal', 149 => 'Background process attempting to read from tty ("in")', 150 => 'Background process attempting to write to tty ("out")', 151 => 'Urgent data available on socket', 152 => 'CPU time limit exceeded', 153 => 'File size limit exceeded', 154 => 'Signal raised by timer counting virtual time: "virtual timer expired"', 155 => 'Profiling timer expired', 157 => 'Pollable event', 159 => 'Bad syscall'];
+    private string $status = self::STATUS_READY;
+    private int $incrementalOutputOffset = 0;
+    private int $incrementalErrorOutputOffset = 0;
+    private bool $tty = false;
+    private bool $pty;
+    private array $options = ['suppress_errors' => true, 'bypass_shell' => true];
+    private \Symfony\Component\Process\Pipes\WindowsPipes|\Symfony\Component\Process\Pipes\UnixPipes $processPipes;
+    private ?int $latestSignal = null;
+    private static ?bool $sigchild = null;
+    /**
+     * Exit codes translation table.
+     *
+     * User-defined errors must use exit codes in the 64-113 range.
+     */
+    public static $exitCodes = [
+        0 => 'OK',
+        1 => 'General error',
+        2 => 'Misuse of shell builtins',
+        126 => 'Invoked command cannot execute',
+        127 => 'Command not found',
+        128 => 'Invalid exit argument',
+        // signals
+        129 => 'Hangup',
+        130 => 'Interrupt',
+        131 => 'Quit and dump core',
+        132 => 'Illegal instruction',
+        133 => 'Trace/breakpoint trap',
+        134 => 'Process aborted',
+        135 => 'Bus error: "access to undefined portion of memory object"',
+        136 => 'Floating point exception: "erroneous arithmetic operation"',
+        137 => 'Kill (terminate immediately)',
+        138 => 'User-defined 1',
+        139 => 'Segmentation violation',
+        140 => 'User-defined 2',
+        141 => 'Write to pipe with no one reading',
+        142 => 'Signal raised by alarm',
+        143 => 'Termination (request to terminate)',
+        // 144 - not defined
+        145 => 'Child process terminated, stopped (or continued*)',
+        146 => 'Continue if stopped',
+        147 => 'Stop executing temporarily',
+        148 => 'Terminal stop signal',
+        149 => 'Background process attempting to read from tty ("in")',
+        150 => 'Background process attempting to write to tty ("out")',
+        151 => 'Urgent data available on socket',
+        152 => 'CPU time limit exceeded',
+        153 => 'File size limit exceeded',
+        154 => 'Signal raised by timer counting virtual time: "virtual timer expired"',
+        155 => 'Profiling timer expired',
+        // 156 - not defined
+        157 => 'Pollable event',
+        // 158 - not defined
+        159 => 'Bad syscall',
+    ];
     /**
      * @param array          $command The command to run and its arguments listed as separate entries
      * @param string|null    $cwd     The working directory or null to use the working dir of the current PHP process
@@ -2596,6 +3020,9 @@ class Process implements \IteratorAggregate
     public function __sleep() : array
     {
     }
+    /**
+     * @return void
+     */
     public function __wakeup()
     {
     }
@@ -2763,6 +3190,9 @@ class Process implements \IteratorAggregate
     public function enableOutput() : static
     {
     }
+    /**
+     * Returns true in case the output is disabled, false otherwise.
+     */
     public function isOutputDisabled() : bool
     {
     }
@@ -2860,6 +3290,9 @@ class Process implements \IteratorAggregate
     public function getExitCodeText() : ?string
     {
     }
+    /**
+     * Checks if the process ended successfully.
+     */
     public function isSuccessful() : bool
     {
     }
@@ -2904,15 +3337,29 @@ class Process implements \IteratorAggregate
     public function getStopSignal() : int
     {
     }
+    /**
+     * Checks if the process is currently running.
+     */
     public function isRunning() : bool
     {
     }
+    /**
+     * Checks if the process has been started with no regard to the current state.
+     */
     public function isStarted() : bool
     {
     }
+    /**
+     * Checks if the process is terminated.
+     */
     public function isTerminated() : bool
     {
     }
+    /**
+     * Gets the process status.
+     *
+     * The status is one of: ready, started, terminated.
+     */
     public function getStatus() : string
     {
     }
@@ -2927,15 +3374,27 @@ class Process implements \IteratorAggregate
     public function stop(float $timeout = 10, int $signal = null) : ?int
     {
     }
+    /**
+     * Gets the last output time in seconds.
+     */
     public function getLastOutputTime() : ?float
     {
     }
+    /**
+     * Gets the command line to be executed.
+     */
     public function getCommandLine() : string
     {
     }
+    /**
+     * Gets the process timeout in seconds (max. runtime).
+     */
     public function getTimeout() : ?float
     {
     }
+    /**
+     * Gets the process idle timeout in seconds (max. time since last output).
+     */
     public function getIdleTimeout() : ?float
     {
     }
@@ -2974,6 +3433,9 @@ class Process implements \IteratorAggregate
     public function setTty(bool $tty) : static
     {
     }
+    /**
+     * Checks if the TTY mode is enabled.
+     */
     public function isTty() : bool
     {
     }
@@ -2985,9 +3447,15 @@ class Process implements \IteratorAggregate
     public function setPty(bool $bool) : static
     {
     }
+    /**
+     * Returns PTY state.
+     */
     public function isPty() : bool
     {
     }
+    /**
+     * Gets the working directory.
+     */
     public function getWorkingDirectory() : ?string
     {
     }
@@ -2999,6 +3467,9 @@ class Process implements \IteratorAggregate
     public function setWorkingDirectory(string $cwd) : static
     {
     }
+    /**
+     * Gets the environment variables.
+     */
     public function getEnv() : array
     {
     }
@@ -3025,7 +3496,7 @@ class Process implements \IteratorAggregate
      *
      * This content will be passed to the underlying process standard input.
      *
-     * @param string|int|float|bool|resource|\Traversable|null $input The content
+     * @param string|resource|\Traversable|self|null $input The content
      *
      * @return $this
      *
@@ -3066,13 +3537,22 @@ class Process implements \IteratorAggregate
     public function setOptions(array $options)
     {
     }
+    /**
+     * Returns whether TTY is supported on the current operating system.
+     */
     public static function isTtySupported() : bool
     {
     }
+    /**
+     * Returns whether PTY is supported on the current operating system.
+     */
     public static function isPtySupported() : bool
     {
     }
-    private function getDescriptors() : array
+    /**
+     * Creates the descriptors needed by the proc_open.
+     */
+    private function getDescriptors(bool $hasCallback) : array
     {
     }
     /**
@@ -3096,6 +3576,9 @@ class Process implements \IteratorAggregate
     protected function updateStatus(bool $blocking)
     {
     }
+    /**
+     * Returns whether PHP has been compiled with the '--enable-sigchild' option or not.
+     */
     protected function isSigchildEnabled() : bool
     {
     }
@@ -3135,6 +3618,9 @@ class Process implements \IteratorAggregate
     private function close() : int
     {
     }
+    /**
+     * Resets data related to the latest run of the process.
+     */
     private function resetProcessData() : void
     {
     }
@@ -3170,6 +3656,9 @@ class Process implements \IteratorAggregate
     private function requireProcessIsTerminated(string $functionName) : void
     {
     }
+    /**
+     * Escapes a string to be used as a shell argument.
+     */
     private function escapeArgument(?string $argument) : string
     {
     }
